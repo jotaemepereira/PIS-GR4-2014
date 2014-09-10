@@ -18,12 +18,33 @@
 		<h:form>
 			<p:growl id="messages" showDetail="true" />
 
-			<div class="nav">
-				<a href="caja.jsf"><div>Caja</div></a>
-				<a href="stock.jsf"><div>Stock</div></a>
-				<a href="clientes.jsf"><div>Clientes</div></a>
-				<a href="busqueda.jsf"><div>Búsqueda</div></a>
-			</div>
+			<p:dataTable id="saleDetailTable" var="product"
+				value="#{salesBean.saleLines}" editable="true" editMode="row"
+				editingRow="true">
+
+				<p:column headerText="Código">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{product.barcode}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{product.barcode}" style="width:96%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Descripción">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{product.description}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{product.description}" style="width:96%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+			</p:dataTable>
+
 
 		</h:form>
 	</h:body>
