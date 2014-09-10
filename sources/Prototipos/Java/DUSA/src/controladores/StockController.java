@@ -1,16 +1,19 @@
 package controladores;
 
+import interfaces.IPersistence;
 import interfaces.IStock;
 
 import java.util.List;
 
-import modelo.Product;
+import model.Product;
 
 public class StockController implements IStock {
 	
 	@Override
 	public List<Product> getProduct(String description) {
-		return null;
+		IPersistence ip = Fabric.getIPersistence();
+		
+		return ip.getProduct(description);
 	}
 	
 }

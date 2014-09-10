@@ -1,4 +1,4 @@
-package modelo;
+package model;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -28,6 +28,7 @@ public class Product {
 	private int stock;
 	private Date lastModified;
 	private boolean status;
+	private Date nearestDueDate;
 
 	public int getProductId() {
 		return productId;
@@ -219,5 +220,13 @@ public class Product {
 
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+
+	public Date getNearestDueDate() {
+		return nearestDueDate;
+	}
+
+	public void setNearestDueDate(Date nearestDueDate) {
+		this.nearestDueDate = nearestDueDate;
 	}
 }

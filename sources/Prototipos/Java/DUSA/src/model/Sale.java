@@ -1,6 +1,7 @@
-package modelo;
+package model;
 
 import java.util.Date;
+import java.util.List;
 
 public class Sale {
 	
@@ -9,6 +10,7 @@ public class Sale {
 	private int userId;
 	private Date date;
 	private char saleType;
+	private List<SaleDetail> lines;
 	
 	public int getSaleId() {
 		return saleId;
@@ -48,5 +50,13 @@ public class Sale {
 
 	public void setSaleType(char saleType) {
 		this.saleType = saleType;
+	}
+
+	public List<SaleDetail> getLines() {
+		return lines;
+	}
+
+	public void setLines(List<SaleDetail> lines) {
+		this.lines = lines;
 	}
 }

@@ -5,15 +5,15 @@ import interfaces.*;
 
 public class Fabric {
 
-	public IBIlling getIBilling() {
+	public static IBIlling getIBilling() {
 		return new BillingController();
 	}
 	
-	public IPersistence getIPersistence(){
+	public static IPersistence getIPersistence(){
 		return new PersistenceController();
 	}
 
-	public IStock getIStock(){
+	public static IStock getIStock(){
 		return new StockController();
 	}
 }

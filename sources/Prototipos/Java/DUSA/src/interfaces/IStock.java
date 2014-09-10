@@ -2,7 +2,7 @@ package interfaces;
 
 import java.util.List;
 
-import modelo.Product;
+import model.Product;
 
 public interface IStock {
 
