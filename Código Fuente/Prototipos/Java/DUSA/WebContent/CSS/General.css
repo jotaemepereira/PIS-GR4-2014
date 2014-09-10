@@ -1,0 +1,21 @@
+@CHARSET "ISO-8859-1";
+
+html
+{
+	background: url('../Images/bg.jpg') repeat;
+}
+
+.nav div
+{
+	margin: 0 10px;
+	text-decoration: none;
+	color: black;
+	width: 150px;
+	height: 70px;
+	float: left;
+}
+
+.nav_selected
+{
+	
+}
