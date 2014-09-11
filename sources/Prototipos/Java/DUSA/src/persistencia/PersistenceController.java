@@ -10,9 +10,9 @@ import interfaces.IPersistence;
 public class PersistenceController implements IPersistence {
 
 	@Override
-	public List<Product> getProduct(String description) {
+	public List<Product> getProducts(String description) {
 		List<Product> ret = new ArrayList<Product>();
-		for (Product p : Database.getInstance().products) {
+		for (Product p : Database.getInstance().getProducts()) {
 			if (p.getDescription().toLowerCase()
 					.contains(description.toLowerCase())) {
 				ret.add(p);
@@ -20,10 +20,21 @@ public class PersistenceController implements IPersistence {
 		}
 		return ret;
 	}
+	
+	@Override
+	public Product getProduct(String barcode){
+		for (Product p : Database.getInstance().getProducts()) {
+			if (p.getBarcode().toLowerCase()
+					.equals(barcode.toLowerCase())) {
+				return p;
+			}
+		}
+		return null;
+	}
 
 	@Override
 	public void insertSale(Sale sale) {
-		Database.getInstance().sales.add(sale);
+		Database.getInstance().getSales().add(sale);
 	}
 
 }

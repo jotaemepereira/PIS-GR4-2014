@@ -3,6 +3,7 @@
 html
 {
 	background: url('../Images/bg.jpg') repeat;
+	font-family: arial;
 }
 
 .nav div

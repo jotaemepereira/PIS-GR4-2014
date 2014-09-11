@@ -9,42 +9,125 @@
 <f:view contentType="text/html">
 	<h:head>
 		<link href="CSS/General.css" rel="stylesheet" />
+		<!-- 		<script src="JS/jquery-1.4.2.js"></script> -->
+		<!--         <script src="JS/jquery.hotkeys.js"></script> -->
+		<!--         <script src="JS/sale.js"></script> -->
+
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
-			<title>DUSA</title>
+			<title>DUSA 1</title>
 		</f:facet>
 	</h:head>
 	<h:body>
-		<h:form>
+		<h:form id="form1">
 			<p:growl id="messages" showDetail="true" />
+			<div>
+				<div style="float: left; margin-right: 15px; width: 350px;">
 
-			<p:dataTable id="saleDetailTable" var="product"
-				value="#{salesBean.saleLines}" editable="true" editMode="row"
-				editingRow="true">
 
-				<p:column headerText="Código">
-					<p:cellEditor>
-						<f:facet name="output">
-							<h:outputText value="#{product.barcode}" />
-						</f:facet>
-						<f:facet name="input">
-							<p:inputText value="#{product.barcode}" style="width:96%" />
-						</f:facet>
-					</p:cellEditor>
-				</p:column>
+					<p:focus context="form1" />
 
-				<p:column headerText="Descripción">
-					<p:cellEditor>
-						<f:facet name="output">
-							<h:outputText value="#{product.description}" />
-						</f:facet>
-						<f:facet name="input">
-							<p:inputText value="#{product.description}" style="width:96%" />
-						</f:facet>
-					</p:cellEditor>
-				</p:column>
-			</p:dataTable>
+					<table>
+						<tr>
+							<td>Código</td>
+							<td><p:inputText id="inBarcode"
+									value="#{salesBean.dtSaleDetail.barcode}">
+									<p:ajax event="blur" update="inDesc inPres inQty inPrice"
+										listener="#{salesBean.barcodeChanged}" />
+								</p:inputText></td>
+						</tr>
+						<tr>
+							<td>Descripción</td>
+							<td><p:inputText id="inDesc"
+									value="#{salesBean.inDescription}"></p:inputText></td>
+						</tr>
+						<tr>
+							<td>Cantidad</td>
+							<td><p:inputText id="inQty"
+									value="#{salesBean.dtSaleDetail.quantity}"></p:inputText></td>
+						</tr>
+						<tr>
+							<td>Precio/u</td>
+							<td><p:inputText id="inPrice"
+									value="#{salesBean.dtSaleDetail.salePrice}"></p:inputText></td>
+						</tr>
+						<tr>
+							<td>Descuento</td>
+							<td><p:inputText id="inDisc" value="#{salesBean.inDiscount}"></p:inputText></td>
+						</tr>
+						<tr>
+							<td></td>
 
+							<td><p:commandButton id="addLine" update="saleDetailTable"
+									actionListener="#{salesBean.addLine}" value="Agregar"
+									ajax="true" title="Agregar" /></td>
+						</tr>
+					</table>
+
+				</div>
+				<div style="float: left; width: 550px;">
+					<p:dataTable id="saleDetailTable" var="saleDetail"
+						value="#{salesBean.saleLines}">
+
+						<p:column headerText="Código">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{saleDetail.barcode}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{saleDetail.barcode}" style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Cantidad">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{saleDetail.quantity}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{saleDetail.quantity}" style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Precio">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{saleDetail.salePrice}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{saleDetail.salePrice}" style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Precio">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{saleDetail.salePrice}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{saleDetail.salePrice}" style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Descuento">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{saleDetail.discount}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText value="#{saleDetail.discount}" style="width:100%" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+					</p:dataTable>
+				</div>
+				<div style="clear: both;"></div>
+			</div>
 
 		</h:form>
 	</h:body>

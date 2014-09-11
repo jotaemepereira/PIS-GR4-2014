@@ -7,7 +7,8 @@ import model.Sale;
 
 public interface IPersistence {
 	
-	public List<Product> getProduct(String description);
+	public List<Product> getProducts(String description);
+	public Product getProduct(String barcode);
 	
 	public void insertSale(Sale sale);
 }
