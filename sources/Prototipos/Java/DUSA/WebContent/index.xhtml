@@ -15,118 +15,143 @@
 
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
-			<title>DUSA 1</title>
+			<title>DUSA</title>
 		</f:facet>
+		<script src="JS/Sale.js"></script>
 	</h:head>
 	<h:body>
 		<h:form id="form1">
 			<p:growl id="messages" showDetail="true" />
-			<div>
-				<div style="float: left; margin-right: 15px; width: 350px;">
+			<div class="nav">
+				<a href="#"><div class="nav_item nav_selected">Caja</div></a> <a
+					href="#"><div class="nav_item">Stock</div></a> <a href="#"><div
+						class="nav_item">Cliente</div></a> <a href="#"><div
+						class="nav_item">Búsqueda</div></a>
+				<div class="clearBoth"></div>
+			</div>
+			<div class="wrapper">
+				<div>
+					<div style="float: left; margin-right: 15px; width: 240px;">
 
+						<p:focus context="form1" />
+						<p:remoteCommand name="rc" update="messages"
+							actionListener="#{salesBean.insertSale}" />
+						<table>
+							<tr>
+								<td class="td_title">Código:</td>
+								<td><p:inputText id="inBarcode" style="width: 100px;"
+										value="#{salesBean.dtSaleDetail.barcode}"
+										onkeypress="focusFun(event);">
+										<p:ajax event="blur" update="inDesc inPrice"
+											listener="#{salesBean.barcodeChanged}" />
+									</p:inputText></td>
+							</tr>
 
-					<p:focus context="form1" />
+							<tr>
+								<td class="td_title">Cantidad:</td>
+								<td><p:inputText id="inQty" style="width: 50px;"
+										value="#{salesBean.dtSaleDetail.quantity}"
+										onkeypress="focusFun(event);"></p:inputText></td>
+							</tr>
+							<tr>
+								<td class="td_title">Descripción:</td>
+								<td><h:outputText id="inDesc"
+										value="#{salesBean.inDescription}"></h:outputText></td>
+							</tr>
+							<tr>
+								<td class="td_title">Precio/u:</td>
+								<td><h:outputText id="inPrice"
+										value="#{salesBean.dtSaleDetail.salePrice}"></h:outputText></td>
+							</tr>
+							<tr>
+								<td class="td_title">Descuento:</td>
+								<td><p:inputText id="inDisc" style="width: 50px;"
+										value="#{salesBean.dtSaleDetail.discount}"
+										onkeypress="focusFun(event);"></p:inputText></td>
+							</tr>
+							<tr>
+								<td colspan="2" style="text-align: center;"><p:commandButton
+										oncomplete="focusFun(event);" id="addLine"
+										update="saleDetailTable inBarcode inDesc inQty inPrice inDisc subtotal total"
+										actionListener="#{salesBean.addLine}" value="Agregar"
+										ajax="true" title="Agregar" /></td>
 
-					<table>
-						<tr>
-							<td>Código</td>
-							<td><p:inputText id="inBarcode"
-									value="#{salesBean.dtSaleDetail.barcode}">
-									<p:ajax event="blur" update="inDesc inPres inQty inPrice"
-										listener="#{salesBean.barcodeChanged}" />
-								</p:inputText></td>
-						</tr>
-						<tr>
-							<td>Descripción</td>
-							<td><p:inputText id="inDesc"
-									value="#{salesBean.inDescription}"></p:inputText></td>
-						</tr>
-						<tr>
-							<td>Cantidad</td>
-							<td><p:inputText id="inQty"
-									value="#{salesBean.dtSaleDetail.quantity}"></p:inputText></td>
-						</tr>
-						<tr>
-							<td>Precio/u</td>
-							<td><p:inputText id="inPrice"
-									value="#{salesBean.dtSaleDetail.salePrice}"></p:inputText></td>
-						</tr>
-						<tr>
-							<td>Descuento</td>
-							<td><p:inputText id="inDisc" value="#{salesBean.inDiscount}"></p:inputText></td>
-						</tr>
-						<tr>
-							<td></td>
+							</tr>
+						</table>
 
-							<td><p:commandButton id="addLine" update="saleDetailTable"
-									actionListener="#{salesBean.addLine}" value="Agregar"
-									ajax="true" title="Agregar" /></td>
-						</tr>
-					</table>
+					</div>
+					<div style="float: left; width: 550px;">
+						<p:dataTable id="saleDetailTable" var="saleDetail"
+							value="#{salesBean.saleLines}">
 
+							<p:column headerText="Código">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{saleDetail.barcode}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{saleDetail.barcode}" style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Cantidad">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{saleDetail.quantity}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{saleDetail.quantity}" style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Precio">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="$ #{saleDetail.salePrice}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{saleDetail.salePrice}"
+											style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Descuento">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{saleDetail.discount}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{saleDetail.discount}" style="width:100%" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+						</p:dataTable>
+						<div>
+							<table style="float: right; text-align: right; width: 250px;">
+								<tr>
+									<td style="font-weight: bold;">Subtotal</td>
+									<td><h:outputText id="subtotal"
+											value="$ #{salesBean.strSubtotal}"></h:outputText></td>
+								</tr>
+								<tr>
+									<td style="font-weight: bold;">Total</td>
+									<td><h:outputText id="total"
+											value="$ #{salesBean.strTotal}"></h:outputText></td>
+								</tr>
+							</table>
+							<div style="margin-top: 20px;">
+								<p:commandButton type="button" onclick="rc()" value="Execute"
+									icon="ui-icon-refresh" />
+							</div>
+							<div class="clearBoth"></div>
+						</div>
+					</div>
+					<div class="clearBoth"></div>
 				</div>
-				<div style="float: left; width: 550px;">
-					<p:dataTable id="saleDetailTable" var="saleDetail"
-						value="#{salesBean.saleLines}">
-
-						<p:column headerText="Código">
-							<p:cellEditor>
-								<f:facet name="output">
-									<h:outputText value="#{saleDetail.barcode}" />
-								</f:facet>
-								<f:facet name="input">
-									<p:inputText value="#{saleDetail.barcode}" style="width:100%" />
-								</f:facet>
-							</p:cellEditor>
-						</p:column>
-
-						<p:column headerText="Cantidad">
-							<p:cellEditor>
-								<f:facet name="output">
-									<h:outputText value="#{saleDetail.quantity}" />
-								</f:facet>
-								<f:facet name="input">
-									<p:inputText value="#{saleDetail.quantity}" style="width:100%" />
-								</f:facet>
-							</p:cellEditor>
-						</p:column>
-
-						<p:column headerText="Precio">
-							<p:cellEditor>
-								<f:facet name="output">
-									<h:outputText value="#{saleDetail.salePrice}" />
-								</f:facet>
-								<f:facet name="input">
-									<p:inputText value="#{saleDetail.salePrice}" style="width:100%" />
-								</f:facet>
-							</p:cellEditor>
-						</p:column>
-
-						<p:column headerText="Precio">
-							<p:cellEditor>
-								<f:facet name="output">
-									<h:outputText value="#{saleDetail.salePrice}" />
-								</f:facet>
-								<f:facet name="input">
-									<p:inputText value="#{saleDetail.salePrice}" style="width:100%" />
-								</f:facet>
-							</p:cellEditor>
-						</p:column>
-
-						<p:column headerText="Descuento">
-							<p:cellEditor>
-								<f:facet name="output">
-									<h:outputText value="#{saleDetail.discount}" />
-								</f:facet>
-								<f:facet name="input">
-									<p:inputText value="#{saleDetail.discount}" style="width:100%" />
-								</f:facet>
-							</p:cellEditor>
-						</p:column>
-
-					</p:dataTable>
-				</div>
-				<div style="clear: both;"></div>
 			</div>
 
 		</h:form>

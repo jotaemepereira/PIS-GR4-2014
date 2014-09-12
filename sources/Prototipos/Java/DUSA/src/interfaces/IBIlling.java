@@ -2,10 +2,10 @@ package interfaces;
 
 import java.util.List;
 
-import model.SaleDetail;
+import datatypes.DTSaleDetail;
 
 public interface IBIlling {
 	
-	public void newSale(int clientId, int userId, List<SaleDetail> lines, char saleType) throws Exception;
+	public void newSale(int clientId, int userId, List<DTSaleDetail> lines, char saleType) throws Exception;
 	
 }

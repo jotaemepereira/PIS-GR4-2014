@@ -21,6 +21,7 @@ public class StockController implements IStock {
 			DTProduct dt = new DTProduct();
 			dt.setBarcode(p.getBarcode());
 			dt.setSalePrice(p.getSalePrice());
+			dt.setProductId(p.getProductId());
 			retList.add(dt);
 		}
 		return retList;
@@ -34,6 +35,7 @@ public class StockController implements IStock {
 		dt.setBarcode(p.getBarcode());
 		dt.setSalePrice(p.getSalePrice());
 		dt.setDescription(p.getDescription());
+		dt.setProductId(p.getProductId());
 		return dt;
 	}
 }

@@ -3,10 +3,19 @@ package datatypes;
 import java.math.BigDecimal;
 
 public class DTProduct {
+	private int productId;
 	private String barcode;
 	private BigDecimal salePrice;
 	private String description;
 
+	public int getProductId() {
+		return productId;
+	}
+
+	public void setProductId(int productId) {
+		this.productId = productId;
+	}
+	
 	public String getBarcode() {
 		return barcode;
 	}
