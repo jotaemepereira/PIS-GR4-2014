@@ -1,8 +1,9 @@
 package datatypes;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class DTSaleDetail {
+public class DTSaleDetail implements Serializable {
 	private int productId;
 	private String barcode;
 	private BigDecimal salePrice = new BigDecimal(0);

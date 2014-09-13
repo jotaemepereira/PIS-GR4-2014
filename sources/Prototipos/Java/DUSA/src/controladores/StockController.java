@@ -31,11 +31,14 @@ public class StockController implements IStock {
 	public DTProduct getProduct(String barcode) {
 		IPersistence ip = Fabric.getIPersistence();
 		Product p = ip.getProduct(barcode);
-		DTProduct dt = new DTProduct();
-		dt.setBarcode(p.getBarcode());
-		dt.setSalePrice(p.getSalePrice());
-		dt.setDescription(p.getDescription());
-		dt.setProductId(p.getProductId());
-		return dt;
+		if (p != null) {
+			DTProduct dt = new DTProduct();
+			dt.setBarcode(p.getBarcode());
+			dt.setSalePrice(p.getSalePrice());
+			dt.setDescription(p.getDescription());
+			dt.setProductId(p.getProductId());
+			return dt;
+		}
+		return null;
 	}
 }

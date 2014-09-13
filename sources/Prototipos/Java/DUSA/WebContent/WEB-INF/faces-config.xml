@@ -8,4 +8,9 @@
 		<managed-bean-class>beans.SalesBean</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>salesBean2</managed-bean-name>
+		<managed-bean-class>beans.SalesBean2</managed-bean-class>
+		<managed-bean-scope>view</managed-bean-scope>
+	</managed-bean>
 </faces-config>

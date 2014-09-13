@@ -20,7 +20,7 @@
 		<script src="JS/Sale.js"></script>
 	</h:head>
 	<h:body>
-		<h:form id="form1">
+		<h:form id="form1" onkeypress="focusFun(event);">
 			<p:growl id="messages" showDetail="true" />
 			<div class="nav">
 				<a href="#"><div class="nav_item nav_selected">Caja</div></a> <a
@@ -40,8 +40,7 @@
 							<tr>
 								<td class="td_title">Código:</td>
 								<td><p:inputText id="inBarcode" style="width: 100px;"
-										value="#{salesBean.dtSaleDetail.barcode}"
-										onkeypress="focusFun(event);">
+										value="#{salesBean.dtSaleDetail.barcode}">
 										<p:ajax event="blur" update="inDesc inPrice"
 											listener="#{salesBean.barcodeChanged}" />
 									</p:inputText></td>
@@ -50,8 +49,7 @@
 							<tr>
 								<td class="td_title">Cantidad:</td>
 								<td><p:inputText id="inQty" style="width: 50px;"
-										value="#{salesBean.dtSaleDetail.quantity}"
-										onkeypress="focusFun(event);"></p:inputText></td>
+										value="#{salesBean.dtSaleDetail.quantity}"></p:inputText></td>
 							</tr>
 							<tr>
 								<td class="td_title">Descripción:</td>
@@ -66,8 +64,7 @@
 							<tr>
 								<td class="td_title">Descuento:</td>
 								<td><p:inputText id="inDisc" style="width: 50px;"
-										value="#{salesBean.dtSaleDetail.discount}"
-										onkeypress="focusFun(event);"></p:inputText></td>
+										value="#{salesBean.dtSaleDetail.discount}"></p:inputText></td>
 							</tr>
 							<tr>
 								<td colspan="2" style="text-align: center;"><p:commandButton
@@ -143,11 +140,12 @@
 											value="$ #{salesBean.strTotal}"></h:outputText></td>
 								</tr>
 							</table>
-							<div style="margin-top: 20px;">
-								<p:commandButton type="button" onclick="rc()" value="Execute"
-									icon="ui-icon-refresh" />
-							</div>
+
 							<div class="clearBoth"></div>
+						</div>
+						<div style="margin-top: 20px; text-align: right;">
+							<p:commandButton type="button" onclick="rc()" value="Confirmar"
+								icon="ui-icon-refresh" />
 						</div>
 					</div>
 					<div class="clearBoth"></div>

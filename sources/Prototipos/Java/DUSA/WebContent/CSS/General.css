@@ -28,6 +28,11 @@ table tr{
 	padding-right: 10px;
 }
 
+.primefacesRow
+{
+	height: 25px;
+}
+
 .nav {
 	width: 510px;
 	margin: 20px auto;
