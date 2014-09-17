@@ -2,6 +2,6 @@ package controladores;
 
 import interfaces.ISistema;
 
-public class MSistemaControlador implements ISistema {
+public class SistemaControlador implements ISistema {
 
 }

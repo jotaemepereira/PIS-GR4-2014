@@ -10,7 +10,7 @@ import model.SaleDetail;
 import interfaces.IFacturacion;
 import interfaces.IPersistence;
 
-public class MFacturacionControlador implements IFacturacion {
+public class FacturacionControlador implements IFacturacion {
 
 	@Override
 	public void newSale(int clientId, int userId, List<DTSaleDetail> dtLines,

@@ -9,7 +9,7 @@ import java.util.List;
 import datatypes.DTProduct;
 import model.Product;
 
-public class MStockControlador implements IStock {
+public class StockControlador implements IStock {
 
 	@Override
 	public List<DTProduct> getProducts(String description) {
