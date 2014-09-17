@@ -3,14 +3,14 @@ package model;
 import java.util.Date;
 import java.util.List;
 
-public class Sale {
+public class Venta {
 	
 	private int saleId;
 	private int clientId;
 	private int userId;
 	private Date date;
 	private char saleType;
-	private List<SaleDetail> lines;
+	private List<LineaVenta> lines;
 	
 	public int getSaleId() {
 		return saleId;
@@ -52,11 +52,11 @@ public class Sale {
 		this.saleType = saleType;
 	}
 
-	public List<SaleDetail> getLines() {
+	public List<LineaVenta> getLines() {
 		return lines;
 	}
 
-	public void setLines(List<SaleDetail> lines) {
+	public void setLines(List<LineaVenta> lines) {
 		this.lines = lines;
 	}
 }

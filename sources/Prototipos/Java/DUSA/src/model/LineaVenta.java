@@ -2,7 +2,7 @@ package model;
 
 import java.math.BigDecimal;
 
-public class SaleDetail {
+public class LineaVenta {
 	private int saleId;
 	private int productId;
 	private BigDecimal salePrice;
