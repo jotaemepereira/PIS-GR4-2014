@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import datatypes.DTProduct;
-import model.Product;
+import model.Articulo;
 
 public class StockControlador implements IStock {
 
@@ -15,13 +15,13 @@ public class StockControlador implements IStock {
 	public List<DTProduct> getProducts(String description) {
 		IPersistence ip = FabricaLogica.getIPersistence();
 
-		List<Product> pList = ip.getProducts(description);
+		List<Articulo> pList = ip.getArticulos(description);
 		List<DTProduct> retList = new ArrayList<DTProduct>();
-		for (Product p : pList) {
+		for (Articulo p : pList) {
 			DTProduct dt = new DTProduct();
-			dt.setBarcode(p.getBarcode());
-			dt.setSalePrice(p.getSalePrice());
-			dt.setProductId(p.getProductId());
+			dt.setBarcode(p.getCodigoBarras());
+			dt.setSalePrice(p.getPrecioVenta());
+			dt.setProductId(p.getIdArticulo());
 			retList.add(dt);
 		}
 		return retList;
@@ -30,15 +30,21 @@ public class StockControlador implements IStock {
 	@Override
 	public DTProduct getProduct(String barcode) {
 		IPersistence ip = FabricaLogica.getIPersistence();
-		Product p = ip.getProduct(barcode);
+		Articulo p = ip.getArticulo(barcode);
 		if (p != null) {
 			DTProduct dt = new DTProduct();
-			dt.setBarcode(p.getBarcode());
-			dt.setSalePrice(p.getSalePrice());
-			dt.setDescription(p.getDescription());
-			dt.setProductId(p.getProductId());
+			dt.setBarcode(p.getCodigoBarras());
+			dt.setSalePrice(p.getPrecioVenta());
+			dt.setDescription(p.getDescripcion());
+			dt.setProductId(p.getIdArticulo());
 			return dt;
 		}
 		return null;
+	}
+
+	@Override
+	public void altaArticulo(Articulo articulo) {
+		// TODO Auto-generated method stub
+		
 	}
 }

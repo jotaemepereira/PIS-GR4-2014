@@ -1,5 +1,7 @@
 package interfaces;
 
-public interface IStockPersistencia {
+import model.Articulo;
 
+public interface IStockPersistencia {
+	public void persistirArticulo(Articulo articulo);
 }

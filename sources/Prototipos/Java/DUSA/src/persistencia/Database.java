@@ -18,10 +18,10 @@ public class Database {
     private void PopulateDatabase() {
     	int i = 0;
     	while (i < 100){
-    		Product p = new Product();
-    		p.setBarcode("" + i);
-    		p.setDescription("artículo " + i);
-    		p.setSalePrice(new BigDecimal(100+i));
+    		Articulo p = new Articulo();
+    		p.setCodigoBarras("" + i);
+    		p.setDescripcion("artículo " + i);
+    		p.setPrecioVenta(new BigDecimal(100+i));
     		products.add(p);		
     		i++;
     	}
@@ -34,24 +34,24 @@ public class Database {
     //
     
     // Tabla de Ventas
-	private List<Sale> sales = new ArrayList<Sale>();
+	private List<Venta> sales = new ArrayList<Venta>();
     
     // Tabla de artículos
-    private List<Product> products = new ArrayList<Product>();
+    private List<Articulo> products = new ArrayList<Articulo>();
 
-	public List<Sale> getSales() {
+	public List<Venta> getSales() {
 		return sales;
 	}
 
-	public void setSales(List<Sale> sales) {
+	public void setSales(List<Venta> sales) {
 		this.sales = sales;
 	}
 
-	public List<Product> getProducts() {
+	public List<Articulo> getProducts() {
 		return products;
 	}
 
-	public void setProducts(List<Product> products) {
+	public void setProducts(List<Articulo> products) {
 		this.products = products;
 	}
     

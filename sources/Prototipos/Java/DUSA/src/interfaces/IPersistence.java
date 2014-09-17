@@ -2,13 +2,14 @@ package interfaces;
 
 import java.util.List;
 
-import model.Product;
-import model.Sale;
+import model.Articulo;
+import model.Venta;
 
 public interface IPersistence {
 	
-	public List<Product> getProducts(String description);
-	public Product getProduct(String barcode);
+	public List<Articulo> getArticulos(String description);
+	public Articulo getArticulo(String barcode);
 	
-	public void insertSale(Sale sale);
+	public void insertSale(Venta venta);
+	
 }

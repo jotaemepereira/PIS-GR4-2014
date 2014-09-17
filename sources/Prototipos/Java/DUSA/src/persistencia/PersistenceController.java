@@ -3,17 +3,17 @@ package persistencia;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.Product;
-import model.Sale;
+import model.Articulo;
+import model.Venta;
 import interfaces.IPersistence;
 
 public class PersistenceController implements IPersistence {
 
 	@Override
-	public List<Product> getProducts(String description) {
-		List<Product> ret = new ArrayList<Product>();
-		for (Product p : Database.getInstance().getProducts()) {
-			if (p.getDescription().toLowerCase()
+	public List<Articulo> getArticulos(String description) {
+		List<Articulo> ret = new ArrayList<Articulo>();
+		for (Articulo p : Database.getInstance().getProducts()) {
+			if (p.getDescripcion().toLowerCase()
 					.contains(description.toLowerCase())) {
 				ret.add(p);
 			}
@@ -22,9 +22,9 @@ public class PersistenceController implements IPersistence {
 	}
 	
 	@Override
-	public Product getProduct(String barcode){
-		for (Product p : Database.getInstance().getProducts()) {
-			if (p.getBarcode().toLowerCase()
+	public Articulo getArticulo(String barcode){
+		for (Articulo p : Database.getInstance().getProducts()) {
+			if (p.getCodigoBarras().toLowerCase()
 					.equals(barcode.toLowerCase())) {
 				return p;
 			}
@@ -33,7 +33,7 @@ public class PersistenceController implements IPersistence {
 	}
 
 	@Override
-	public void insertSale(Sale sale) {
+	public void insertSale(Venta sale) {
 		Database.getInstance().getSales().add(sale);
 	}
 

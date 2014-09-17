@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import datatypes.DTSaleDetail;
-import model.Sale;
-import model.SaleDetail;
+import model.LineaVenta;
+import model.Venta;
 import interfaces.IFacturacion;
 import interfaces.IPersistence;
 
@@ -18,9 +18,9 @@ public class FacturacionControlador implements IFacturacion {
 
 		try {
 			
-			List<SaleDetail> lines = new ArrayList<SaleDetail>();
+			List<LineaVenta> lines = new ArrayList<LineaVenta>();
 			for (DTSaleDetail dt : dtLines){
-				SaleDetail sd = new SaleDetail();
+				LineaVenta sd = new LineaVenta();
 				sd.setDiscount(dt.getDiscount());
 				sd.setProductId(dt.getProductId());
 				sd.setQuantity(dt.getQuantity());
@@ -28,7 +28,7 @@ public class FacturacionControlador implements IFacturacion {
 				lines.add(sd);
 			}
 
-			Sale s = new Sale();
+			Venta s = new Venta();
 			s.setClientId(clientId);
 			s.setDate(new Date());
 			s.setLines(lines);
