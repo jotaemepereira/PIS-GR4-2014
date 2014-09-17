@@ -2,12 +2,15 @@ package controladores;
 
 import interfaces.IPersistence;
 import interfaces.IStock;
+import model.Articulo;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import persistencia.PStockControlador;
 import datatypes.DTProduct;
 import model.Articulo;
+import controladores.FabricaPersistencia;
 
 public class StockControlador implements IStock {
 
@@ -45,6 +48,20 @@ public class StockControlador implements IStock {
 	@Override
 	public void altaArticulo(Articulo articulo) {
 		// TODO Auto-generated method stub
+		
+	}
+	
+	public List<Articulo> buscarArticulo(String descripcion){
+		
+		PStockControlador ps = (PStockControlador) FabricaPersistencia.getIStockPersistencia();
+		
+		return ps.buscarArticulo(descripcion);
+		
+	}
+	
+	public Articulo obtenerArticulo(String id){
+		
+		return null;
 		
 	}
 }
