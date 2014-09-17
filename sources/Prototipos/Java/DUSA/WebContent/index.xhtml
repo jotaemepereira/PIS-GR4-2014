@@ -9,10 +9,6 @@
 <f:view contentType="text/html">
 	<h:head>
 		<link href="CSS/General.css" rel="stylesheet" />
-		<!-- 		<script src="JS/jquery-1.4.2.js"></script> -->
-		<!--         <script src="JS/jquery.hotkeys.js"></script> -->
-		<!--         <script src="JS/sale.js"></script> -->
-
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
@@ -20,66 +16,98 @@
 		<script src="JS/Sale.js"></script>
 	</h:head>
 	<h:body>
-		<h:form id="form1" onkeypress="focusFun(event);">
+		<h:form id="form1">
 			<p:growl id="messages" showDetail="true" />
-			<div class="nav">
-				<a href="#"><div class="nav_item nav_selected">Caja</div></a> <a
-					href="#"><div class="nav_item">Stock</div></a> <a href="#"><div
-						class="nav_item">Cliente</div></a> <a href="#"><div
-						class="nav_item">Búsqueda</div></a>
-				<div class="clearBoth"></div>
+			<div class="header">
+				<div class="hnav">
+					<a href="#1">
+						<div class="hnav_item" style="margin-top: -1px;">
+							<div class="hnav_item_img">
+								<img src="Images/caja.png" alt="" />
+							</div>
+							<div class="hnav_item_text">Caja</div>
+							<div class="clearBoth"></div>
+						</div>
+					</a> <a href="#2">
+						<div class="hnav_item" style="margin-top: -1px;">
+							<div class="hnav_item_img">
+								<img src="Images/stock.png" alt="" />
+							</div>
+							<div class="hnav_item_text">Stock</div>
+							<div class="clearBoth"></div>
+						</div>
+					</a> <a href="#3">
+						<div class="hnav_item" style="margin-top: -1px;">
+							<div class="hnav_item_img">
+								<img src="Images/clientes.png" alt="" />
+							</div>
+							<div class="hnav_item_text">Cliente</div>
+							<div class="clearBoth"></div>
+						</div>
+					</a> <a href="#4">
+						<div class="hnav_item" style="margin-top: -1px;">
+							<div class="hnav_item_img">
+								<img src="Images/ventas.png" alt="" />
+							</div>
+							<div class="hnav_item_text">Ventas</div>
+							<div class="clearBoth"></div>
+						</div>
+					</a>
+					<div class="clearBoth"></div>
+				</div>
+				<div class="login">
+
+					<img src="Images/user.png" alt="" />
+					<h:outputLabel id="logged_user">
+						<a href="#" id="logged_user_a">Sebastian Caballero</a>
+					</h:outputLabel>
+					<p:overlayPanel id="logged_user_panel" for="logged_user"
+						hideEffect="fade">
+						<div>
+							<a href="#">Mis datos</a>
+						</div>
+						<div>
+							<p:commandLink actionListener="#{sesionBean.logOut}" ajax="true">
+								<h:outputText value="Salir" />
+							</p:commandLink>
+						</div>
+					</p:overlayPanel>
+
+				</div>
 			</div>
-			<div class="wrapper">
-				<div>
-					<div style="float: left; margin-right: 15px; width: 240px;">
+			<div>
+				<div class="vpanel_left">
 
-						<p:focus context="form1" />
-						<p:remoteCommand name="rc" update="messages"
-							actionListener="#{salesBean.insertSale}" />
-						<table>
-							<tr>
-								<td class="td_title">Código:</td>
-								<td><p:inputText id="inBarcode" style="width: 100px;"
-										value="#{salesBean.dtSaleDetail.barcode}">
-										<p:ajax event="blur" update="inDesc inPrice"
-											listener="#{salesBean.barcodeChanged}" />
-									</p:inputText></td>
-							</tr>
-
-							<tr>
-								<td class="td_title">Cantidad:</td>
-								<td><p:inputText id="inQty" style="width: 50px;"
-										value="#{salesBean.dtSaleDetail.quantity}"></p:inputText></td>
-							</tr>
-							<tr>
-								<td class="td_title">Descripción:</td>
-								<td><h:outputText id="inDesc"
-										value="#{salesBean.inDescription}"></h:outputText></td>
-							</tr>
-							<tr>
-								<td class="td_title">Precio/u:</td>
-								<td><h:outputText id="inPrice"
-										value="#{salesBean.dtSaleDetail.salePrice}"></h:outputText></td>
-							</tr>
-							<tr>
-								<td class="td_title">Descuento:</td>
-								<td><p:inputText id="inDisc" style="width: 50px;"
-										value="#{salesBean.dtSaleDetail.discount}"></p:inputText></td>
-							</tr>
-							<tr>
-								<td colspan="2" style="text-align: center;"><p:commandButton
-										oncomplete="focusFun(event);" id="addLine"
-										update="saleDetailTable inBarcode inDesc inQty inPrice inDisc subtotal total"
-										actionListener="#{salesBean.addLine}" value="Agregar"
-										ajax="true" title="Agregar" /></td>
-
-							</tr>
-						</table>
+					<div class="vnav">
+						<a href="index.jsf">
+							<div class="vnav_item" style="margin-top: -1px;">
+								<div class="vnav_item_text">Item 1</div>
+								<div class="clearBoth"></div>
+							</div>
+						</a> <a href="#">
+							<div class="vnav_item vnav_item_selected"
+								style="margin-top: -1px;">
+								<div class="vnav_item_text">Item 2</div>								<div class="clearBoth"></div>
+							</div>
+						</a> <a href="clientes.jsf">
+							<div class="vnav_item" style="margin-top: -1px;">
+								<div class="vnav_item_text">Item 3</div>
+								<div class="clearBoth"></div>
+							</div>
+						</a> <a href="equipos.jsf">
+							<div class="vnav_item" style="margin-top: -1px;">
+								<div class="vnav_item_text">Item 4</div>
+								<div class="clearBoth"></div>
+							</div>
+						</a>
 
 					</div>
-					<div style="float: left; width: 550px;">
+				</div>
+				<div class="vpanel_right">
+					<div class="wrapper">
 						<p:dataTable id="saleDetailTable" var="saleDetail"
-							value="#{salesBean.saleLines}">
+							value="#{salesBean2.saleLines}" editable="true" editMode="row"
+							editingRow="true" rowStyleClass="primefacesRow">
 
 							<p:column headerText="Código">
 								<p:cellEditor>
@@ -87,18 +115,11 @@
 										<h:outputText value="#{saleDetail.barcode}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:inputText value="#{saleDetail.barcode}" style="width:100%" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-							<p:column headerText="Cantidad">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{saleDetail.quantity}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{saleDetail.quantity}" style="width:100%" />
+										<p:inputText value="#{saleDetail.barcode}" style="width:100%">
+											<p:ajax event="blur"
+												update="saleDetailTable :form1:subtotal :form1:total"
+												listener="#{salesBean2.barcodeChanged(saleDetail)}" />
+										</p:inputText>
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
@@ -109,8 +130,20 @@
 										<h:outputText value="$ #{saleDetail.salePrice}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:inputText value="#{saleDetail.salePrice}"
-											style="width:100%" />
+										<h:outputText value="$ #{saleDetail.salePrice}" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Cantidad">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{saleDetail.quantity}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{saleDetail.quantity}" style="width:100%">
+											<f:ajax event="change" execute="@this" />
+										</p:inputText>
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
@@ -121,7 +154,9 @@
 										<h:outputText value="#{saleDetail.discount}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:inputText value="#{saleDetail.discount}" style="width:100%" />
+										<p:inputText value="#{saleDetail.discount}" style="width:100%">
+											<f:ajax event="change" execute="@this" />
+										</p:inputText>
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
@@ -132,26 +167,29 @@
 								<tr>
 									<td style="font-weight: bold;">Subtotal</td>
 									<td><h:outputText id="subtotal"
-											value="$ #{salesBean.strSubtotal}"></h:outputText></td>
+											value="$ #{salesBean2.strSubtotal}"></h:outputText></td>
 								</tr>
 								<tr>
 									<td style="font-weight: bold;">Total</td>
 									<td><h:outputText id="total"
-											value="$ #{salesBean.strTotal}"></h:outputText></td>
+											value="$ #{salesBean2.strTotal}"></h:outputText></td>
 								</tr>
 							</table>
 
 							<div class="clearBoth"></div>
 						</div>
 						<div style="margin-top: 20px; text-align: right;">
-							<p:commandButton type="button" onclick="rc()" value="Confirmar"
-								icon="ui-icon-refresh" />
+							<p:commandButton type="button"
+								onclick="PF('widBusqueda').show();" value="Confirmar" />
 						</div>
 					</div>
-					<div class="clearBoth"></div>
 				</div>
+				<div class="clearBoth"></div>
 			</div>
-
+			<p:dialog header="Búsqueda" widgetVar="widBusqueda" showEffect="fade"
+				hideEffect="fade" height="200" width="400">
+				<p:inputText value="#{salesBean2.busqueda}" placeholder="Búsqueda" />
+			</p:dialog>
 		</h:form>
 	</h:body>
 
