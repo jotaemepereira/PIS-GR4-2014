@@ -4,8 +4,8 @@ import interfaces.IFacturacion;
 
 public class FabricaSistema {
 	
-	public static MSistemaControlador getMSistema() {
-		return new MSistemaControlador();
+	public static SistemaControlador getMSistema() {
+		return new SistemaControlador();
 	}
 
 }

@@ -6,7 +6,7 @@ import interfaces.*;
 public class FabricaLogica {
 
 	public static IFacturacion getIFacturacion() {
-		return new MFacturacionControlador();
+		return new FacturacionControlador();
 	}
 	
 	public static IPersistence getIPersistence(){
@@ -14,6 +14,6 @@ public class FabricaLogica {
 	}
 
 	public static IStock getIStock(){
-		return new MStockControlador();
+		return new StockControlador();
 	}
 }
