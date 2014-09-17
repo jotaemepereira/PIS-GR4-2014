@@ -3,10 +3,10 @@ package controladores;
 import persistencia.PersistenceController;
 import interfaces.*;
 
-public class Fabric {
+public class FabricaLogica {
 
-	public static IBIlling getIBilling() {
-		return new BillingController();
+	public static IFacturacion getIFacturacion() {
+		return new MFacturacionControlador();
 	}
 	
 	public static IPersistence getIPersistence(){
@@ -14,6 +14,6 @@ public class Fabric {
 	}
 
 	public static IStock getIStock(){
-		return new StockController();
+		return new MStockControlador();
 	}
 }

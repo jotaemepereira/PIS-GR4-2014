@@ -7,10 +7,10 @@ import java.util.List;
 import datatypes.DTSaleDetail;
 import model.Sale;
 import model.SaleDetail;
-import interfaces.IBIlling;
+import interfaces.IFacturacion;
 import interfaces.IPersistence;
 
-public class BillingController implements IBIlling {
+public class MFacturacionControlador implements IFacturacion {
 
 	@Override
 	public void newSale(int clientId, int userId, List<DTSaleDetail> dtLines,
@@ -35,7 +35,7 @@ public class BillingController implements IBIlling {
 			s.setSaleType(saleType);
 			s.setUserId(userId);
 			
-			IPersistence ip = Fabric.getIPersistence();
+			IPersistence ip = FabricaLogica.getIPersistence();
 			ip.insertSale(s);
 			
 		} catch (Exception e) {

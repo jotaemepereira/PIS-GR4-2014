@@ -9,11 +9,11 @@ import java.util.List;
 import datatypes.DTProduct;
 import model.Product;
 
-public class StockController implements IStock {
+public class MStockControlador implements IStock {
 
 	@Override
 	public List<DTProduct> getProducts(String description) {
-		IPersistence ip = Fabric.getIPersistence();
+		IPersistence ip = FabricaLogica.getIPersistence();
 
 		List<Product> pList = ip.getProducts(description);
 		List<DTProduct> retList = new ArrayList<DTProduct>();
@@ -29,7 +29,7 @@ public class StockController implements IStock {
 
 	@Override
 	public DTProduct getProduct(String barcode) {
-		IPersistence ip = Fabric.getIPersistence();
+		IPersistence ip = FabricaLogica.getIPersistence();
 		Product p = ip.getProduct(barcode);
 		if (p != null) {
 			DTProduct dt = new DTProduct();
