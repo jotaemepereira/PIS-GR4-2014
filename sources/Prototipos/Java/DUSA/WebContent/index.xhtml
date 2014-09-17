@@ -28,7 +28,10 @@
 							<div class="hnav_item_text">Caja</div>
 							<div class="clearBoth"></div>
 						</div>
-					</a> <a href="#2">
+					</a>
+					<p:commandLink ajax="true"
+						actionListener="#{navBean.navAPagina('/stock/listado.xhtml')}"
+						update="@form">
 						<div class="hnav_item" style="margin-top: -1px;">
 							<div class="hnav_item_img">
 								<img src="Images/stock.png" alt="" />
@@ -36,7 +39,8 @@
 							<div class="hnav_item_text">Stock</div>
 							<div class="clearBoth"></div>
 						</div>
-					</a> <a href="#3">
+					</p:commandLink>
+					<a href="#3">
 						<div class="hnav_item" style="margin-top: -1px;">
 							<div class="hnav_item_img">
 								<img src="Images/clientes.png" alt="" />
@@ -44,7 +48,10 @@
 							<div class="hnav_item_text">Cliente</div>
 							<div class="clearBoth"></div>
 						</div>
-					</a> <a href="#4">
+					</a>
+					<p:commandLink ajax="true"
+						actionListener="#{navBean.navAPagina('/ventas/nueva.xhtml')}"
+						update="@form">
 						<div class="hnav_item" style="margin-top: -1px;">
 							<div class="hnav_item_img">
 								<img src="Images/ventas.png" alt="" />
@@ -52,7 +59,7 @@
 							<div class="hnav_item_text">Ventas</div>
 							<div class="clearBoth"></div>
 						</div>
-					</a>
+					</p:commandLink>
 					<div class="clearBoth"></div>
 				</div>
 				<div class="login">
@@ -75,118 +82,20 @@
 
 				</div>
 			</div>
-			<div>
-				<div class="vpanel_left">
-
-					<div class="vnav">
-						<a href="index.jsf">
-							<div class="vnav_item" style="margin-top: -1px;">
-								<div class="vnav_item_text">Item 1</div>
-								<div class="clearBoth"></div>
-							</div>
-						</a> <a href="#">
-							<div class="vnav_item vnav_item_selected"
-								style="margin-top: -1px;">
-								<div class="vnav_item_text">Item 2</div>								<div class="clearBoth"></div>
-							</div>
-						</a> <a href="clientes.jsf">
-							<div class="vnav_item" style="margin-top: -1px;">
-								<div class="vnav_item_text">Item 3</div>
-								<div class="clearBoth"></div>
-							</div>
-						</a> <a href="equipos.jsf">
-							<div class="vnav_item" style="margin-top: -1px;">
-								<div class="vnav_item_text">Item 4</div>
-								<div class="clearBoth"></div>
-							</div>
-						</a>
-
-					</div>
-				</div>
-				<div class="vpanel_right">
-					<div class="wrapper">
-						<p:dataTable id="saleDetailTable" var="saleDetail"
-							value="#{salesBean2.saleLines}" editable="true" editMode="row"
-							editingRow="true" rowStyleClass="primefacesRow">
-
-							<p:column headerText="Código">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{saleDetail.barcode}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{saleDetail.barcode}" style="width:100%">
-											<p:ajax event="blur"
-												update="saleDetailTable :form1:subtotal :form1:total"
-												listener="#{salesBean2.barcodeChanged(saleDetail)}" />
-										</p:inputText>
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-							<p:column headerText="Precio">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="$ #{saleDetail.salePrice}" />
-									</f:facet>
-									<f:facet name="input">
-										<h:outputText value="$ #{saleDetail.salePrice}" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-							<p:column headerText="Cantidad">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{saleDetail.quantity}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{saleDetail.quantity}" style="width:100%">
-											<f:ajax event="change" execute="@this" />
-										</p:inputText>
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-							<p:column headerText="Descuento">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{saleDetail.discount}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{saleDetail.discount}" style="width:100%">
-											<f:ajax event="change" execute="@this" />
-										</p:inputText>
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-						</p:dataTable>
-						<div>
-							<table style="float: right; text-align: right; width: 250px;">
-								<tr>
-									<td style="font-weight: bold;">Subtotal</td>
-									<td><h:outputText id="subtotal"
-											value="$ #{salesBean2.strSubtotal}"></h:outputText></td>
-								</tr>
-								<tr>
-									<td style="font-weight: bold;">Total</td>
-									<td><h:outputText id="total"
-											value="$ #{salesBean2.strTotal}"></h:outputText></td>
-								</tr>
-							</table>
-
-							<div class="clearBoth"></div>
-						</div>
-						<div style="margin-top: 20px; text-align: right;">
-							<p:commandButton type="button"
-								onclick="PF('widBusqueda').show();" value="Confirmar" />
-						</div>
-					</div>
-				</div>
-				<div class="clearBoth"></div>
+			<div class="content">
+				<ui:include src="#{navBean.page}" />
 			</div>
-			
+			<p:ajaxStatus
+				style="width:64px;height:64px;position:fixed;right:5px;bottom:5px"
+				id="ajaxStatusPanel0">
+				<f:facet name="start">
+					<h:graphicImage value="Images/ajax_loading_big.gif" />
+				</f:facet>
+
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
 		</h:form>
 	</h:body>
 

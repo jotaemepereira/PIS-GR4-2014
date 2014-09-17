@@ -1,0 +1,112 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<div class="vpanel_left">
+
+		<div class="vnav">
+			<a href="index.jsf">
+				<div class="vnav_item" style="margin-top: -1px;">
+					<div class="vnav_item_text">LISTADO!!!</div>
+					<div class="clearBoth"></div>
+				</div>
+			</a> <a href="#">
+				<div class="vnav_item vnav_item_selected" style="margin-top: -1px;">
+					<div class="vnav_item_text">Item 2</div>
+					<div class="clearBoth"></div>
+				</div>
+			</a> <a href="clientes.jsf">
+				<div class="vnav_item" style="margin-top: -1px;">
+					<div class="vnav_item_text">Item 3</div>
+					<div class="clearBoth"></div>
+				</div>
+			</a> <a href="equipos.jsf">
+				<div class="vnav_item" style="margin-top: -1px;">
+					<div class="vnav_item_text">Item 4</div>
+					<div class="clearBoth"></div>
+				</div>
+			</a>
+
+		</div>
+	</div>
+	<div class="vpanel_right">
+		<div class="wrapper">
+			<p:dataTable id="saleDetailTable" var="saleDetail" editable="true"
+				editMode="row" editingRow="true" rowStyleClass="primefacesRow">
+
+				<p:column headerText="Código">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="" style="width:100%">
+							</p:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Precio">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="$ " />
+						</f:facet>
+						<f:facet name="input">
+							<h:outputText value="$ " />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Cantidad">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="" style="width:100%">
+								<f:ajax event="change" execute="@this" />
+							</p:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Descuento">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="" style="width:100%">
+								<f:ajax event="change" execute="@this" />
+							</p:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+			</p:dataTable>
+			<div>
+				<table style="float: right; text-align: right; width: 250px;">
+					<tr>
+						<td style="font-weight: bold;">Subtotal</td>
+						<td><h:outputText id="subtotal"
+								value="$ "></h:outputText></td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;">Total</td>
+						<td><h:outputText id="total" value="$ "></h:outputText></td>
+					</tr>
+				</table>
+
+				<div class="clearBoth"></div>
+			</div>
+			<div style="margin-top: 20px; text-align: right;">
+				<p:commandButton type="button" onclick="PF('widBusqueda').show();"
+					value="Confirmar" />
+			</div>
+		</div>
+	</div>
+	<div class="clearBoth"></div>
+
+</ui:composition>

@@ -31,6 +31,11 @@ table {
 	border-bottom: 1px solid #c0c0c0;
 }
 
+.content{
+	margin-top: 10px;
+	height: 500px;
+}
+
 .login {
 	position: absolute;
 	top: 18px;
