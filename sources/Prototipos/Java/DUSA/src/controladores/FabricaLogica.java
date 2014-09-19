@@ -16,4 +16,8 @@ public class FabricaLogica {
 	public static IStock getIStock(){
 		return new StockControlador();
 	}
+	
+	public static ICompras getInstanciaCompras(){
+		return new MCompras();
+	}
 }
