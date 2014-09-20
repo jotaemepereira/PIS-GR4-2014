@@ -6,6 +6,12 @@ public class LineaPedido {
 	int idArticulo;
 	int cantidad;
 	
+	public LineaPedido(int numeroArticulo, int idArticulo, int cantidad) {
+		super();
+		this.numeroArticulo = numeroArticulo;
+		this.idArticulo = idArticulo;
+		this.cantidad = cantidad;
+	}
 	public int getNumeroArticulo() {
 		return numeroArticulo;
 	}
