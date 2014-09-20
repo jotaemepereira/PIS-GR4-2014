@@ -18,10 +18,10 @@ public class FabricaLogica {
 	}
 	
 	public static ICompras getInstanciaCompras(){
-		return new MCompras();
+		return new ComprasControlador();
 	}
 	
 	public static IProveedores getInstanciaProveedores(){
-		return new MProveedores();
+		return new ProveedoresControlador();
 	}
 }

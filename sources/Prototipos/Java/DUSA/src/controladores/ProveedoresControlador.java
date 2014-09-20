@@ -3,7 +3,7 @@ package controladores;
 import model.Proveedor;
 import interfaces.IProveedores;
 
-public class MProveedores implements IProveedores {
+public class ProveedoresControlador implements IProveedores {
 	
 	@Override
 	public void altaProveedor(Proveedor proveedor) {
@@ -15,7 +15,7 @@ public class MProveedores implements IProveedores {
 		}
 		
 		// si los datos eran correctos, continuo a persistirlos
-		FabricaAcceso.getInstanciaProveedoresPersistencia().persistirProveedor(proveedor);
+		FabricaPersistencia.getInstanciaProveedoresPersistencia().persistirProveedor(proveedor);
 	}
 	
 }

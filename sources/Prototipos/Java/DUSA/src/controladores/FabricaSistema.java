@@ -9,6 +9,6 @@ public class FabricaSistema {
 	}
 
 	public static ISistema getISistema(){
-		return new MSistema();
+		return new SistemaControlador();
 	}
 }

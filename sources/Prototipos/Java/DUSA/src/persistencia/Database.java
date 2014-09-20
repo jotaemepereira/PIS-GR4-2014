@@ -38,7 +38,7 @@ public class Database {
     
     // Tabla de artículos
     private List<Articulo> products = new ArrayList<Articulo>();
-
+    
 	public List<Venta> getSales() {
 		return sales;
 	}
