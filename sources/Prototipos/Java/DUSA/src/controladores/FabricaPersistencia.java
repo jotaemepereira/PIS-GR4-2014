@@ -2,7 +2,7 @@ package controladores;
 
 import interfaces.IProveedoresPersistencia;
 import interfaces.IStockPersistencia;
-import persistencia.PProveedores;
+import persistencia.PProveedoresControlador;
 import persistencia.PStockControlador;
 
 public class FabricaPersistencia {
@@ -12,7 +12,7 @@ public class FabricaPersistencia {
 	}
 	
 	public static IProveedoresPersistencia getInstanciaProveedoresPersistencia(){
-		return new PProveedores();
+		return new PProveedoresControlador();
 	}
 
 }

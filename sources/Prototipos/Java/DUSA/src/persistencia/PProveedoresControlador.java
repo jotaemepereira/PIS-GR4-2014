@@ -3,7 +3,7 @@ package persistencia;
 import model.Proveedor;
 import interfaces.IProveedoresPersistencia;
 
-public class PProveedores implements IProveedoresPersistencia {
+public class PProveedoresControlador implements IProveedoresPersistencia {
 
 	@Override
 	public void persistirProveedor(Proveedor proveedor) {
