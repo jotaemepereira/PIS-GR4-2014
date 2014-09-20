@@ -65,53 +65,70 @@ public class PersistenceController implements IPersistence {
 
 	public Date getUltimoPedido() {
 		//Codigo en la base para obtener el ultimo pedido
-		
-		return new Date(1410912000);
+		// TODO Auto-generated method stub
+				Date ret = null;
+				Connection c = null;
+				Statement stmt = null;
+				String query = "SELECT order_date FROM orders_dusa" +
+								" GROUP BY order_date" +
+								" ORDER BY order_date DESC" +
+								" LIMIT 1;";
+				try {
+					Class.forName("org.postgresql.Driver");
+					c = DriverManager
+							.getConnection("jdbc:postgresql://localhost:5432/dusa",
+									"postgres", "root");
+					c.setAutoCommit(false);
+					stmt = c.createStatement();
+					ResultSet rs = stmt.executeQuery(query);
+					//Obtengo la fecha
+					ret = rs.getDate("order_date");
+					rs.close();
+					stmt.close();
+					c.close();
+				} catch ( Exception e ) {
+					System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+					System.exit(0);
+				}
+				return ret;
 	}
 
 	@Override
 	public List<LineaPedido> obtenerArticulosDesde(Date fechaPedido) {
 		// TODO Auto-generated method stub
 		List<LineaPedido> ret = new ArrayList<LineaPedido>();
-		//Consulta para obtener todos los articulos vendidos desde una fecha
-		  {
-		       Connection c = null;
-		       Statement stmt = null;
-		       String query = "SELECT sd.product_id, p.product_number, SUM(sd.quantity)" +
-		    		   		  " FROM sales s" +
-		    		   		  " JOIN sale_details sd ON sd.sale_id = s.sale_id" +
-		    		   		  " JOIN products p ON p.product_id = sd.product_id" +
-		    		   		  " WHERE s.sale_date > " + fechaPedido.toString() +
-		       				  " GROUP BY sd.product_id, p.product_number;";
-		       
-		       try {
-		       Class.forName("org.postgresql.Driver");
-		         c = DriverManager
-		            .getConnection("jdbc:postgresql://localhost:5432/dusa",
-		            "postgres", "root");
-		         c.setAutoCommit(false);
-		         System.out.println("Opened database successfully");
+		Connection c = null;
+		Statement stmt = null;
+		String query = "SELECT sd.product_id, p.product_number, SUM(sd.quantity)" +
+				" FROM sales s" +
+				" JOIN sale_details sd ON sd.sale_id = s.sale_id" +
+				" JOIN products p ON p.product_id = sd.product_id" +
+				" WHERE s.sale_date > " + fechaPedido.toString() +
+				" GROUP BY sd.product_id, p.product_number;";
 
-		         stmt = c.createStatement();
-		         ResultSet rs = stmt.executeQuery(query);
-		         while ( rs.next() ) {
-		        	int numeroArticulo = rs.getInt("product_id");
-		        	int idArticulo = rs.getInt("product_name");
-		        	int cantidad = rs.getInt("cantidad");
-		        	LineaPedido lp = new LineaPedido(numeroArticulo, idArticulo, cantidad);
-		        	ret.add(lp);
-		            
-		         }
-		         rs.close();
-		         stmt.close();
-		         c.close();
-		       } catch ( Exception e ) {
-		         System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-		         System.exit(0);
-		       }
-		       System.out.println("Operation done successfully");
-		     }
-		  return ret;
+		try {
+			Class.forName("org.postgresql.Driver");
+			c = DriverManager
+					.getConnection("jdbc:postgresql://localhost:5432/dusa",
+							"postgres", "root");
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			while ( rs.next() ) {
+				int numeroArticulo = rs.getInt("product_id");
+				int idArticulo = rs.getInt("product_name");
+				int cantidad = rs.getInt("cantidad");
+				LineaPedido lp = new LineaPedido(numeroArticulo, idArticulo, cantidad);
+				ret.add(lp);
+			}
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch ( Exception e ) {
+			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+			System.exit(0);
+		}
+		return ret;
 	}
 
 
