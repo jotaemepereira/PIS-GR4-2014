@@ -1,9 +1,10 @@
 package controladores;
 
-import interfaces.IComprasPersistencia;
+import persistencia.PProveedores;
+import interfaces.IProveedoresPersistencia;
 
 public class FabricaAcceso {
-	public static IComprasPersistencia getInstanciaStockPersistencia(){
-		return new PStock();
+	public static IProveedoresPersistencia getInstanciaProveedoresPersistencia(){
+		return new PProveedores();
 	}
 }

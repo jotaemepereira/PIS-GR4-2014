@@ -1,6 +1,6 @@
 package controladores;
 
-import interfaces.IFacturacion;
+import interfaces.ISistema;
 
 public class FabricaSistema {
 	
@@ -8,4 +8,7 @@ public class FabricaSistema {
 		return new SistemaControlador();
 	}
 
+	public static ISistema getISistema(){
+		return new MSistema();
+	}
 }

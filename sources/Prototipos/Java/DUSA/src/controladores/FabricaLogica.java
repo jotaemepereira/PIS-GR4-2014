@@ -20,4 +20,8 @@ public class FabricaLogica {
 	public static ICompras getInstanciaCompras(){
 		return new MCompras();
 	}
+	
+	public static IProveedores getInstanciaProveedores(){
+		return new MProveedores();
+	}
 }
