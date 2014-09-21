@@ -9,7 +9,6 @@ public class Articulo {
 	private char tipoArticulo;
 	private String descripcion;
 	private int idProveedor;
-	private String idLinea;
 	private String clave1;
 	private String clave2;
 	private String clave3;
@@ -59,12 +58,6 @@ public class Articulo {
 	}
 	public void setIdProveedor(int idProveedor) {
 		this.idProveedor = idProveedor;
-	}
-	public String getIdLinea() {
-		return idLinea;
-	}
-	public void setIdLinea(String idLinea) {
-		this.idLinea = idLinea;
 	}
 	public String getClave1() {
 		return clave1;
