@@ -3,49 +3,50 @@ package model;
 import java.math.BigDecimal;
 
 public class LineaVenta {
-	private int saleId;
-	private int productId;
-	private BigDecimal salePrice;
-	private int quantity;
-	private BigDecimal discount;
+	private long ventaId;
+	private long productoId;
+	private BigDecimal precio;
+	private int cantidad;
+	private BigDecimal descuento;
 
-	public int getSaleId() {
-		return saleId;
+	public long getVentaId() {
+		return ventaId;
 	}
 
-	public void setSaleId(int saleId) {
-		this.saleId = saleId;
+	public void setVentaId(long ventaId) {
+		this.ventaId = ventaId;
 	}
 
-	public int getProductId() {
-		return productId;
+	public long getProductoId() {
+		return productoId;
 	}
 
-	public void setProductId(int productId) {
-		this.productId = productId;
+	public void setProductoId(long productoId) {
+		this.productoId = productoId;
 	}
 
-	public BigDecimal getSalePrice() {
-		return salePrice;
+	public BigDecimal getPrecio() {
+		return precio;
 	}
 
-	public void setSalePrice(BigDecimal salePrice) {
-		this.salePrice = salePrice;
+	public void setPrecio(BigDecimal precio) {
+		this.precio = precio;
 	}
 
-	public int getQuantity() {
-		return quantity;
+	public int getCantidad() {
+		return cantidad;
 	}
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
 	}
 
-	public BigDecimal getDiscount() {
-		return discount;
+	public BigDecimal getDescuento() {
+		return descuento;
 	}
 
-	public void setDiscount(BigDecimal discount) {
-		this.discount = discount;
+	public void setDescuento(BigDecimal descuento) {
+		this.descuento = descuento;
 	}
+
 }

@@ -1,7 +1,9 @@
 package controladores;
 
+import interfaces.IFacturacionPersistencia;
 import interfaces.IProveedoresPersistencia;
 import interfaces.IStockPersistencia;
+import persistencia.PFacturacionControlador;
 import persistencia.PProveedoresControlador;
 import persistencia.PStockControlador;
 
@@ -15,4 +17,8 @@ public class FabricaPersistencia {
 		return new PProveedoresControlador();
 	}
 
+	public static IFacturacionPersistencia getInstanciaFacturacionPersistencia(){
+		return new PFacturacionControlador();
+	}
+	
 }

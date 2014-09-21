@@ -15,4 +15,9 @@ public class Enumerados {
 	    private formasVenta(){
 	    }
 	}
+	
+	public class EstadoVenta {
+		public static final char PENDIENTE = 'P';
+	}
+	
 }
