@@ -18,19 +18,30 @@
 		<h:form id="form1">
 			<p:growl id="messages" showDetail="true" />
 			<ui:include src="../cabezal.xhtml" />
-<!-- 			Elegir uno de los siguientes dependiendo de la pagina que se vaya a hacer: -->
+			<!-- 			Elegir uno de los siguientes dependiendo de la pagina que se vaya a hacer: -->
 			<ui:include src="../menuVertical/caja.xhtml" />
 			<ui:include src="../menuVertical/clientes.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
 			<ui:include src="../menuVertical/ventas.xhtml" />
-<!--		-->
+			<!--		-->
 			<div class="vpanel_right">
 				<div class="wrapper">
-				
-<!-- 				CONTENIDO DE PAGINA -->
-				
+
+					<!-- 				CONTENIDO DE PAGINA -->
+
 				</div>
 			</div>
+			<p:ajaxStatus
+				style="width:64px;height:64px;position:fixed;right:5px;bottom:5px"
+				id="ajaxStatusPanel0">
+				<f:facet name="start">
+					<h:graphicImage value="Images/ajax_loading_big.gif" />
+				</f:facet>
+
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
 		</h:form>
 	</h:body>
 
