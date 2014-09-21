@@ -1,48 +1,73 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-    <h:form>
-	    <p:panel id="panel" header="Alta de proveedor">
-	 
-	        <p:messages id="msgs" />
-	 
-	        <h:panelGrid columns="3" cellpadding="5">
-	            <p:outputLabel for="RUT" value="RUT:" />
-	            <p:inputText id="RUT" value="#{proveedoresBean.RUT}" required="true" label="RUT:">
-	                <f:validateLength minimum="2" />
-	            </p:inputText>
-	            <p:message for="RUT" display="icon" />
-	 
-	            <p:outputLabel for="razonSocial" value="Razón social:" />
-	            <p:inputText id="razonSocial" value="#{proveedoresBean.razonSocial}" label="razonSocial" required="false">
-	            </p:inputText>
-	            <p:message for="razonSocial" display="icon" />
-	            
-	            <p:outputLabel for="telefono" value="Teléfono:" />
-	            <p:inputText id="telefono" value="#{proveedoresBean.telefono}" label="telefono" required="false">
-	                <f:validateLength minimum="8" />
-	            </p:inputText>
-	            <p:message for="telefono" display="icon" />
-	            
-	            <p:outputLabel for="direccion" value="Dirección:" />
-	            <p:inputText id="direccion" value="#{proveedoresBean.direccion}" label="direccion" required="false">
-	            </p:inputText>
-	            <p:message for="direccion" display="icon" />
-	            
-	            <p:outputLabel for="nombreComercial" value="Nombre comercial:" />
-	            <p:inputText id="nombreComercial" value="#{proveedoresBean.nombreComercial}" label="nombreComercial" required="true">
-	                <f:validateLength minimum="4" />
-	            </p:inputText>
-	            <p:message for="nombreComercial" display="icon" />
-	            
-	        </h:panelGrid>
-	 
-	        <p:commandButton value="Save" update="panel" actionListener="#{proveedoresBean.altaProveedor}" icon="ui-icon-check" />
-	    </p:panel>
-	</h:form>
-    
+<f:view contentType="text/html">
+	<h:head>
+		<link href="../CSS/General.css" rel="stylesheet" />
+		<f:facet name="first">
+			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+			<title>DUSA</title>
+		</f:facet>
+	</h:head>
+	<h:body>
+		<h:form id="form1">
+			<p:growl id="messages" showDetail="true" />
+			<ui:include src="../cabezal.xhtml" />
+			<ui:include src="../menuVertical/stock.xhtml" />
+			<div class="vpanel_right">
+				<div class="wrapper">
+					<p:panel id="panel" header="Alta de proveedor">
+						<h:panelGrid columns="3" cellpadding="5">
+							<p:outputLabel for="RUT" value="RUT:" />
+							<p:inputText id="RUT" value="#{proveedoresBean.RUT}"
+								required="true" label="RUT:">
+								<f:validateLength minimum="2" />
+							</p:inputText>
+							<p:message for="RUT" display="icon" />
 
-</ui:composition>
+							<p:outputLabel for="razonSocial" value="Razón social:" />
+							<p:inputText id="razonSocial"
+								value="#{proveedoresBean.razonSocial}" label="razonSocial"
+								required="false">
+							</p:inputText>
+							<p:message for="razonSocial" display="icon" />
+
+							<p:outputLabel for="telefono" value="Teléfono:" />
+							<p:inputText id="telefono" value="#{proveedoresBean.telefono}"
+								label="telefono" required="false">
+								<f:validateLength minimum="8" />
+							</p:inputText>
+							<p:message for="telefono" display="icon" />
+
+							<p:outputLabel for="direccion" value="Dirección:" />
+							<p:inputText id="direccion" value="#{proveedoresBean.direccion}"
+								label="direccion" required="false">
+							</p:inputText>
+							<p:message for="direccion" display="icon" />
+
+							<p:outputLabel for="nombreComercial" value="Nombre comercial:" />
+							<p:inputText id="nombreComercial"
+								value="#{proveedoresBean.nombreComercial}"
+								label="nombreComercial" required="true">
+								<f:validateLength minimum="4" />
+							</p:inputText>
+							<p:message for="nombreComercial" display="icon" />
+
+						</h:panelGrid>
+
+						<p:commandButton value="Save" update="panel"
+							actionListener="#{proveedoresBean.altaProveedor}"
+							icon="ui-icon-check" />
+					</p:panel>
+				</div>
+			</div>
+		</h:form>
+	</h:body>
+
+</f:view>
+</html>

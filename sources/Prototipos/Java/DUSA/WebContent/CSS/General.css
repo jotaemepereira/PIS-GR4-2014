@@ -74,9 +74,6 @@ table {
 
 .wrapper {
 	margin-left: 220px;
-	background: #FFFFFF;
-	border: 1px solid #c0c0c0;
-	padding: 15px;
 }
 
 input[type="text"] {
@@ -94,12 +91,8 @@ table tr {
 }
 
 .vnav {
-	position: absolute;
-	top: 0;
-	left: 0;
 	width: 177px;
 	z-index: 2;
-	border-right: 1px solid #c9c9c9;
 }
 
 .vnav_item {
@@ -109,6 +102,7 @@ table tr {
 	width: 176px;
 	height: 39px;
 	background: url("../Images/vnav_item_bg.png") no-repeat;
+	margin-bottom: 10px;
 }
 
 .vnav_item_selected {
@@ -135,7 +129,7 @@ table tr {
 }*/
 .vnav_item_text {
 	float: left;
-	padding: 12px 5px 0 5px;
+	padding: 12px 5px 0 15px;
 	font-size: 14px;
 }
 
