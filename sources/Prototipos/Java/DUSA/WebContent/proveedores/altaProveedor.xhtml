@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:form>
+	    <p:panel id="panel" header="Alta de proveedor">
+	 
+	        <p:messages id="msgs" />
+	 
+	        <h:panelGrid columns="3" cellpadding="5">
+	            <p:outputLabel for="RUT" value="RUT:" />
+	            <p:inputText id="RUT" value="#{proveedoresBean.RUT}" required="true" label="RUT:">
+	                <f:validateLength minimum="2" />
+	            </p:inputText>
+	            <p:message for="RUT" display="icon" />
+	 
+	            <p:outputLabel for="razonSocial" value="Razón social:" />
+	            <p:inputText id="razonSocial" value="#{proveedoresBean.razonSocial}" label="razonSocial" required="false">
+	            </p:inputText>
+	            <p:message for="razonSocial" display="icon" />
+	            
+	            <p:outputLabel for="telefono" value="Teléfono:" />
+	            <p:inputText id="telefono" value="#{proveedoresBean.telefono}" label="telefono" required="false">
+	                <f:validateLength minimum="8" />
+	            </p:inputText>
+	            <p:message for="telefono" display="icon" />
+	            
+	            <p:outputLabel for="direccion" value="Dirección:" />
+	            <p:inputText id="direccion" value="#{proveedoresBean.direccion}" label="direccion" required="false">
+	            </p:inputText>
+	            <p:message for="direccion" display="icon" />
+	            
+	            <p:outputLabel for="nombreComercial" value="Nombre comercial:" />
+	            <p:inputText id="nombreComercial" value="#{proveedoresBean.nombreComercial}" label="nombreComercial" required="true">
+	                <f:validateLength minimum="4" />
+	            </p:inputText>
+	            <p:message for="nombreComercial" display="icon" />
+	            
+	        </h:panelGrid>
+	 
+	        <p:commandButton value="Save" update="panel" actionListener="#{proveedoresBean.altaProveedor}" icon="ui-icon-check" />
+	    </p:panel>
+	</h:form>
+    
+
+</ui:composition>

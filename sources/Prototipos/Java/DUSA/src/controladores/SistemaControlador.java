@@ -7,8 +7,8 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public void altaProveedor(Proveedor proveedor) {
-		// TODO Auto-generated method stub
-		
+		// TODO: chequeo permisos del usuario
+		FabricaLogica.getInstanciaProveedores().altaProveedor(proveedor);
 	}
 
 }
