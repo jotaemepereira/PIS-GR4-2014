@@ -62,12 +62,12 @@ public class ProveedoresBean implements Serializable {
 		FacesContext context = FacesContext.getCurrentInstance();
 		
 		if(String.valueOf(RUT).length() < 5){ // FIXME: averiguar largo ok
-			context.addMessage("RUT", new FacesMessage(FacesMessage.SEVERITY_ERROR, "RUT: Error de validación: se necesita un valor.", ""));
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "RUT: Error de validación: se necesita un valor.", ""));
 			return;
 		}
 		
 		if(nombreComercial.length() < 4){
-			context.addMessage("nombreComercial", new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre Comercial: Error de validación: se necesita un valor.", ""));
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre Comercial: Error de validación: se necesita un valor.", ""));
 			return;
 		}
 		
