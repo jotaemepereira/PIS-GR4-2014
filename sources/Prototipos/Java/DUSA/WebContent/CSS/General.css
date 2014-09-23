@@ -134,7 +134,7 @@ table tr {
 }
 
 .hnav {
-	width: 550px;
+	width: 800px;
 	margin: 0px auto;
 }
 
@@ -142,7 +142,7 @@ table tr {
 	border-bottom: 1px solid #d8d8d8;
 	box-shadow: 0 1px 0 0 #fafafb;
 	border: 1px solid #c9c9c9;
-	width: 125px;
+	width: 126px;
 	height: 39px;
 	float: left;
 	margin-right: 10px;
@@ -164,7 +164,7 @@ table tr {
 
 .hnav_item_img {
 	float: left;
-	width: 40px;
+	width: 30px;
 	padding: 5px 4px 0 4px;
 }
 
@@ -177,7 +177,7 @@ table tr {
 	padding: 12px 5px 0 5px;
 	font-size: 14px;
 	text-align: center;
-	width: 56px;
+	width: 78px;
 }
 
 .clearBoth {
