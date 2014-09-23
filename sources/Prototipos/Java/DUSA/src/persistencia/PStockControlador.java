@@ -4,9 +4,12 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.naming.NamingException;
 
 import model.Articulo;
 import model.LineaPedido;
@@ -16,8 +19,23 @@ public class PStockControlador implements IStockPersistencia {
 
 	@Override
 	public void persistirArticulo(Articulo articulo) {
-		// TODO Auto-generated method stub
-
+		try {
+			Connection c = Conexion.getConnection();
+			
+			// TODO Guardar los proveedores
+			
+			// TODO Guardar las presentaciones
+			
+			// TODO Guardar las drogas
+			
+			// TODO Guardar las acciones terapéuticas
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public List<Articulo> buscarArticulo(String descripcion){

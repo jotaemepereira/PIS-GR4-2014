@@ -15,6 +15,7 @@ import model.AccionTer;
 import model.Articulo;
 import model.Droga;
 import model.Presentacion;
+import model.Enumerados;
 import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
@@ -31,13 +32,10 @@ public class StockBean implements Serializable{
 	private long codigoIdentificador;
 	private Presentacion presentacion = new Presentacion();
 	private List<Presentacion> presentaciones = new ArrayList<Presentacion>();
-	private List<Presentacion> presentacionesSeleccionadas = new ArrayList<Presentacion>();
 	private Droga droga = new Droga();
 	private List<Droga> drogas = new ArrayList<Droga>();
-	private List<Droga> drogasSeleccionadas = new ArrayList<Droga>();
 	private AccionTer accionTer = new AccionTer();
 	private List<AccionTer> accionesTer = new ArrayList<AccionTer>();
-	private List<AccionTer> accionesTerSeleccionadas = new ArrayList<AccionTer>();
 	private List<DTFormasVenta> formasVenta = new ArrayList<DTFormasVenta>();
 	private int[] tiposIVA;
 	private List<DTLineaPedido> pedidos = new ArrayList<DTLineaPedido>();
@@ -80,13 +78,6 @@ public class StockBean implements Serializable{
 	public void setPresentaciones(List<Presentacion> presentaciones) {
 		this.presentaciones = presentaciones;
 	}
-	public List<Presentacion> getPresentacionesSeleccionadas() {
-		return presentacionesSeleccionadas;
-	}
-	public void setPresentacionesSeleccionadas(
-			List<Presentacion> presentacionesSeleccionadas) {
-		this.presentacionesSeleccionadas = presentacionesSeleccionadas;
-	}
 	public Droga getDroga() {
 		return droga;
 	}
@@ -99,12 +90,6 @@ public class StockBean implements Serializable{
 	public void setDrogas(List<Droga> drogas) {
 		this.drogas = drogas;
 	}
-	public List<Droga> getDrogasSeleccionadas() {
-		return drogasSeleccionadas;
-	}
-	public void setDrogasSeleccionadas(List<Droga> drogasSeleccionadas) {
-		this.drogasSeleccionadas = drogasSeleccionadas;
-	}
 	public AccionTer getAccionTer() {
 		return accionTer;
 	}
@@ -116,12 +101,6 @@ public class StockBean implements Serializable{
 	}
 	public void setAccionesTer(List<AccionTer> accionesTer) {
 		this.accionesTer = accionesTer;
-	}
-	public List<AccionTer> getAccionesTerSeleccionadas() {
-		return accionesTerSeleccionadas;
-	}
-	public void setAccionesTerSeleccionadas(List<AccionTer> accionesTerSeleccionadas) {
-		this.accionesTerSeleccionadas = accionesTerSeleccionadas;
 	}
 	public List<DTFormasVenta> getFormasVenta() {
 		return formasVenta;
@@ -171,8 +150,38 @@ public class StockBean implements Serializable{
 	}
 	
 	public void agregarProveedor(){
+		DTProveedor p = new DTProveedor();
+		p.setIdProveedor(proveedor.getIdProveedor());
+		p.setNombreComercial(proveedor.getNombreComercial());
+		p.setCodigoIdentificador(codigoIdentificador);
+		proveedoresSeleccionados.add(p);
 	}
 	
 	public void altaArticulo(){
+		FabricaSistema.getISistema().altaArticulo(articulo);
+	}
+	
+	public StockBean(){
+		DTProveedor p1 = new DTProveedor();
+		p1.setIdProveedor(1);
+		p1.setNombreComercial("DUSA");
+		proveedores.add(p1);
+			
+		DTFormasVenta fv = new DTFormasVenta();
+		fv.setFormaVenta(model.Enumerados.formasVenta.ventaLibre);
+		fv.setDescripcion("Venta libre");
+		formasVenta.add(fv);
+		fv = new DTFormasVenta();
+		fv.setFormaVenta(model.Enumerados.formasVenta.controlado);
+		fv.setDescripcion("Controlado");
+		formasVenta.add(fv);
+		fv = new DTFormasVenta();
+		fv.setFormaVenta(model.Enumerados.formasVenta.bajoReceta);
+		fv.setDescripcion("Bajo receta");
+		formasVenta.add(fv);
+		fv = new DTFormasVenta();
+		fv.setFormaVenta(model.Enumerados.formasVenta.controlMedico);
+		fv.setDescripcion("Control médico");
+		formasVenta.add(fv);
 	}
 }
