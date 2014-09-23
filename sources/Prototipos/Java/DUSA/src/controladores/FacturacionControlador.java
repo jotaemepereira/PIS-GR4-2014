@@ -23,6 +23,7 @@ public class FacturacionControlador implements IFacturacion {
 		// TODO Auto-generated method stub
 		
 	}
+	
 
 	
 }
