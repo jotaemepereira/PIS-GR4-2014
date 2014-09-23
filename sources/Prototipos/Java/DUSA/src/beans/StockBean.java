@@ -10,11 +10,13 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
+import controladores.FabricaSistema;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
 import model.Presentacion;
 import datatypes.DTFormasVenta;
+import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
 
 @ManagedBean
@@ -22,7 +24,6 @@ import datatypes.DTProveedor;
 public class StockBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	
 	private Articulo articulo = new Articulo();
 	private DTProveedor proveedor = new DTProveedor();
 	private List<DTProveedor> proveedores = new ArrayList<DTProveedor>();
@@ -39,6 +40,8 @@ public class StockBean implements Serializable{
 	private List<AccionTer> accionesTerSeleccionadas = new ArrayList<AccionTer>();
 	private List<DTFormasVenta> formasVenta = new ArrayList<DTFormasVenta>();
 	private int[] tiposIVA;
+
+	
 	public Articulo getArticulo() {
 		return articulo;
 	}
@@ -138,5 +141,9 @@ public class StockBean implements Serializable{
 	}
 	public void setProveedoresSeleccionados(List<DTProveedor> proveedoresSeleccionados) {
 		this.proveedoresSeleccionados = proveedoresSeleccionados;
+	}
+	
+	public List<DTLineaPedido> pedidoAutomaticoVentas() {
+		return FabricaSistema.getISistema().pedidoAutomaticoVentas();
 	}
 }
