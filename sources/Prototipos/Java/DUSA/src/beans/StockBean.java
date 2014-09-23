@@ -139,4 +139,10 @@ public class StockBean implements Serializable{
 	public void setProveedoresSeleccionados(List<DTProveedor> proveedoresSeleccionados) {
 		this.proveedoresSeleccionados = proveedoresSeleccionados;
 	}
+	
+	public void agregarProveedor(){
+	}
+	
+	public void altaArticulo(){
+	}
 }
