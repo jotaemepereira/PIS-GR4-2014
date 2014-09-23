@@ -7,10 +7,9 @@ import datatypes.DTVenta;
 
 public class VentaBean {
 	     
-private String descripcion;
+private String descripcion = "probandooooooooooo";
 private DTVenta Venta = new DTVenta();
-private List<DTVenta> Ventas = new ArrayList<DTVenta>();
-
+private List<DTVenta> lineasVenta = new ArrayList<DTVenta>();
 
 
 public String getDescripcion() {
@@ -27,15 +26,7 @@ public void init(Integer size) {
     for(int i = 0 ; i < size ; i++) {
         list.add(null);
     }
-    setVentas(list);
-}
-
-public List<DTVenta> getVentas() {
-	return Ventas;
-}
-
-public void setVentas(List<DTVenta> ventas) {
-	Ventas = ventas;
+    setLineasVenta(list);
 }
 
 public DTVenta getVenta() {
@@ -44,6 +35,14 @@ public DTVenta getVenta() {
 
 public void setVenta(DTVenta venta) {
 	Venta = venta;
+}
+
+public List<DTVenta> getLineasVenta() {
+	return lineasVenta;
+}
+
+public void setLineasVenta(List<DTVenta> lineasVenta) {
+	this.lineasVenta = lineasVenta;
 }
 
 

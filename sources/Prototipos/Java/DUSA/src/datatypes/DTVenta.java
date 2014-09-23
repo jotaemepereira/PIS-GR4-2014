@@ -8,7 +8,7 @@ public class DTVenta implements Serializable {
 	private String nombre;
 	private String presentacion;
 	private String principioActivo;
-	private String descripcion = "probando probando probando";
+	private String descripcion;
 	private String concentracion;
 	private String laboratorio;
 	private String barcode;
