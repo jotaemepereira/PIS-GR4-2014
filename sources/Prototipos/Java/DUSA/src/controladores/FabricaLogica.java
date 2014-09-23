@@ -1,6 +1,5 @@
 package controladores;
 
-import persistencia.PersistenceController;
 import interfaces.*;
 
 public class FabricaLogica {
@@ -9,10 +8,6 @@ public class FabricaLogica {
 		return new FacturacionControlador();
 	}
 	
-	public static IPersistence getIPersistence(){
-		return new PersistenceController();
-	}
-
 	public static IStock getIStock(){
 		return new StockControlador();
 	}
