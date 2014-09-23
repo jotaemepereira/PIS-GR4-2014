@@ -1,5 +1,8 @@
 package controladores;
 
+import java.util.List;
+
+import datatypes.DTLineaPedido;
 import model.Proveedor;
 import interfaces.ISistema;
 
@@ -11,8 +14,8 @@ public class SistemaControlador implements ISistema {
 		FabricaLogica.getInstanciaProveedores().altaProveedor(proveedor);
 	}
 	
-	public void pedidoAutomaticoVentas() {
-		FabricaLogica.getIStock().pedidoPorVentas();
+	public List<DTLineaPedido> pedidoAutomaticoVentas() {
+		return FabricaLogica.getIStock().pedidoPorVentas();
 	}
 
 }
