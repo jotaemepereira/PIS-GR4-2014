@@ -26,6 +26,7 @@ public class StockBean implements Serializable{
 	private Articulo articulo = new Articulo();
 	private DTProveedor proveedor = new DTProveedor();
 	private List<DTProveedor> proveedores = new ArrayList<DTProveedor>();
+	private List<DTProveedor> proveedoresSeleccionados = new ArrayList<DTProveedor>();
 	private long codigoIdentificador;
 	private Presentacion presentacion = new Presentacion();
 	private List<Presentacion> presentaciones = new ArrayList<Presentacion>();
@@ -131,5 +132,11 @@ public class StockBean implements Serializable{
 	}
 	public void setCodigoIdentificador(long codigoIdentificador) {
 		this.codigoIdentificador = codigoIdentificador;
+	}
+	public List<DTProveedor> getProveedoresSeleccionados() {
+		return proveedoresSeleccionados;
+	}
+	public void setProveedoresSeleccionados(List<DTProveedor> proveedoresSeleccionados) {
+		this.proveedoresSeleccionados = proveedoresSeleccionados;
 	}
 }

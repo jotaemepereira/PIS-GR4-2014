@@ -27,17 +27,23 @@
 						    <p:row>
 						    	<p:column>
 						    		<p:outputLabel for="tipoArticulo" value="Tipo de Artículo:" />
+							    </p:column>	
+							    <p:column>
 							    	<p:inputText id="tipoArticulo" value="#{stockBean.articulo.tipoArticulo}"/>
 							    </p:column>					    
 							    <p:column>
 							    	<p:outputLabel for="descripcion" value="Descripción:" />
+						    	</p:column>
+							    <p:column>
 							    	<p:inputText id="descripcion" value="#{stockBean.articulo.descripcion}"/>
 						    	</p:column>
 						    </p:row>
 						    
 						    <p:row>
 						    	<p:column>
-								    <p:outputLabel for="proveedor" value="Proveedor:" />					 
+								    <p:outputLabel for="proveedor" value="Proveedor:" />
+								</p:column>
+								<p:column>
 							        <p:selectOneMenu id="proveedor" value="#{stockBean.proveedor}"
 							        			filter="true" filterMatchMode="contains" >
 							            <f:selectItem itemLabel="Seleccione proveedor" itemValue="-1" />
@@ -46,13 +52,35 @@
 						    	</p:column>
 						    	<p:column>   	
 						       		<p:outputLabel for="codigoIdentificador" value="Código identificador:" />
+							    </p:column>
+							    <p:column>	
 							    	<p:inputText id="codigoIdentificador" value="#{stockBean.codigoIdentificador}"/>
+							    </p:column>
+							    <p:column>
+							    	Agregar
 							    </p:column>
 					       	</p:row>
 					       	
-					       	<p:column>
-						       	<p:outputLabel for="presentaciones" value="Presentaciones:" />
-							    <p:selectManyMenu id="presentaciones" value="#{stockBean.presentacionesSeleccionadas}"
+					       	<p:row>
+					       		<p:column colspan="4">
+									<p:dataTable var="proveedor" value="#{stockBean.proveedoresSeleccionados}">
+									    <p:column headerText="Nombre comercial">
+									        <h:outputText value="#{proveedor.nombreComercial}" />
+									    </p:column>
+									 
+									    <p:column headerText="Código identificador">
+									        <h:outputText value="#{proveedor.codigoIdentificador}" />
+									    </p:column>
+									 </p:dataTable>
+								 </p:column>
+					       	</p:row>
+					       	
+					       	<p:row>
+					       		<p:column>
+					       			<p:outputLabel for="presentaciones" value="Presentaciones:" />
+					       		</p:column>
+					       		<p:column>
+					       			<p:selectManyMenu id="presentaciones" value="#{stockBean.presentacionesSeleccionadas}"
 				                          var="p" filter="true" filterMatchMode="contains" showCheckbox="true">
 						            <f:selectItems value="#{stockBean.presentaciones}" var="presentacion" itemLabel="#{presentacion.descripcion}" itemValue="#{presentacion.idPresentacion}" />
 						 
@@ -60,9 +88,12 @@
 						                <h:outputText value="#{p.descripcion}" />
 						            </p:column>
 						        </p:selectManyMenu>
-							    
-							    <p:outputLabel for="drogas" value="Drogas:" />
-							    <p:selectManyMenu id="drogas" value="#{stockBean.drogasSeleccionadas}"
+					       		</p:column>
+					       		<p:column>
+					       			<p:outputLabel for="drogas" value="Drogas:" />
+					       		</p:column>
+					       		<p:column>
+					       			<p:selectManyMenu id="drogas" value="#{stockBean.drogasSeleccionadas}"
 				                          var="d" filter="true" filterMatchMode="contains" showCheckbox="true">
 						            <f:selectItems value="#{stockBean.drogas}" var="droga" itemLabel="#{droga.descripcion}" itemValue="#{droga.idDroga}" />
 						 
@@ -70,60 +101,99 @@
 						                <h:outputText value="#{d.descripcion}" />
 						            </p:column>
 						        </p:selectManyMenu>
-						       	
-						       	<p:outputLabel for="accionesTer" value="Acciones Terapéuticas:" />
-							    <p:selectManyMenu id="accionesTer" value="#{stockBean.accionesTerSeleccionadas}"
-				                          var="a" filter="true" filterMatchMode="contains" showCheckbox="true">
-						            <f:selectItems value="#{stockBean.accionesTer}" var="accionTer" itemLabel="#{accionTer.descripcion}" itemValue="#{accionTer.idAccionTer}" />
-						 
-						            <p:column>
-						                <h:outputText value="#{a.descripcion}" />
-						            </p:column>
-						        </p:selectManyMenu>
-						       	
-						       	<p:outputLabel for="psicofarmaco" value="Es psicofármaco:" />
-	       						<p:selectBooleanCheckbox id="psicofarmaco" value="#{stockBean.articulo.esPsicofarmaco}" />
-	       						
-	       						<p:outputLabel for="formaVenta" value="Forma de venta:" />
-						        <p:selectOneMenu id="formaVenta" value="#{stockBean.articulo.codigoVenta}">
-						            <f:selectItem itemLabel="Seleccione forma de venta" itemValue="-1" />
-						            <f:selectItems value="#{stockBean.formasVenta}" />
-						        </p:selectOneMenu>
-						        
-						        <p:outputLabel for="estupefaciente" value="Es estupefaciente:" />
-	       						<p:selectBooleanCheckbox id="estupefaciente" value="#{stockBean.articulo.esEstupefaciente}" />
-	       						
-	       						<p:outputLabel for="costoLista" value="Costo de lista ($):" />                  
-					            <p:inputText id="costoLista" value="#{stockBean.articulo.costoLista}" converterMessage="Dato Inválido.">
-					                <f:convertNumber type="currency" currencySymbol="$"/>
-					            </p:inputText>
-					            <p:message for="costoLista" />
-	       						
-	       						<p:outputLabel for="costoReal" value="Costo real ($):" />                  
-					            <p:inputText id="costoReal" value="#{stockBean.articulo.ultimoCosto}" converterMessage="Dato Inválido.">
-					                <f:convertNumber type="currency" currencySymbol="$"/>
-					            </p:inputText>
-					            <p:message for="costoReal" />
-	       						
-	       						<p:outputLabel for="precioPublico" value="Precio público ($):" />                  
-					            <p:inputText id="precioPublico" value="#{stockBean.articulo.precioUnitario}" converterMessage="Dato Inválido.">
-					                <f:convertNumber type="currency" currencySymbol="$"/>
-					            </p:inputText>
-					            <p:message for="precioPublico" />
-					         
-					         	<p:outputLabel for="precioVenta" value="Precio de venta ($):" />                  
-					            <p:inputText id="precioVenta" value="#{stockBean.articulo.precioVenta}" converterMessage="Dato Inválido.">
-					                <f:convertNumber type="currency" currencySymbol="$"/>
-					            </p:inputText>
-					            <p:message for="precioVenta" />
-					            
-					            <p:outputLabel for="tipoIVA" value="Tipo de IVA:" />					 
-						        <p:selectOneMenu id="tipoIVA" value="#{stockBean.articulo.tipoIva}">
-						            <f:selectItem itemLabel="Seleccione tipo de IVA" itemValue="-1" />
-						            <f:selectItems value="#{stockBean.tiposIVA}" />
-						        </p:selectOneMenu>
-						    </p:column>
-						    
+					       		</p:column>
+					       		<p:column>
+					       			<p:outputLabel for="accionesTer" value="Acciones Terapéuticas:" />
+					       		</p:column>
+					       		<p:column>
+						       		<p:selectManyMenu id="accionesTer" value="#{stockBean.accionesTerSeleccionadas}"
+					                          var="a" filter="true" filterMatchMode="contains" showCheckbox="true">
+							            <f:selectItems value="#{stockBean.accionesTer}" var="accionTer" itemLabel="#{accionTer.descripcion}" itemValue="#{accionTer.idAccionTer}" />
+							 
+							            <p:column>
+							                <h:outputText value="#{a.descripcion}" />
+							            </p:column>
+							        </p:selectManyMenu>
+					       		</p:column>						       	
+					       	</p:row>
+					       	
+							<p:row>
+								<p:column>
+									<p:outputLabel for="psicofarmaco" value="Es psicofármaco:" />
+								</p:column>
+								<p:column>
+									<p:selectBooleanCheckbox id="psicofarmaco" value="#{stockBean.articulo.esPsicofarmaco}" />
+								</p:column>
+								<p:column>
+									<p:outputLabel for="estupefaciente" value="Es estupefaciente:" />
+								</p:column>
+								<p:column>
+									<p:selectBooleanCheckbox id="estupefaciente" value="#{stockBean.articulo.esEstupefaciente}" />
+								</p:column>
+								<p:column>
+									<p:outputLabel for="formaVenta" value="Forma de venta:" />
+								</p:column>
+								<p:column>
+									<p:selectOneMenu id="formaVenta" value="#{stockBean.articulo.codigoVenta}">
+							            <f:selectItem itemLabel="Seleccione forma de venta" itemValue="-1" />
+							            <f:selectItems value="#{stockBean.formasVenta}" />
+							        </p:selectOneMenu>
+								</p:column>
+							</p:row>						       	
+							
+							<p:row>
+								<p:column>
+									<p:outputLabel for="costoLista" value="Costo de lista ($):" />
+								</p:column>
+								<p:column>
+									<p:inputText id="costoLista" value="#{stockBean.articulo.costoLista}" converterMessage="Dato Inválido.">
+					                	<f:convertNumber type="currency" currencySymbol="$"/>
+					            	</p:inputText>
+					            	<p:message for="costoLista" />
+								</p:column>
+								<p:column>
+									<p:outputLabel for="costoReal" value="Costo real ($):" />
+								</p:column>
+								<p:column>
+									<p:inputText id="costoReal" value="#{stockBean.articulo.ultimoCosto}" converterMessage="Dato Inválido.">
+					                	<f:convertNumber type="currency" currencySymbol="$"/>
+					            	</p:inputText>
+					            	<p:message for="costoReal" />
+								</p:column>
+							</p:row>
+	       						                  
+							<p:row>
+								<p:column>
+									<p:outputLabel for="precioPublico" value="Precio público ($):" />
+								</p:column>
+								<p:column>
+									<p:inputText id="precioPublico" value="#{stockBean.articulo.precioUnitario}" converterMessage="Dato Inválido.">
+					                	<f:convertNumber type="currency" currencySymbol="$"/>
+					            	</p:inputText>
+					            	<p:message for="precioPublico" />
+								</p:column>
+								<p:column>
+									<p:outputLabel for="precioVenta" value="Precio de venta ($):" />
+								</p:column>
+								<p:column>
+									<p:inputText id="precioVenta" value="#{stockBean.articulo.precioVenta}" converterMessage="Dato Inválido.">
+					                	<f:convertNumber type="currency" currencySymbol="$"/>
+					            	</p:inputText>
+					            	<p:message for="precioVenta" />
+								</p:column>
+							</p:row>
+							
+							<p:row>
+								<p:column>
+									<p:outputLabel for="tipoIVA" value="Tipo de IVA:" />
+								</p:column>
+								<p:column>
+									<p:selectOneMenu id="tipoIVA" value="#{stockBean.articulo.tipoIva}">
+							            <f:selectItem itemLabel="Seleccione tipo de IVA" itemValue="-1" />
+							            <f:selectItems value="#{stockBean.tiposIVA}" />
+							        </p:selectOneMenu>
+								</p:column>
+							</p:row>					        
 						</h:panelGrid>
 					</p:panel>
 				</div>
