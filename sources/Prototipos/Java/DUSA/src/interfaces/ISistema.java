@@ -5,5 +5,6 @@ import model.Proveedor;
 public interface ISistema {
 	
 	public void altaProveedor(Proveedor proveedor);
+	public void pedidoAutomaticoVentas();
 
 }

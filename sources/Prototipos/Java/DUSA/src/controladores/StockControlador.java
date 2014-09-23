@@ -10,11 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import persistencia.PStockControlador;
+import datatypes.DTLineaPedido;
 import datatypes.DTProduct;
 import model.Articulo;
 import controladores.FabricaPersistencia;
 
 public class StockControlador implements IStock {
+
 
 
 	@Override
@@ -37,19 +39,30 @@ public class StockControlador implements IStock {
 
 	}
 
-	public void pedidoPorVentas() {
+	public List<DTLineaPedido> pedidoPorVentas() {
 		IStockPersistencia isp = FabricaPersistencia.getIStockPersistencia();
+		
 		Date fechaPedido;
-		List<LineaPedido> articulos;
+		List<LineaPedido> articulos = new ArrayList<LineaPedido>();
+		List<DTLineaPedido> ret = new ArrayList<DTLineaPedido>();
 
 		try {
-			//Obtengo la fecha del ultimo pedido
 			fechaPedido = isp.getUltimoPedido();
-			//Obtengo todas las ventas que se hicieron desde el ultimo pedido
 			articulos = isp.obtenerArticulosDesde(fechaPedido); 
 		}
 		catch (Exception e) {
+			//Que hago con las exceptions?
 		}
-
+		
+		if (!articulos.isEmpty())
+			for (LineaPedido p : articulos) {
+				DTLineaPedido dt = new DTLineaPedido();
+				dt.setCantidad(p.getCantidad());
+				dt.setIdArticulo(p.getIdArticulo());
+				dt.setNumeroArticulo(p.getNumeroArticulo());
+				ret.add(dt);
+			}
+		return ret;
+		
 	}
 }

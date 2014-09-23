@@ -10,5 +10,9 @@ public class SistemaControlador implements ISistema {
 		// TODO: chequeo permisos del usuario
 		FabricaLogica.getInstanciaProveedores().altaProveedor(proveedor);
 	}
+	
+	public void pedidoAutomaticoVentas() {
+		FabricaLogica.getIStock().pedidoPorVentas();
+	}
 
 }
