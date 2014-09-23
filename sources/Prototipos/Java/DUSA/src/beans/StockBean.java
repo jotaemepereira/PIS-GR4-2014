@@ -40,8 +40,16 @@ public class StockBean implements Serializable{
 	private List<AccionTer> accionesTerSeleccionadas = new ArrayList<AccionTer>();
 	private List<DTFormasVenta> formasVenta = new ArrayList<DTFormasVenta>();
 	private int[] tiposIVA;
+	private List<DTLineaPedido> pedidos = new ArrayList<DTLineaPedido>();
+	private int iniciado;
 
 	
+	public List<DTLineaPedido> getPedidos() {
+		return pedidos;
+	}
+	public void setPedidos(List<DTLineaPedido> pedidos) {
+		this.pedidos = pedidos;
+	}
 	public Articulo getArticulo() {
 		return articulo;
 	}
@@ -144,7 +152,22 @@ public class StockBean implements Serializable{
 	}
 	
 	public List<DTLineaPedido> pedidoAutomaticoVentas() {
-		return FabricaSistema.getISistema().pedidoAutomaticoVentas();
+		if (iniciado == 0) {
+		for (int i=0; i<5; i++) {
+			DTLineaPedido dt = new DTLineaPedido();
+			dt.setCantidad(i);
+			dt.setIdArticulo(i);
+			dt.setNumeroArticulo(i);
+			pedidos.add(dt);
+		 }
+		 iniciado = 1;
+		}
+		return this.pedidos;
+		//return FabricaSistema.getISistema().pedidoAutomaticoVentas();
+	}
+	
+	public void removeItem(DTLineaPedido item) {
+		pedidos.remove(item);
 	}
 	
 	public void agregarProveedor(){
