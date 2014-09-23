@@ -3,7 +3,7 @@ package interfaces;
 import java.util.List;
 
 import model.Venta;
-import datatypes.DTSaleDetail;
+import datatypes.DTVenta;
 
 public interface IFacturacion {
 	
