@@ -13,8 +13,11 @@
 		<link href="../CSS/bootstrap-theme.css" rel="stylesheet" />
 		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
 		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
+		<link href="../JS/chosen.min.css" rel="stylesheet" />
 		<script src="../JS/bootstrap.js"></script>
 		<script src="../JS/bootstrap.min.js"></script>
+		<script src="../JS/chosen.jquery.min.js"></script>
+		<script src="../JS/chosen.proto.min.js"></script>
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
@@ -34,48 +37,56 @@
 					<p:panel id="panel" header="Alta de artículo">				
 						<div class="container-fluid">
 							<div class="row" style="margin-bottom: 1%;">
-								<div class="col-lg-2">
+								<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 									<p:outputLabel for="tipoArticulo" value="Tipo de Artículo:" />
-								</div>
-								<div class="col-lg-2">
-									<p:inputText id="tipoArticulo" value="#{stockBean.articulo.tipoArticulo}" style="height: 100%"
+									<p:inputText id="tipoArticulo" styleClass="form-control" value="#{stockBean.articulo.tipoArticulo}" style="height: 100%"
 									required="true" />
 								</div>
-								<div class="col-lg-2">
+								<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 									<p:outputLabel for="descripcion" value="Descripción:" />
-								</div>
-								<div class="col-lg-2">
-									<p:inputText id="descripcion" value="#{stockBean.articulo.descripcion}" size="60" style="height: 100%"
+									<p:inputText id="descripcion" styleClass="form-control" value="#{stockBean.articulo.descripcion}" size="60" style="height: 100%"
 									required="true" />
 								</div>
 							</div>
 							
 							<div class="row" style="margin-bottom: 1%;">
-								<div class="col-lg-2">
-									<p:outputLabel for="proveedor" value="Proveedor:" />
+								<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:outputLabel for="proveedor" value="Proveedor:" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:selectOneMenu id="proveedor" value="#{stockBean.proveedor}"
+									        			filter="true" filterMatchMode="contains" required="false" >
+									            <f:selectItem itemLabel="Seleccione proveedor" itemValue="-1" />
+									            <f:selectItems value="#{stockBean.proveedores}" var="p" itemLabel="#{p.nombreComercial}" itemValue="#{p.idProveedor}"/>
+									        </p:selectOneMenu>
+								        </div>
+							        </div>
 								</div>
-								<div class="col-lg-2">
-									<p:selectOneMenu id="proveedor" value="#{stockBean.proveedor}"
-							        			filter="true" filterMatchMode="contains" style="height: 100%" required="false" >
-							            <f:selectItem itemLabel="Seleccione proveedor" itemValue="-1" />
-							            <f:selectItems value="#{stockBean.proveedores}" var="p" itemLabel="#{p.nombreComercial}" itemValue="#{p.idProveedor}"/>
-							        </p:selectOneMenu>
-								</div>
-								<div class="col-lg-2">
-									<p:outputLabel for="codigoIdentificador" value="Código identificador:" />
-								</div>
-								<div class="col-lg-2">
-									<p:inputText id="codigoIdentificador" value="#{stockBean.codigoIdentificador}" style="height: 100%"
-									required="false" />
-								</div>
-								<div class="col-lg-1">
-									<p:commandButton value="Agregar" onclick="rc()"
-									icon="ui-icon-plusthick" />
+								<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:outputLabel for="codigoIdentificador" value="Código identificador:" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+											<p:inputText id="codigoIdentificador" styleClass="form-control" value="#{stockBean.codigoIdentificador}" style="height: 100%"
+											required="false" />
+										</div>
+										<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+											<h:button value="Agregar" onclick="rc()" class="btn btn-info"
+											icon="ui-icon-plusthick" />
+										</div>
+									</div>
 								</div>
 							</div>
 							
 							<div class="row" style="margin-bottom: 1%;">
-								<div class="col-lg-8">
+								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 									<p:dataTable id="tablaProveedores" var="proveedor" value="#{stockBean.articulo.proveedores}">
 									    <p:column headerText="Nombre comercial">
 									        <h:outputText value="#{proveedor.nombreComercial}" />
@@ -89,11 +100,9 @@
 							</div>
 							
 							<div class="row" style="margin-bottom: 1%;">
-								<div class="col-lg-2">
+								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 									<p:outputLabel for="presentaciones" value="Presentaciones:" />
-								</div>
-								<div class="col-lg-2">
-									<p:selectManyMenu id="presentaciones" value="#{stockBean.articulo.presentaciones}" required="false"
+									<p:selectManyMenu id="presentaciones" value="#{stockBean.articulo.presentaciones}" required="false" 
 				                          var="p" filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
 							            <f:selectItems value="#{stockBean.presentaciones}" var="presentacion" itemLabel="#{presentacion.descripcion}" itemValue="#{presentacion.idPresentacion}" />
 							 
@@ -102,11 +111,9 @@
 							            </p:column>
 						        	</p:selectManyMenu>
 								</div>
-								<div class="col-lg-2">
+								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 				       				<p:outputLabel for="drogas" value="Drogas:" />
-								</div>
-								<div class="col-lg-2">
-					       			<p:selectManyMenu id="drogas" value="#{stockBean.articulo.drogas}" required="false"
+				       				<p:selectManyMenu id="drogas" value="#{stockBean.articulo.drogas}" required="false"
 				                          var="d" filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
 							            <f:selectItems value="#{stockBean.drogas}" var="droga" itemLabel="#{droga.descripcion}" itemValue="#{droga.idDroga}" />
 							 
@@ -115,11 +122,9 @@
 							            </p:column>
 						        	</p:selectManyMenu>
 								</div>
-								<div class="col-lg-2">
+								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 					       			<p:outputLabel for="accionesTer" value="Acciones Terapéuticas:" />
-								</div>
-								<div class="col-lg-2">
-							       	<p:selectManyMenu id="accionesTer" value="#{stockBean.articulo.accionesTer}" required="false"
+					       			<p:selectManyMenu id="accionesTer" value="#{stockBean.articulo.accionesTer}" required="false"
 					                          var="a" filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
 							            <f:selectItems value="#{stockBean.accionesTer}" var="accionTer" itemLabel="#{accionTer.descripcion}" itemValue="#{accionTer.idAccionTer}" />
 							 
@@ -131,45 +136,59 @@
 							</div>
 							
 							<div class="row" style="margin-bottom: 1%;">
-								<div class="col-lg-2">
-									<p:outputLabel for="psicofarmaco" value="Es psicofármaco:" />							
+								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:outputLabel for="psicofarmaco" value="Es psicofármaco:" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:selectBooleanCheckbox id="psicofarmaco" value="#{stockBean.articulo.esPsicofarmaco}" />
+										</div>
+									</div>							
 								</div>
-								<div class="col-lg-2">
-									<p:selectBooleanCheckbox id="psicofarmaco" value="#{stockBean.articulo.esPsicofarmaco}" />							
+								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:outputLabel for="estupefaciente" value="Es estupefaciente:" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:selectBooleanCheckbox id="estupefaciente" value="#{stockBean.articulo.esEstupefaciente}" />
+										</div>
+									</div>
 								</div>
-								<div class="col-lg-2">
-									<p:outputLabel for="estupefaciente" value="Es estupefaciente:" />
-								</div>
-								<div class="col-lg-2">
-									<p:selectBooleanCheckbox id="estupefaciente" value="#{stockBean.articulo.esEstupefaciente}" />
-								</div>
-								<div class="col-lg-2">
-									<p:outputLabel for="formaVenta" value="Forma de venta:" />
-								</div>
-								<div class="col-lg-2">
-									<p:selectOneMenu id="formaVenta" value="#{stockBean.articulo.codigoVenta}" required="false" >
-							            <f:selectItem itemLabel="Seleccione forma de venta" itemValue="-1" />
-							            <f:selectItems value="#{stockBean.formasVenta}" var="f" itemLabel="#{f.descripcion}" itemValue="#{f.formaVenta}"/>
-							        </p:selectOneMenu>							 
+								<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:outputLabel for="formaVenta" value="Forma de venta:" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:selectOneMenu id="formaVenta" value="#{stockBean.articulo.codigoVenta}" required="false" >
+									            <f:selectItem itemLabel="Seleccione forma de venta" itemValue="-1" />
+									            <f:selectItems value="#{stockBean.formasVenta}" var="f" itemLabel="#{f.descripcion}" itemValue="#{f.formaVenta}"/>
+									        </p:selectOneMenu>
+									    </div>
+									</div>
 								</div>
 							</div>
 							
 							<div class="row" style="margin-bottom: 1%;">
-								<div class="col-lg-2">
+								<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 									<p:outputLabel for="costoLista" value="Costo de lista ($):" />
-								</div>
-								<div class="col-lg-2">
-									<p:inputText id="costoLista" value="#{stockBean.articulo.costoLista}" converterMessage="Dato Inválido." style="height: 100%"
+									<p:inputText id="costoLista" styleClass="form-control" value="#{stockBean.articulo.costoLista}" converterMessage="Dato Inválido." style="height: 100%"
 									required="true" >
 					                	<f:convertNumber type="currency" currencySymbol="$"/>
 					            	</p:inputText>
 					            	<p:message for="costoLista" />
 								</div>
-								<div class="col-lg-2">
+								<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 									<p:outputLabel for="costoReal" value="Costo real ($):" />
-								</div>
-								<div class="col-lg-2">
-									<p:inputText id="costoReal" value="#{stockBean.articulo.ultimoCosto}" converterMessage="Dato Inválido." style="height: 100%"
+									<p:inputText id="costoReal" styleClass="form-control" value="#{stockBean.articulo.ultimoCosto}" converterMessage="Dato Inválido." style="height: 100%"
 									required="true" >
 					                	<f:convertNumber type="currency" currencySymbol="$"/>
 					            	</p:inputText>
@@ -178,21 +197,17 @@
 							</div>
 							
 							<div class="row" style="margin-bottom: 1%;">
-								<div class="col-lg-2">
+								<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 									<p:outputLabel for="precioPublico" value="Precio público ($):" />
-								</div>
-								<div class="col-lg-2">
-									<p:inputText id="precioPublico" value="#{stockBean.articulo.precioUnitario}" converterMessage="Dato Inválido." style="height: 100%"
+									<p:inputText id="precioPublico" styleClass="form-control" value="#{stockBean.articulo.precioUnitario}" converterMessage="Dato Inválido." style="height: 100%"
 									required="true" >
 					                	<f:convertNumber type="currency" currencySymbol="$"/>
 					            	</p:inputText>
 					            	<p:message for="precioPublico" />
 								</div>
-								<div class="col-lg-2">
+								<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 									<p:outputLabel for="precioVenta" value="Precio de venta ($):" />
-								</div>
-								<div class="col-lg-2">
-									<p:inputText id="precioVenta" value="#{stockBean.articulo.precioVenta}" converterMessage="Dato Inválido." style="height: 100%"
+									<p:inputText id="precioVenta" styleClass="form-control" value="#{stockBean.articulo.precioVenta}" converterMessage="Dato Inválido." style="height: 100%"
 									required="true" >
 					                	<f:convertNumber type="currency" currencySymbol="$"/>
 					            	</p:inputText>
@@ -201,26 +216,28 @@
 							</div>
 							
 							<div class="row" style="margin-bottom: 1%;">
-								<div class="col-lg-2">
-									<p:outputLabel for="tipoIVA" value="Tipo de IVA:" />
-								</div>
-								<div class="col-lg-2">
-									<p:selectOneMenu id="tipoIVA" value="#{stockBean.articulo.tipoIva}" style="height: 100%" required="false" >
-							            <f:selectItem itemLabel="Seleccione tipo de IVA" itemValue="-1" />
-							            <f:selectItems value="#{stockBean.tiposIVA}" />
-							        </p:selectOneMenu>
+								<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:outputLabel for="tipoIVA" value="Tipo de IVA:" />
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:selectOneMenu id="tipoIVA" value="#{stockBean.articulo.tipoIva}" style="height: 100%" required="false" >
+									            <f:selectItem itemLabel="Seleccione tipo de IVA" itemValue="-1" />
+									            <f:selectItems value="#{stockBean.tiposIVA}" />
+									        </p:selectOneMenu>
+									    </div>
+									</div>
 								</div>
 							</div>
-							
+
 							<div class="row" style="margin-bottom: 1%;">
-								<div class="col-lg-1 col-lg-offset-10">
-									<p:commandButton value="Confirmar" update="panel"
-									actionListener="#{stockBean.altaArticulo}"
-									icon="ui-icon-check" />
-								</div>
-								<div class="col-lg-1">
-									<p:commandButton value="Cancelar" update="panel"/>
-								</div>
+								<h:button value="Cancelar" update="panel" class="btn btn-default pull-right" />
+								<h:button type="button" value="Confirmar" update="panel" class="btn btn-success pull-right"
+								actionListener="#{stockBean.altaArticulo}"
+								icon="ui-icon-check" />								
 							</div>
 						</div>
 					</p:panel>
