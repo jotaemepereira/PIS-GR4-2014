@@ -86,12 +86,13 @@ public class ProveedoresBean implements Serializable {
 				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "RUT: Error de validación: ya existe un proveedor en el sistema con ese RUT.", ""));
 				return;
 			}else if(e.getErrorCode() == Excepciones.PROVEEDOR_RUT_EXISTENTE){
-				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Ya existe un proveedor en el sistema con ese nombre comercial", ""));
+				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Nombre Comercial: Ya existe un proveedor en el sistema con ese nombre comercial", ""));
 			}else{
 				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
 				return;
 			}
 		}
+		
 		// si todo bien aviso y vacio el formulario
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El proveedor ha sido dado de alta correctamente", ""));
 		this.direccion = "";
