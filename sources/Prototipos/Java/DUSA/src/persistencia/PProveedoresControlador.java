@@ -6,13 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
 
+import controladores.Excepciones;
 import model.Proveedor;
 import interfaces.IProveedoresPersistencia;
 
 public class PProveedoresControlador implements IProveedoresPersistencia {
 
 	@Override
-	public void persistirProveedor(Proveedor proveedor) {
+	public void persistirProveedor(Proveedor proveedor) throws Excepciones {
 		PreparedStatement stmt = null;
 		
 		String query = "INSERT INTO suppliers " +
@@ -53,11 +54,12 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
 			System.exit(0);
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 	}
 
 	@Override
-	public boolean existeProveedor(String nombreComercial) {
+	public boolean existeProveedorNombreComercial(String nombreComercial) throws Excepciones{
 		int cant = 0;
 		PreparedStatement stmt = null;
 		String query = "SELECT COUNT(*) AS cant FROM suppliers " +
@@ -78,6 +80,34 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
 			System.exit(0);
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		}
+		return (cant > 0);
+	}
+	
+	@Override
+	public boolean existeProveedorRUT(String RUT) throws Excepciones{
+		int cant = 0;
+		PreparedStatement stmt = null;
+		String query = "SELECT COUNT(*) AS cant FROM suppliers " +
+						"WHERE RUT = ?";
+		try {
+			Connection c = Conexion.getConnection();
+			
+			stmt = c.prepareStatement(query);
+			stmt.setString(1, RUT);
+			ResultSet rs = stmt.executeQuery();
+			//Obtengo la cantidad de proveedores con ese rut
+			while(rs.next()){
+				cant = rs.getInt("cant");
+			}
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch ( Exception e ) {
+			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+			System.exit(0);
+			throw(new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 		return (cant > 0);
 	}

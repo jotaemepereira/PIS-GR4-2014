@@ -1,11 +1,20 @@
 package model;
 
+import controladores.Excepciones;
+
 public class Proveedor {
 	private String RUT;
 	private String razonSocial;
 	private String telefono;
 	private String direccion;
 	private String nombreComercial;
+	
+	public Proveedor(String nombreComercial) throws Excepciones{
+		if(nombreComercial == ""){
+			throw(new Excepciones("Faltan datos", Excepciones.ERROR_DATOS));
+		}
+		this.nombreComercial = nombreComercial;
+	}
 	
 	public String getRUT(){
 		return RUT;
@@ -31,10 +40,13 @@ public class Proveedor {
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
 	}
-	public String getNombreComercial() {
+	public String getNombreComercial()  {
 		return nombreComercial;
 	}
-	public void setNombreComercial(String nombreComercial) {
+	public void setNombreComercial(String nombreComercial) throws Excepciones{
+		if(nombreComercial == ""){
+			throw(new Excepciones("Faltan datos", Excepciones.ERROR_DATOS));
+		}
 		this.nombreComercial = nombreComercial;
 	}
 }

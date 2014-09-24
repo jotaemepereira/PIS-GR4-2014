@@ -5,6 +5,8 @@ public class Excepciones extends Exception {
     
 	public static int ERROR_DATOS					= 0;
 	public static int PROVEEDOR_NOMBRE_EXISTENTE	= 1;
+	public static int PROVEEDOR_RUT_EXISTENTE		= 2;
+	public static int ERROR_SISTEMA					= 3;
 	
     private int errorCode = 0;
      

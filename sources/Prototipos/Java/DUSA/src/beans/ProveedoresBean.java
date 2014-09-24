@@ -59,10 +59,17 @@ public class ProveedoresBean implements Serializable {
     }
 	    
 	public void altaProveedor(){
-		Proveedor proveedor = new Proveedor();
+		Proveedor proveedor;
 		FacesContext context = FacesContext.getCurrentInstance();
 		
 		if(nombreComercial.length() < 4){
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre Comercial: Error de validación: se necesita un valor.", ""));
+			return;
+		}
+		
+		try {
+			proveedor = new Proveedor(nombreComercial);
+		} catch (Excepciones e1) {
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre Comercial: Error de validación: se necesita un valor.", ""));
 			return;
 		}
@@ -71,16 +78,18 @@ public class ProveedoresBean implements Serializable {
 		proveedor.setRazonSocial(razonSocial);
 		proveedor.setTelefono(telefono);
 		proveedor.setDireccion(direccion);
-		proveedor.setNombreComercial(nombreComercial);
 		
 		try {
 			FabricaSistema.getISistema().altaProveedor(proveedor);
 		} catch (Excepciones e) {
-			if(e.getErrorCode() == Excepciones.ERROR_DATOS){
-				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre Comercial: Error de validación: se necesita un valor.", ""));
+			if(e.getErrorCode() == Excepciones.PROVEEDOR_RUT_EXISTENTE){
+				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "RUT: Error de validación: ya existe un proveedor en el sistema con ese RUT.", ""));
 				return;
-			}else{
+			}else if(e.getErrorCode() == Excepciones.PROVEEDOR_RUT_EXISTENTE){
 				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Ya existe un proveedor en el sistema con ese nombre comercial", ""));
+			}else{
+				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
+				return;
 			}
 		}
 		// si todo bien aviso y vacio el formulario
