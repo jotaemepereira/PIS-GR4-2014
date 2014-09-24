@@ -1,9 +1,10 @@
 package persistencia;
 
+import java.sql.Statement;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Date;
 
 import model.Proveedor;
 import interfaces.IProveedoresPersistencia;
@@ -12,25 +13,39 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 
 	@Override
 	public void persistirProveedor(Proveedor proveedor) {
-		Connection c = null;
 		PreparedStatement stmt = null;
-		String query = "INSERT INTO SUPPLIERS " +
-						"(RUC, COMPANYNAME, PHONE, SUPPLIER_ADDRESS, COMERCIALNAME " +
+		
+		String query = "INSERT INTO suppliers " +
+						"(supplier_id, rut, companyname, phone, supplier_address, comercialname, last_modified, status) " +
 						" VALUES " +
-						" (?, ?, ?, ?, ?);";
+						" (?, ?, ?, ?, ?, ?, ?, ?);";
+		String query_id =	"SELECT MAX(supplier_id) as id FROM suppliers";
+		
 		try {
-			Class.forName("org.postgresql.Driver");
-			c = DriverManager
-					.getConnection("jdbc:postgresql://localhost:5432/dusa",
-							"postgres", "root");
-			c.setAutoCommit(false);
+			Connection c = Conexion.getConnection();
 			
+			Statement stmt_id = c.createStatement();
+			
+			// Traigo el ultimo id insertado en la bd y le sumo uno
+			ResultSet rs = stmt_id.executeQuery(query_id);
+			int id = 1;
+			while(rs.next()){
+				id = rs.getInt("id") + 1;
+			}
+			System.out.print("id: " + id + "\n");
+			Date hoy = new Date();
+			Long time = hoy.getTime();
+			
+			// Seteo los datos a insertar en la bd
 			stmt = c.prepareStatement(query);
-			stmt.setInt(1, proveedor.getRUT());
-			stmt.setString(2, proveedor.getRazonSocial());
-			stmt.setInt(3, proveedor.getTelefono());
-			stmt.setString(4, proveedor.getDireccion());
-			stmt.setString(5, proveedor.getNombreComercial());
+			stmt.setInt(1, id);
+			stmt.setString(2, proveedor.getRUT());
+			stmt.setString(3, proveedor.getRazonSocial());
+			stmt.setString(4, proveedor.getTelefono());
+			stmt.setString(5, proveedor.getDireccion());
+			stmt.setString(6, proveedor.getNombreComercial());
+			stmt.setDate(7, new java.sql.Date(time));
+			stmt.setBoolean(8, true);
 			
 			stmt.executeUpdate();
 			stmt.close();
@@ -42,23 +57,21 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 	}
 
 	@Override
-	public boolean existeProveedor(int RUT) {
+	public boolean existeProveedor(String nombreComercial) {
 		int cant = 0;
-		Connection c = null;
 		PreparedStatement stmt = null;
-		String query = "SELECT COUNT(*) AS cant FROM SUPPLIERS " +
-						"WHERE RUT = ?";
+		String query = "SELECT COUNT(*) AS cant FROM suppliers " +
+						"WHERE comercialname = ?";
 		try {
-			Class.forName("org.postgresql.Driver");
-			c = DriverManager
-					.getConnection("jdbc:postgresql://localhost:5432/dusa",
-							"postgres", "root");
-			c.setAutoCommit(false);
+			Connection c = Conexion.getConnection();
+			
 			stmt = c.prepareStatement(query);
-			stmt.setInt(1, RUT);
-			ResultSet rs = stmt.executeQuery(query);
+			stmt.setString(1, nombreComercial);
+			ResultSet rs = stmt.executeQuery();
 			//Obtengo la cantidad de proveedores con ese rut
-			cant = rs.getInt("cant");
+			while(rs.next()){
+				cant = rs.getInt("cant");
+			}
 			rs.close();
 			stmt.close();
 			c.close();

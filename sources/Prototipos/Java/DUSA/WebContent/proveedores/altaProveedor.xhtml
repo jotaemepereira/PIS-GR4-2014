@@ -13,6 +13,7 @@
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
 		</f:facet>
+		<script src="../JS/proveedores.js"></script>
 	</h:head>
 	<h:body>
 		<h:form id="form1">
@@ -28,20 +29,17 @@
 						<h:panelGrid columns="2" cellpadding="5">
 							<p:outputLabel for="RUT" value="RUT:" />
 							<p:inputText id="RUT" value="#{proveedoresBean.RUT}"
-								required="true" label="RUT:">
-								<f:validateLength minimum="2" />
+								label="RUT" required="false" >
 							</p:inputText>
 
 							<p:outputLabel for="razonSocial" value="Razón social:" />
-							<p:inputText id="razonSocial"
-								value="#{proveedoresBean.razonSocial}" label="razonSocial"
-								required="false">
+							<p:inputText id="razonSocial" value="#{proveedoresBean.razonSocial}" 
+								label="razonSocial" required="false">
 							</p:inputText>
 
 							<p:outputLabel for="telefono" value="Teléfono:" />
 							<p:inputText id="telefono" value="#{proveedoresBean.telefono}"
 								label="telefono" required="false">
-								<f:validateLength minimum="8" />
 							</p:inputText>
 
 							<p:outputLabel for="direccion" value="Dirección:" />
@@ -50,8 +48,7 @@
 							</p:inputText>
 
 							<p:outputLabel for="nombreComercial" value="Nombre comercial:" />
-							<p:inputText id="nombreComercial"
-								value="#{proveedoresBean.nombreComercial}"
+							<p:inputText id="nombreComercial" value="#{proveedoresBean.nombreComercial}"
 								label="nombreComercial" required="true">
 								<f:validateLength minimum="4" />
 							</p:inputText>

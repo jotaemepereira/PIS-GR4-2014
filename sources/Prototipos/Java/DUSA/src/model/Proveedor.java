@@ -1,16 +1,16 @@
 package model;
 
 public class Proveedor {
-	private int RUT;
+	private String RUT;
 	private String razonSocial;
-	private int telefono;
+	private String telefono;
 	private String direccion;
 	private String nombreComercial;
 	
-	public int getRUT(){
+	public String getRUT(){
 		return RUT;
 	}
-	public void setRUT(int RUT){
+	public void setRUT(String RUT){
 		this.RUT = RUT;
 	}
 	public String getRazonSocial() {
@@ -19,10 +19,10 @@ public class Proveedor {
 	public void setRazonSocial(String razonSocial) {
 		this.razonSocial = razonSocial;
 	}
-	public int getTelefono() {
+	public String getTelefono() {
 		return telefono;
 	}
-	public void setTelefono(int telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 	public String getDireccion() {

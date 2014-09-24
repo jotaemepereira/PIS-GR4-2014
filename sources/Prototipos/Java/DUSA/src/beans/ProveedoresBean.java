@@ -8,6 +8,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import model.Proveedor;
+import controladores.Excepciones;
 import controladores.FabricaSistema;
 
 @ManagedBean
@@ -16,16 +17,16 @@ public class ProveedoresBean implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private int RUT;
+	private String RUT;
 	private String razonSocial;
-	private int telefono;
+	private String telefono;
 	private String direccion;
 	private String nombreComercial;
 	
-	public int getRUT() {
+	public String getRUT() {
         return RUT;
     }
-    public void setRUT(int RUT) {
+    public void setRUT(String RUT) {
         this.RUT = RUT;
     }
  
@@ -36,10 +37,10 @@ public class ProveedoresBean implements Serializable {
         this.razonSocial = razonSocial;
     }
     
-    public int getTelefono() {
+    public String getTelefono() {
         return telefono;
     }
-    public void setTelefono(int telefono) {
+    public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
     
@@ -61,11 +62,6 @@ public class ProveedoresBean implements Serializable {
 		Proveedor proveedor = new Proveedor();
 		FacesContext context = FacesContext.getCurrentInstance();
 		
-		if(String.valueOf(RUT).length() < 5){ // FIXME: averiguar largo ok
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "RUT: Error de validación: se necesita un valor.", ""));
-			return;
-		}
-		
 		if(nombreComercial.length() < 4){
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre Comercial: Error de validación: se necesita un valor.", ""));
 			return;
@@ -76,7 +72,23 @@ public class ProveedoresBean implements Serializable {
 		proveedor.setTelefono(telefono);
 		proveedor.setDireccion(direccion);
 		proveedor.setNombreComercial(nombreComercial);
-
-		FabricaSistema.getISistema().altaProveedor(proveedor);
+		
+		try {
+			FabricaSistema.getISistema().altaProveedor(proveedor);
+		} catch (Excepciones e) {
+			if(e.getErrorCode() == Excepciones.ERROR_DATOS){
+				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre Comercial: Error de validación: se necesita un valor.", ""));
+				return;
+			}else{
+				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Ya existe un proveedor en el sistema con ese nombre comercial", ""));
+			}
+		}
+		// si todo bien aviso y vacio el formulario
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El proveedor ha sido dado de alta correctamente", ""));
+		this.direccion = "";
+		this.nombreComercial = "";
+		this.razonSocial = "";
+		this.RUT = "";
+		this.telefono = "";
 	}
 }

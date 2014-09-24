@@ -9,7 +9,7 @@ import interfaces.ISistema;
 public class SistemaControlador implements ISistema {
 
 	@Override
-	public void altaProveedor(Proveedor proveedor) {
+	public void altaProveedor(Proveedor proveedor) throws Excepciones{
 		// TODO: chequeo permisos del usuario
 		FabricaLogica.getInstanciaProveedores().altaProveedor(proveedor);
 	}
