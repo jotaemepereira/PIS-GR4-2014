@@ -21,8 +21,7 @@ public class StockControlador implements IStock {
 
 	@Override
 	public void altaArticulo(Articulo articulo) {
-		// TODO Auto-generated method stub
-
+		FabricaPersistencia.getIStockPersistencia().persistirArticulo(articulo);
 	}
 
 	public List<Articulo> buscarArticulo(String descripcion){

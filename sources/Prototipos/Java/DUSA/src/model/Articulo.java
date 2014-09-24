@@ -2,13 +2,13 @@ package model;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class Articulo {
 	private int idArticulo;
 	private int numero;
 	private char tipoArticulo;
 	private String descripcion;
-	private int idProveedor;
 	private String clave1;
 	private String clave2;
 	private String clave3;
@@ -29,6 +29,11 @@ public class Articulo {
 	private int stock;
 	private Date fechaUltimaModificacion;
 	private boolean status;
+	private List<Proveedor> proveedores;
+	private List<Presentacion> presentaciones;
+	private List<Droga> drogas;
+	private List<AccionTer> accionesTer;
+	
 	public int getIdArticulo() {
 		return idArticulo;
 	}
@@ -52,12 +57,6 @@ public class Articulo {
 	}
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
-	}
-	public int getIdProveedor() {
-		return idProveedor;
-	}
-	public void setIdProveedor(int idProveedor) {
-		this.idProveedor = idProveedor;
 	}
 	public String getClave1() {
 		return clave1;
@@ -178,5 +177,29 @@ public class Articulo {
 	}
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+	public List<Proveedor> getProveedores() {
+		return proveedores;
+	}
+	public void setProveedores(List<Proveedor> proveedores) {
+		this.proveedores = proveedores;
+	}
+	public List<Presentacion> getPresentaciones() {
+		return presentaciones;
+	}
+	public void setPresentaciones(List<Presentacion> presentaciones) {
+		this.presentaciones = presentaciones;
+	}
+	public List<Droga> getDrogas() {
+		return drogas;
+	}
+	public void setDrogas(List<Droga> drogas) {
+		this.drogas = drogas;
+	}
+	public List<AccionTer> getAccionesTer() {
+		return accionesTer;
+	}
+	public void setAccionesTer(List<AccionTer> accionesTer) {
+		this.accionesTer = accionesTer;
 	}
 }

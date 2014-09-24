@@ -9,6 +9,12 @@
 <f:view contentType="text/html">
 	<h:head>
 		<link href="../CSS/General.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap-theme.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
+		<script src="../JS/bootstrap.js"></script>
+		<script src="../JS/bootstrap.min.js"></script>
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
@@ -19,51 +25,58 @@
 			<p:growl id="messages" showDetail="true" />
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
-<!--		-->
+
 			<div class="vpanel_right">
 				<div class="wrapper">
-					<p:panel id="panel" header="Alta de artículo">
-						<h:panelGrid style="margin-bottom:10px" cellpadding="5" >
-						    <p:row>
-						    	<p:column>
-						    		<p:outputLabel for="tipoArticulo" value="Tipo de Artículo:" />
-							    </p:column>	
-							    <p:column>
-							    	<p:inputText id="tipoArticulo" value="#{stockBean.articulo.tipoArticulo}"/>
-							    </p:column>					    
-							    <p:column>
-							    	<p:outputLabel for="descripcion" value="Descripción:" />
-						    	</p:column>
-							    <p:column>
-							    	<p:inputText id="descripcion" value="#{stockBean.articulo.descripcion}"/>
-						    	</p:column>
-						    </p:row>
-						    
-						    <p:row>
-						    	<p:column>
-								    <p:outputLabel for="proveedor" value="Proveedor:" />
-								</p:column>
-								<p:column>
-							        <p:selectOneMenu id="proveedor" value="#{stockBean.proveedor}"
-							        			filter="true" filterMatchMode="contains" >
+					<p:remoteCommand name="rc" update="tablaProveedores"
+					actionListener="#{stockBean.agregarProveedor}" />
+				
+					<p:panel id="panel" header="Alta de artículo">				
+						<div class="container-fluid">
+							<div class="row" style="margin-bottom: 1%;">
+								<div class="col-lg-2">
+									<p:outputLabel for="tipoArticulo" value="Tipo de Artículo:" />
+								</div>
+								<div class="col-lg-2">
+									<p:inputText id="tipoArticulo" value="#{stockBean.articulo.tipoArticulo}" style="height: 100%"
+									required="true" />
+								</div>
+								<div class="col-lg-2">
+									<p:outputLabel for="descripcion" value="Descripción:" />
+								</div>
+								<div class="col-lg-2">
+									<p:inputText id="descripcion" value="#{stockBean.articulo.descripcion}" size="60" style="height: 100%"
+									required="true" />
+								</div>
+							</div>
+							
+							<div class="row" style="margin-bottom: 1%;">
+								<div class="col-lg-2">
+									<p:outputLabel for="proveedor" value="Proveedor:" />
+								</div>
+								<div class="col-lg-2">
+									<p:selectOneMenu id="proveedor" value="#{stockBean.proveedor}"
+							        			filter="true" filterMatchMode="contains" style="height: 100%" required="false" >
 							            <f:selectItem itemLabel="Seleccione proveedor" itemValue="-1" />
-							            <f:selectItems value="#{stockBean.proveedores}" />
+							            <f:selectItems value="#{stockBean.proveedores}" var="p" itemLabel="#{p.nombreComercial}" itemValue="#{p.idProveedor}"/>
 							        </p:selectOneMenu>
-						    	</p:column>
-						    	<p:column>   	
-						       		<p:outputLabel for="codigoIdentificador" value="Código identificador:" />
-							    </p:column>
-							    <p:column>	
-							    	<p:inputText id="codigoIdentificador" value="#{stockBean.codigoIdentificador}"/>
-							    </p:column>
-							    <p:column>
-							    	Agregar
-							    </p:column>
-					       	</p:row>
-					       	
-					       	<p:row>
-					       		<p:column colspan="4">
-									<p:dataTable var="proveedor" value="#{stockBean.proveedoresSeleccionados}">
+								</div>
+								<div class="col-lg-2">
+									<p:outputLabel for="codigoIdentificador" value="Código identificador:" />
+								</div>
+								<div class="col-lg-2">
+									<p:inputText id="codigoIdentificador" value="#{stockBean.codigoIdentificador}" style="height: 100%"
+									required="false" />
+								</div>
+								<div class="col-lg-1">
+									<p:commandButton value="Agregar" onclick="rc()"
+									icon="ui-icon-plusthick" />
+								</div>
+							</div>
+							
+							<div class="row" style="margin-bottom: 1%;">
+								<div class="col-lg-8">
+									<p:dataTable id="tablaProveedores" var="proveedor" value="#{stockBean.articulo.proveedores}">
 									    <p:column headerText="Nombre comercial">
 									        <h:outputText value="#{proveedor.nombreComercial}" />
 									    </p:column>
@@ -72,129 +85,144 @@
 									        <h:outputText value="#{proveedor.codigoIdentificador}" />
 									    </p:column>
 									 </p:dataTable>
-								 </p:column>
-					       	</p:row>
-					       	
-					       	<p:row>
-					       		<p:column>
-					       			<p:outputLabel for="presentaciones" value="Presentaciones:" />
-					       		</p:column>
-					       		<p:column>
-					       			<p:selectManyMenu id="presentaciones" value="#{stockBean.presentacionesSeleccionadas}"
-				                          var="p" filter="true" filterMatchMode="contains" showCheckbox="true">
-						            <f:selectItems value="#{stockBean.presentaciones}" var="presentacion" itemLabel="#{presentacion.descripcion}" itemValue="#{presentacion.idPresentacion}" />
-						 
-						            <p:column>
-						                <h:outputText value="#{p.descripcion}" />
-						            </p:column>
-						        </p:selectManyMenu>
-					       		</p:column>
-					       		<p:column>
-					       			<p:outputLabel for="drogas" value="Drogas:" />
-					       		</p:column>
-					       		<p:column>
-					       			<p:selectManyMenu id="drogas" value="#{stockBean.drogasSeleccionadas}"
-				                          var="d" filter="true" filterMatchMode="contains" showCheckbox="true">
-						            <f:selectItems value="#{stockBean.drogas}" var="droga" itemLabel="#{droga.descripcion}" itemValue="#{droga.idDroga}" />
-						 
-						            <p:column>
-						                <h:outputText value="#{d.descripcion}" />
-						            </p:column>
-						        </p:selectManyMenu>
-					       		</p:column>
-					       		<p:column>
+								 </div>
+							</div>
+							
+							<div class="row" style="margin-bottom: 1%;">
+								<div class="col-lg-2">
+									<p:outputLabel for="presentaciones" value="Presentaciones:" />
+								</div>
+								<div class="col-lg-2">
+									<p:selectManyMenu id="presentaciones" value="#{stockBean.articulo.presentaciones}" required="false"
+				                          var="p" filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
+							            <f:selectItems value="#{stockBean.presentaciones}" var="presentacion" itemLabel="#{presentacion.descripcion}" itemValue="#{presentacion.idPresentacion}" />
+							 
+							            <p:column>
+							                <h:outputText value="#{p.descripcion}" />
+							            </p:column>
+						        	</p:selectManyMenu>
+								</div>
+								<div class="col-lg-2">
+				       				<p:outputLabel for="drogas" value="Drogas:" />
+								</div>
+								<div class="col-lg-2">
+					       			<p:selectManyMenu id="drogas" value="#{stockBean.articulo.drogas}" required="false"
+				                          var="d" filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
+							            <f:selectItems value="#{stockBean.drogas}" var="droga" itemLabel="#{droga.descripcion}" itemValue="#{droga.idDroga}" />
+							 
+							            <p:column>
+							                <h:outputText value="#{d.descripcion}" />
+							            </p:column>
+						        	</p:selectManyMenu>
+								</div>
+								<div class="col-lg-2">
 					       			<p:outputLabel for="accionesTer" value="Acciones Terapéuticas:" />
-					       		</p:column>
-					       		<p:column>
-						       		<p:selectManyMenu id="accionesTer" value="#{stockBean.accionesTerSeleccionadas}"
-					                          var="a" filter="true" filterMatchMode="contains" showCheckbox="true">
+								</div>
+								<div class="col-lg-2">
+							       	<p:selectManyMenu id="accionesTer" value="#{stockBean.articulo.accionesTer}" required="false"
+					                          var="a" filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
 							            <f:selectItems value="#{stockBean.accionesTer}" var="accionTer" itemLabel="#{accionTer.descripcion}" itemValue="#{accionTer.idAccionTer}" />
 							 
 							            <p:column>
 							                <h:outputText value="#{a.descripcion}" />
 							            </p:column>
 							        </p:selectManyMenu>
-					       		</p:column>						       	
-					       	</p:row>
-					       	
-							<p:row>
-								<p:column>
-									<p:outputLabel for="psicofarmaco" value="Es psicofármaco:" />
-								</p:column>
-								<p:column>
-									<p:selectBooleanCheckbox id="psicofarmaco" value="#{stockBean.articulo.esPsicofarmaco}" />
-								</p:column>
-								<p:column>
-									<p:outputLabel for="estupefaciente" value="Es estupefaciente:" />
-								</p:column>
-								<p:column>
-									<p:selectBooleanCheckbox id="estupefaciente" value="#{stockBean.articulo.esEstupefaciente}" />
-								</p:column>
-								<p:column>
-									<p:outputLabel for="formaVenta" value="Forma de venta:" />
-								</p:column>
-								<p:column>
-									<p:selectOneMenu id="formaVenta" value="#{stockBean.articulo.codigoVenta}">
-							            <f:selectItem itemLabel="Seleccione forma de venta" itemValue="-1" />
-							            <f:selectItems value="#{stockBean.formasVenta}" />
-							        </p:selectOneMenu>
-								</p:column>
-							</p:row>						       	
+								</div>
+							</div>
 							
-							<p:row>
-								<p:column>
+							<div class="row" style="margin-bottom: 1%;">
+								<div class="col-lg-2">
+									<p:outputLabel for="psicofarmaco" value="Es psicofármaco:" />							
+								</div>
+								<div class="col-lg-2">
+									<p:selectBooleanCheckbox id="psicofarmaco" value="#{stockBean.articulo.esPsicofarmaco}" />							
+								</div>
+								<div class="col-lg-2">
+									<p:outputLabel for="estupefaciente" value="Es estupefaciente:" />
+								</div>
+								<div class="col-lg-2">
+									<p:selectBooleanCheckbox id="estupefaciente" value="#{stockBean.articulo.esEstupefaciente}" />
+								</div>
+								<div class="col-lg-2">
+									<p:outputLabel for="formaVenta" value="Forma de venta:" />
+								</div>
+								<div class="col-lg-2">
+									<p:selectOneMenu id="formaVenta" value="#{stockBean.articulo.codigoVenta}" required="false" >
+							            <f:selectItem itemLabel="Seleccione forma de venta" itemValue="-1" />
+							            <f:selectItems value="#{stockBean.formasVenta}" var="f" itemLabel="#{f.descripcion}" itemValue="#{f.formaVenta}"/>
+							        </p:selectOneMenu>							 
+								</div>
+							</div>
+							
+							<div class="row" style="margin-bottom: 1%;">
+								<div class="col-lg-2">
 									<p:outputLabel for="costoLista" value="Costo de lista ($):" />
-								</p:column>
-								<p:column>
-									<p:inputText id="costoLista" value="#{stockBean.articulo.costoLista}" converterMessage="Dato Inválido.">
+								</div>
+								<div class="col-lg-2">
+									<p:inputText id="costoLista" value="#{stockBean.articulo.costoLista}" converterMessage="Dato Inválido." style="height: 100%"
+									required="true" >
 					                	<f:convertNumber type="currency" currencySymbol="$"/>
 					            	</p:inputText>
 					            	<p:message for="costoLista" />
-								</p:column>
-								<p:column>
+								</div>
+								<div class="col-lg-2">
 									<p:outputLabel for="costoReal" value="Costo real ($):" />
-								</p:column>
-								<p:column>
-									<p:inputText id="costoReal" value="#{stockBean.articulo.ultimoCosto}" converterMessage="Dato Inválido.">
+								</div>
+								<div class="col-lg-2">
+									<p:inputText id="costoReal" value="#{stockBean.articulo.ultimoCosto}" converterMessage="Dato Inválido." style="height: 100%"
+									required="true" >
 					                	<f:convertNumber type="currency" currencySymbol="$"/>
 					            	</p:inputText>
 					            	<p:message for="costoReal" />
-								</p:column>
-							</p:row>
-	       						                  
-							<p:row>
-								<p:column>
+								</div>
+							</div>
+							
+							<div class="row" style="margin-bottom: 1%;">
+								<div class="col-lg-2">
 									<p:outputLabel for="precioPublico" value="Precio público ($):" />
-								</p:column>
-								<p:column>
-									<p:inputText id="precioPublico" value="#{stockBean.articulo.precioUnitario}" converterMessage="Dato Inválido.">
+								</div>
+								<div class="col-lg-2">
+									<p:inputText id="precioPublico" value="#{stockBean.articulo.precioUnitario}" converterMessage="Dato Inválido." style="height: 100%"
+									required="true" >
 					                	<f:convertNumber type="currency" currencySymbol="$"/>
 					            	</p:inputText>
 					            	<p:message for="precioPublico" />
-								</p:column>
-								<p:column>
+								</div>
+								<div class="col-lg-2">
 									<p:outputLabel for="precioVenta" value="Precio de venta ($):" />
-								</p:column>
-								<p:column>
-									<p:inputText id="precioVenta" value="#{stockBean.articulo.precioVenta}" converterMessage="Dato Inválido.">
+								</div>
+								<div class="col-lg-2">
+									<p:inputText id="precioVenta" value="#{stockBean.articulo.precioVenta}" converterMessage="Dato Inválido." style="height: 100%"
+									required="true" >
 					                	<f:convertNumber type="currency" currencySymbol="$"/>
 					            	</p:inputText>
 					            	<p:message for="precioVenta" />
-								</p:column>
-							</p:row>
+								</div>
+							</div>
 							
-							<p:row>
-								<p:column>
+							<div class="row" style="margin-bottom: 1%;">
+								<div class="col-lg-2">
 									<p:outputLabel for="tipoIVA" value="Tipo de IVA:" />
-								</p:column>
-								<p:column>
-									<p:selectOneMenu id="tipoIVA" value="#{stockBean.articulo.tipoIva}">
+								</div>
+								<div class="col-lg-2">
+									<p:selectOneMenu id="tipoIVA" value="#{stockBean.articulo.tipoIva}" style="height: 100%" required="false" >
 							            <f:selectItem itemLabel="Seleccione tipo de IVA" itemValue="-1" />
 							            <f:selectItems value="#{stockBean.tiposIVA}" />
 							        </p:selectOneMenu>
-								</p:column>
-							</p:row>					        
-						</h:panelGrid>
+								</div>
+							</div>
+							
+							<div class="row" style="margin-bottom: 1%;">
+								<div class="col-lg-1 col-lg-offset-10">
+									<p:commandButton value="Confirmar" update="panel"
+									actionListener="#{stockBean.altaArticulo}"
+									icon="ui-icon-check" />
+								</div>
+								<div class="col-lg-1">
+									<p:commandButton value="Cancelar" update="panel"/>
+								</div>
+							</div>
+						</div>
 					</p:panel>
 				</div>
 			</div>

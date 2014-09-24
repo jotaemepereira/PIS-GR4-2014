@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:view contentType="text/html">
+	<h:head>
+		<link href="../CSS/General.css" rel="stylesheet" />
+		<f:facet name="first">
+			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+			<title>DUSA</title>
+		</f:facet>
+	</h:head>
+	<h:body>
+		<h:form id="form1">
+			<p:growl id="messages" showDetail="true" />
+			<ui:include src="../cabezal.xhtml" />
+
+			<ui:include src="../menuVertical/ventas.xhtml" />
+			<!--		-->
+			<div class="vpanel_right">
+				<div class="wrapper">
+					<!-- 				CONTENIDO DE PAGINA -->
+
+					<p:inputText id="descripcion" value="#{ventaBean.descripcion}">
+					</p:inputText>
+					
+					<p:commandButton value="Buscar" id="ajax"  actionListener="#{ventaBean.buttonAction}" styleClass="ui-priority-primary" />
+
+
+					<p:layout style="min-width:400px;min-height:200px;">
+						<p:layoutUnit position="west" resizable="true" size="100"
+							minSize="40" maxSize="200">
+							
+						<div>
+							<table style="float: right; text-align: right; width: 250px;">
+								<tr>
+									<td style="font-weight: bold;">Total</td>
+									<td><h:outputText id="total"
+											value="$ #{ventaBean.total}"></h:outputText></td>
+								</tr>
+							</table>
+
+							<div class="clearBoth"></div>
+						</div>
+							<div style="margin-top: 20px; text-align: right;">
+							<p:commandButton type="button" onclick="rc()" value="Enviar a facturar" />
+						</div>
+						
+    					</p:layoutUnit>
+    				
+					<p:layoutUnit position="center">
+					
+					<p:dataTable id="TablaVentas" var="venta"
+							value="#{ventaBean.lineasVenta}" editable="true" editMode="row"
+							editingRow="true" rowStyleClass="primefacesRow">
+
+							<p:column headerText="Nombre">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="$ #{venta.nombre}" />
+									</f:facet>
+									<f:facet name="input">
+										<h:outputText value="$ #{venta.nombre}" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+		
+						<p:column headerText="Principio Activo">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="$ #{venta.principioActivo}" />
+									</f:facet>
+									<f:facet name="input">
+										<h:outputText value="$ #{venta.principioActivo}" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							
+							
+						<p:column headerText="Concentracion">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="$ #{venta.concentracion}" />
+									</f:facet>
+									<f:facet name="input">
+										<h:outputText value="$ #{venta.concentracion}" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+						<p:column headerText="Presentacion">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="$ #{venta.presentacion}" />
+								</f:facet>
+								<f:facet name="input">
+									<h:outputText value="$ #{venta.presentacion}" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+
+						<p:column headerText="Descripcion">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="$ #{venta.descripcion}" />
+									</f:facet>
+									<f:facet name="input">
+										<h:outputText value="$ #{venta.descripcion}" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							
+							
+						<p:column headerText="Laboratorio">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="$ #{venta.laboratorio}" />
+									</f:facet>
+									<f:facet name="input">
+										<h:outputText value="$ #{venta.laboratorio}" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Precio">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="$ #{venta.precioVenta}" />
+									</f:facet>
+									<f:facet name="input">
+										<h:outputText value="$ #{venta.precioVenta}" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+
+							<p:column headerText="Descuento">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{venta.discount}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{venta.discount}" style="width:100%">
+											<f:ajax event="change" execute="@this" />
+										</p:inputText>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+						</p:dataTable>
+					
+					
+    				</p:layoutUnit>
+					</p:layout>
+						
+
+
+
+
+
+
+				</div>
+			</div>
+			<p:ajaxStatus
+				style="width:64px;height:64px;position:fixed;right:5px;bottom:5px"
+				id="ajaxStatusPanel0">
+				<f:facet name="start">
+					<h:graphicImage value="Images/ajax_loading_big.gif" />
+				</f:facet>
+
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+		</h:form>
+	</h:body>
+
+</f:view>
+</html>
