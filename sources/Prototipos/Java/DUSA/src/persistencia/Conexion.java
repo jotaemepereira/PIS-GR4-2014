@@ -10,7 +10,7 @@ import javax.naming.NamingException;
 public class Conexion {
 	public static Connection getConnection() throws NamingException,
 			SQLException {
-		try {
+	/*	try {
 			Class.forName(FacesContext.getCurrentInstance()
 					.getExternalContext().getInitParameter("DRIVER"));
 		} catch (ClassNotFoundException e) {
@@ -23,6 +23,18 @@ public class Conexion {
 				.getExternalContext().getInitParameter("DBPWD");
 		String connection = FacesContext.getCurrentInstance()
 				.getExternalContext().getInitParameter("CONNSTRING");
+		return DriverManager.getConnection(connection, user, password);
+		*/
+		
+		try {
+			Class.forName("org.postgresql.Driver");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+		}
+
+		String user = "root";
+		String password = "root";
+		String connection = "jdbc:postgresql://localhost:5432/pisgr4";
 		return DriverManager.getConnection(connection, user, password);
 	}
 

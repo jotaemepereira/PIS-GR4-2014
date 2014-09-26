@@ -74,10 +74,30 @@ public class ProveedoresBean implements Serializable {
 			return;
 		}
 		
-		proveedor.setRUT(RUT);
-		proveedor.setRazonSocial(razonSocial);
-		proveedor.setTelefono(telefono);
-		proveedor.setDireccion(direccion);
+		try {
+			proveedor.setRUT(RUT);
+		} catch (Excepciones e1) {
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
+			return;
+		}
+		try {
+			proveedor.setRazonSocial(razonSocial);
+		} catch (Excepciones e1) {
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
+			return;
+		}
+		try {
+			proveedor.setTelefono(telefono);
+		} catch (Excepciones e1) {
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
+			return;
+		}
+		try {
+			proveedor.setDireccion(direccion);
+		} catch (Excepciones e1) {
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
+			return;
+		}
 		
 		try {
 			FabricaSistema.getISistema().altaProveedor(proveedor);
