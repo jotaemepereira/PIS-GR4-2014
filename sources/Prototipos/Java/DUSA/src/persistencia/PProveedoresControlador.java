@@ -1,6 +1,5 @@
 package persistencia;
 
-import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,34 +18,24 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 		String query = "INSERT INTO suppliers " +
 						"(supplier_id, rut, companyname, phone, supplier_address, comercialname, last_modified, status) " +
 						" VALUES " +
-						" (?, ?, ?, ?, ?, ?, ?, ?);";
-		String query_id =	"SELECT MAX(supplier_id) as id FROM suppliers";
+						" (nextval('SUPPLIER_ID_SEQ'), ?, ?, ?, ?, ?, ?, ?);";
 		
 		try {
 			Connection c = Conexion.getConnection();
 			
-			Statement stmt_id = c.createStatement();
-			
-			// Traigo el ultimo id insertado en la bd y le sumo uno
-			ResultSet rs = stmt_id.executeQuery(query_id);
-			int id = 1;
-			while(rs.next()){
-				id = rs.getInt("id") + 1;
-			}
-			System.out.print("id: " + id + "\n");
 			Date hoy = new Date();
 			Long time = hoy.getTime();
 			
 			// Seteo los datos a insertar en la bd
 			stmt = c.prepareStatement(query);
-			stmt.setInt(1, id);
-			stmt.setString(2, proveedor.getRUT());
-			stmt.setString(3, proveedor.getRazonSocial());
-			stmt.setString(4, proveedor.getTelefono());
-			stmt.setString(5, proveedor.getDireccion());
-			stmt.setString(6, proveedor.getNombreComercial());
-			stmt.setDate(7, new java.sql.Date(time));
-			stmt.setBoolean(8, true);
+			//stmt.setInt(1, id);
+			stmt.setString(1, proveedor.getRUT());
+			stmt.setString(2, proveedor.getRazonSocial());
+			stmt.setString(3, proveedor.getTelefono());
+			stmt.setString(4, proveedor.getDireccion());
+			stmt.setString(5, proveedor.getNombreComercial());
+			stmt.setDate(6, new java.sql.Date(time));
+			stmt.setBoolean(7, true);
 			
 			stmt.executeUpdate();
 			stmt.close();
