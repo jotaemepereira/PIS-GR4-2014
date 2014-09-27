@@ -110,6 +110,15 @@ public class ProveedoresBean implements Serializable {
 		
 		// si todo bien aviso y vacio el formulario
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El proveedor ha sido dado de alta correctamente", ""));
+		
+		this.direccion = "";
+		this.nombreComercial = "";
+		this.razonSocial = "";
+		this.RUT = "";
+		this.telefono = "";
+	}
+	
+	public void cancelarAltaProveedor(){
 		this.direccion = "";
 		this.nombreComercial = "";
 		this.razonSocial = "";

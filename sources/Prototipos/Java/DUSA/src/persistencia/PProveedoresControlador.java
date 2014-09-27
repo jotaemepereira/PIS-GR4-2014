@@ -16,9 +16,9 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 		PreparedStatement stmt = null;
 		
 		String query = "INSERT INTO suppliers " +
-						"(supplier_id, rut, companyname, phone, supplier_address, comercialname, last_modified, status) " +
+						"(rut, companyname, phone, supplier_address, comercialname, last_modified, status) " +
 						" VALUES " +
-						" (nextval('SUPPLIER_ID_SEQ'), ?, ?, ?, ?, ?, ?, ?);";
+						" (?, ?, ?, ?, ?, ?, ?);";
 		
 		try {
 			Connection c = Conexion.getConnection();
