@@ -10,7 +10,7 @@ public class Proveedor {
 	private String nombreComercial = "";
 	
 	public Proveedor(String nombreComercial) throws Excepciones{
-		if((nombreComercial == null) || (nombreComercial == "")){
+		if((nombreComercial == null) || (nombreComercial == "") || (nombreComercial.trim() != "")){
 			throw(new Excepciones("Faltan datos", Excepciones.ERROR_DATOS));
 		}
 		this.nombreComercial = nombreComercial;

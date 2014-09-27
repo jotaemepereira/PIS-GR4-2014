@@ -66,11 +66,8 @@
 								
 							<div class="row" style="margin-bottom: 1%;">
 								<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-									<p:remoteCommand name="alta" update="panel" actionListener="#{proveedoresBean.altaProveedor}" />
-									<p:remoteCommand name="cancelar" update="panel" actionListener="#{proveedoresBean.cancelarAltaProveedor}" />
-									
-									<h:button value="Cancelar" onclick="cancelar()" class="btn btn-default pull-right" />
-									<h:button value="Confirmar" onclick="alta()" class="btn btn-success pull-right" />
+									<h:commandButton value="Cancelar"  update="panel" actionListener="#{proveedoresBean.cancelarAltaProveedor}" class="btn btn-default pull-right" type="reset" />
+									<h:commandButton value="Confirmar" update="panel" actionListener="#{proveedoresBean.altaProveedor}" class="btn btn-success pull-right" />
 								</div>								
 							</div>
 							
