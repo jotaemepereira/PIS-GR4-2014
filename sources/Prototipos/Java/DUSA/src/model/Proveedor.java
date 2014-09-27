@@ -56,7 +56,7 @@ public class Proveedor {
 		return nombreComercial;
 	}
 	public void setNombreComercial(String nombreComercial) throws Excepciones{
-		if((nombreComercial == null) || (nombreComercial == "") || (nombreComercial.trim() != "")){
+		if((nombreComercial == null) || (nombreComercial == "") || (nombreComercial.trim() == "")){
 			throw(new Excepciones("Faltan datos", Excepciones.ERROR_DATOS));
 		}
 		this.nombreComercial = nombreComercial;
