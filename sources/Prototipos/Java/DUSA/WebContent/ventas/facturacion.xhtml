@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:view contentType="text/html">
+	<h:head>
+		<link href="../CSS/General.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap-theme.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
+		<link href="../JS/chosen.min.css" rel="stylesheet" />
+		<script src="../JS/bootstrap.js"></script>
+		<script src="../JS/bootstrap.min.js"></script>
+		<script src="../JS/chosen.jquery.min.js"></script>
+		<script src="../JS/chosen.proto.min.js"></script>
+		<f:facet name="first">
+			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+			<title>DUSA</title>
+		</f:facet>
+	</h:head>
+	<h:body>
+		<h:form id="form1">
+			<p:growl id="messages" showDetail="true" />
+			<ui:include src="../cabezal.xhtml" />
+			<ui:include src="../menuVertical/ventas.xhtml" />
+
+			<div class="vpanel_right">
+				<div class="wrapper">
+
+					<p:panel id="panel" header="Facturación">
+						<div class="container-fluid">
+							<div class="row" style="margin-bottom: 1%;">
+								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+									<p:dataTable id="tablaVentas" var="venta"
+										value="#{facturacionBean.ventas}" >
+
+										<p:column headerText="ID">
+											<h:outputText value="#{venta.ventaId}" />
+										</p:column>
+
+										<p:column headerText="Fecha">
+											<h:outputText value="#{venta.fechaVenta}" />
+										</p:column>
+
+										<p:column headerText="Fecha">
+											<h:outputText value="#{venta.usuario.nombre}" />
+										</p:column>
+
+										<p:column headerText="Fecha">
+											<h:outputText value="#{venta.montoTotalAPagar}" />
+										</p:column>
+
+										<p:column style="width:32px;text-align: center">
+											<p:commandButton actionListener="#{facturacionBean.facturar}"
+												styleClass="btn btn-default pull-right" title="Facturar">
+												<f:setPropertyActionListener value="#{venta}"
+													target="#{facturacionBean.ventaSeleccionada}" />
+											</p:commandButton>
+										</p:column>
+
+									</p:dataTable>
+								</div>
+							</div>
+
+
+						</div>
+					</p:panel>
+				</div>
+			</div>
+		</h:form>
+	</h:body>
+</f:view>
+</html>

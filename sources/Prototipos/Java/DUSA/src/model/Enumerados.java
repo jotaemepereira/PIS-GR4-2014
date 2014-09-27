@@ -18,6 +18,8 @@ public class Enumerados {
 	
 	public class EstadoVenta {
 		public static final char PENDIENTE = 'P';
+		public static final char FACTURANDO = 'E';
+		public static final char FACTURADA = 'F';
 	}
 	
 }
