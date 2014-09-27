@@ -8,6 +8,7 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import controladores.FabricaSistema;
@@ -21,7 +22,7 @@ import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
 
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class StockBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -130,7 +131,7 @@ public class StockBean implements Serializable{
 		this.proveedoresSeleccionados = proveedoresSeleccionados;
 	}
 	
-	public List<DTLineaPedido> pedidoAutomaticoVentas() {
+	public void pedidoAutomaticoVentas() {
 		if (iniciado == 0) {
 		for (int i=0; i<5; i++) {
 			DTLineaPedido dt = new DTLineaPedido();
@@ -141,7 +142,6 @@ public class StockBean implements Serializable{
 		 }
 		 iniciado = 1;
 		}
-		return this.pedidos;
 		//return FabricaSistema.getISistema().pedidoAutomaticoVentas();
 	}
 	
@@ -181,7 +181,9 @@ public class StockBean implements Serializable{
 		formasVenta.add(fv);
 		fv = new DTFormasVenta();
 		fv.setFormaVenta(model.Enumerados.formasVenta.controlMedico);
-		fv.setDescripcion("Control médico");
+		fv.setDescripcion("Control mï¿½dico");
 		formasVenta.add(fv);
+		
+		pedidoAutomaticoVentas();
 	}
 }
