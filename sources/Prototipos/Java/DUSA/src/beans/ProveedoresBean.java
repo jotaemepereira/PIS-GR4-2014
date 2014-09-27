@@ -59,7 +59,7 @@ public class ProveedoresBean implements Serializable {
     }
 	    
 	public void altaProveedor(){
-		Proveedor proveedor = new Proveedor();
+		Proveedor proveedor;
 		FacesContext context = FacesContext.getCurrentInstance();
 		
 		if(nombreComercial.length() < 4){
@@ -67,22 +67,52 @@ public class ProveedoresBean implements Serializable {
 			return;
 		}
 		
-		proveedor.setRUT(RUT);
-		proveedor.setRazonSocial(razonSocial);
-		proveedor.setTelefono(telefono);
-		proveedor.setDireccion(direccion);
-		proveedor.setNombreComercial(nombreComercial);
+		try {
+			proveedor = new Proveedor(nombreComercial);
+		} catch (Excepciones e1) {
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre Comercial: Error de validación: se necesita un valor.", ""));
+			return;
+		}
+		
+		try {
+			proveedor.setRUT(RUT);
+		} catch (Excepciones e1) {
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
+			return;
+		}
+		try {
+			proveedor.setRazonSocial(razonSocial);
+		} catch (Excepciones e1) {
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
+			return;
+		}
+		try {
+			proveedor.setTelefono(telefono);
+		} catch (Excepciones e1) {
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
+			return;
+		}
+		try {
+			proveedor.setDireccion(direccion);
+		} catch (Excepciones e1) {
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
+			return;
+		}
 		
 		try {
 			FabricaSistema.getISistema().altaProveedor(proveedor);
 		} catch (Excepciones e) {
-			if(e.getErrorCode() == Excepciones.ERROR_DATOS){
-				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre Comercial: Error de validación: se necesita un valor.", ""));
+			if(e.getErrorCode() == Excepciones.PROVEEDOR_RUT_EXISTENTE){
+				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "RUT: Error de validación: ya existe un proveedor en el sistema con ese RUT.", ""));
 				return;
+			}else if(e.getErrorCode() == Excepciones.PROVEEDOR_RUT_EXISTENTE){
+				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Nombre Comercial: Ya existe un proveedor en el sistema con ese nombre comercial", ""));
 			}else{
-				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Ya existe un proveedor en el sistema con ese nombre comercial", ""));
+				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
+				return;
 			}
 		}
+		
 		// si todo bien aviso y vacio el formulario
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El proveedor ha sido dado de alta correctamente", ""));
 		this.direccion = "";

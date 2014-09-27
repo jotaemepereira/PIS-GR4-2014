@@ -27,8 +27,9 @@ public class ProveedoresBeanTest {
 		assertEquals("Test telefono", 26043784, test.getTelefono());
 		
 		// verifico la funcion de agregarProveedor
-		//=> caso de RUT mal ingresado
-		test.setRUT("99");
+		//=> caso de no ingreso de nombre comercial
+		test.setNombreComercial("");
+		
 		
 	}
 

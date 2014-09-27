@@ -76,10 +76,14 @@ table {
 	margin-left: 220px;
 }
 
-input[type="text"] {
-	height: 15px;
-	font-size: 15px;
-}
+/* input[type="text"] { */
+/* 	height: 15px; */
+/* 	font-size: 15px; */
+/* } */
+/* input[type="text"].ui-selectonemenu-filter, input[type="text"].ui-selectlistbox-filter { */
+/* 	height: 23px; */
+/* 	font-size: 15px; */
+/* }  */
 
 table tr {
 	height: 35px;
