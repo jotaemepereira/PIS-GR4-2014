@@ -3,31 +3,32 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
-
+	
 	<div class="vpanel_left">
-		<div class="vnav">
-			<a href="altaProveedor.jsf">
-				<div class="vnav_item" style="margin-top: -1px;">
-					<div class="vnav_item_text">Alta de proveedor</div>
-					<div class="clearBoth"></div>
-				</div>
-			</a> <a href="#">
-				<div class="vnav_item" style="margin-top: -1px;">
-					<div class="vnav_item_text">Modificar proveedor</div>
-					<div class="clearBoth"></div>
-				</div>
-			</a> <a href="#">
-				<div class="vnav_item" style="margin-top: -1px;">
-					<div class="vnav_item_text">Baja de proveedor</div>
-					<div class="clearBoth"></div>
-				</div>
-			</a> <a href="#">
-				<div class="vnav_item" style="margin-top: -1px;">
-					<div class="vnav_item_text">Busqueda de proveedor</div>
-					<div class="clearBoth"></div>
-				</div>
-			</a>
 
+		<div class="vnav">
+			<ul style="list-style:none">
+				<li>
+					<a href="altaProveedor.jsf">
+						<span class="glyphicon glyphicon-plus"></span> Alta de proveedor
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<span class="glyphicon glyphicon-pencil"></span> Modificación de proveedor
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<span class="glyphicon glyphicon-remove"></span> Baja de proveedor
+					</a>
+				</li>
+				<li>
+					<a href="#">
+						<span class="glyphicon glyphicon-search"></span> Búsqueda de proveedor
+					</a>
+				</li>
+			</ul>
 		</div>
 	</div>
 </ui:composition>

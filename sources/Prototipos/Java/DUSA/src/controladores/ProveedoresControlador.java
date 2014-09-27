@@ -20,7 +20,7 @@ public class ProveedoresControlador implements IProveedores {
 		}*/
 		
 		// Me fijo si ya existe otro proveedor con este RUT en caso que se haya ingresado algo en el campo
-		if((proveedor.getRUT() != null) && (FabricaPersistencia.getInstanciaProveedoresPersistencia().existeProveedorRUT(proveedor.getRUT()))){
+		if((proveedor.getRUT() != "") && (FabricaPersistencia.getInstanciaProveedoresPersistencia().existeProveedorRUT(proveedor.getRUT()))){
 			throw(new Excepciones("ya existe", Excepciones.PROVEEDOR_RUT_EXISTENTE));
 		}
 		System.out.print("ok");

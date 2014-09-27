@@ -61,12 +61,7 @@ public class ProveedoresBean implements Serializable {
 	public void altaProveedor(){
 		Proveedor proveedor;
 		FacesContext context = FacesContext.getCurrentInstance();
-		
-		if(nombreComercial.length() < 4){
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre Comercial: Error de validación: se necesita un valor.", ""));
-			return;
-		}
-		
+
 		try {
 			proveedor = new Proveedor(nombreComercial);
 		} catch (Excepciones e1) {
