@@ -5,11 +5,9 @@ import java.math.BigDecimal;
 
 public class DTVenta implements Serializable {
 	private int productId;
-	private String nombre;
 	private String presentacion;
 	private String principioActivo;
 	private String descripcion;
-	private String concentracion;
 	private String laboratorio;
 	private String barcode;
 	private BigDecimal precioVenta = new BigDecimal(0);
@@ -56,14 +54,6 @@ public class DTVenta implements Serializable {
 		this.descuento = descuento;
 	}
 
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
 	public String getPresentacion() {
 		return presentacion;
 	}
@@ -86,14 +76,6 @@ public class DTVenta implements Serializable {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
-	}
-
-	public String getConcentracion() {
-		return concentracion;
-	}
-
-	public void setConcentracion(String concentracion) {
-		this.concentracion = concentracion;
 	}
 
 	public String getLaboratorio() {

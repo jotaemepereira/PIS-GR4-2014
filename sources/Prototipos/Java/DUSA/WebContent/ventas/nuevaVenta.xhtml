@@ -9,6 +9,13 @@
 <f:view contentType="text/html">
 	<h:head>
 		<link href="../CSS/General.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap-theme.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
+		<link href="../JS/chosen.min.css" rel="stylesheet" />
+		<script src="../JS/bootstrap.js"></script>
+		<script src="../JS/bootstrap.min.js"></script>
+		<script src="../JS/chosen.jquery.min.js"></script>
+		<script src="../JS/chosen.proto.min.js"></script>
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
@@ -25,123 +32,113 @@
 				<div class="wrapper">
 					<!-- 				CONTENIDO DE PAGINA -->
 
-					<p:inputText id="descripcion" value="#{ventaBean.descripcion}">
-					</p:inputText>
+					<p:panel id="panel" header="Nueva Venta">
+						<p:row>
 
-					<p:commandButton value="Buscar" id="ajax"
-						actionListener="#{ventaBean.buttonAction}"
-						styleClass="ui-priority-primary" />
+							<p:inputText id="descripcion" value="#{ventaBean.descripcion}">
+							</p:inputText>
 
-					<p:layout style="min-width:400px;min-height:200px;">
+							<p:commandButton value="Buscar" id="ajax"
+								actionListener="#{ventaBean.agregarLineasVenta()}"
+								styleClass="ui-priority-primary" />
 
-						<!-- en este layout van las ventas ya agregadas al pedido -->
-						<p:layoutUnit position="west" resizable="true" size="460"
-							minSize="400" maxSize="600">
+							<p:layout style="min-width:400px;min-height:200px;">
 
-							<p:dataTable id="TablaVentas2" var="venta2"
-								value="#{ventaBean.lineasVenta2}" editable="true" editMode="row"
-								editingRow="true" rowStyleClass="primefacesRow">
+								<!-- en este layout van las ventas ya agregadas al pedido -->
+								<p:layoutUnit position="west" resizable="true" size="380"
+									minSize="340" maxSize="450">
 
-								<p:column headerText="Nombre">
-									<h:outputText value="$ #{venta2.nombre}" />
-								</p:column>
-								<p:column headerText="Presentacion">
-									<h:outputText value="$ #{venta2.presentacion}" />
-								</p:column>
-								<p:column headerText="Precio">
-									<h:outputText value="$ #{venta2.precioVenta}" />
-								</p:column>
-								<p:column headerText="Cantidad">
-									<h:inputText value="$ #{venta2.cantidad}" />
-								</p:column>
+									<p:dataTable id="TablaVentas2" var="venta2"
+										value="#{ventaBean.lineasVenta2}" editable="true"
+										editMode="row" editingRow="true" rowStyleClass="primefacesRow">
 
-							</p:dataTable>
-							<div>
-								<table style="float: right; text-align: right; width: 250px;">
-									<tr>
-										<td style="font-weight: bold;">Total</td>
-										<td><h:outputText id="total" value="$ #{ventaBean.total}"></h:outputText></td>
-									</tr>
-								</table>
-								<div class="clearBoth"></div>
-							</div>
-							<div style="margin-top: 20px; text-align: right;">
-								<p:commandButton type="button" onclick="rc()"
-									value="Enviar a facturar" />
-							</div>
-						</p:layoutUnit>
+										<p:column headerText="Presentacion">
+											<h:outputText value="$ #{venta2.presentacion}" />
+										</p:column>
+										<p:column headerText="Precio">
+											<h:outputText value="$ #{venta2.precioVenta}" />
+										</p:column>
+										<p:column headerText="Cantidad">
+											<h:inputText value="$ #{venta2.cantidad}" />
+										</p:column>
 
-						<!-- en este layout estan los articulos que busca para poder agregar a la nueva venta osea se van agregando al otro layout -->
-						<p:layoutUnit position="center">
+									</p:dataTable>
+									<div>
+										<table style="float: right; text-align: right; width: 250px;">
+											<tr>
+												<td style="font-weight: bold;">Total</td>
+												<td><h:outputText id="total"
+														value="$ #{ventaBean.strTotal()}"></h:outputText></td>
+											</tr>
+										</table>
+										<div class="clearBoth"></div>
+									</div>
+									<div style="margin-top: 20px; text-align: right;">
+										<p:commandButton type="button" onclick="rc()"
+											value="Enviar a facturar" />
+									</div>
+								</p:layoutUnit>
 
-							<p:dataTable id="TablaVentas" var="venta"
-								value="#{ventaBean.lineasVenta}" editable="true" editMode="row"
-								selection="#{ventaBean.ventaSeleccionada}" editingRow="true"
-								rowStyleClass="primefacesRow">
+								<!-- en este layout estan los articulos que busca para poder agregar a la nueva venta osea se van agregando al otro layout -->
+								<p:layoutUnit position="center">
 
-								<p:column selectionMode="multiple"
-									style="width:16px;text-align:center" />
+									<p:dataTable id="TablaVentas" var="venta"
+										value="#{ventaBean.lineasVenta}" editable="true"
+										editMode="row" selection="#{ventaBean.ventasSeleccionadas}"
+										editingRow="true" rowStyleClass="primefacesRow">
 
-								<p:column headerText="Nombre">
-									<f:facet name="output">
-										<h:outputText value="$ #{venta.nombre}" />
-									</f:facet>
-								</p:column>
+										<p:column selectionMode="multiple"
+											style="width:16px;text-align:center" />
 
-								<p:column headerText="Principio Activo">
-									<f:facet name="output">
-										<h:outputText value="$ #{venta.principioActivo}" />
-									</f:facet>
-								</p:column>
+										<p:column headerText="Descripcion">
+											<f:facet name="output">
+												<h:outputText value="$ #{venta.descripcion}" />
+											</f:facet>
+										</p:column>
 
+										<p:column headerText="Principio Activo">
+											<f:facet name="output">
+												<h:outputText value="$ #{venta.principioActivo}" />
+											</f:facet>
+										</p:column>
 
-								<p:column headerText="Concentracion">
-									<f:facet name="output">
-										<h:outputText value="$ #{venta.concentracion}" />
-									</f:facet>
-								</p:column>
+										<p:column headerText="Presentacion">
+											<f:facet name="output">
+												<h:outputText value="$ #{venta.presentacion}" />
+											</f:facet>
+										</p:column>
 
-								<p:column headerText="Presentacion">
-									<f:facet name="output">
-										<h:outputText value="$ #{venta.presentacion}" />
-									</f:facet>
-								</p:column>
+										<p:column headerText="Laboratorio">
+											<f:facet name="output">
+												<h:outputText value="$ #{venta.laboratorio}" />
+											</f:facet>
+										</p:column>
 
-								<p:column headerText="Descripcion">
-									<f:facet name="output">
-										<h:outputText value="$ #{venta.descripcion}" />
-									</f:facet>
-								</p:column>
+										<p:column headerText="Precio">
+											<f:facet name="output">
+												<h:outputText value="$ #{venta.precioVenta}" />
+											</f:facet>
+										</p:column>
 
+										<p:column headerText="Descuento">
+											<p:inputText value="#{venta.descuento}" style="width:100%">
+												<f:ajax event="change" execute="@this" />
+											</p:inputText>
+										</p:column>
 
-								<p:column headerText="Laboratorio">
-									<f:facet name="output">
-										<h:outputText value="$ #{venta.laboratorio}" />
-									</f:facet>
-								</p:column>
+										<f:facet name="footer">
+											<p:commandButton type="button" onclick="rc()" value="Agregar"
+												actionListener="#{ventaBean.agregarVenta(ventasSeleccionadas)}"
+												update="TablaVentas" />
+										</f:facet>
 
-								<p:column headerText="Precio">
-									<f:facet name="output">
-										<h:outputText value="$ #{venta.precioVenta}" />
-									</f:facet>
-								</p:column>
+									</p:dataTable>
 
-								<p:column headerText="Descuento">
-									<p:inputText value="#{venta.descuento}" style="width:100%">
-										<f:ajax event="change" execute="@this" />
-									</p:inputText>
-								</p:column>
+								</p:layoutUnit>
+							</p:layout>
 
-								<f:facet name="footer">
-									<p:commandButton type="button" onclick="rc()" value="Agregar"
-										actionListener="#{ventaBean.AgregarItem(venta)}"
-										update="TablaVentas" />
-								</f:facet>
-
-							</p:dataTable>
-
-						</p:layoutUnit>
-					</p:layout>
+						</p:row>
+					</p:panel>
 
 				</div>
 			</div>
