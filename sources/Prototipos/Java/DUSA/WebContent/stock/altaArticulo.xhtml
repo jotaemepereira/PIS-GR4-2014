@@ -23,10 +23,7 @@
 			<ui:include src="../menuVertical/stock.xhtml" />
 
 			<div class="vpanel_right">
-				<div class="wrapper">
-					<p:remoteCommand name="rc" update="tablaProveedores"
-					actionListener="#{stockBean.agregarProveedor}" />
-				
+				<div class="wrapper">				
 					<p:panel id="panel" header="Alta de artículo">				
 						<div class="container-fluid">
 							<div class="row" style="margin-bottom: 1%;">
@@ -73,8 +70,7 @@
 											required="false" />
 										</div>
 										<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-											<h:button value="Agregar" onclick="rc()" class="btn btn-info"
-											icon="ui-icon-plusthick" />
+											<p:commandButton value="Agregar" update="tablaProveedores" actionListener="#{stockBean.agregarProveedor}" class="btn btn-info"/>
 										</div>
 									</div>
 								</div>

@@ -20,7 +20,7 @@ public class SistemaControlador implements ISistema {
 	}
 
 	@Override
-	public void altaArticulo(Articulo articulo) {
+	public void altaArticulo(Articulo articulo) throws Excepciones {
 		// TODO: chequeo permisos del usuario
 		FabricaLogica.getIStock().altaArticulo(articulo);
 		

@@ -20,7 +20,7 @@ public class StockControlador implements IStock {
 
 
 	@Override
-	public void altaArticulo(Articulo articulo) {
+	public void altaArticulo(Articulo articulo) throws Excepciones {
 		FabricaPersistencia.getIStockPersistencia().persistirArticulo(articulo);
 	}
 

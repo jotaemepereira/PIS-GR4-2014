@@ -3,6 +3,7 @@ package persistencia;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
+import controladores.Excepciones;
 import model.Articulo;
 import model.LineaPedido;
 import interfaces.IStockPersistencia;
@@ -18,23 +20,48 @@ import interfaces.IStockPersistencia;
 public class PStockControlador implements IStockPersistencia {
 
 	@Override
-	public void persistirArticulo(Articulo articulo) {
+	public void persistirArticulo(Articulo articulo) throws Excepciones{
+		PreparedStatement stmt = null;
+		
+		String query = "INSERT INTO PRODUCTS " +
+						"(PRODUCT_TYPE, DESCRIPTION, KEY1, KEY2, KEY3, IS_PSYCHOTROPIC, IS_NARCOTIC, SALE_CODE, AUTHORIZATION_TYPE,"
+						+ " UNIT_PRICE, SALE_PRICE, LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE, BARCODE, LAST_PRICE_DATE"
+						+ ", NEAREST_DUE_DATE, STOCK, LAST_MODIFIED, STATUS) " +
+						" VALUES " +
+						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?);";
+		
 		try {
 			Connection c = Conexion.getConnection();
 			
-			// TODO Guardar los proveedores
+			// Seteo los datos a insertar en la bd
+			stmt = c.prepareStatement(query);
+			stmt.setString(1, String.valueOf(articulo.getTipoArticulo()));//Null
+			stmt.setString(2, articulo.getDescripcion());//Not Null
+			stmt.setString(3, articulo.getClave1());//Null
+			stmt.setString(4, articulo.getClave2());//Null
+			stmt.setString(5, articulo.getClave3());//Null
+			stmt.setBoolean(6, articulo.isEsPsicofarmaco());//Not Null
+			stmt.setBoolean(7, articulo.isEsEstupefaciente());//Not Null
+			stmt.setString(8, String.valueOf(articulo.getCodigoVenta()));//Null
+			stmt.setString(9, String.valueOf(articulo.getTipoAutorizacion()));//Not Null
+			stmt.setBigDecimal(10, articulo.getPrecioUnitario());//Not Null
+			stmt.setBigDecimal(11, articulo.getPrecioVenta());//Not Null
+			stmt.setBigDecimal(12, articulo.getCostoLista());//Not Null
+			stmt.setBigDecimal(13, articulo.getCostoOferta());//Null
+			stmt.setBigDecimal(14, articulo.getUltimoCosto());//Not Null
+			stmt.setBigDecimal(15, articulo.getCostoPromedio());//Null
+			stmt.setInt(16, articulo.getTipoIva());//Null
+			stmt.setString(17, articulo.getCodigoBarras());//Null
+			stmt.setDate(18, new java.sql.Date(articulo.getFechaUltimoPrecio().getTime()));//Not Null
+			stmt.setDate(19, new java.sql.Date(articulo.getVencimientoMasCercano().getTime()));//Null
+			stmt.setInt(20, articulo.getStock());//Not Null
+			stmt.setBoolean(21, true);//Not Null
 			
-			// TODO Guardar las presentaciones
-			
-			// TODO Guardar las drogas
-			
-			// TODO Guardar las acciones terapéuticas
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			stmt.executeUpdate();
+			stmt.close();
+			c.close();
+		} catch ( Exception e ) {
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 	}
 
@@ -45,11 +72,11 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public Date getUltimoPedido() throws Exception {
+	public Date getUltimoPedido() throws Excepciones {
 		// TODO Auto-generated method stub
 		//Codigo en la base para obtener el ultimo pedido
 		// TODO Auto-generated method stub
-		Connection c = Conexion.getConnection();
+		
 		Date ret = null;
 		Statement stmt = null;
 		String query = "SELECT order_date FROM orders_dusa" +
@@ -57,6 +84,7 @@ public class PStockControlador implements IStockPersistencia {
 				" ORDER BY order_date DESC" +
 				" LIMIT 1;";
 		try {
+			Connection c = Conexion.getConnection();
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
@@ -65,16 +93,16 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.close();
 			c.close();
 		} catch ( Exception e ) {
-			throw e;
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 		return ret;
 	}
 
 	@Override
-	public List<LineaPedido> obtenerArticulosDesde(Date fechaDesde) throws Exception {
+	public List<LineaPedido> obtenerArticulosDesde(Date fechaDesde) throws Excepciones {
 		// TODO Auto-generated method stub
 		List<LineaPedido> ret = new ArrayList<LineaPedido>();
-		Connection c = Conexion.getConnection();
+		
 		Statement stmt = null;
 		String query = "SELECT sd.product_id, p.product_number, SUM(sd.quantity)" +
 				" FROM sales s" +
@@ -83,6 +111,7 @@ public class PStockControlador implements IStockPersistencia {
 				" WHERE s.sale_date > " + fechaDesde.toString() +
 				" GROUP BY sd.product_id, p.product_number;";
 		try {
+			Connection c = Conexion.getConnection();
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
@@ -97,7 +126,7 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.close();
 			c.close();
 		} catch ( Exception e ) {
-			throw e;
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 		return ret;
 	}
