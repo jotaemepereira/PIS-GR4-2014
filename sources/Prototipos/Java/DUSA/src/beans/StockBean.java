@@ -158,7 +158,13 @@ public class StockBean implements Serializable{
 	}
 	
 	public void altaArticulo(){
-		FabricaSistema.getISistema().altaArticulo(articulo);
+		Articulo art = articulo;
+		BigDecimal costo = art.getCostoLista();
+		//FabricaSistema.getISistema().altaArticulo(articulo);
+	}
+	
+	public void cancelarAltaArticulo(){
+		
 	}
 	
 	public StockBean(){
@@ -181,7 +187,7 @@ public class StockBean implements Serializable{
 		formasVenta.add(fv);
 		fv = new DTFormasVenta();
 		fv.setFormaVenta(model.Enumerados.formasVenta.controlMedico);
-		fv.setDescripcion("Control mï¿½dico");
+		fv.setDescripcion("Control médico");
 		formasVenta.add(fv);
 		
 		pedidoAutomaticoVentas();
