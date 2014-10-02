@@ -11,6 +11,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import controladores.Excepciones;
 import controladores.FabricaSistema;
 import model.AccionTer;
 import model.Articulo;
@@ -158,9 +159,12 @@ public class StockBean implements Serializable{
 	}
 	
 	public void altaArticulo(){
-		Articulo art = articulo;
-		BigDecimal costo = art.getCostoLista();
-		//FabricaSistema.getISistema().altaArticulo(articulo);
+		try {
+			FabricaSistema.getISistema().altaArticulo(articulo);
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void cancelarAltaArticulo(){

@@ -28,7 +28,7 @@ public class PStockControlador implements IStockPersistencia {
 						+ " UNIT_PRICE, SALE_PRICE, LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE, BARCODE, LAST_PRICE_DATE"
 						+ ", NEAREST_DUE_DATE, STOCK, LAST_MODIFIED, STATUS) " +
 						" VALUES " +
-						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?);";
+						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?);";
 		
 		try {
 			Connection c = Conexion.getConnection();
@@ -55,7 +55,8 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.setDate(18, new java.sql.Date(articulo.getFechaUltimoPrecio().getTime()));//Not Null
 			stmt.setDate(19, new java.sql.Date(articulo.getVencimientoMasCercano().getTime()));//Null
 			stmt.setInt(20, articulo.getStock());//Not Null
-			stmt.setBoolean(21, true);//Not Null
+			stmt.setInt(21, articulo.getStockMinimo());//Null
+			stmt.setBoolean(22, true);//Not Null
 			
 			stmt.executeUpdate();
 			stmt.close();

@@ -27,6 +27,7 @@ public class Articulo {
 	private Date fechaUltimoPrecio;
 	private Date vencimientoMasCercano;
 	private int stock;
+	private int stockMinimo;
 	private Date fechaUltimaModificacion;
 	private boolean status;
 	private List<Proveedor> proveedores;
@@ -165,6 +166,12 @@ public class Articulo {
 	}
 	public void setStock(int stock) {
 		this.stock = stock;
+	}
+	public int getStockMinimo() {
+		return stockMinimo;
+	}
+	public void setStockMinimo(int stockMinimo) {
+		this.stockMinimo = stockMinimo;
 	}
 	public Date getFechaUltimaModificacion() {
 		return fechaUltimaModificacion;
