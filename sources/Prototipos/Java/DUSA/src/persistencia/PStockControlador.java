@@ -14,6 +14,7 @@ import javax.naming.NamingException;
 
 import controladores.Excepciones;
 import model.Articulo;
+import model.Enumerados;
 import model.LineaPedido;
 import interfaces.IStockPersistencia;
 
@@ -26,9 +27,9 @@ public class PStockControlador implements IStockPersistencia {
 		String query = "INSERT INTO PRODUCTS " +
 						"(PRODUCT_TYPE, DESCRIPTION, KEY1, KEY2, KEY3, IS_PSYCHOTROPIC, IS_NARCOTIC, SALE_CODE, AUTHORIZATION_TYPE,"
 						+ " UNIT_PRICE, SALE_PRICE, LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE, BARCODE, LAST_PRICE_DATE"
-						+ ", NEAREST_DUE_DATE, STOCK, LAST_MODIFIED, STATUS) " +
+						+ ", NEAREST_DUE_DATE, STOCK, MINIMUM_STOCK, LAST_MODIFIED, STATUS) " +
 						" VALUES " +
-						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?);";
+						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, LOCALTIMESTAMP, ?);";
 		
 		try {
 			Connection c = Conexion.getConnection();
@@ -43,7 +44,7 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.setBoolean(6, articulo.isEsPsicofarmaco());//Not Null
 			stmt.setBoolean(7, articulo.isEsEstupefaciente());//Not Null
 			stmt.setString(8, String.valueOf(articulo.getCodigoVenta()));//Null
-			stmt.setString(9, String.valueOf(articulo.getTipoAutorizacion()));//Not Null
+			stmt.setString(9, String.valueOf(Enumerados.habilitado.HABILITADO));//Not Null
 			stmt.setBigDecimal(10, articulo.getPrecioUnitario());//Not Null
 			stmt.setBigDecimal(11, articulo.getPrecioVenta());//Not Null
 			stmt.setBigDecimal(12, articulo.getCostoLista());//Not Null
@@ -52,11 +53,11 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.setBigDecimal(15, articulo.getCostoPromedio());//Null
 			stmt.setInt(16, articulo.getTipoIva());//Null
 			stmt.setString(17, articulo.getCodigoBarras());//Null
-			stmt.setDate(18, new java.sql.Date(articulo.getFechaUltimoPrecio().getTime()));//Not Null
-			stmt.setDate(19, new java.sql.Date(articulo.getVencimientoMasCercano().getTime()));//Null
-			stmt.setInt(20, articulo.getStock());//Not Null
-			stmt.setInt(21, articulo.getStockMinimo());//Null
-			stmt.setBoolean(22, true);//Not Null
+			//stmt.setDate(18, new java.sql.Date(articulo.getFechaUltimoPrecio().getTime()));//Not Null
+			stmt.setNull(18, java.sql.Types.TIMESTAMP);//Null Vencimiento Más Cercano
+			stmt.setInt(19, articulo.getStock());//Not Null
+			stmt.setInt(20, articulo.getStockMinimo());//Null
+			stmt.setBoolean(21, true);//Not Null
 			
 			stmt.executeUpdate();
 			stmt.close();
