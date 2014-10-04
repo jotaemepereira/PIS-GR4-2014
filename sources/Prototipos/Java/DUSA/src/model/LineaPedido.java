@@ -1,40 +1,33 @@
 package model;
 
+
+//@author Guille
 public class LineaPedido {
 
-	int numeroArticulo;
-	int idArticulo;
-	int cantidad;
+	Long 	idArticulo;
+	int 	cantidad;
 
-	public LineaPedido(int numeroArticulo, int idArticulo, int cantidad) {
+	public LineaPedido(Long articulo, int cant) {
 		super();
-		this.numeroArticulo = numeroArticulo;
-		this.idArticulo = idArticulo;
-		this.cantidad = cantidad;
+		this.idArticulo = articulo;
+		this.cantidad = cant;
 	}
 
-	public int getNumeroArticulo() {
-		return numeroArticulo;
-	}
-
-	public void setNumeroArticulo(int numeroArticulo) {
-		this.numeroArticulo = numeroArticulo;
-	}
-
-	public int getIdArticulo() {
+	//Getters y Setters
+	
+	public Long getIdArticulo() {
 		return idArticulo;
 	}
-
-	public void setIdArticulo(int idArticulo) {
+	
+	public void setIdArticulo(Long idArticulo) {
 		this.idArticulo = idArticulo;
 	}
-
+	
 	public int getCantidad() {
 		return cantidad;
 	}
-
+	
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}
-
 }

@@ -11,6 +11,7 @@ public interface IStockPersistencia {
 	
 	public void persistirArticulo(Articulo articulo)throws Excepciones;
 	public Date getUltimoPedido() throws Excepciones;
-	public List<LineaPedido> obtenerArticulosDesde(Date fechaDesde) throws Excepciones;
+	//Deprecated 
+//	public List<LineaPedido> obtenerArticulosDesde(Date fechaDesde) throws Excepciones;
 	
 }

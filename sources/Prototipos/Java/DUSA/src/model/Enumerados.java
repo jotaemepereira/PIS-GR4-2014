@@ -2,7 +2,7 @@ package model;
 
 public class Enumerados {
 
-	public enum paymentType {
+	public enum TipoFormaDePago {
 		CREDITO, CONTADO
 	}
 	

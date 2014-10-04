@@ -16,7 +16,7 @@ public class SistemaControlador implements ISistema {
 	}
 	
 	public List<DTLineaPedido> pedidoAutomaticoVentas() {
-		return FabricaLogica.getIStock().pedidoPorVentas();
+		return null;//FabricaLogica.getIStock().pedidoPorVentas(); Deprecated por ahora
 	}
 
 	@Override

@@ -10,5 +10,5 @@ import datatypes.DTProduct;
 public interface IStock {
 
 	public void altaArticulo(Articulo articulo) throws Excepciones;
-	public List<DTLineaPedido> pedidoPorVentas();
+//	public List<DTLineaPedido> pedidoPorVentas();//Deprecated
 }

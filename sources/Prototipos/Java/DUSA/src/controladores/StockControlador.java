@@ -37,31 +37,31 @@ public class StockControlador implements IStock {
 		return null;
 
 	}
-
-	public List<DTLineaPedido> pedidoPorVentas() {
-		IStockPersistencia isp = FabricaPersistencia.getIStockPersistencia();
-		
-		Date fechaPedido;
-		List<LineaPedido> articulos = new ArrayList<LineaPedido>();
-		List<DTLineaPedido> ret = new ArrayList<DTLineaPedido>();
-
-		try {
-			fechaPedido = isp.getUltimoPedido();
-			articulos = isp.obtenerArticulosDesde(fechaPedido); 
-		}
-		catch (Exception e) {
-			//Que hago con las exceptions?
-		}
-		
-		if (!articulos.isEmpty())
-			for (LineaPedido p : articulos) {
-				DTLineaPedido dt = new DTLineaPedido();
-				dt.setCantidad(p.getCantidad());
-				dt.setIdArticulo(p.getIdArticulo());
-				dt.setNumeroArticulo(p.getNumeroArticulo());
-				ret.add(dt);
-			}
-		return ret;
-		
-	}
+//Deprecated
+//	public List<DTLineaPedido> pedidoPorVentas() {
+//		IStockPersistencia isp = FabricaPersistencia.getIStockPersistencia();
+//		
+//		Date fechaPedido;
+//		List<LineaPedido> articulos = new ArrayList<LineaPedido>();
+//		List<DTLineaPedido> ret = new ArrayList<DTLineaPedido>();
+//
+//		try {
+//			fechaPedido = isp.getUltimoPedido();
+//			articulos = isp.obtenerArticulosDesde(fechaPedido); 
+//		}
+//		catch (Exception e) {
+//			//Que hago con las exceptions?
+//		}
+//		
+//		if (!articulos.isEmpty())
+//			for (LineaPedido p : articulos) {
+//				DTLineaPedido dt = new DTLineaPedido();
+//				dt.setCantidad(p.getCantidad());
+//				dt.setIdArticulo(p.getIdArticulo());
+//				dt.setNumeroArticulo(p.getNumeroArticulo());
+//				ret.add(dt);
+//			}
+//		return ret;
+//		
+//	}
 }
