@@ -6,13 +6,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import persistencia.Database;
 import datatypes.DTVenta;
 
 @ManagedBean
@@ -28,12 +26,24 @@ public class VentaBean implements Serializable {
 	private String principioActivo = "pinc. Act prueba";
 	private String laboratorio = "Laboratorio prueba";
 	private BigDecimal precioVenta = new BigDecimal(0);
+	private String descripcionBusqueda;
+	
 
 	private DTVenta venta = new DTVenta();
 	private List<DTVenta> lineasVenta = new ArrayList<DTVenta>();
 	private List<DTVenta> lineasVenta2 = new ArrayList<DTVenta>();
 	private List<DTVenta> ventasSeleccionadas = new ArrayList<DTVenta>();
+	
 
+	
+	public String getDescripcionBusqueda() {
+		return descripcionBusqueda;
+	}
+
+	public void setDescripcionBusqueda(String descripcionBusqueda) {
+		this.descripcionBusqueda = descripcionBusqueda;
+	}
+	
 	public String getPresentacion() {
 		return presentacion;
 	}
@@ -82,33 +92,49 @@ public class VentaBean implements Serializable {
 			dt.setCantidad(i);
 			dt.setDescripcion(descripcion);
 			dt.setLaboratorio(laboratorio);
-			dt.setPrecioVenta(new BigDecimal(100+i));
+			dt.setPrecioVenta(new BigDecimal(100 + i));
 			dt.setPresentacion(presentacion);
 			dt.setPrincipioActivo(principioActivo);
 			lineasVenta.add(dt);
 		}
+		
+		// Aca abajo esta echo probando con el Database.java para buscar simulando la busqueda  pero me esta explotando hay que ver un poco mas porque no anda :
+		
+		/**
+		Database DB  = Database.getInstance();
+		List<DTVenta> list = DB.getVentas();
+		Iterator<DTVenta> it = list.iterator();
+		while (it.hasNext()){
+			DTVenta v = it.next();
+			if (v.getDescripcion().contains(descripcionBusqueda)){
+				lineasVenta.add(v);
+			}
+		}
+		**/
 	}
 
 	// este agregar es para agregar los productos buscados a la venta
 	public void agregarVenta(ActionEvent actionEvent) {
 
 		List<DTVenta> removidas = new ArrayList<DTVenta>();
-		
+
 		Iterator<DTVenta> it = ventasSeleccionadas.iterator();
 		while (it.hasNext()) {
 			DTVenta d = it.next();
-			//Aca se hace el descuento correspondiente:
+			// Aca se hace el descuento correspondiente:
 			BigDecimal x = (d.getPrecioVenta().multiply(d.getDescuento()));
 			BigDecimal a = new BigDecimal(100);
-			d.setPrecioVenta(x.divide(a));
-			
+			d.setPrecioVenta(d.getPrecioVenta().subtract(x.divide(a)));
+
+			d.setCantidad(1);
+
 			lineasVenta2.add(d);
 			removidas.add(d);
 		}
-		
+
 		ventasSeleccionadas = new ArrayList<DTVenta>();
-		
-		for (DTVenta d : removidas){
+
+		for (DTVenta d : removidas) {
 			lineasVenta.remove(d);
 		}
 	}
@@ -117,6 +143,14 @@ public class VentaBean implements Serializable {
 		BigDecimal total = new BigDecimal(0);
 		Iterator<DTVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
+			
+			// *******Aca tendria que multiplicar el PrecioVenta por la cantidad
+			// pero cuando lo hago se generan errores hay que revisar esto*******
+
+			// BigDecimal cant = new BigDecimal(it.next().getCantidad());
+			// BigDecimal t = it.next().getPrecioVenta();
+			// total = total.add(t.multiply(cant));
+
 			total = total.add(it.next().getPrecioVenta());
 		}
 		return total.toString();

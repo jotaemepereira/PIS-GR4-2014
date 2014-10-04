@@ -38,6 +38,8 @@ public class Database {
         return instance;
     }
     
+	private DTVenta venta = new DTVenta();
+	
     //Tabla de articulos buscados para la Venta
     private List<DTVenta> ventas = new ArrayList<DTVenta>();
     
@@ -48,6 +50,14 @@ public class Database {
 
 	public void setVentas(List<DTVenta> ventas) {
 		this.ventas = ventas;
+	}
+
+	public DTVenta getVenta() {
+		return venta;
+	}
+
+	public void setVenta(DTVenta venta) {
+		this.venta = venta;
 	}
     
 }

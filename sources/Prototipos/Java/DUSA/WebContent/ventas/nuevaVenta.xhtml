@@ -54,6 +54,7 @@
 									</p:column>
 									<p:column headerText="Cantidad">
 										<p:inputText id="cantidad" value="#{venta2.cantidad}">
+										
 										</p:inputText>
 									</p:column>
 
@@ -78,7 +79,7 @@
 							<p:layoutUnit position="center">
 
 								<div>
-									<p:inputText id="descripcion" value="#{ventaBean.descripcion}">
+									<p:inputText id="descripcion" value="#{ventaBean.descripcionBusqueda}">
 									</p:inputText>
 									<p:commandButton value="Buscar" id="ajax" icon="ui-icon-search"
 										actionListener="#{ventaBean.agregarLineasVenta()}"
