@@ -82,7 +82,7 @@ public class VentaBean implements Serializable {
 			dt.setCantidad(i);
 			dt.setDescripcion(descripcion);
 			dt.setLaboratorio(laboratorio);
-			dt.setPrecioVenta(precioVenta);
+			dt.setPrecioVenta(new BigDecimal(100+i));
 			dt.setPresentacion(presentacion);
 			dt.setPrincipioActivo(principioActivo);
 			lineasVenta.add(dt);
@@ -90,7 +90,6 @@ public class VentaBean implements Serializable {
 	}
 
 	// este agregar es para agregar los productos buscados a la venta
-	
 	public void agregarVenta(ActionEvent actionEvent) {
 
 		List<DTVenta> removidas = new ArrayList<DTVenta>();
@@ -98,6 +97,11 @@ public class VentaBean implements Serializable {
 		Iterator<DTVenta> it = ventasSeleccionadas.iterator();
 		while (it.hasNext()) {
 			DTVenta d = it.next();
+			//Aca se hace el descuento correspondiente:
+			BigDecimal x = (d.getPrecioVenta().multiply(d.getDescuento()));
+			BigDecimal a = new BigDecimal(100);
+			d.setPrecioVenta(x.divide(a));
+			
 			lineasVenta2.add(d);
 			removidas.add(d);
 		}
