@@ -45,11 +45,11 @@
 									editMode="row" editingRow="true" rowStyleClass="primefacesRow">
 
 									<p:column headerText="Presentacion">
-										<h:outputText value=" #{venta2.presentacion}" >
+										<h:outputText value=" #{venta2.presentacion}">
 										</h:outputText>
 									</p:column>
 									<p:column headerText="Precio">
-										<h:outputText value=" #{venta2.precioVenta}" >
+										<h:outputText value=" #{venta2.precioVenta}">
 										</h:outputText>
 									</p:column>
 									<p:column headerText="Cantidad">
@@ -88,7 +88,8 @@
 									value="#{ventaBean.lineasVenta}" editable="true" editMode="row"
 									selection="#{ventaBean.ventasSeleccionadas}" editingRow="true"
 									rowStyleClass="primefacesRow">
-
+									   <p:ajax event="rowSelect"  process="@this" />
+									
 									<p:column headerText="Descripcion">
 										<h:outputText value=" #{venta.descripcion}" />
 									</p:column>
@@ -115,10 +116,7 @@
 									</p:column>
 
 									<f:facet name="footer">
-										<p:commandButton type="button" process="TablaVentas" value="Agregar"
-											actionListener="#{ventaBean.agregarVenta()}"
-											update="TablaVentas2">
-											</p:commandButton>
+									    <p:commandButton value="Agregar" id="ajax2" update="@form" actionListener="#{ventaBean.agregarVenta}" process="@this" styleClass="ui-priority-primary" />
 
 									</f:facet>
 
