@@ -34,6 +34,38 @@ private List<DTVenta> lineasVenta2 = new ArrayList<DTVenta>();
 private List<DTVenta> ventasSeleccionadas = new ArrayList<DTVenta>();
 
 
+public String getPresentacion() {
+	return presentacion;
+}
+
+public void setPresentacion(String presentacion) {
+	this.presentacion = presentacion;
+}
+
+public String getPrincipioActivo() {
+	return principioActivo;
+}
+
+public void setPrincipioActivo(String principioActivo) {
+	this.principioActivo = principioActivo;
+}
+
+public String getLaboratorio() {
+	return laboratorio;
+}
+
+public void setLaboratorio(String laboratorio) {
+	this.laboratorio = laboratorio;
+}
+
+public BigDecimal getPrecioVenta() {
+	return precioVenta;
+}
+
+public void setPrecioVenta(BigDecimal precioVenta) {
+	this.precioVenta = precioVenta;
+}
+
 public String getDescripcion() {
 	return descripcion;
 }
@@ -44,7 +76,7 @@ public void setDescripcion(String descripcion) {
 
 public void agregarLineasVenta() {
 	//aca en realidad hay q buscar las ventas con el buscarArticulo y agregar todos los que coinciden con la descripcion buscados
-	for (int i=0; i<5; i++) {
+	for (int i=0; i<4; i++) {
 		DTVenta dt = new DTVenta();
 		dt.setCantidad(i);
 		dt.setDescripcion(descripcion);
@@ -56,12 +88,14 @@ public void agregarLineasVenta() {
 	}
 }
 
-public void agregarVenta(List<DTVenta> v){
-	Iterator<DTVenta> it = v.iterator();
+//este agregar es para agregar los productos buscados a la venta
+public void agregarVenta(){
+	
+	Iterator<DTVenta> it = ventasSeleccionadas.iterator();
 	while (it.hasNext()){
 		DTVenta dt = new DTVenta();
-		dt = it.next();
 		lineasVenta2.add(dt);
+		dt = it.next();
 	}
 }
 
@@ -104,6 +138,10 @@ public List<DTVenta> getVentasSeleccionadas() {
 
 public void setVentasSeleccionadas(List<DTVenta> ventasSeleccionadas) {
 	this.ventasSeleccionadas = ventasSeleccionadas;
+}
+
+public VentaBean(){
+	agregarLineasVenta();
 }
 
 
