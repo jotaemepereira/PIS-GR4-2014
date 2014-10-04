@@ -54,7 +54,7 @@
 									</p:column>
 									<p:column headerText="Cantidad">
 										<p:inputText id="cantidad" value="#{venta2.cantidad}">
-										
+
 										</p:inputText>
 									</p:column>
 
@@ -78,20 +78,24 @@
 							<!-- en este layout estan los articulos que busca para poder agregar a la nueva venta osea se van agregando al otro layout -->
 							<p:layoutUnit position="center">
 
-								<div>
-									<p:inputText id="descripcion" value="#{ventaBean.descripcionBusqueda}">
-									</p:inputText>
-									<p:commandButton value="Buscar" id="ajax" icon="ui-icon-search"
-										actionListener="#{ventaBean.agregarLineasVenta()}"
-										styleClass="ui-priority-primary" />
-								</div>
-
-								<p:dataTable id="TablaVentas" var="venta" selectionMode="multiple" rowKey="#{venta.presentacion}-#{venta.precioVenta}-#{venta.descuento}"
+								<p:dataTable id="TablaVentas" var="venta"
+									selectionMode="multiple"
+									rowKey="#{venta.presentacion}-#{venta.precioVenta}-#{venta.descuento}"
 									value="#{ventaBean.lineasVenta}" editable="true" editMode="row"
 									selection="#{ventaBean.ventasSeleccionadas}" editingRow="true"
 									rowStyleClass="primefacesRow">
-									   <p:ajax event="rowSelect"  process="@this" />
-									
+									<p:ajax event="rowSelect" process="@this" />
+
+									<f:facet name="header">
+										<p:inputText id="descripcion"
+											value="#{ventaBean.descripcionBusqueda}">
+										</p:inputText>
+										<p:commandButton value="Buscar" id="ajax" update="@form"
+											icon="ui-icon-search"
+											actionListener="#{ventaBean.agregarLineasVenta}"
+											styleClass="ui-priority-primary" />
+									</f:facet>
+
 									<p:column headerText="Descripcion">
 										<h:outputText value=" #{venta.descripcion}" />
 									</p:column>
@@ -118,7 +122,9 @@
 									</p:column>
 
 									<f:facet name="footer">
-									    <p:commandButton value="Agregar" id="ajax2" update="@form" actionListener="#{ventaBean.agregarVenta}" process="@this" styleClass="ui-priority-primary" />
+										<p:commandButton value="Agregar" id="ajax2" update="@form"
+											actionListener="#{ventaBean.agregarVenta}" process="@this"
+											styleClass="ui-priority-primary" />
 
 									</f:facet>
 

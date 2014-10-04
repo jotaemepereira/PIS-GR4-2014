@@ -87,7 +87,8 @@ public class VentaBean implements Serializable {
 	public void agregarLineasVenta() {
 		// aca en realidad hay q buscar las ventas con el buscarArticulo y
 		// agregar todos los que coinciden con la descripcion buscados
-		for (int i = 0; i < 4; i++) {
+		
+		/**for (int i = 0; i < 4; i++) {
 			DTVenta dt = new DTVenta();
 			dt.setCantidad(i);
 			dt.setDescripcion(descripcion);
@@ -96,21 +97,20 @@ public class VentaBean implements Serializable {
 			dt.setPresentacion(presentacion);
 			dt.setPrincipioActivo(principioActivo);
 			lineasVenta.add(dt);
-		}
+		}**/
 		
-		// Aca abajo esta echo probando con el Database.java para buscar simulando la busqueda  pero me esta explotando hay que ver un poco mas porque no anda :
-		
-		/**
+		// Probando con el Database.java para buscar simulando la busqueda :	
 		Database DB  = Database.getInstance();
 		List<DTVenta> list = DB.getVentas();
 		Iterator<DTVenta> it = list.iterator();
+		lineasVenta = new ArrayList<DTVenta>();
 		while (it.hasNext()){
 			DTVenta v = it.next();
-			if (v.getDescripcion().contains(descripcionBusqueda)){
+			if ( !(descripcionBusqueda.isEmpty()) && v.getDescripcion().contains(descripcionBusqueda)){
 				lineasVenta.add(v);
 			}
 		}
-		**/
+		
 	}
 
 	// este agregar es para agregar los productos buscados a la venta
@@ -189,7 +189,7 @@ public class VentaBean implements Serializable {
 	}
 
 	public VentaBean() {
-		agregarLineasVenta();
+		//agregarLineasVenta();
 	}
 
 }
