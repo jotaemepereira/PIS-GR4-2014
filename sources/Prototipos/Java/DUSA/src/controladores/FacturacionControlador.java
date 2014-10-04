@@ -1,11 +1,13 @@
 package controladores;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import Util.XMLUtil;
 import model.Usuario;
 import model.Venta;
 import interfaces.IFacturacion;
@@ -35,7 +37,7 @@ public class FacturacionControlador implements IFacturacion {
 			Venta v = ifp.obtenerVentaParaFacturar(ventaId);
 
 			// Creo factura
-			// TODO: Falta esta parte
+			File f = XMLUtil.jaxbObjectToXML(v);
 
 			// Marco venta como facturada
 			ifp.marcarVentaFacturada(ventaId);
@@ -75,6 +77,7 @@ public class FacturacionControlador implements IFacturacion {
 				v.setMontoTotalAPagar(new BigDecimal(montos[i]));
 				ventas.add(v);
 			}
+		
 			return ventas;
 		} catch (Exception e) {
 			return null;
