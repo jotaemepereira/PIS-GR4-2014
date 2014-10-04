@@ -13,6 +13,7 @@ public class DTVenta implements Serializable {
 	private BigDecimal precioVenta = new BigDecimal(0);
 	private int cantidad = 1;
 	private BigDecimal descuento = new BigDecimal(0);
+	private String CodigoBarras;
 
 	public int getProductId() {
 		return productId;
@@ -84,5 +85,13 @@ public class DTVenta implements Serializable {
 
 	public void setLaboratorio(String laboratorio) {
 		this.laboratorio = laboratorio;
+	}
+
+	public String getCodigoBarras() {
+		return CodigoBarras;
+	}
+
+	public void setCodigoBarras(String codigoBarras) {
+		CodigoBarras = codigoBarras;
 	}
 }

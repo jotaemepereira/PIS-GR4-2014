@@ -37,8 +37,8 @@
 						<p:layout style="min-width:400px;min-height:1000px;">
 
 							<!-- en este layout van las ventas ya agregadas al pedido -->
-							<p:layoutUnit position="west" resizable="true" size="350"
-								minSize="330" maxSize="450">
+							<p:layoutUnit position="west" resizable="true" size="380"
+								minSize="350" maxSize="450">
 
 								<p:dataTable id="TablaVentas2" var="venta2"
 									value="#{ventaBean.lineasVenta2}" editable="true"
@@ -53,7 +53,8 @@
 										</h:outputText>
 									</p:column>
 									<p:column headerText="Cantidad">
-										<h:inputText value=" #{venta2.cantidad}" />
+										<p:inputText id="cantidad" value="#{venta2.cantidad}">
+										</p:inputText>
 									</p:column>
 
 								</p:dataTable>
@@ -84,7 +85,7 @@
 										styleClass="ui-priority-primary" />
 								</div>
 
-								<p:dataTable id="TablaVentas" var="venta" selectionMode="multiple" rowKey="#{venta.presentacion}-#{venta.precioVenta}"
+								<p:dataTable id="TablaVentas" var="venta" selectionMode="multiple" rowKey="#{venta.presentacion}-#{venta.precioVenta}-#{venta.descuento}"
 									value="#{ventaBean.lineasVenta}" editable="true" editMode="row"
 									selection="#{ventaBean.ventasSeleccionadas}" editingRow="true"
 									rowStyleClass="primefacesRow">
