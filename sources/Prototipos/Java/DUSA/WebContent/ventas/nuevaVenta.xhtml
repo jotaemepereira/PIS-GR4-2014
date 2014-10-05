@@ -32,14 +32,11 @@
 				<div class="wrapper">
 					<!-- 				CONTENIDO DE PAGINA -->
 
-					<p:panel id="panel" header="Nueva Venta">
+					<p:panel id="panel">
 
-						<p:layout style="min-width:400px;min-height:1000px;">
+						<div>
 
-							<!-- en este layout van las ventas ya agregadas al pedido -->
-							<p:layoutUnit position="west" resizable="true" size="380"
-								minSize="350" maxSize="450">
-
+							<div style="float: left; width: 25%; min-width: 300px;">
 								<p:dataTable id="TablaVentas2" var="venta2"
 									value="#{ventaBean.lineasVenta2}" editable="true"
 									editMode="row" editingRow="true" rowStyleClass="primefacesRow">
@@ -53,8 +50,9 @@
 										</h:outputText>
 									</p:column>
 									<p:column headerText="Cantidad">
-										<p:inputText id="cantidad" value="#{venta2.cantidad}">
-
+										<p:inputText id="cantidad" value="#{venta2.cantidad}"
+											style="width: 75px;">
+										     <p:ajax event="change" update="TablaVentas2 :form1:total" process="@this" />
 										</p:inputText>
 									</p:column>
 
@@ -70,31 +68,33 @@
 									<div class="clearBoth"></div>
 								</div>
 								<div style="margin-top: 20px; text-align: right;">
-									<p:commandButton type="button" onclick="rc()"
-										value="Enviar a facturar" />
+								
+								<p:commandButton value="Enviar a facturar" id="ajax2" update="@form"
+											actionListener="#{ventaBean.facturarVenta()}" process="@this"
+											styleClass="ui-priority-primary" />
 								</div>
-							</p:layoutUnit>
-
-							<!-- en este layout estan los articulos que busca para poder agregar a la nueva venta osea se van agregando al otro layout -->
-							<p:layoutUnit position="center">
+							</div>
+							<div
+								style="float: left; width: 70%; margin-left: 25px; min-width: 500px;">
+								<div>
+									<p:inputText id="descripcion"
+										style="vertical-align: 8px; margin-right: 5px;"
+										value="#{ventaBean.descripcionBusqueda}"
+										placeholder="Buscar...">
+									</p:inputText>
+									<p:commandButton value="" id="ajax" update="TablaVentas"
+										icon="ui-icon-search" style="width: 35px; height: 29px;"
+										actionListener="#{ventaBean.buscarArticulos()}"
+										styleClass="ui-priority-primary" />
+								</div>
 
 								<p:dataTable id="TablaVentas" var="venta"
-									selectionMode="multiple"
+									style="margin-top: 15px;" selectionMode="multiple"
 									rowKey="#{venta.presentacion}-#{venta.precioVenta}-#{venta.descuento}"
 									value="#{ventaBean.lineasVenta}" editable="true" editMode="row"
 									selection="#{ventaBean.ventasSeleccionadas}" editingRow="true"
 									rowStyleClass="primefacesRow">
 									<p:ajax event="rowSelect" process="@this" />
-
-									<f:facet name="header">
-										<p:inputText id="descripcion"
-											value="#{ventaBean.descripcionBusqueda}">
-										</p:inputText>
-										<p:commandButton value="Buscar" id="ajax" update="@form"
-											icon="ui-icon-search"
-											actionListener="#{ventaBean.agregarLineasVenta}"
-											styleClass="ui-priority-primary" />
-									</f:facet>
 
 									<p:column headerText="Descripcion">
 										<h:outputText value=" #{venta.descripcion}" />
@@ -112,26 +112,30 @@
 										<h:outputText value=" #{venta.laboratorio}" />
 									</p:column>
 
-									<p:column headerText="Precio">
-										<h:outputText value=" #{venta.precioVenta}" />
+									<p:column headerText="Precio"
+										style="width: 80px; text-align: center;">
+										<h:outputText value="$ #{venta.precioVenta}" />
 									</p:column>
 
-									<p:column headerText="Descuento">
-										<p:inputText id="descuento" value="#{venta.descuento}">
+									<p:column headerText="Descuento"
+										style="width: 100px; text-align: center;">
+										<p:inputText id="descuento" value="#{venta.descuento}"
+											style="width: 40px;">
 										</p:inputText>
 									</p:column>
 
 									<f:facet name="footer">
 										<p:commandButton value="Agregar" id="ajax2" update="@form"
-											actionListener="#{ventaBean.agregarVenta}" process="@this"
+											actionListener="#{ventaBean.agregarLinea}" process="@this"
 											styleClass="ui-priority-primary" />
 
 									</f:facet>
 
 								</p:dataTable>
 
-							</p:layoutUnit>
-						</p:layout>
+							</div>
+							<div style="clear: both;"></div>
+						</div>
 
 
 					</p:panel>

@@ -52,7 +52,7 @@ public class FacturacionBean implements Serializable {
 		}
 	}
 	
-	public String parseDate(Date d){
+	public String parseFechaVenta(Date d){
 		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
 		return formatter.format(d);
 	}
