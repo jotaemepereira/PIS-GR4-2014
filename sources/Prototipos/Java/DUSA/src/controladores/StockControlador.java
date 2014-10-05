@@ -4,6 +4,7 @@ import interfaces.IStock;
 import interfaces.IStockPersistencia;
 import model.Articulo;
 import model.LineaPedido;
+import model.Pedido;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -27,7 +28,6 @@ public class StockControlador implements IStock {
 	public List<Articulo> buscarArticulo(String descripcion){
 
 		PStockControlador ps = (PStockControlador) FabricaPersistencia.getIStockPersistencia();
-
 		return ps.buscarArticulo(descripcion);
 
 	}
@@ -64,4 +64,13 @@ public class StockControlador implements IStock {
 //		return ret;
 //		
 //	}
+	
+	public Pedido generarPedido01UltimoPedido(){
+		return null;
+	}
+	
+	public void generarPedido(Pedido p){
+		
+	}
+	
 }
