@@ -16,6 +16,7 @@ import controladores.Excepciones;
 import model.Articulo;
 import model.Enumerados;
 import model.LineaPedido;
+import model.Pedido;
 import interfaces.IStockPersistencia;
 
 public class PStockControlador implements IStockPersistencia {
@@ -132,5 +133,11 @@ public class PStockControlador implements IStockPersistencia {
 //		}
 //		return ret;
 //	}
+
+	@Override
+	public void persistirPedido(Pedido p) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

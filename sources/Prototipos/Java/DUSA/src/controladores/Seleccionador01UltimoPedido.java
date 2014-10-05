@@ -1,8 +1,8 @@
 package controladores;
 
-import interfaces.ISeleccionador;
+import java.util.List;
 
-import com.sun.tools.javac.util.List;
+import interfaces.ISeleccionador;
 
 import model.Articulo;
 

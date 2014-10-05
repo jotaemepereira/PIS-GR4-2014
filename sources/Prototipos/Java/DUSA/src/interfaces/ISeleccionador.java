@@ -1,6 +1,8 @@
 package interfaces;
 
-import com.sun.tools.javac.util.List;
+import java.util.List;
+
+//import com.sun.tools.javac.util.List;
 import model.Articulo;
 
 /**  
