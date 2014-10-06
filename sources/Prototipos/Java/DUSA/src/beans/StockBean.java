@@ -201,15 +201,6 @@ public class StockBean implements Serializable{
 		proveedoresSeleccionados.add(p);
 	}
 	
-	public void enviarPedido(){
-		System.out.println("******* ENVIAR PEDIDO ********");
-	}
-	
-	public void cancelarPedido(){
-		System.out.println("******* CANCELAR PEDIDO ********");
-		pedidos.clear();
-	}
-	
 	public void altaArticulo(){
 		try {
 			FabricaSistema.getISistema().altaArticulo(articulo);
