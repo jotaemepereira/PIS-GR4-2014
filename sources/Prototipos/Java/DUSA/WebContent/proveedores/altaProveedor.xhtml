@@ -27,6 +27,7 @@
 			<div class="vpanel_right">
 				<div class="wrapper">
 					<p:panel id="panel" header="Alta de proveedor">
+					 	<p:focus context="panel" />
 						<p:messages id="msgs" />
 						
 						<p:remoteCommand name="altaProveedor" update="panel msgs" actionListener="#{proveedoresBean.altaProveedor}"/>

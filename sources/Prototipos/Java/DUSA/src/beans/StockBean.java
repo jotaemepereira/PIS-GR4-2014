@@ -134,16 +134,59 @@ public class StockBean implements Serializable{
 	
 	public void pedidoAutomaticoVentas() {
 		if (iniciado == 0) {
-		for (int i=0; i<5; i++) {
+	/*	for (int i=0; i<5; i++) {
 			DTLineaPedido dt = new DTLineaPedido();
 			dt.setCantidad(i);
 			dt.setIdArticulo(i);
 			dt.setNumeroArticulo(i);
+			dt.setNombreArticulo("Nombre"+i);
+			dt.setPrecioPonderado(i);
+			dt.setPrecioUnitario(i);
+			dt.setStockMinimo(i);
+			dt.setSubtotal(i);
 			pedidos.add(dt);
-		 }
+		 }*/
 		 iniciado = 1;
 		}
 		//return FabricaSistema.getISistema().pedidoAutomaticoVentas();
+	}
+	
+	/**
+	 * genera el pedido desde el ultimo pedido en el sistema
+	 */
+	public void desdeUltimoPedido(){
+		pedidos.clear();
+		for (int i=6; i<9; i++) {
+			DTLineaPedido dt = new DTLineaPedido();
+			dt.setCantidad(i);
+			dt.setIdArticulo(i);
+			dt.setNumeroArticulo(i);
+			dt.setNombreArticulo("Nombre"+i);
+			dt.setPrecioPonderado(i);
+			dt.setPrecioUnitario(i);
+			dt.setStockMinimo(i);
+			dt.setSubtotal(i);
+			pedidos.add(dt);
+		 }
+	}
+	
+	/**
+	 * genera el pedido segun la prediccion en base al pasado
+	 */
+	public void prediccionDePedido(){
+		pedidos.clear();
+		for (int i=10; i<16; i++) {
+			DTLineaPedido dt = new DTLineaPedido();
+			dt.setCantidad(i);
+			dt.setIdArticulo(i);
+			dt.setNumeroArticulo(i);
+			dt.setNombreArticulo("Nombre"+i);
+			dt.setPrecioPonderado(i);
+			dt.setPrecioUnitario(i);
+			dt.setStockMinimo(i);
+			dt.setSubtotal(i);
+			pedidos.add(dt);
+		 }
 	}
 	
 	public void removeItem(DTLineaPedido item) {
@@ -191,7 +234,7 @@ public class StockBean implements Serializable{
 		formasVenta.add(fv);
 		fv = new DTFormasVenta();
 		fv.setFormaVenta(model.Enumerados.formasVenta.controlMedico);
-		fv.setDescripcion("Control médico");
+		fv.setDescripcion("Control mï¿½dico");
 		formasVenta.add(fv);
 		
 		pedidoAutomaticoVentas();

@@ -9,13 +9,9 @@
 <f:view contentType="text/html">
 	<h:head>
 		<link href="../CSS/General.css" rel="stylesheet" />
-		<link href="../CSS/General.css" rel="stylesheet" />
-		<link href="../CSS/bootstrap.css" rel="stylesheet" />
-		<link href="../CSS/bootstrap-theme.css" rel="stylesheet" />
 		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
 		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
 		<link href="../JS/chosen.min.css" rel="stylesheet" />
-		<script src="../JS/bootstrap.js"></script>
 		<script src="../JS/bootstrap.min.js"></script>
 		<script src="../JS/chosen.jquery.min.js"></script>
 		<script src="../JS/chosen.proto.min.js"></script>
@@ -36,34 +32,74 @@
 				<div class="wrapper">
 
 					<p:panel id="panel" header="Pedido Automatico">
-						<p:row>
-							<p:dataTable var="pedido" id="tablePedido"
-								value="#{stockBean.pedidos}">
-
-								<p:column headerText="Numero articulo">
-									<h:outputText value="#{pedido.numeroArticulo}" />
-								</p:column>
-
-								<p:column headerText="Id Articulo">
-									<h:outputText value="#{pedido.idArticulo}" />
-								</p:column>
-
-								<p:column headerText="Cantidad">
-									<h:inputText value="#{pedido.cantidad}" />
-								</p:column>
-								<p:column headerText="Eliminar">
-									<p:commandButton icon="ui-icon-close" title="Eliminar"
-										actionListener="#{stockBean.removeItem(pedido)}" update="tablePedido" />
-								</p:column>
-							</p:dataTable>
-						</p:row>
-
-						<p:row>
-							<p:commandButton value="Pedido" update="panel"
-								icon="ui-icon-check" />
-							<p:commandButton value="Cancelar" update="panel"
-								icon="ui-icon-cancel" />
-						</p:row>
+					 	<p:focus context="panel" />
+						<p:messages id="msgs" />
+					
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align:center;">
+									<h:commandButton value="Desde el último pedido" update="panel"
+										class="btn btn-default" style="margin:0 2% 10px 0;" 
+										actionListener="#{stockBean.desdeUltimoPedido}" />
+									<h:commandButton value="Predicción de pedido" update="panel"
+										class="btn btn-default" style="margin:0 0 10px 0;" 
+										actionListener="#{stockBean.prediccionDePedido}" />
+								</div>
+							</div>
+							
+							<div class="row" style="margin-bottom: 1%;text-align:center;">
+								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+									<p:dataTable var="pedido" id="tablePedido"
+										value="#{stockBean.pedidos}">
+										<div class="row">
+											<p:column headerText="Numero artículo" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+												<h:outputText value="#{pedido.numeroArticulo}" />
+											</p:column>
+											
+											<p:column headerText="Nombre artículo" styleClass="hidden-xs col-sm-2 col-md-3 col-lg-2">
+												<h:outputText value="#{pedido.nombreArticulo}" />
+											</p:column>
+			
+											<p:column headerText="Precio unitario" styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+												<h:outputText value="#{pedido.precioUnitario}" />
+											</p:column>
+											
+											<p:column headerText="Precio ponderado promedio" styleClass="hidden-xs hidden-sm col-md-2 col-lg-2">
+												<h:outputText value="#{pedido.precioPonderado}" />
+											</p:column>
+											
+											<p:column headerText="Stock mínimo por día" styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+												<h:outputText value="#{pedido.stockMinimo}" />
+											</p:column>
+											
+											<p:column headerText="Cantidad" styleClass="col-xs-4 col-sm-3 col-md-2 col-lg-2">
+												<h:inputText value="#{pedido.cantidad}" styleClass="form-control" />
+											</p:column>
+											
+											<p:column headerText="Subtotal" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-2">
+												<h:outputText value="#{pedido.subtotal}" />
+											</p:column>
+											
+											<p:column headerText="Eliminar" styleClass="col-xs-2 col-sm-2 col-md-1 col-lg-1">
+												<p:commandButton icon="ui-icon-close" title="Eliminar"
+													actionListener="#{stockBean.removeItem(pedido)}" update="tablePedido">
+													<p:confirm header="Confirmación" message="¿Está seguro que desea eliminar el artículo?" icon="ui-icon-alert" />
+												</p:commandButton>
+											</p:column>
+										</div>
+									</p:dataTable>
+								</div>
+							</div>
+	
+							<div class="row" style="margin-bottom: 1%;">
+								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+									<h:commandButton value="Cancelar" update="panel"
+										class="btn btn-default pull-right"  />
+									<h:commandButton value="Pedido" update="panel"
+										class="btn btn-success pull-right"  />
+								</div>
+							</div>
+						</div>
 					</p:panel>
 				</div>
 			</div>
@@ -78,7 +114,14 @@
 					<h:outputText value="" />
 				</f:facet>
 			</p:ajaxStatus>
+			
 		</h:form>
+		
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+			<h:commandButton value="Cancelar" styleClass="btn btn-danger ui-confirmdialog-no pull-right" />
+			<h:commandButton value="Continuar" styleClass="btn btn-success ui-confirmdialog-yes pull-right"  style="margin:0 2% 0 0"/>
+	   	</p:confirmDialog>
+	   	
 	</h:body>
 
 </f:view>
