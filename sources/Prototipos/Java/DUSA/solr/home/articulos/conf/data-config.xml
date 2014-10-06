@@ -1,0 +1,41 @@
+<dataConfig>
+
+	<dataSource type="JdbcDataSource" driver="org.postgresql.Driver"
+		url="${postgres.url}" user="${postgres.user}" password="${postgres.pass}" readOnly="True" />
+
+	<document name="productos">
+		<entity name="stock"
+			query="SELECT PRODUCT_ID AS id, DESCRIPTION, KEY1, KEY2, KEY3, BARCODE, KEY1 || KEY2 || KEY3 AS CRITERIO_INTERNO
+				                       FROM PRODUCTS P 
+				                       WHERE KEY1 != 'PRODU' AND SALE_PRICE > 0 AND STATUS = 't'"
+			deltaImportQuery="SELECT PRODUCT_ID AS id, DESCRIPTION, KEY1, KEY2, KEY3, BARCODE, KEY1 || KEY2 || KEY3 AS CRITERIO_INTERNO 
+							 					FROM PRODUCTS WHERE PRODUCT_ID = '${dih.delta.id}'"
+			deltaQuery="SELECT PRODUCT_ID AS id
+					                       FROM PRODUCTS P 
+					                       WHERE KEY1 != 'PRODU' AND SALE_PRICE > 0 AND STATUS = 't'
+                           						AND LAST_MODIFIED >='${dih.last_index_time}'">
+
+			<field column="id" name="id" />
+			<field column="DESCRIPTION" name="DESCRIPTION" />
+			<field column="KEY1" name="KEY1" />
+			<field column="KEY2" name="KEY2" />
+			<field column="KEY3" name="KEY3" />
+			<field column="BARCODE" name="BARCODE" />
+			<field column="CRITERIO_INTERNO" name="CRITERIO_INTERNO" />
+
+			<!-- query="SELECT NRO_ARTICULO, DESCRIPCION, CLAVE1, CLAVE2, CLAVE3, 
+				COD_BARRAS, L.LAB, NOMLAB, DESCRIPCION || ' ' || NOMLAB AS DESCR_NOMLAB, 
+				CLAVE1 || CLAVE2 || CLAVE3 AS CRITERIO_INTERNO FROM STOCK S JOIN LABORATORIOS 
+				L ON S.LAB = L.LAB WHERE HABILITADO = 'S' AND L.LAB NOT IN ('XXX', 'AGE') 
+				AND S.CLAVE1 != 'PRODU' AND PRECIO_VENTA > 0 AND VENDE_DU = 'S'" > <field 
+				column="NRO_ARTICULO" name="id" /> <field column="DESCRIPCION" name="DESCRIPCION" 
+				/> <field column="CLAVE1" name="CLAVE1" /> <field column="CLAVE2" name="CLAVE2" 
+				/> <field column="CLAVE3" name="CLAVE3" /> <field column="COD_BARRAS" name="COD_BARRAS" 
+				/> <field column="LAB" name="LAB" /> <field column="NOMLAB" name="NOMLAB" 
+				/> <field column="DESCR_NOMLAB" name="autocompletar" /> <field column="CRITERIO_INTERNO" 
+				name="CRITERIO_INTERNO" /> -->
+
+		</entity>
+	</document>
+
+</dataConfig>
