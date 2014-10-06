@@ -15,9 +15,7 @@ import controladores.FabricaSistema;
 @ManagedBean
 @SessionScoped
 /**
- * Clase que controla la presentaci�n relacionada con los proveedores
- * @author Victoria D�az
- *
+ * Clase que controla la presentación relacionada con los proveedores
  */
 public class ProveedoresBean implements Serializable {
 
@@ -32,6 +30,7 @@ public class ProveedoresBean implements Serializable {
 
 	/**
 	 * @return String que identifica al RUT
+	 * @author Victoria Díaz
 	 */
 	public String getRUT() {
 		return RUT;
@@ -40,13 +39,15 @@ public class ProveedoresBean implements Serializable {
 	/**
 	 * @param RUT
 	 *            - String
+	 * @author Victoria Díaz
 	 */
 	public void setRUT(String RUT) {
 		this.RUT = RUT;
 	}
 
 	/***
-	 * @return String que identifica la raz�n social
+	 * @return String que identifica la razón social
+	 * @author Victoria Díaz
 	 */
 	public String getRazonSocial() {
 		return razonSocial;
@@ -55,13 +56,15 @@ public class ProveedoresBean implements Serializable {
 	/**
 	 * @param razonSocial
 	 *            - String
+	 * @author Victoria Díaz
 	 */
 	public void setRazonSocial(String razonSocial) {
 		this.razonSocial = razonSocial;
 	}
 
 	/**
-	 * @return String que identifica el tel�fono
+	 * @return String que identifica el teléfono
+	 * @author Victoria Díaz
 	 */
 	public String getTelefono() {
 		return telefono;
@@ -70,13 +73,15 @@ public class ProveedoresBean implements Serializable {
 	/**
 	 * @param telefono
 	 *            - String
+	 * @author Victoria Díaz
 	 */
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 
 	/**
-	 * @return String que identifica la direcci�n
+	 * @return String que identifica la direcció
+	 * @author Victoria Díaz
 	 */
 	public String getDireccion() {
 		return direccion;
@@ -85,6 +90,7 @@ public class ProveedoresBean implements Serializable {
 	/**
 	 * @param direccion
 	 *            - String
+	 * @author Victoria Díaz
 	 */
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
@@ -92,6 +98,7 @@ public class ProveedoresBean implements Serializable {
 
 	/**
 	 * @return String que identifica el nombre comercial
+	 * @author Victoria Díaz
 	 */
 	public String getNombreComercial() {
 		return nombreComercial;
@@ -100,15 +107,17 @@ public class ProveedoresBean implements Serializable {
 	/**
 	 * @param nombreComercial
 	 *            - String
+	 * @author Victoria Díaz
 	 */
 	public void setNombreComercial(String nombreComercial) {
 		this.nombreComercial = nombreComercial;
 	}
 
 	/**
-	 * M�todo encargado de crear el objeto proveedor, en caso que haya algun
+	 * Método encargado de crear el objeto proveedor, en caso que haya algun
 	 * error lo muestra en pantalla al usuario y se comunica con la l�gica para
 	 * dar de alta definitivamente al proveedor
+	 * @author Victoria Díaz
 	 */
 	public void altaProveedor() {
 		Proveedor proveedor;
