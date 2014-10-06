@@ -25,7 +25,7 @@
 	</h:head>
 	<h:body>
 		<h:form id="form1">
-			<p:growl id="messages" showDetail="true" />
+			<p:growl id="messages" showDetail="true"  />
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/ventas.xhtml" />
 
@@ -44,22 +44,20 @@
 										</p:column>
 
 										<p:column headerText="Fecha">
-											<h:outputText value="#{venta.fechaVenta}" />
+											<p:outputLabel value="#{facturacionBean.parseFechaVenta(venta.fechaVenta)}" />
 										</p:column>
 
-										<p:column headerText="Fecha">
+										<p:column headerText="Usuario">
 											<h:outputText value="#{venta.usuario.nombre}" />
 										</p:column>
 
-										<p:column headerText="Fecha">
-											<h:outputText value="#{venta.montoTotalAPagar}" />
+										<p:column headerText="Total">
+											<h:outputText value="$ #{venta.montoTotalAPagar}" />
 										</p:column>
 
-										<p:column style="width:32px;text-align: center">
-											<p:commandButton actionListener="#{facturacionBean.facturar}"
-												styleClass="btn btn-default pull-right" title="Facturar">
-												<f:setPropertyActionListener value="#{venta}"
-													target="#{facturacionBean.ventaSeleccionada}" />
+										<p:column style="width: 56px; text-align: center">
+											<p:commandButton actionListener="#{facturacionBean.facturar(venta)}" style="width: 35px;"
+												styleClass="btn btn-default pull-right" icon="ui-icon-document" update="tablaVentas :form1:messages" value="" title="Facturar">
 											</p:commandButton>
 										</p:column>
 

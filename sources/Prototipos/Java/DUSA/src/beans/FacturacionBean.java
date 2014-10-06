@@ -3,6 +3,8 @@ package beans;
 import interfaces.IFacturacion;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -18,7 +20,6 @@ import model.Venta;
 public class FacturacionBean implements Serializable {
 
 	private List<Venta> ventas;
-	private Venta ventaSeleccionada;
 
 	public FacturacionBean() {
 		try {
@@ -32,16 +33,28 @@ public class FacturacionBean implements Serializable {
 		}
 	}
 
-	public void facturar() {
+	public void facturar(Venta v) {
 		try {
-			IFacturacion ifact = FabricaLogica.getIFacturacion();
-			ifact.facturarVenta(ventaSeleccionada.getVentaId());
+//			IFacturacion ifact = FabricaLogica.getIFacturacion();
+//			ifact.facturarVenta(v.getVentaId());
+			
+			ventas.remove(v);
+			
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Se facturó correctamente.", ""));
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							"Error al facturar.", ""));
 		}
+	}
+	
+	public String parseFechaVenta(Date d){
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+		return formatter.format(d);
 	}
 
 	public List<Venta> getVentas() {
@@ -52,11 +65,4 @@ public class FacturacionBean implements Serializable {
 		this.ventas = ventas;
 	}
 
-	public Venta getVentaSeleccionada() {
-		return ventaSeleccionada;
-	}
-
-	public void setVentaSeleccionada(Venta ventaSeleccionada) {
-		this.ventaSeleccionada = ventaSeleccionada;
-	}
 }

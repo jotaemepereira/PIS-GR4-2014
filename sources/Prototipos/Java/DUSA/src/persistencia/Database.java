@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import datatypes.DTVenta;
 import model.*;
 
 public class Database {
@@ -18,11 +19,16 @@ public class Database {
     private void PopulateDatabase() {
     	int i = 0;
     	while (i < 100){
-    		Articulo p = new Articulo();
-    		p.setCodigoBarras("" + i);
-    		p.setDescripcion("artículo " + i);
-    		p.setPrecioVenta(new BigDecimal(100+i));
-    		products.add(p);		
+    		
+    		DTVenta dt = new DTVenta();
+			dt.setCantidad(i);
+			dt.setDescripcion("descripcion" + i);
+			dt.setLaboratorio("laboratorio" + i);
+			dt.setPrecioVenta(new BigDecimal(100+i));
+			dt.setPrincipioActivo("principioActivo" + i);
+    		dt.setCodigoBarras("" + i);
+			dt.setPresentacion("presentacion" + i);
+    		ventas.add(dt);		
     		i++;
     	}
 		
@@ -31,28 +37,27 @@ public class Database {
 	public static Database getInstance() {
         return instance;
     }
-    //
     
-    // Tabla de Ventas
-	private List<Venta> sales = new ArrayList<Venta>();
+	private DTVenta venta = new DTVenta();
+	
+    //Tabla de articulos buscados para la Venta
+    private List<DTVenta> ventas = new ArrayList<DTVenta>();
     
-    // Tabla de artículos
-    private List<Articulo> products = new ArrayList<Articulo>();
-    
-	public List<Venta> getSales() {
-		return sales;
+
+	public List<DTVenta> getVentas() {
+		return ventas;
 	}
 
-	public void setSales(List<Venta> sales) {
-		this.sales = sales;
+	public void setVentas(List<DTVenta> ventas) {
+		this.ventas = ventas;
 	}
 
-	public List<Articulo> getProducts() {
-		return products;
+	public DTVenta getVenta() {
+		return venta;
 	}
 
-	public void setProducts(List<Articulo> products) {
-		this.products = products;
+	public void setVenta(DTVenta venta) {
+		this.venta = venta;
 	}
     
 }
