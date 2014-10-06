@@ -1,11 +1,11 @@
 package beans;
 
 import java.io.Serializable;
+import java.nio.charset.Charset;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 import model.Proveedor;
@@ -14,112 +14,162 @@ import controladores.FabricaSistema;
 
 @ManagedBean
 @SessionScoped
+/**
+ * Clase que controla la presentaciï¿½n relacionada con los proveedores
+ * @author Victoria Dï¿½az
+ *
+ */
 public class ProveedoresBean implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+	public static final Charset UTF_8 = Charset.forName("UTF-8");
+
 	private String RUT;
 	private String razonSocial;
 	private String telefono;
 	private String direccion;
 	private String nombreComercial;
-	
+
+	/**
+	 * @return String que identifica al RUT
+	 */
 	public String getRUT() {
-        return RUT;
-    }
-    public void setRUT(String RUT) {
-        this.RUT = RUT;
-    }
- 
-    public String getRazonSocial() {
-        return razonSocial;
-    }
-    public void setRazonSocial(String razonSocial) {
-        this.razonSocial = razonSocial;
-    }
-    
-    public String getTelefono() {
-        return telefono;
-    }
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-    
-    public String getDireccion() {
-        return direccion;
-    }
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-    
-    public String getNombreComercial() {
-        return nombreComercial;
-    }
-    public void setNombreComercial(String nombreComercial) {
-        this.nombreComercial = nombreComercial;
-    }
-	    
-	public void altaProveedor(){
+		return RUT;
+	}
+
+	/**
+	 * @param RUT
+	 *            - String
+	 */
+	public void setRUT(String RUT) {
+		this.RUT = RUT;
+	}
+
+	/***
+	 * @return String que identifica la razï¿½n social
+	 */
+	public String getRazonSocial() {
+		return razonSocial;
+	}
+
+	/**
+	 * @param razonSocial
+	 *            - String
+	 */
+	public void setRazonSocial(String razonSocial) {
+		this.razonSocial = razonSocial;
+	}
+
+	/**
+	 * @return String que identifica el telï¿½fono
+	 */
+	public String getTelefono() {
+		return telefono;
+	}
+
+	/**
+	 * @param telefono
+	 *            - String
+	 */
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
+
+	/**
+	 * @return String que identifica la direcciï¿½n
+	 */
+	public String getDireccion() {
+		return direccion;
+	}
+
+	/**
+	 * @param direccion
+	 *            - String
+	 */
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	/**
+	 * @return String que identifica el nombre comercial
+	 */
+	public String getNombreComercial() {
+		return nombreComercial;
+	}
+
+	/**
+	 * @param nombreComercial
+	 *            - String
+	 */
+	public void setNombreComercial(String nombreComercial) {
+		this.nombreComercial = nombreComercial;
+	}
+
+	/**
+	 * Mï¿½todo encargado de crear el objeto proveedor, en caso que haya algun
+	 * error lo muestra en pantalla al usuario y se comunica con la lï¿½gica para
+	 * dar de alta definitivamente al proveedor
+	 */
+	public void altaProveedor() {
 		Proveedor proveedor;
 		FacesContext context = FacesContext.getCurrentInstance();
 
+		// Creo el proveedor y en caso de error aviso al usuario y cancelo la operaciï¿½n
 		try {
 			proveedor = new Proveedor(nombreComercial);
-		} catch (Excepciones e1) {
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Nombre Comercial: Error de validación: se necesita un valor.", ""));
-			return;
-		}
-		
-		try {
 			proveedor.setRUT(RUT);
-		} catch (Excepciones e1) {
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
-			return;
-		}
-		try {
 			proveedor.setRazonSocial(razonSocial);
-		} catch (Excepciones e1) {
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
-			return;
-		}
-		try {
 			proveedor.setTelefono(telefono);
-		} catch (Excepciones e1) {
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
-			return;
-		}
-		try {
 			proveedor.setDireccion(direccion);
 		} catch (Excepciones e1) {
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							e1.getMessage(),
+							""));
 			return;
 		}
-		
+
+		/* Llamo a la lï¿½gica para que se de de alta el proveedor en el sistema y
+		 en caso de error lo muestro */
 		try {
 			FabricaSistema.getISistema().altaProveedor(proveedor);
 		} catch (Excepciones e) {
-			if(e.getErrorCode() == Excepciones.PROVEEDOR_RUT_EXISTENTE){
-				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "RUT: Error de validación: ya existe un proveedor en el sistema con ese RUT.", ""));
-				return;
-			}else if(e.getErrorCode() == Excepciones.PROVEEDOR_RUT_EXISTENTE){
-				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Nombre Comercial: Ya existe un proveedor en el sistema con ese nombre comercial", ""));
-			}else{
-				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error, por favor vuelva a intentarlo más tarde.", ""));
+			if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
+				context.addMessage(
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_WARN,
+								e.getMessage(),
+								""));
+			} else {
+				byte ptext[] = e.getMessage().getBytes(UTF_8); 
+				context.addMessage(
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_ERROR,
+								new String(ptext),
+								""));
 				return;
 			}
 		}
-		
+
 		// si todo bien aviso y vacio el formulario
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "El proveedor ha sido dado de alta correctamente", ""));
-		
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+				Excepciones.MENSAJE_OK_ALTA, ""));
+
 		this.direccion = "";
 		this.nombreComercial = "";
 		this.razonSocial = "";
 		this.RUT = "";
 		this.telefono = "";
 	}
-	
-	public void cancelarAltaProveedor(){
+
+	/**
+	 * En caso que el usuario cancele la alta, se vacï¿½a el formulario
+	 */
+	public void cancelarAltaProveedor() {
 		this.direccion = "";
 		this.nombreComercial = "";
 		this.razonSocial = "";

@@ -9,11 +9,11 @@ public class ProveedoresControlador implements IProveedores {
 	public void altaProveedor(Proveedor proveedor) throws Excepciones {
 		Boolean existsNombre = false;
 		System.out.print("********* NUEVO PROVEEDOR ************\n");
-		System.out.print("RUT: " + proveedor.getRUT() + "\n");
-		System.out.print("RAZON SOCIAL: " + proveedor.getRazonSocial() + "\n");
-		System.out.print("TELEFONO: " + proveedor.getTelefono() + "\n");
-		System.out.print("DIRECCION: " + proveedor.getDireccion() + "\n");
-		System.out.print("NOMBRE COMERCIAL: " + proveedor.getNombreComercial() + "\n");
+		System.out.print("RUT:" + proveedor.getRUT() + "\n");
+		System.out.print("RAZON SOCIAL:" + proveedor.getRazonSocial() + "fin" + "\n");
+		System.out.print("TELEFONO:" + proveedor.getTelefono() + "fin" + "\n");
+		System.out.print("DIRECCION:" + proveedor.getDireccion() + "fin" + "\n");
+		System.out.print("NOMBRE COMERCIAL:" + proveedor.getNombreComercial() + "fin" + "\n");
 		/*
 		if(proveedor.getNombreComercial() == ""){
 			throw(new Excepciones("Faltan datos", Excepciones.ERROR_DATOS));
@@ -21,7 +21,7 @@ public class ProveedoresControlador implements IProveedores {
 		
 		// Me fijo si ya existe otro proveedor con este RUT en caso que se haya ingresado algo en el campo
 		if((proveedor.getRUT() != "") && (FabricaPersistencia.getInstanciaProveedoresPersistencia().existeProveedorRUT(proveedor.getRUT()))){
-			throw(new Excepciones("ya existe", Excepciones.PROVEEDOR_RUT_EXISTENTE));
+			throw(new Excepciones(Excepciones.MENSAJE_RUT_DUPLIACADO, Excepciones.ERROR_DATOS));
 		}
 		System.out.print("ok");
 		// Me fijo si ya existe otro proveedor con este nombre para avisarle al usuario
@@ -32,7 +32,7 @@ public class ProveedoresControlador implements IProveedores {
 		FabricaPersistencia.getInstanciaProveedoresPersistencia().persistirProveedor(proveedor);
 		
 		if(existsNombre){
-			throw(new Excepciones("ya existe", Excepciones.PROVEEDOR_NOMBRE_EXISTENTE));
+			throw(new Excepciones(Excepciones.MENSAJE_NOMBRE_COMERCIAL_DUPLICADO, Excepciones.ADVERTENCIA_DATOS));
 		}
 	}
 	

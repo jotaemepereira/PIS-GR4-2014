@@ -32,7 +32,7 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 			stmt.setString(1, proveedor.getRUT());
 			stmt.setString(2, proveedor.getRazonSocial());
 			stmt.setString(3, proveedor.getTelefono());
-			stmt.setString(4, proveedor.getDireccion());
+			stmt.setString(4, null);//proveedor.getDireccion());
 			stmt.setString(5, proveedor.getNombreComercial());
 			stmt.setDate(6, new java.sql.Date(time));
 			stmt.setBoolean(7, true);
@@ -43,7 +43,7 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 		} catch ( Exception e ) {
 			/*System.err.println( e.getClass().getName()+": "+ e.getMessage() );
 			System.exit(0);*/
-			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 	}
 
@@ -69,7 +69,7 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 		} catch ( Exception e ) {
 			/*System.err.println( e.getClass().getName()+": "+ e.getMessage() );
 			System.exit(0);*/
-			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		return (cant > 0);
 	}
@@ -96,7 +96,7 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 		} catch ( Exception e ) {
 			/*System.err.println( e.getClass().getName()+": "+ e.getMessage() );
 			System.exit(0);*/
-			throw(new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		return (cant > 0);
 	}

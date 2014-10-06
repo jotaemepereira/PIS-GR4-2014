@@ -67,8 +67,8 @@ public class ProveedoresControladorTest {
 			FabricaSistema.getISistema().altaProveedor(proveedor);
 			fail("No lanzo la excepcion de nombre comercial");
 		} catch (Excepciones e) {
-			if(e.getErrorCode() != Excepciones.PROVEEDOR_NOMBRE_EXISTENTE){
-				fail("Excepcion equivocada, lanzo: " + e.getErrorCode());
+			if(e.getMessage() != Excepciones.MENSAJE_NOMBRE_COMERCIAL_DUPLICADO){
+				fail("Excepcion equivocada, lanzo: " + e.getMessage());
 			}
 		}
 		
@@ -77,8 +77,8 @@ public class ProveedoresControladorTest {
 			FabricaSistema.getISistema().altaProveedor(proveedor);
 			fail("No lanzo la excepcion de rut");
 		} catch (Excepciones e) {
-			if(e.getErrorCode() != Excepciones.PROVEEDOR_RUT_EXISTENTE){
-				fail("Excepcion equivocada, lanzo: " + e.getErrorCode());
+			if(e.getMessage() != Excepciones.MENSAJE_RUT_DUPLIACADO){
+				fail("Excepcion equivocada, lanzo: " + e.getMessage());
 			}
 		}
 	}

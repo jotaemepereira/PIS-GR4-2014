@@ -17,19 +17,19 @@
   </context-param>
   <context-param>
     <param-name>DRIVER</param-name>
-    <param-value>org.postgresql.Driver</param-value>
+    <param-value>${postgres.driver}</param-value>
   </context-param>
   <context-param>
     <param-name>DBUSER</param-name>
-    <param-value>root</param-value>
+    <param-value>${postgres.user}</param-value>
   </context-param>
   <context-param>
     <param-name>DBPWD</param-name>
-    <param-value>root</param-value>
+    <param-value>${postgres.pass}</param-value>
   </context-param>
   <context-param>
     <param-name>CONNSTRING</param-name>
-    <param-value>jdbc:postgresql://localhost:5432/pisgr4</param-value>
+    <param-value>${postgres.url}</param-value>
   </context-param>
   <context-param>
     <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>

@@ -11,9 +11,9 @@ public class Proveedor {
 	
 	public Proveedor(String nombreComercial) throws Excepciones{
 		if((nombreComercial == null) || (nombreComercial.trim().isEmpty())){
-			throw(new Excepciones("Faltan datos", Excepciones.ERROR_DATOS));
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_DATOS, Excepciones.ERROR_DATOS));
 		}
-		this.nombreComercial = nombreComercial;
+		this.nombreComercial = nombreComercial.trim();
 	}
 	
 	public String getRUT(){
@@ -21,44 +21,44 @@ public class Proveedor {
 	}
 	public void setRUT(String RUT) throws Excepciones{
 		if(RUT == null){
-			throw(new Excepciones("Faltan datos", Excepciones.ERROR_DATOS));
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
-		this.RUT = RUT;
+		this.RUT = RUT.trim();
 	}
 	public String getRazonSocial() {
 		return razonSocial;
 	}
 	public void setRazonSocial(String razonSocial) throws Excepciones{
 		if(razonSocial == null){
-			throw(new Excepciones("Faltan datos", Excepciones.ERROR_DATOS));
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
-		this.razonSocial = razonSocial;
+		this.razonSocial = razonSocial.trim();
 	}
 	public String getTelefono() {
 		return telefono;
 	}
 	public void setTelefono(String telefono) throws Excepciones{
 		if(telefono == null){
-			throw(new Excepciones("Faltan datos", Excepciones.ERROR_DATOS));
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
-		this.telefono = telefono;
+		this.telefono = telefono.trim();
 	}
 	public String getDireccion() {
 		return direccion;
 	}
 	public void setDireccion(String direccion) throws Excepciones{
 		if(direccion == null){
-			throw(new Excepciones("Faltan datos", Excepciones.ERROR_DATOS));
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
-		this.direccion = direccion;
+		this.direccion = direccion.trim();
 	}
 	public String getNombreComercial()  {
 		return nombreComercial;
 	}
 	public void setNombreComercial(String nombreComercial) throws Excepciones{
 		if((nombreComercial == null) || (nombreComercial.trim().isEmpty())){
-			throw(new Excepciones("Faltan datos", Excepciones.ERROR_DATOS));
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_DATOS, Excepciones.ERROR_DATOS));
 		}
-		this.nombreComercial = nombreComercial;
+		this.nombreComercial = nombreComercial.trim();
 	}
 }
