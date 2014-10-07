@@ -1,6 +1,8 @@
 package persistencia;
 
 import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -213,7 +215,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			con.close();
 		}
 	}
-
+	
 	@Override
 	public void marcarVentaFacturada(long ventaId) throws Exception {
 		Connection con = Conexion.getConnection();
@@ -230,6 +232,38 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			con.close();
 		}
 
+	}
+	
+	/**
+	 * @author Guille
+	 */
+	@Override
+	public List<Long> getIdArticulosEnPeriodo(Date desde, Date hasta) throws Exception{
+		
+		Connection con = Conexion.getConnection();
+		PreparedStatement stmt = null;
+		List<Long> articulos = new ArrayList<Long>();
+		try {
+			String sql = "SELECT distinct product_id FROM sale_details sd "
+								+ "WHERE sd.sale_id in " + "(SELECT sale_id FROM sales s" 
+															+ "WHERE s.sale_status = ? "
+																+ "and s.sale_date BETWEEN ? and ?);";
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, "'" + Enumerados.EstadoVenta.FACTURADA + "'");
+			stmt.setString(2, desde.toString());
+			stmt.setString(3, hasta.toString());
+			ResultSet rs = stmt.executeQuery();
+			
+			while (rs.next()) {
+				articulos.add(new Long(rs.getLong("product_id"))); 
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			stmt.close();
+			con.close();
+		}
+		return articulos;
 	}
 
 }

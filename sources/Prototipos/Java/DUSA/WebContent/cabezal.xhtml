@@ -4,79 +4,39 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
-	<div class="header">
-		<div class="hnav">
-			<a href="#1">
-				<div class="hnav_item" style="margin-top: -1px;">
-					<div class="hnav_item_img">
-						<img src="../Images/caja.png" alt="" />
-					</div>
-					<div class="hnav_item_text">Caja</div>
-					<div class="clearBoth"></div>
-				</div>
-			</a>
-			<p:commandLink ajax="true"
-				actionListener="#{navBean.navAPagina('/stock/listado.xhtml')}"
-				update="@form">
-				<div class="hnav_item" style="margin-top: -1px;">
-					<div class="hnav_item_img">
-						<img src="../Images/stock.png" alt="" />
-					</div>
-					<div class="hnav_item_text">Stock</div>
-					<div class="clearBoth"></div>
-				</div>
-			</p:commandLink>
-			<a href="#3">
-				<div class="hnav_item" style="margin-top: -1px;">
-					<div class="hnav_item_img">
-						<img src="../Images/clientes.png" alt="" />
-					</div>
-					<div class="hnav_item_text">Cliente</div>
-					<div class="clearBoth"></div>
-				</div>
-			</a>
-			<p:commandLink ajax="true"
-				actionListener="#{navBean.navAPagina('/ventas/nueva.xhtml')}"
-				update="@form">
-				<div class="hnav_item" style="margin-top: -1px;">
-					<div class="hnav_item_img">
-						<img src="../Images/ventas.png" alt="" />
-					</div>
-					<div class="hnav_item_text">Ventas</div>
-					<div class="clearBoth"></div>
-				</div>
-			</p:commandLink>
-			<p:commandLink ajax="true"
-				actionListener="#{navBean.navAPagina('/proveedores/altaProveedor.xhtml')}"
-				>
-				<div class="hnav_item" style="margin-top: -1px;">
-					<div class="hnav_item_img">
-						<img src="../Images/clientes.png" alt="" />
-					</div>
-					<div class="hnav_item_text">Proveedores</div>
-					<div class="clearBoth"></div>
-				</div>
-			</p:commandLink>
-			<div class="clearBoth"></div>
-		</div>
-		<div class="login">
-
-			<img src="../Images/user.png" alt="" />
-			<h:outputLabel id="logged_user">
-				<a href="#" id="logged_user_a">Sebastian Caballero</a>
-			</h:outputLabel>
-			<p:overlayPanel id="logged_user_panel" for="logged_user"
-				hideEffect="fade">
-				<div>
-					<a href="#">Mis datos</a>
-				</div>
-				<div>
-					<p:commandLink actionListener="#{sesionBean.logOut}" ajax="true">
-						<h:outputText value="Salir" />
-					</p:commandLink>
-				</div>
-			</p:overlayPanel>
-
-		</div>
-	</div>
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container-fluid">
+	    	<div class="navbar-header">
+		      	<a class="navbar-brand" href="#"> DUSA
+				</a>
+      		</div>
+      		
+      		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<ul class="nav navbar-nav">
+				        <li><a href="#"><i class="fa fa-calculator fa-2x"></i> Caja </a></li>
+				        <li><a href="#"><i class="fa fa-cubes fa-2x"></i> Stock</a></li>
+				        <li><a href="#"><i class="fa fa-shopping-cart fa-2x"></i> Ventas</a></li>
+				        <li><a href="#"><i class="fa fa-users fa-2x"></i> Clientes</a></li>
+				        <li><a href="#"><i class="fa fa-truck fa-2x"></i> Proveedores</a></li>
+			      	</ul>
+			      	<ul class="nav navbar-nav navbar-right">
+				        <li class="login">
+				        <h:outputLabel id="logged_user">
+				        	<a href="#" id="logged_user_a"><i class="fa fa-user fa-2x"></i> Sebastian Caballero</a>
+				        </h:outputLabel>
+				        </li>
+				        <p:overlayPanel id="logged_user_panel" for="logged_user" hideEffect="fade">
+					        <div>
+								<a href="#">Mis datos</a>
+							</div>
+							<div>
+								<p:commandLink actionListener="#{sesionBean.logOut}" ajax="true">
+									<h:outputText value="Salir" />
+								</p:commandLink>
+							</div>
+						</p:overlayPanel>
+			      	</ul>
+      		</div><!-- /.navbar-collapse -->
+	    </div><!-- /.container-fluid -->
+	</nav>
 </ui:composition>
