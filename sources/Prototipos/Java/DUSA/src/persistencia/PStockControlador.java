@@ -55,7 +55,7 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.setInt(16, articulo.getTipoIva());//Null
 			stmt.setString(17, articulo.getCodigoBarras());//Null
 			//stmt.setDate(18, new java.sql.Date(articulo.getFechaUltimoPrecio().getTime()));//Not Null
-			stmt.setNull(18, java.sql.Types.TIMESTAMP);//Null Vencimiento Más Cercano
+			stmt.setNull(18, java.sql.Types.TIMESTAMP);//Null Vencimiento MÃ¡s Cercano
 			stmt.setInt(19, articulo.getStock());//Not Null
 			stmt.setInt(20, articulo.getStockMinimo());//Null
 			stmt.setBoolean(21, true);//Not Null
@@ -75,7 +75,7 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public Date getUltimoPedido() throws Excepciones {
+	public Date obtenerFechaUltimoPedido() throws Excepciones {
 		// TODO Auto-generated method stub
 		//Codigo en la base para obtener el ultimo pedido
 		// TODO Auto-generated method stub

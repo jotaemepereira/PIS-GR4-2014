@@ -2,8 +2,6 @@ package interfaces;
 
 import java.util.List;
 
-//import com.sun.tools.javac.util.List;
-import model.Articulo;
 
 /**  
 * @author Santiago
@@ -12,6 +10,7 @@ import model.Articulo;
 
 public interface ISeleccionador {
 
-	List <Articulo> getArticulos();
+	
+	public List <Long> getIDArticulos() throws Exception;
 
 }

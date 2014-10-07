@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.sql.Date;
 import java.util.List;
 
 import model.Venta;
@@ -14,4 +15,5 @@ public interface IFacturacionPersistencia {
 	
 	public void marcarVentaFacturada(long ventaId) throws Exception;
 
+	public List<Long> getIdArticulosEnPeriodo(Date desde, Date hasta) throws Exception;
 }
