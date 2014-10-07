@@ -20,7 +20,6 @@ import controladores.FabricaSistema;
 public class ProveedoresBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	public static final Charset UTF_8 = Charset.forName("UTF-8");
 
 	private String RUT;
 	private String razonSocial;
@@ -153,12 +152,11 @@ public class ProveedoresBean implements Serializable {
 								e.getMessage(),
 								""));
 			} else {
-				byte ptext[] = e.getMessage().getBytes(UTF_8); 
 				context.addMessage(
 						null,
 						new FacesMessage(
 								FacesMessage.SEVERITY_ERROR,
-								new String(ptext),
+								e.getMessage(),
 								""));
 				return;
 			}
@@ -179,6 +177,7 @@ public class ProveedoresBean implements Serializable {
 	 * En caso que el usuario cancele la alta, se vac�a el formulario
 	 */
 	public void cancelarAltaProveedor() {
+		System.out.println("********** CANCELAR PROVEEDOR ************");
 		this.direccion = "";
 		this.nombreComercial = "";
 		this.razonSocial = "";

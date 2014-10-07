@@ -12,44 +12,46 @@
 		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
 		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
 		<link href="../CSS/font-awesome.min.css" rel="stylesheet" />
-		<script src="../JS/bootstrap.min.js"></script>	
+		<script src="../JS/bootstrap.min.js"></script>
+		<script src="../JS/pedidoAutomatico.js"></script>		
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
-			<script src="../JS/jquery.js"></script>
-			<script src="../JS/Sale.js"></script>
 		</f:facet>
 	</h:head>
 	<h:body>
 		<h:form id="form1">
-			<p:growl id="messages" showDetail="true" />
+			<p:hotkey bind="Ctrl+return" update="panel msgs" actionListener="#{stockBean.enviarPedido}"/>
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
 			<!--		-->
+			<p:focus></p:focus>
+			
 			<div class="vpanel_right">
 				<div class="wrapper">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title">Pedido Automatico</h3>
+							<h3 class="panel-title">Pedido Automático</h3>
 						</div>
 						<p:messages id="msgs" />
+						
+						<p:remoteCommand name="enviarPedido" update="panel msgs" actionListener="#{stockBean.enviarPedido}"/>
+						
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">					
 							<div class="container-fluid">
 								<div class="row">
 									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align:center;">
-										<h:commandButton value="Desde el último pedido" update="panel"
-											class="btn btn-default" style="margin:0 2% 10px 0;" 
-											actionListener="#{stockBean.desdeUltimoPedido}" />
-										<h:commandButton value="Predicción de pedido" update="panel"
-											class="btn btn-default" style="margin:0 0 10px 0;" 
-											actionListener="#{stockBean.prediccionDePedido}" />
+										<h:commandButton value="Desde el último pedido" update="panel" actionListener="#{stockBean.desdeUltimoPedido}"
+											class="btn btn-default elegirTipo" style="margin:0 2% 10px 0;" />
+										<h:commandButton value="Predicción de pedido" update="panel" actionListener="#{stockBean.prediccionDePedido}"
+											class="btn btn-default elegirTipo" style="margin:0 0 10px 0;" /> 
 									</div>
 								</div>
 								
 								<div class="row" style="margin-bottom: 1%;text-align:center;">
 									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<p:dataTable var="pedido" id="tablePedido"
+										<p:dataTable var="pedido" id="tablePedido" 
 											value="#{stockBean.pedidos}">
 											<div class="row">
 												<p:column headerText="Numero artículo" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
@@ -81,7 +83,7 @@
 												</p:column>
 												
 												<p:column headerText="Eliminar" styleClass="col-xs-2 col-sm-2 col-md-1 col-lg-1">
-													<p:commandButton icon="ui-icon-close" title="Eliminar"
+													<p:commandButton icon="ui-icon-close" title="Eliminar" tabindex="-1"
 														actionListener="#{stockBean.removeItem(pedido)}" update="tablePedido">
 														<p:confirm header="Confirmación" message="¿Está seguro que desea eliminar el artículo?" icon="ui-icon-alert" />
 													</p:commandButton>
@@ -97,7 +99,7 @@
 										<h:commandButton value="Pedido" update="panel"
 											class="btn btn-success" actionListener="#{stockBean.enviarPedido}" />
 										<h:commandButton value="Cancelar" update="panel"
-											class="btn btn-default"  type="reset" actionListener="#{stockBean.cancelarPedido}" />
+											class="btn btn-default" actionListener="#{stockBean.cancelarPedido}" />
 										</div>
 									</div>
 								</div>
@@ -111,7 +113,7 @@
 				style="width:64px;height:64px;position:fixed;right:5px;bottom:5px"
 				id="ajaxStatusPanel0">
 				<f:facet name="start">
-					<h:graphicImage value="Images/ajax_loading_big.gif" />
+					<h:graphicImage value="../Images/ajax_loading_big.gif" />
 				</f:facet>
 
 				<f:facet name="complete">
@@ -121,11 +123,16 @@
 			
 		</h:form>
 		
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="explode" widgetVar="confirmDialog">
 			<h:commandButton value="Cancelar" styleClass="btn btn-danger ui-confirmdialog-no pull-right" />
 			<h:commandButton value="Continuar" styleClass="btn btn-success ui-confirmdialog-yes pull-right"  style="margin:0 2% 0 0"/>
 	   	</p:confirmDialog>
 	   	
+	   	
+	   	 <p:confirmDialog header="Confirmation" widgetVar="confirmDlg">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
 	</h:body>
 
 </f:view>

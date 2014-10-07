@@ -24,7 +24,7 @@
 			<p:hotkey bind="Ctrl+return" update="panel msgs" actionListener="#{proveedoresBean.altaProveedor}"/>
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/proveedores.xhtml" />
-			
+			<p:focus></p:focus>
 			<div class="vpanel_right">
 				<div class="wrapper">				
 					<div class="panel panel-default">
@@ -76,7 +76,7 @@
 									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 										<div class="btn-group pull-right">
 											<h:commandButton value="Confirmar" update="panel" actionListener="#{proveedoresBean.altaProveedor}" class="btn btn-success" />
-											<h:commandButton value="Cancelar"  update="panel" actionListener="#{proveedoresBean.cancelarAltaProveedor}" class="btn btn-default" type="reset" />
+											<h:commandButton value="Cancelar"  update="panel" class="btn btn-default" type="reset" />
 										</div>
 									</div>								
 								</div>								

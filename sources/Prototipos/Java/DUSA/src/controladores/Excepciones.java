@@ -18,6 +18,11 @@ public class Excepciones extends Exception {
 	public static String MENSAJE_RUT_DUPLIACADO					= "Ya existe un Proveedor en el sistema con ese RUT";
 	public static String MENSAJE_NOMBRE_COMERCIAL_DUPLICADO		= "Ya existe un Proveedor en el sistema con ese Nombre Comercial";
      
+	// Mensajes para pedido automático
+	public static String MENSAJE_OK_PEDIDO						= "El pedido fue enviado con éxito.";
+	public static String MENSAJE_PEDIDO_VACIO					= "Primero debes seleccionar un pedido.";
+	
+	
     public Excepciones(String message, int errorCode){
         super(message);
         this.errorCode = errorCode;
