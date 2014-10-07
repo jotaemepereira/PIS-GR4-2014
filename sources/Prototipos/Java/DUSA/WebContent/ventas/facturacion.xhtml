@@ -97,7 +97,7 @@
 					</p:column>
 
 					<p:column headerText="Subtotal" style="text-align: center;">
-						<h:outputText value="#{facturacionBean.calculcarSubtotal(lineaVenta.cantidad, lineaVenta.precio)}" />
+						<h:outputText value="$ #{facturacionBean.calculcarSubtotal(lineaVenta.cantidad, lineaVenta.precio)}" />
 					</p:column>
 
 				</p:dataTable>
