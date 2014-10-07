@@ -20,7 +20,7 @@
 	</h:head>
 	<h:body>
 		<h:form id="form1">
-			<p:growl id="messages" showDetail="true"  />
+			<p:growl id="messages" showDetail="true" />
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/ventas.xhtml" />
 
@@ -32,44 +32,86 @@
 						</div>
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
-							<div class="container-fluid">
-								<div class="row" style="margin-bottom: 1%;">
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<p:dataTable id="tablaVentas" var="venta"
-											value="#{facturacionBean.ventas}" >
-	
-											<p:column headerText="ID">
-												<h:outputText value="#{venta.ventaId}" />
-											</p:column>
-	
-											<p:column headerText="Fecha">
-												<p:outputLabel value="#{facturacionBean.parseFechaVenta(venta.fechaVenta)}" />
-											</p:column>
-	
-											<p:column headerText="Usuario">
-												<h:outputText value="#{venta.usuario.nombre}" />
-											</p:column>
-	
-											<p:column headerText="Total">
-												<h:outputText value="$ #{venta.montoTotalAPagar}" />
-											</p:column>
-	
-											<p:column style="width: 56px; text-align: center">
-												<p:commandButton actionListener="#{facturacionBean.facturar(venta)}" style="width: 35px;"
-													styleClass="btn btn-default pull-right" icon="ui-icon-document" update="tablaVentas :form1:messages" value="" title="Facturar">
-												</p:commandButton>
-											</p:column>
-	
-										</p:dataTable>
+								<div class="container-fluid">
+									<div class="row" style="margin-bottom: 1%;">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:dataTable id="tablaVentas" var="venta"
+												value="#{facturacionBean.ventas}">
+
+												<p:column headerText="Tiempo" style="text-align: center;">
+													<h:outputText
+														value="#{facturacionBean.parseFechaVenta(venta.fechaVenta)}" />
+												</p:column>
+
+												<p:column headerText="Usuario" style="text-align: center;">
+													<h:outputText value="#{venta.usuario.nombre}" />
+												</p:column>
+
+												<p:column headerText="Cantidad de artículos" style="text-align: center;">
+													<h:outputText value="#{venta.cantidadLineas}" />
+												</p:column>
+
+												<p:column headerText="Total" style="text-align: center;">
+													<h:outputText value="$ #{venta.montoTotalAPagar}" />
+												</p:column>
+
+												<p:column style="text-align: center;width: 150px;">
+													<p:commandButton id="facturar" update=":formFacturar"
+														actionListener="#{facturacionBean.cargarFactura(venta)}"
+														oncomplete="PF('dlg2').show();" ajax="true" value="Detallar"
+														title="Detallar" />
+
+												</p:column>
+
+											</p:dataTable>
+										</div>
 									</div>
 								</div>
-							</div>
 							</h:panelGroup>
 						</div>
 					</div>
 				</div>
 			</div>
+
+
 		</h:form>
+
+		<p:dialog widgetVar="dlg2" showEffect="fade" hideEffect="fade"
+			modal="true" resizable="false">
+			<h:form id="formFacturar" style="width: 500px;">
+				<p:dataTable id="tablaVentas" var="lineaVenta"
+					value="#{facturacionBean.ventaSeleccionada.lineas}">
+
+					<p:column headerText="Nombre" style="text-align: center;">
+						<h:outputText
+							value="#{facturacionBean.obtenerNombre(lineaVenta.precio)}" />
+					</p:column>
+
+					<p:column headerText="Cantidad" style="text-align: center;">
+						<h:outputText
+							value="#{lineaVenta.cantidad}" />
+					</p:column>
+
+					<p:column headerText="Precio" style="text-align: center;">
+						<h:outputText value="$ #{lineaVenta.precio}" />
+					</p:column>
+
+					<p:column headerText="Subtotal" style="text-align: center;">
+						<h:outputText value="$ #{facturacionBean.calculcarSubtotal(lineaVenta.cantidad, lineaVenta.precio)}" />
+					</p:column>
+
+				</p:dataTable>
+				<div style="text-align: right; margin-top: 10px; font-weight: bold;">
+				TOTAL: $ <h:outputText value="#{facturacionBean.ventaSeleccionada.montoTotalAPagar}" />
+				</div>
+				<p:commandButton style="margin-top: 15px;"
+							actionListener="#{facturacionBean.facturar(ventaSeleccionada)}"
+							styleClass="btn btn-default pull-right" oncomplete="PF('dlg2').hide()"
+							update="tablaVentas :form1:messages" value="Facturar"
+							title="Facturar">
+						</p:commandButton>
+			</h:form>
+		</p:dialog>
 	</h:body>
 </f:view>
 </html>
