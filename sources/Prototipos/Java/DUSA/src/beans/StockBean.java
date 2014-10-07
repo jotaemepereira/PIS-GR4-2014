@@ -193,6 +193,17 @@ public class StockBean implements Serializable{
 		pedidos.remove(item);
 	}
 	
+	public void enviarPedido(){
+		System.out.println("******* ENVIAR PEDIDO ********");
+	}
+	
+	public void cancelarPedido(){
+		System.out.println("******* CANCELAR PEDIDO ********");
+		pedidos.clear();
+	}
+	
+
+	
 	public void agregarProveedor(){
 		DTProveedor p = new DTProveedor();
 		p.setIdProveedor(proveedor.getIdProveedor());

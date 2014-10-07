@@ -15,10 +15,10 @@
 		<script src="../JS/bootstrap.min.js"></script>
 		<script src="../JS/chosen.jquery.min.js"></script>
 		<script src="../JS/chosen.proto.min.js"></script>
+		<script src="../JS/pedidoAutomatico.js"></script>
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
-			<script src="../JS/jquery.js"></script>
 			<script src="../JS/Sale.js"></script>
 		</f:facet>
 	</h:head>
@@ -38,11 +38,11 @@
 						<div class="container-fluid">
 							<div class="row">
 								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align:center;">
-									<h:commandButton value="Desde el último pedido" update="panel"
-										class="btn btn-default" style="margin:0 2% 10px 0;" 
+									<h:commandButton id="desdeUltimoPedido" value="Desde el último pedido" update="panel"
+										class="btn btn-default elegirTipo" style="margin:0 2% 10px 0;" 
 										actionListener="#{stockBean.desdeUltimoPedido}" />
-									<h:commandButton value="Predicción de pedido" update="panel"
-										class="btn btn-default" style="margin:0 0 10px 0;" 
+									<h:commandButton id="predicionDePedido" value="Predicción de pedido" update="panel"
+										class="btn btn-default elegirTipo" style="margin:0 0 10px 0;" 
 										actionListener="#{stockBean.prediccionDePedido}" />
 								</div>
 							</div>
@@ -83,7 +83,7 @@
 											<p:column headerText="Eliminar" styleClass="col-xs-2 col-sm-2 col-md-1 col-lg-1">
 												<p:commandButton icon="ui-icon-close" title="Eliminar"
 													actionListener="#{stockBean.removeItem(pedido)}" update="tablePedido">
-													<p:confirm header="Confirmación" message="¿Está seguro que desea eliminar el artículo?" icon="ui-icon-alert" />
+												<!--<p:confirm header="Confirmación" message="¿Está seguro que desea eliminar el artículo?" icon="ui-icon-alert" />-->
 												</p:commandButton>
 											</p:column>
 										</div>
@@ -94,13 +94,15 @@
 							<div class="row" style="margin-bottom: 1%;">
 								<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 									<h:commandButton value="Cancelar" update="panel"
-										class="btn btn-default pull-right"  />
+										styleClass="btn btn-default pull-right" type="reset" onclick="cancelarPedido">
+									</h:commandButton>
 									<h:commandButton value="Pedido" update="panel"
-										class="btn btn-success pull-right"  />
+										class="btn btn-success pull-right" actionListener="#{stockBean.enviarPedido}" />
 								</div>
 							</div>
 						</div>
 					</p:panel>
+					
 				</div>
 			</div>
 			<p:ajaxStatus
@@ -117,9 +119,9 @@
 			
 		</h:form>
 		
-		<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
-			<h:commandButton value="Cancelar" styleClass="btn btn-danger ui-confirmdialog-no pull-right" />
-			<h:commandButton value="Continuar" styleClass="btn btn-success ui-confirmdialog-yes pull-right"  style="margin:0 2% 0 0"/>
+		<p:confirmDialog widgetVar="confirmDialog" global="true" showEffect="fade" hideEffect="explode" header="Confirmar">
+			<h:commandButton value="Cancelar" class="btn btn-danger ui-confirmdialog-no pull-right" />
+			<h:commandButton value="Continuar" id="continuarDialog" class="btn btn-success ui-confirmdialog-yes pull-right" style="margin:0 2% 0 0"/>
 	   	</p:confirmDialog>
 	   	
 	</h:body>
