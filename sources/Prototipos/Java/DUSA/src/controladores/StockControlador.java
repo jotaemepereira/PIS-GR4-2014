@@ -3,6 +3,7 @@ package controladores;
 import interfaces.IStock;
 import interfaces.IStockPersistencia;
 import model.Articulo;
+import model.GeneradorPedido;
 import model.LineaPedido;
 import model.Pedido;
 
@@ -65,12 +66,33 @@ public class StockControlador implements IStock {
 //		
 //	}
 	
-	public Pedido generarPedido01UltimoPedido(){
-		return null;
-	}
-	
 	public void generarPedido(Pedido p){
 		
 	}
 	
+	/**
+	 * 
+	 * @author Guille
+	 */
+	@Override
+	public Pedido generarPedidoEnBaseAPedidoAnterior() throws Excepciones {
+		
+		IStockPersistencia sp = FabricaPersistencia.getIStockPersistencia();
+		Date ultimoPedido = sp.obtenerFechaUltimoPedido();
+		SeleccionarArticulosDesde seleccionarDesde = new SeleccionarArticulosDesde(ultimoPedido);
+		PredecirCantidadDesde predecirDesde = new PredecirCantidadDesde(ultimoPedido);
+		
+		GeneradorPedido gr = new GeneradorPedido(seleccionarDesde, predecirDesde);
+		
+		Pedido pedidoGenerado = null;
+		
+		try {
+			pedidoGenerado = gr.generar();
+		} catch (Exception e) {
+			// TODO: handle exception
+			//Generar las excepciones personalizadas para "mostrar" en pantalla
+		}
+		
+		return pedidoGenerado;
+	}
 }

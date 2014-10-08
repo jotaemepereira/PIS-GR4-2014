@@ -14,6 +14,12 @@ public class Pedido {
 	List<LineaPedido>	lineas;
 	
 	
+	public void agregarArticulo(Long idArticulo, int cantidad){
+		
+		LineaPedido lp = new LineaPedido(idArticulo, cantidad);
+		this.lineas.add(lp);
+	}
+	
 	//Getters y Setters
 	public Long getIdPedido() {
 		return idPedido;

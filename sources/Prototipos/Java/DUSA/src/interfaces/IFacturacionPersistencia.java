@@ -16,4 +16,6 @@ public interface IFacturacionPersistencia {
 	public void marcarVentaFacturada(long ventaId) throws Exception;
 
 	public List<Long> getIdArticulosEnPeriodo(Date desde, Date hasta) throws Exception;
+	
+	public int cantidadVendidaEnPeriodo(Long idArticulo, Date desde, Date hasta) throws Exception;
 }
