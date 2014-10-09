@@ -265,5 +265,40 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		}
 		return articulos;
 	}
+	
+	/**
+	 * @author Guille
+	 */
+	
+	@Override
+	public int cantidadVendidaEnPeriodo(Long idArticulo, Date desde, Date hasta) throws Exception {
+		
+		Connection con = Conexion.getConnection();
+		PreparedStatement stmt = null;
+		int cantidadVendida = 0;
+		try {
+			String sql = "SELECT sum(quantity) as total" + 
+							"FROM sales s INNER JOIN sale_details sd " + 
+									"ON s.sale_id = sd.sale_id" +
+							"WHERE sd.product_id = ? and s.sale_status = ? and s.sale_date BETWEEN ? and ?" +
+							"GROUP BY product_id";
+			stmt = con.prepareStatement(sql);
+			stmt.setLong(1, idArticulo.longValue());
+			stmt.setString(2, "'" + Enumerados.EstadoVenta.FACTURADA + "'");
+			stmt.setString(3, desde.toString());
+			stmt.setString(4, hasta.toString());
+			ResultSet rs = stmt.executeQuery();
+			
+			while (rs.next()) {
+				cantidadVendida = rs.getInt("total"); 
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			stmt.close();
+			con.close();
+		}
+		return cantidadVendida;
+	}
 
 }

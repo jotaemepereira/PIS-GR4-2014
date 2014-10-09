@@ -1,5 +1,9 @@
 package model;
 
+
+
+import java.util.List;
+
 import interfaces.IPredictor;
 import interfaces.ISeleccionador;
 
@@ -9,11 +13,56 @@ import interfaces.ISeleccionador;
 */
 public class GeneradorPedido {
 	
-	public void create(ISeleccionador sa, IPredictor pr){
+	ISeleccionador 	seleccionador;
+	IPredictor		predictor;
 	
+	/**
+	 * @author Guille
+	 * @param sa Encargado de preseleccionar los artículos a predecir.
+	 * @param pr Encargado de la predicción por la cual se generan las cantidades del pedido.  
+	 */
+	public GeneradorPedido(ISeleccionador sa, IPredictor pr) {
+		
+		super();
+		this.seleccionador = sa;
+		this.predictor = pr;
+	}
+	/**
+	 * @author Guille
+	 * @return Pedido con todas las lineaPedido generado con el ISeleccionador y IPredictor
+	 * @throws Exception
+	 */
+	public Pedido generar() throws Exception{
+		
+		Pedido pedido = new Pedido();
+		List<Long> articulos = this.seleccionador.getIDArticulos();
+		
+		for (Long idArticulo : articulos) {
+			
+			int cantidad = this.predictor.predecir(idArticulo);
+			if (cantidad > 0){		
+				pedido.agregarArticulo(idArticulo, cantidad);
+			}
+		}
+		
+		return pedido;
 	}
 	
-	public Pedido generar(){
-		return null;
+	//Setters
+	
+	public void setPredictor(IPredictor predictor) {
+		this.predictor = predictor;
+	}
+	
+	public IPredictor getPredictor() {
+		return predictor;
+	}
+	
+	public void setSeleccionador(ISeleccionador seleccionador) {
+		this.seleccionador = seleccionador;
+	}
+	
+	public ISeleccionador getSeleccionador() {
+		return seleccionador;
 	}
 }

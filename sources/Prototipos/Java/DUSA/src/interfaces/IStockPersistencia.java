@@ -15,8 +15,6 @@ import model.Pedido;
 public interface IStockPersistencia {
 	
 	public void persistirArticulo(Articulo articulo)throws Excepciones;
-	//Deprecated 
-//	public List<LineaPedido> obtenerArticulosDesde(Date fechaDesde) throws Excepciones;
 	public Date obtenerFechaUltimoPedido() throws Excepciones;
 	public void persistirPedido(Pedido p);
 }
