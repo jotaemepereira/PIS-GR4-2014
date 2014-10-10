@@ -45,7 +45,8 @@ public class StockBean implements Serializable{
 	private int iniciado;
 	private String message;
 	private String messageClass;
-
+	private Boolean disableDesdeUltimoPedido = false;
+	private Boolean disablePrediccionDePedido = false;
 	
 	public List<DTLineaPedido> getPedidos() {
 		return pedidos;
@@ -140,6 +141,18 @@ public class StockBean implements Serializable{
 	public void setProveedoresSeleccionados(List<DTProveedor> proveedoresSeleccionados) {
 		this.proveedoresSeleccionados = proveedoresSeleccionados;
 	}
+	public Boolean getDisableDesdeUltimoPedido() {
+		return disableDesdeUltimoPedido;
+	}
+	public void setDisableDesdeUltimoPedido(Boolean disableDesdeUltimoPedido) {
+		this.disableDesdeUltimoPedido = disableDesdeUltimoPedido;
+	}
+	public Boolean getDisablePrediccionDePedido() {
+		return disablePrediccionDePedido;
+	}
+	public void setDisablePrediccionDePedido(Boolean disablePrediccionDePedido) {
+		this.disablePrediccionDePedido = disablePrediccionDePedido;
+	}
 	
 	public String getMessage() {
 		return message;
@@ -176,7 +189,9 @@ public class StockBean implements Serializable{
 	 * genera el pedido desde el ultimo pedido en el sistema
 	 */
 	public void desdeUltimoPedido(){
-pedidos.clear();
+		disablePrediccionDePedido = true;
+		disableDesdeUltimoPedido = true;
+		pedidos.clear();
 		
 		DTLineaPedido dt = new DTLineaPedido();
 		dt.setCantidad(5);
@@ -216,6 +231,8 @@ pedidos.clear();
 	 * genera el pedido segun la prediccion en base al pasado
 	 */
 	public void prediccionDePedido(){
+		disablePrediccionDePedido = true;
+		disableDesdeUltimoPedido = true;
 		pedidos.clear();
 		
 		DTLineaPedido dt = new DTLineaPedido();
@@ -278,7 +295,8 @@ pedidos.clear();
 		}
 		
 		pedidos.clear();
-		
+		disableDesdeUltimoPedido = false;
+		disablePrediccionDePedido = false;
 		
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
 				Excepciones.MENSAJE_OK_PEDIDO, ""));
@@ -287,6 +305,8 @@ pedidos.clear();
 	public void cancelarPedido(){
 		System.out.println("******* CANCELAR PEDIDO ********");
 		pedidos.clear();
+		disableDesdeUltimoPedido = false;
+		disablePrediccionDePedido = false;
 	}
 	
 
@@ -378,4 +398,5 @@ pedidos.clear();
 		
 		pedidoAutomaticoVentas();
 	}
+
 }
