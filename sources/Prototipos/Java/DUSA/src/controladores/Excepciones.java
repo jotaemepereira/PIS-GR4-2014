@@ -11,17 +11,19 @@ public class Excepciones extends Exception {
 	
 	// Mensajes generales
 	public static String MENSAJE_ERROR_SISTEMA					= "Ha ocurrido un error, por favor vuelva a intentarlo";
-	public static String MENSAJE_OK_ALTA						= "La alta ha sido efectuada con éxito";
+	public static String MENSAJE_OK_ALTA						= "El alta ha sido efectuada con éxito";
 	public static String MENSAJE_ERROR_DATOS					= "Para continuar complete todos los campos obligatorios";
 	
 	// Mensajes para Proveedor
-	public static String MENSAJE_RUT_DUPLIACADO					= "Ya existe un Proveedor en el sistema con ese RUT";
+	public static String MENSAJE_RUT_DUPLICADO					= "Ya existe un Proveedor en el sistema con ese RUT";
 	public static String MENSAJE_NOMBRE_COMERCIAL_DUPLICADO		= "Ya existe un Proveedor en el sistema con ese Nombre Comercial";
      
 	// Mensajes para pedido automático
 	public static String MENSAJE_OK_PEDIDO						= "El pedido fue enviado con éxito.";
 	public static String MENSAJE_PEDIDO_VACIO					= "Primero debes seleccionar un pedido.";
 	
+	// Mensajes para Artículo
+	public static String MENSAJE_ART_DUPLICADO					= "Ya existe un artículo en el sistema con esa descripción";
 	
     public Excepciones(String message, int errorCode){
         super(message);

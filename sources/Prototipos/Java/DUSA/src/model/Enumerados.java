@@ -20,15 +20,14 @@ public class Enumerados {
 	}
 	
 	public final class habilitado {	    
-	    public static final char C = 'C';
-	    public static final char F = 'F';
-	    public static final char K = 'K';
-	    public static final char M = 'M';
-	    public static final char O = 'O';
-	    public static final char PEDIDO = 'P';
-	    public static final char R = 'R';
 	    public static final char HABILITADO = 'S';
-	    public static final char V = 'V';
-	    public static final char X = 'X';
+	    public static final char INHABILITADO = 'N'; //(significa que no vende DUSA, pero no implica que no lo venda otro)
+	    public static final char DISCONTINUADO = 'D'; //(el laboratorio discontinuó el producto)
+	}
+	
+	public class tipoArticulo {
+		public static final char MEDICAMENTO = 'M';
+		public static final char PERFUMERIA = 'P';
+		public static final char OTROS = 'O';
 	}
 }

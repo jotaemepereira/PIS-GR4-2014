@@ -23,6 +23,11 @@ public class StockControlador implements IStock {
 
 	@Override
 	public void altaArticulo(Articulo articulo) throws Excepciones {
+		
+		// Me fijo si ya existe otro articulo con la misma descripcion
+		if((articulo.getDescripcion() != "") && (FabricaPersistencia.getIStockPersistencia().existeArticulo(articulo.getDescripcion()))){
+			throw(new Excepciones(Excepciones.MENSAJE_ART_DUPLICADO, Excepciones.ERROR_DATOS));
+		}
 		FabricaPersistencia.getIStockPersistencia().persistirArticulo(articulo);
 	}
 

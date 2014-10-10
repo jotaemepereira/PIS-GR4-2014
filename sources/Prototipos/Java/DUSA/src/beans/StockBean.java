@@ -17,10 +17,10 @@ import model.AccionTer;
 import model.Articulo;
 import model.Droga;
 import model.Presentacion;
-import model.Enumerados;
 import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
+import datatypes.DTTipoArticulo;
 
 @ManagedBean
 @ViewScoped
@@ -39,9 +39,12 @@ public class StockBean implements Serializable{
 	private AccionTer accionTer = new AccionTer();
 	private List<AccionTer> accionesTer = new ArrayList<AccionTer>();
 	private List<DTFormasVenta> formasVenta = new ArrayList<DTFormasVenta>();
+	private List<DTTipoArticulo> tiposArticulo = new ArrayList<DTTipoArticulo>();
 	private int[] tiposIVA;
 	private List<DTLineaPedido> pedidos = new ArrayList<DTLineaPedido>();
 	private int iniciado;
+	private String message;
+	private String messageClass;
 
 	
 	public List<DTLineaPedido> getPedidos() {
@@ -110,6 +113,12 @@ public class StockBean implements Serializable{
 	public void setFormasVenta(List<DTFormasVenta> formasVenta) {
 		this.formasVenta = formasVenta;
 	}
+	public List<DTTipoArticulo> getTiposArticulo() {
+		return tiposArticulo;
+	}
+	public void setTiposArticulo(List<DTTipoArticulo> tiposArticulo) {
+		this.tiposArticulo = tiposArticulo;
+	}
 	public int[] getTiposIVA() {
 		return tiposIVA;
 	}
@@ -132,6 +141,18 @@ public class StockBean implements Serializable{
 		this.proveedoresSeleccionados = proveedoresSeleccionados;
 	}
 	
+	public String getMessage() {
+		return message;
+	}
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	public String getMessageClass() {
+		return messageClass;
+	}
+	public void setMessageClass(String messageClass) {
+		this.messageClass = messageClass;
+	}
 	public void pedidoAutomaticoVentas() {
 		if (iniciado == 0) {
 	/*	for (int i=0; i<5; i++) {
@@ -278,13 +299,39 @@ pedidos.clear();
 		proveedoresSeleccionados.add(p);
 	}
 	
-	public void altaArticulo(){
+	public void altaArticulo(){		
+		FacesContext context = FacesContext.getCurrentInstance();
 		try {
+			/* Llamo a la logica para que se de de alta el articulo en el sistema y
+			 en caso de error lo muestro */
 			FabricaSistema.getISistema().altaArticulo(articulo);
 		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
+//				context.addMessage(
+//						null,
+//						new FacesMessage(
+//								FacesMessage.SEVERITY_WARN,
+//								e.getMessage(),
+//								""));
+				this.message = e.getMessage();
+				this.messageClass = "alert alert-danger";
+			} else {
+//				context.addMessage(
+//						null,
+//						new FacesMessage(
+//								FacesMessage.SEVERITY_ERROR,
+//								e.getMessage(),
+//								""));
+				this.message = e.getMessage();
+				this.messageClass = "alert alert-danger";
+				return;
+			}
 		}
+		// si todo bien aviso y vacio el formulario
+		//context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,Excepciones.MENSAJE_OK_ALTA, ""));
+		this.message = Excepciones.MENSAJE_OK_ALTA;
+		this.messageClass = "alert alert-success";
+		this.articulo = new Articulo();
 	}
 	
 	public void cancelarAltaArticulo(){
@@ -297,6 +344,21 @@ pedidos.clear();
 		p1.setNombreComercial("DUSA");
 		proveedores.add(p1);
 			
+		//Cargo tipos de articulo para el combo
+		DTTipoArticulo ta = new DTTipoArticulo();
+		ta.setTipoArticulo(model.Enumerados.tipoArticulo.MEDICAMENTO);
+		ta.setDescripcion("Medicamento");
+		tiposArticulo.add(ta);
+		ta = new DTTipoArticulo();
+		ta.setTipoArticulo(model.Enumerados.tipoArticulo.PERFUMERIA);
+		ta.setDescripcion("Perfumería");
+		tiposArticulo.add(ta);
+		ta = new DTTipoArticulo();
+		ta.setTipoArticulo(model.Enumerados.tipoArticulo.OTROS);
+		ta.setDescripcion("Otros");
+		tiposArticulo.add(ta);
+		
+		//Cargo formas de venta para el combo
 		DTFormasVenta fv = new DTFormasVenta();
 		fv.setFormaVenta(model.Enumerados.formasVenta.ventaLibre);
 		fv.setDescripcion("Venta libre");
@@ -311,7 +373,7 @@ pedidos.clear();
 		formasVenta.add(fv);
 		fv = new DTFormasVenta();
 		fv.setFormaVenta(model.Enumerados.formasVenta.controlMedico);
-		fv.setDescripcion("Control m�dico");
+		fv.setDescripcion("Control médico");
 		formasVenta.add(fv);
 		
 		pedidoAutomaticoVentas();
