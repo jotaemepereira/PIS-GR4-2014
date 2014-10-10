@@ -1,13 +1,11 @@
 package beans;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
@@ -42,7 +40,6 @@ public class StockBean implements Serializable{
 	private List<DTTipoArticulo> tiposArticulo = new ArrayList<DTTipoArticulo>();
 	private int[] tiposIVA;
 	private List<DTLineaPedido> pedidos = new ArrayList<DTLineaPedido>();
-	private int iniciado;
 	private String message;
 	private String messageClass;
 	private Boolean disableDesdeUltimoPedido = false;
@@ -165,24 +162,6 @@ public class StockBean implements Serializable{
 	}
 	public void setMessageClass(String messageClass) {
 		this.messageClass = messageClass;
-	}
-	public void pedidoAutomaticoVentas() {
-		if (iniciado == 0) {
-	/*	for (int i=0; i<5; i++) {
-			DTLineaPedido dt = new DTLineaPedido();
-			dt.setCantidad(i);
-			dt.setIdArticulo(i);
-			dt.setNumeroArticulo(i);
-			dt.setNombreArticulo("Nombre"+i);
-			dt.setPrecioPonderado(i);
-			dt.setPrecioUnitario(i);
-			dt.setStockMinimo(i);
-			dt.setSubtotal(i);
-			pedidos.add(dt);
-		 }*/
-		 iniciado = 1;
-		}
-		//return FabricaSistema.getISistema().pedidoAutomaticoVentas();
 	}
 	
 	/**
@@ -320,7 +299,7 @@ public class StockBean implements Serializable{
 	}
 	
 	public void altaArticulo(){		
-		FacesContext context = FacesContext.getCurrentInstance();
+		//FacesContext context = FacesContext.getCurrentInstance();
 		try {
 			/* Llamo a la logica para que se de de alta el articulo en el sistema y
 			 en caso de error lo muestro */
@@ -359,10 +338,14 @@ public class StockBean implements Serializable{
 	}
 	
 	public StockBean(){
-		DTProveedor p1 = new DTProveedor();
-		p1.setIdProveedor(1);
-		p1.setNombreComercial("DUSA");
-		proveedores.add(p1);
+		
+		//Cargo los proveedores de la base de datos
+		try {
+			this.proveedores = FabricaSistema.getISistema().obtenerProveedores();
+		} catch (Excepciones e) {
+			this.message = e.getMessage();
+			this.messageClass = "alert alert-danger";
+		}
 			
 		//Cargo tipos de articulo para el combo
 		DTTipoArticulo ta = new DTTipoArticulo();
@@ -395,8 +378,6 @@ public class StockBean implements Serializable{
 		fv.setFormaVenta(model.Enumerados.formasVenta.controlMedico);
 		fv.setDescripcion("Control médico");
 		formasVenta.add(fv);
-		
-		pedidoAutomaticoVentas();
 	}
 
 }

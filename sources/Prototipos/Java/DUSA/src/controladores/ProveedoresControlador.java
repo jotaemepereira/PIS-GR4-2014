@@ -1,5 +1,8 @@
 package controladores;
 
+import java.util.List;
+
+import datatypes.DTProveedor;
 import model.Proveedor;
 import interfaces.IProveedores;
 
@@ -34,6 +37,11 @@ public class ProveedoresControlador implements IProveedores {
 		if(existsNombre){
 			throw(new Excepciones(Excepciones.MENSAJE_NOMBRE_COMERCIAL_DUPLICADO, Excepciones.ADVERTENCIA_DATOS));
 		}
+	}
+
+	@Override
+	public List<DTProveedor> obtenerProveedores() throws Excepciones {
+		return FabricaPersistencia.getInstanciaProveedoresPersistencia().obtenerProveedores();
 	}
 	
 }

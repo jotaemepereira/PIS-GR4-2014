@@ -4,6 +4,7 @@ public class DTProveedor {
 	private int idProveedor;
 	private String nombreComercial;
 	private long codigoIdentificador;
+	private String idLinea;
 	
 	public int getIdProveedor() {
 		return idProveedor;
@@ -22,5 +23,11 @@ public class DTProveedor {
 	}
 	public void setCodigoIdentificador(long codigoIdentificador) {
 		this.codigoIdentificador = codigoIdentificador;
+	}
+	public String getIdLinea() {
+		return idLinea;
+	}
+	public void setIdLinea(String idLinea) {
+		this.idLinea = idLinea;
 	}
 }
