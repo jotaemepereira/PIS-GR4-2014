@@ -6,37 +6,45 @@
 
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="container-fluid">
-	    	<div class="navbar-header">
-		      	<a class="navbar-brand" href="#"> DUSA
+			<div class="navbar-header">
+				<a href="#"> <h:graphicImage
+						value="#{configuracionBean.rutaLogo}" style="height: 70px" />
 				</a>
-      		</div>
-      		
-      		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav">
-				        <li><a href="#"><i class="fa fa-calculator fa-2x"></i> Caja </a></li>
-				        <li><a href="../stock/altaArticulo.jsf"><i class="fa fa-cubes fa-2x"></i> Stock</a></li>
-				        <li><a href="../ventas/nuevaVenta.jsf"><i class="fa fa-shopping-cart fa-2x"></i> Ventas</a></li>
-				        <li><a href="#"><i class="fa fa-users fa-2x"></i> Clientes</a></li>
-				        <li><a href="../proveedores/altaProveedor.jsf"><i class="fa fa-truck fa-2x"></i> Proveedores</a></li>
-			      	</ul>
-			      	<ul class="nav navbar-nav navbar-right">
-				        <li class="login">
-				        <h:outputLabel id="logged_user">
-				        	<a href="#" id="logged_user_a"><i class="fa fa-user fa-2x"></i> Sebastian Caballero</a>
-				        </h:outputLabel>
-				        </li>
-				        <p:overlayPanel id="logged_user_panel" for="logged_user" hideEffect="fade">
-					        <div>
-								<a href="#">Mis datos</a>
-							</div>
-							<div>
-								<p:commandLink actionListener="#{sesionBean.logOut}" ajax="true">
-									<h:outputText value="Salir" />
-								</p:commandLink>
-							</div>
-						</p:overlayPanel>
-			      	</ul>
-      		</div><!-- /.navbar-collapse -->
-	    </div><!-- /.container-fluid -->
+			</div>
+
+			<div class="collapse navbar-collapse"
+				id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="#"><i class="fa fa-calculator fa-2x"></i>
+							Caja </a></li>
+					<li><a href="../stock/altaArticulo.jsf"><i
+							class="fa fa-cubes fa-2x"></i> Stock</a></li>
+					<li><a href="../ventas/nuevaVenta.jsf"><i
+							class="fa fa-shopping-cart fa-2x"></i> Ventas</a></li>
+					<li><a href="#"><i class="fa fa-users fa-2x"></i> Clientes</a></li>
+					<li><a href="../proveedores/altaProveedor.jsf"><i
+							class="fa fa-truck fa-2x"></i> Proveedores</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="login"><h:outputLabel id="logged_user">
+							<a href="#" id="logged_user_a"><i class="fa fa-user fa-2x"></i>
+								Sebastian Caballero</a>
+						</h:outputLabel></li>
+					<p:overlayPanel id="logged_user_panel" for="logged_user"
+						hideEffect="fade">
+						<div>
+							<a href="#">Mis datos</a>
+						</div>
+						<div>
+							<p:commandLink actionListener="#{sesionBean.logOut}" ajax="true">
+								<h:outputText value="Salir" />
+							</p:commandLink>
+						</div>
+					</p:overlayPanel>
+				</ul>
+			</div>
+			<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container-fluid -->
 	</nav>
 </ui:composition>
