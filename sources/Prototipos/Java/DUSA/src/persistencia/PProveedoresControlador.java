@@ -3,10 +3,13 @@ package persistencia;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import controladores.Excepciones;
 import model.Proveedor;
+import datatypes.DTProveedor;
 import interfaces.IProveedoresPersistencia;
 
 public class PProveedoresControlador implements IProveedoresPersistencia {
@@ -100,6 +103,30 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		return (cant > 0);
+	}
+	
+	public List<DTProveedor> obtenerProveedores() throws Excepciones{		
+		List<DTProveedor> ret = null;
+		PreparedStatement stmt = null;
+		String query = "SELECT s.supplier_id, s.comercialname " +
+						"FROM SUPPLIERS s " +
+						"WHERE s.status <> FALSE";
+		
+		try {
+			Connection c = Conexion.getConnection();			
+			stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			ret = new ArrayList<DTProveedor>();
+			while(rs.next()){
+				DTProveedor nuevo = new DTProveedor();
+				nuevo.setIdProveedor(rs.getInt("supplier_id"));
+				nuevo.setNombreComercial(rs.getString("comercialname"));
+				ret.add(nuevo);
+			}
+		} catch (Exception e){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		return ret;		
 	}
 	
 }

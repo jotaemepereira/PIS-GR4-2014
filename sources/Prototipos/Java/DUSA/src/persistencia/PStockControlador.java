@@ -50,7 +50,7 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.setBigDecimal(11, articulo.getPrecioVenta());//Not Null
 			stmt.setBigDecimal(12, articulo.getCostoLista());//Not Null
 			stmt.setBigDecimal(13, articulo.getCostoOferta());//Null
-			stmt.setBigDecimal(14, articulo.getUltimoCosto());//Not Null
+			stmt.setBigDecimal(14, articulo.getUltimoCosto());//Null
 			stmt.setBigDecimal(15, articulo.getCostoPromedio());//Null
 			stmt.setInt(16, articulo.getTipoIva());//Null
 			stmt.setString(17, articulo.getCodigoBarras());//Null
@@ -66,6 +66,33 @@ public class PStockControlador implements IStockPersistencia {
 		} catch ( Exception e ) {
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
+	}
+	
+
+	@Override
+	public boolean existeArticulo(String descripcion) throws Excepciones {
+		int cant = 0;
+		PreparedStatement stmt = null;
+		String query = "SELECT COUNT(*) AS cant FROM products " +
+						"WHERE DESCRIPTION = ?";
+				
+		try {
+			Connection c = Conexion.getConnection();
+			
+			stmt = c.prepareStatement(query);
+			stmt.setString(1, descripcion);
+			ResultSet rs = stmt.executeQuery();
+			//Obtengo la cantidad de proveedores con ese rut
+			while(rs.next()){
+				cant = rs.getInt("cant");
+			}
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch ( Exception e ) {
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		return (cant > 0);
 	}
 
 	public List<Articulo> buscarArticulo(String descripcion){

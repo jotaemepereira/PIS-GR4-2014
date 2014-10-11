@@ -1,6 +1,9 @@
 package interfaces;
 
+import java.util.List;
+
 import controladores.Excepciones;
+import datatypes.DTProveedor;
 import model.Proveedor;
 
 public interface IProveedoresPersistencia {
@@ -43,4 +46,15 @@ public interface IProveedoresPersistencia {
 	 * @author Victoria Díaz
 	 */
 	public boolean existeProveedorRUT(String RUT) throws Excepciones;
+	
+	/**
+	 * 
+	 * @return Devuelve una lista de DTProveedor con todos los proveedores del sistema
+	 * 
+	 * @throws Excepciones
+	 *             - ERROR_SISTEMA (en caso que suceda algún error a la hora de
+	 *             conectarse o comunicarse con la base)
+	 * @author José Aguerre
+	 */
+	public List<DTProveedor> obtenerProveedores() throws Excepciones;
 }

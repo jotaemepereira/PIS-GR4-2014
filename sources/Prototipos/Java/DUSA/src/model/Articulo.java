@@ -14,10 +14,12 @@ public class Articulo {
 	private String clave3;
 	private boolean esPsicofarmaco;
 	private boolean esEstupefaciente;
+	private boolean esHeladera;
 	private char codigoVenta;
 	private char tipoAutorizacion;
 	private BigDecimal precioUnitario;
 	private BigDecimal precioVenta;
+	private BigDecimal porcentajePrecioVenta;
 	private BigDecimal costoLista;
 	private BigDecimal costoOferta;
 	private BigDecimal ultimoCosto;
@@ -89,6 +91,12 @@ public class Articulo {
 	public void setEsEstupefaciente(boolean esEstupefaciente) {
 		this.esEstupefaciente = esEstupefaciente;
 	}
+	public boolean isEsHeladera() {
+		return esHeladera;
+	}
+	public void setEsHeladera(boolean esHeladera) {
+		this.esHeladera = esHeladera;
+	}
 	public char getCodigoVenta() {
 		return codigoVenta;
 	}
@@ -112,6 +120,12 @@ public class Articulo {
 	}
 	public void setPrecioVenta(BigDecimal precioVenta) {
 		this.precioVenta = precioVenta;
+	}
+	public BigDecimal getPorcentajePrecioVenta() {
+		return porcentajePrecioVenta;
+	}
+	public void setPorcentajePrecioVenta(BigDecimal porcentajePrecioVenta) {
+		this.porcentajePrecioVenta = porcentajePrecioVenta;
 	}
 	public BigDecimal getCostoLista() {
 		return costoLista;

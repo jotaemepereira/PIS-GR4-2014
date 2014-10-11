@@ -17,4 +17,5 @@ public interface IStockPersistencia {
 	public void persistirArticulo(Articulo articulo)throws Excepciones;
 	public Date obtenerFechaUltimoPedido() throws Excepciones;
 	public void persistirPedido(Pedido p);
+	public boolean existeArticulo(String descripcion) throws Excepciones;
 }

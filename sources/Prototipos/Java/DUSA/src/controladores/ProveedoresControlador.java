@@ -1,5 +1,8 @@
 package controladores;
 
+import java.util.List;
+
+import datatypes.DTProveedor;
 import model.Proveedor;
 import interfaces.IProveedores;
 
@@ -22,7 +25,7 @@ public class ProveedoresControlador implements IProveedores {
 		
 		// Me fijo si ya existe otro proveedor con este RUT en caso que se haya ingresado algo en el campo
 		if((proveedor.getRUT() != "") && (FabricaPersistencia.getInstanciaProveedoresPersistencia().existeProveedorRUT(proveedor.getRUT()))){
-			throw(new Excepciones(Excepciones.MENSAJE_RUT_DUPLIACADO, Excepciones.ERROR_DATOS));
+			throw(new Excepciones(Excepciones.MENSAJE_RUT_DUPLICADO, Excepciones.ERROR_DATOS));
 		}
 		System.out.print("ok");
 		// Me fijo si ya existe otro proveedor con este nombre para avisarle al usuario
@@ -35,6 +38,11 @@ public class ProveedoresControlador implements IProveedores {
 		if(existsNombre){
 			throw(new Excepciones(Excepciones.MENSAJE_NOMBRE_COMERCIAL_DUPLICADO, Excepciones.ADVERTENCIA_DATOS));
 		}
+	}
+
+	@Override
+	public List<DTProveedor> obtenerProveedores() throws Excepciones {
+		return FabricaPersistencia.getInstanciaProveedoresPersistencia().obtenerProveedores();
 	}
 	
 }
