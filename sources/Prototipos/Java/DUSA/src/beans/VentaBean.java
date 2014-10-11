@@ -29,10 +29,12 @@ public class VentaBean implements Serializable {
 	private String laboratorio = "Laboratorio prueba";
 	private BigDecimal precioVenta = new BigDecimal(0);
 	private String descripcionBusqueda;
+	private String nombre = "nombre";
 
 	private DTVenta venta = new DTVenta();
 	private List<DTVenta> lineasVenta = new ArrayList<DTVenta>();
 	private List<DTVenta> lineasVenta2 = new ArrayList<DTVenta>();
+	private List<DTVenta> lineasVentaPerdidas = new ArrayList<DTVenta>();
 	private List<DTVenta> ventasSeleccionadas = new ArrayList<DTVenta>();	
 
 	public VentaBean() {
@@ -57,6 +59,11 @@ public class VentaBean implements Serializable {
 		}
 
 	}
+	
+	public void agregarLineaVentaPerdida(DTVenta vp){
+		vp.setCantidad(1);
+		lineasVentaPerdidas.add(vp);
+	}
 
 	public void agregarLineaVenta(DTVenta v){
 		BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento()));
@@ -76,9 +83,7 @@ public class VentaBean implements Serializable {
 			BigDecimal x = (d.getPrecioVenta().multiply(d.getDescuento()));
 			BigDecimal a = new BigDecimal(100);
 			d.setPrecioVenta(d.getPrecioVenta().subtract(x.divide(a)));
-
 			d.setCantidad(1);
-
 			lineasVenta2.add(d);
 
 		}
@@ -195,6 +200,21 @@ public class VentaBean implements Serializable {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+	public List<DTVenta> getLineasVentaPerdidas() {
+		return lineasVentaPerdidas;
+	}
+
+	public void setLineasVentaPerdidas(List<DTVenta> lineasVentaPerdidas) {
+		this.lineasVentaPerdidas = lineasVentaPerdidas;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 
