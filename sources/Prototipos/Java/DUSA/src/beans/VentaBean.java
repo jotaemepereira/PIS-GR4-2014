@@ -29,10 +29,12 @@ public class VentaBean implements Serializable {
 	private String laboratorio = "Laboratorio prueba";
 	private BigDecimal precioVenta = new BigDecimal(0);
 	private String descripcionBusqueda;
-
+	private String nombre = "nombre";
+	
 	private DTVenta venta = new DTVenta();
 	private List<DTVenta> lineasVenta = new ArrayList<DTVenta>();
 	private List<DTVenta> lineasVenta2 = new ArrayList<DTVenta>();
+	private List<DTVenta> lineasVentaPerdidas = new ArrayList<DTVenta>();
 	private List<DTVenta> ventasSeleccionadas = new ArrayList<DTVenta>();	
 
 	public VentaBean() {
@@ -57,7 +59,20 @@ public class VentaBean implements Serializable {
 		}
 
 	}
+	
+	public void agregarLineaVentaPerdida(DTVenta vp){
+		vp.setCantidad(1);
+		lineasVentaPerdidas.add(vp);
+	}
 
+	public void agregarLineaVenta(DTVenta v){
+		BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento()));
+		BigDecimal a = new BigDecimal(100);
+		v.setPrecioVenta(v.getPrecioVenta().subtract(x.divide(a)));
+		v.setCantidad(1);
+		lineasVenta2.add(v);
+	}
+	
 	// este agregar es para agregar los productos buscados a la venta
 	public void agregarLinea(ActionEvent actionEvent) {
 
@@ -68,9 +83,7 @@ public class VentaBean implements Serializable {
 			BigDecimal x = (d.getPrecioVenta().multiply(d.getDescuento()));
 			BigDecimal a = new BigDecimal(100);
 			d.setPrecioVenta(d.getPrecioVenta().subtract(x.divide(a)));
-
 			d.setCantidad(1);
-
 			lineasVenta2.add(d);
 
 		}
@@ -87,6 +100,16 @@ public class VentaBean implements Serializable {
 		}
 		return total.toString();
 	}
+	
+	public String strSubTotal() {
+		BigDecimal total = new BigDecimal(0);
+		Iterator<DTVenta> it = lineasVenta2.iterator();
+		while (it.hasNext()) {
+			DTVenta v = it.next();
+			total = total.add(v.getPrecioVenta());
+		}
+		return total.toString();
+	}
 
 	public void facturarVenta() {
 		ventasSeleccionadas = new ArrayList<DTVenta>();
@@ -95,7 +118,7 @@ public class VentaBean implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(
 				null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Factura ingresada con éxito", ""));
+						"Factura ingresada con ï¿½xito", ""));
 	}
 
 	public List<DTVenta> getLineasVenta() {
@@ -177,6 +200,21 @@ public class VentaBean implements Serializable {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+	public List<DTVenta> getLineasVentaPerdidas() {
+		return lineasVentaPerdidas;
+	}
+
+	public void setLineasVentaPerdidas(List<DTVenta> lineasVentaPerdidas) {
+		this.lineasVentaPerdidas = lineasVentaPerdidas;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 

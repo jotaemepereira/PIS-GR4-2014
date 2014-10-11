@@ -1,6 +1,7 @@
 package controladores;
 
 import java.util.List;
+import java.util.Map;
 
 import datatypes.DTProveedor;
 import model.Proveedor;
@@ -17,6 +18,7 @@ public class ProveedoresControlador implements IProveedores {
 		System.out.print("TELEFONO:" + proveedor.getTelefono() + "fin" + "\n");
 		System.out.print("DIRECCION:" + proveedor.getDireccion() + "fin" + "\n");
 		System.out.print("NOMBRE COMERCIAL:" + proveedor.getNombreComercial() + "fin" + "\n");
+		System.out.print("TIPO DOCUMENTO:" + proveedor.getTipoDocumento() + "fin" + "\n");
 		/*
 		if(proveedor.getNombreComercial() == ""){
 			throw(new Excepciones("Faltan datos", Excepciones.ERROR_DATOS));
@@ -40,7 +42,7 @@ public class ProveedoresControlador implements IProveedores {
 	}
 
 	@Override
-	public List<DTProveedor> obtenerProveedores() throws Excepciones {
+	public Map<Integer, DTProveedor> obtenerProveedores() throws Excepciones {
 		return FabricaPersistencia.getInstanciaProveedoresPersistencia().obtenerProveedores();
 	}
 	

@@ -2,7 +2,10 @@ package beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -26,9 +29,8 @@ public class StockBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	private Articulo articulo = new Articulo();
-	private DTProveedor proveedor = new DTProveedor();
-	private List<DTProveedor> proveedores = new ArrayList<DTProveedor>();
-	private List<DTProveedor> proveedoresSeleccionados = new ArrayList<DTProveedor>();
+	private int proveedor;
+	private Map<Integer,DTProveedor> proveedores = new HashMap<Integer,DTProveedor>();
 	private long codigoIdentificador;
 	private Presentacion presentacion = new Presentacion();
 	private List<Presentacion> presentaciones = new ArrayList<Presentacion>();
@@ -44,6 +46,8 @@ public class StockBean implements Serializable{
 	private String messageClass;
 	private Boolean disableDesdeUltimoPedido = false;
 	private Boolean disablePrediccionDePedido = false;
+	private List<DTProveedor> listaProveedores;
+	private List<DTProveedor> proveedoresSeleccionados = new ArrayList<DTProveedor>();
 	
 	public List<DTLineaPedido> getPedidos() {
 		return pedidos;
@@ -57,16 +61,16 @@ public class StockBean implements Serializable{
 	public void setArticulo(Articulo articulo) {
 		this.articulo = articulo;
 	}
-	public DTProveedor getProveedor() {
+	public int getProveedor() {
 		return proveedor;
 	}
-	public void setProveedor(DTProveedor proveedor) {
+	public void setProveedor(int proveedor) {
 		this.proveedor = proveedor;
 	}
-	public List<DTProveedor> getProveedores() {
+	public Map<Integer, DTProveedor> getProveedores() {
 		return proveedores;
 	}
-	public void setProveedores(List<DTProveedor> proveedores) {
+	public void setProveedores(Map<Integer, DTProveedor> proveedores) {
 		this.proveedores = proveedores;
 	}
 	public Presentacion getPresentacion() {
@@ -117,6 +121,18 @@ public class StockBean implements Serializable{
 	public void setTiposArticulo(List<DTTipoArticulo> tiposArticulo) {
 		this.tiposArticulo = tiposArticulo;
 	}
+	public List<DTProveedor> getListaProveedores() {
+		return listaProveedores;
+	}
+	public void setListaProveedores(List<DTProveedor> listaProveedores) {
+		this.listaProveedores = listaProveedores;
+	}
+	public List<DTProveedor> getProveedoresSeleccionados() {
+		return proveedoresSeleccionados;
+	}
+	public void setProveedoresSeleccionados(List<DTProveedor> proveedoresSeleccionados) {
+		this.proveedoresSeleccionados = proveedoresSeleccionados;
+	}
 	public int[] getTiposIVA() {
 		return tiposIVA;
 	}
@@ -131,12 +147,6 @@ public class StockBean implements Serializable{
 	}
 	public void setCodigoIdentificador(long codigoIdentificador) {
 		this.codigoIdentificador = codigoIdentificador;
-	}
-	public List<DTProveedor> getProveedoresSeleccionados() {
-		return proveedoresSeleccionados;
-	}
-	public void setProveedoresSeleccionados(List<DTProveedor> proveedoresSeleccionados) {
-		this.proveedoresSeleccionados = proveedoresSeleccionados;
 	}
 	public Boolean getDisableDesdeUltimoPedido() {
 		return disableDesdeUltimoPedido;
@@ -291,18 +301,55 @@ public class StockBean implements Serializable{
 
 	
 	public void agregarProveedor(){
-		DTProveedor p = new DTProveedor();
-		p.setIdProveedor(proveedor.getIdProveedor());
-		p.setNombreComercial(proveedor.getNombreComercial());
-		p.setCodigoIdentificador(codigoIdentificador);
-		proveedoresSeleccionados.add(p);
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (codigoIdentificador != 0 && proveedor != 0){
+			if (!existeProveedor(proveedor)){
+				DTProveedor p = new DTProveedor();
+				p.setIdProveedor(proveedor);
+				p.setNombreComercial(proveedores.get(proveedor).getNombreComercial());
+				p.setCodigoIdentificador(codigoIdentificador);
+				this.proveedoresSeleccionados.add(p);
+			}
+			else{
+				context.addMessage(
+				null,
+				new FacesMessage(
+						FacesMessage.SEVERITY_WARN,
+						"Ya seleccionó el proveedor.",
+						""));
+			}
+		}
+		else{
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_WARN,
+							"Debe seleccionar un proveedor e ingresar su código que lo identifica.",
+							""));
+		}
 	}
 	
+	private boolean existeProveedor(int proveedor) {
+		boolean ret = false;
+		Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
+		while (i.hasNext() && !ret){
+			ret = proveedor == i.next().getIdProveedor();
+		}
+		return ret;
+	}
 	public void altaArticulo(){		
 		//FacesContext context = FacesContext.getCurrentInstance();
 		try {
 			/* Llamo a la logica para que se de de alta el articulo en el sistema y
 			 en caso de error lo muestro */
+			Iterator i = proveedoresSeleccionados.iterator();
+			while (i.hasNext()){
+				DTProveedor p = new DTProveedor();
+				p.setIdProveedor(proveedor);
+				p.setNombreComercial(proveedores.get(proveedor).getNombreComercial());
+				p.setCodigoIdentificador(codigoIdentificador);
+				this.articulo.agregarProveedor(p);
+			}
 			FabricaSistema.getISistema().altaArticulo(articulo);
 		} catch (Excepciones e) {
 			if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
@@ -342,6 +389,7 @@ public class StockBean implements Serializable{
 		//Cargo los proveedores de la base de datos
 		try {
 			this.proveedores = FabricaSistema.getISistema().obtenerProveedores();
+			this.setListaProveedores(new ArrayList<DTProveedor>(this.proveedores.values()));
 		} catch (Excepciones e) {
 			this.message = e.getMessage();
 			this.messageClass = "alert alert-danger";
