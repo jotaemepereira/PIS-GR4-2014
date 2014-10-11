@@ -26,6 +26,7 @@ public class ProveedoresBean implements Serializable {
 	private String telefono;
 	private String direccion;
 	private String nombreComercial;
+	private String tipoDocumento = "R";
 
 	/**
 	 * @return String que identifica al RUT
@@ -111,6 +112,20 @@ public class ProveedoresBean implements Serializable {
 	public void setNombreComercial(String nombreComercial) {
 		this.nombreComercial = nombreComercial;
 	}
+	
+	/**
+	 * @return the tipoDocumento
+	 */
+	public String getTipoDocumento() {
+		return tipoDocumento;
+	}
+
+	/**
+	 * @param tipoDocumento the tipoDocumento to set
+	 */
+	public void setTipoDocumento(String tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
+	}
 
 	/**
 	 * Método encargado de crear el objeto proveedor, en caso que haya algun
@@ -125,6 +140,7 @@ public class ProveedoresBean implements Serializable {
 		// Creo el proveedor y en caso de error aviso al usuario y cancelo la operaci�n
 		try {
 			proveedor = new Proveedor(nombreComercial);
+			proveedor.setTipoDocumento(tipoDocumento);
 			proveedor.setRUT(RUT);
 			proveedor.setRazonSocial(razonSocial);
 			proveedor.setTelefono(telefono);
@@ -171,6 +187,7 @@ public class ProveedoresBean implements Serializable {
 		this.razonSocial = "";
 		this.RUT = "";
 		this.telefono = "";
+		this.tipoDocumento = "R";
 	}
 
 	/**
@@ -183,5 +200,7 @@ public class ProveedoresBean implements Serializable {
 		this.razonSocial = "";
 		this.RUT = "";
 		this.telefono = "";
+		this.tipoDocumento = "R";
 	}
+
 }

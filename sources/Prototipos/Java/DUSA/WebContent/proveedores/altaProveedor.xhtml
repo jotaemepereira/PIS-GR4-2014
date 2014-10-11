@@ -20,6 +20,7 @@
 		<script src="../JS/altaProveedores.js"></script>
 	</h:head>
 	<h:body>
+		<link href="../CSS/altaProveedor.css" rel="stylesheet" />
 		<h:form id="form1">
 			<p:hotkey bind="Ctrl+return" update="panel msgs" actionListener="#{proveedoresBean.altaProveedor}"/>
 			<ui:include src="../cabezal.xhtml" />
@@ -40,7 +41,12 @@
 								<div class="row" style="margin-bottom: 1%;">
 									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 										<p:outputLabel for="RUT" value="RUT:" />
-										<p:inputMask mask="9?999999999999" id="RUT" styleClass="form-control" value="#{proveedoresBean.RUT}" style="height: 100%" required="false" />
+										<p:selectOneRadio id="tipoDocumento" value="#{proveedoresBean.tipoDocumento}">
+								            <f:selectItem itemLabel="RUT" itemValue="R" />
+								            <f:selectItem itemLabel="CI" itemValue="C" />
+								            <f:selectItem itemLabel="otro" itemValue="O" />
+								        </p:selectOneRadio>
+										<p:inputMask mask="9?999999999999999999999999" id="RUT" styleClass="form-control" value="#{proveedoresBean.RUT}" style="height: 100%" required="false" />
 									</div>
 								</div>
 								

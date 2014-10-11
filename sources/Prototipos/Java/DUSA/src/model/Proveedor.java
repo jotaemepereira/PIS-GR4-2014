@@ -8,6 +8,7 @@ public class Proveedor {
 	private String telefono = "";
 	private String direccion = "";
 	private String nombreComercial = "";
+	private String tipoDocumento = "";
 	
 	public Proveedor(String nombreComercial) throws Excepciones{
 		if((nombreComercial == null) || (nombreComercial.trim().isEmpty())){
@@ -60,5 +61,16 @@ public class Proveedor {
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_DATOS, Excepciones.ERROR_DATOS));
 		}
 		this.nombreComercial = nombreComercial.trim();
+	}
+
+	public String getTipoDocumento() {
+		return tipoDocumento;
+	}
+
+	public void setTipoDocumento(String tipoDocumento) throws Excepciones {
+		if(tipoDocumento == null){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		this.tipoDocumento = tipoDocumento;
 	}
 }
