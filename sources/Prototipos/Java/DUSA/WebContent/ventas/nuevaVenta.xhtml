@@ -96,11 +96,12 @@
 											columns="1" layout="grid" rows="12" paginator="true"
 											id="GridVentas">
 											<p:panel style="text-align:center">
-												<h:panelGrid columns="4" style="width:100%">
+												<h:panelGrid columns="5" style="width:100%">
 
 													<h:outputText value=" #{venta.nombre}" />
 													<h:outputText value=" #{venta.presentacion}" />
 													<h:outputText value="$ #{venta.precioVenta}" />
+													<h:outputText value="receta Blanca #{venta.recetaBlanca}" />
 													<p:commandButton value="Articulo Perdido" id="ajax4"
 														update="@form"
 														actionListener="#{ventaBean.agregarLineaVentaPerdida(venta)}"
@@ -108,12 +109,16 @@
 
 													<h:outputText value=" #{venta.principioActivo}" />
 													<h:outputText value=" #{venta.descripcion}" />
-													<h:outputText value=" #{venta.descuento1}" />
+													<h:outputText value="% #{venta.descuento1}" />
+													<h:outputText value="receta Verde #{venta.recetaVerde}" />
 													<h:outputText value="      " />
 
 													<h:outputText value=" #{venta.concentracion}" />
 													<h:outputText value=" #{venta.laboratorio}" />
-													<h:outputText value=" #{venta.descuento2}" />
+													<p:inputText id="descuento" value="#{venta.descuento}"
+														style="width: 40px;">
+													</p:inputText>
+													<h:outputText value="receta Naranja #{venta.recetaNaranja}" />
 													<p:commandButton value="Agregar" id="ajax2" update="@form"
 														actionListener="#{ventaBean.agregarLineaVenta(venta)}"
 														process="@this" styleClass="ui-priority-primary" />

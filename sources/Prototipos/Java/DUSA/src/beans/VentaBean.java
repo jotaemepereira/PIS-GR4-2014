@@ -30,7 +30,7 @@ public class VentaBean implements Serializable {
 	private BigDecimal precioVenta = new BigDecimal(0);
 	private String descripcionBusqueda;
 	private String nombre = "nombre";
-
+	
 	private DTVenta venta = new DTVenta();
 	private List<DTVenta> lineasVenta = new ArrayList<DTVenta>();
 	private List<DTVenta> lineasVenta2 = new ArrayList<DTVenta>();

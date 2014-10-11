@@ -14,6 +14,10 @@ public class DTVenta implements Serializable {
 	private String barcode;
 	private BigDecimal precioVenta = new BigDecimal(0);
 	private int cantidad = 1;
+	private boolean recetaBlanca;
+	private boolean recetaVerde;
+	private boolean recetaNaranja;
+	private boolean refrigerado;
 	private BigDecimal descuento = new BigDecimal(0);
 	private BigDecimal descuento1 = new BigDecimal(0);
 	private BigDecimal descuento2 = new BigDecimal(0);
@@ -30,6 +34,30 @@ public class DTVenta implements Serializable {
 
 	public String getBarcode() {
 		return barcode;
+	}
+
+	public boolean isRecetaBlanca() {
+		return recetaBlanca;
+	}
+
+	public void setRecetaBlanca(boolean recetaBlanca) {
+		this.recetaBlanca = recetaBlanca;
+	}
+
+	public boolean isRecetaVerde() {
+		return recetaVerde;
+	}
+
+	public void setRecetaVerde(boolean recetaVerde) {
+		this.recetaVerde = recetaVerde;
+	}
+
+	public boolean isRecetaNaranja() {
+		return recetaNaranja;
+	}
+
+	public void setRecetaNaranja(boolean recetaNaranja) {
+		this.recetaNaranja = recetaNaranja;
 	}
 
 	public void setBarcode(String barcode) {
@@ -138,5 +166,13 @@ public class DTVenta implements Serializable {
 
 	public void setConcentracion(String concentracion) {
 		this.concentracion = concentracion;
+	}
+
+	public boolean isRefrigerado() {
+		return refrigerado;
+	}
+
+	public void setRefrigerado(boolean refrigerado) {
+		this.refrigerado = refrigerado;
 	}
 }

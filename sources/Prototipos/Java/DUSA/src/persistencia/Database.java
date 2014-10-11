@@ -23,7 +23,6 @@ public class Database {
     	BigDecimal desc3 = new BigDecimal(50);
     	
     	while (i < 100){
-    		
     		DTVenta dt = new DTVenta();
 			dt.setCantidad(i);
 			dt.setDescripcion("descripcion" + i);
@@ -37,6 +36,15 @@ public class Database {
 			dt.setDescuento1(desc1);
 			dt.setDescuento2(desc2);
 			dt.setDescuento3(desc3);
+			if (i%2==0){
+				dt.setRecetaBlanca(true);
+				dt.setRecetaNaranja(true);
+				dt.setRecetaVerde(true);
+			}else{
+				dt.setRecetaBlanca(false);
+				dt.setRecetaNaranja(false);
+				dt.setRecetaVerde(false);
+			}
     		ventas.add(dt);		
     		i++;
     	}
