@@ -58,6 +58,14 @@ public class VentaBean implements Serializable {
 
 	}
 
+	public void agregarLineaVenta(DTVenta v){
+		BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento()));
+		BigDecimal a = new BigDecimal(100);
+		v.setPrecioVenta(v.getPrecioVenta().subtract(x.divide(a)));
+		v.setCantidad(1);
+		lineasVenta2.add(v);
+	}
+	
 	// este agregar es para agregar los productos buscados a la venta
 	public void agregarLinea(ActionEvent actionEvent) {
 
@@ -87,6 +95,16 @@ public class VentaBean implements Serializable {
 		}
 		return total.toString();
 	}
+	
+	public String strSubTotal() {
+		BigDecimal total = new BigDecimal(0);
+		Iterator<DTVenta> it = lineasVenta2.iterator();
+		while (it.hasNext()) {
+			DTVenta v = it.next();
+			total = total.add(v.getPrecioVenta());
+		}
+		return total.toString();
+	}
 
 	public void facturarVenta() {
 		ventasSeleccionadas = new ArrayList<DTVenta>();
@@ -95,7 +113,7 @@ public class VentaBean implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(
 				null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Factura ingresada con éxito", ""));
+						"Factura ingresada con ï¿½xito", ""));
 	}
 
 	public List<DTVenta> getLineasVenta() {

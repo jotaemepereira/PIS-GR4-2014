@@ -12,7 +12,7 @@
 		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
 		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
 		<link href="../CSS/font-awesome.min.css" rel="stylesheet" />
-		<script src="../JS/bootstrap.min.js"></script>	
+		<script src="../JS/bootstrap.min.js"></script>
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
@@ -31,107 +31,91 @@
 							<h3 class="panel-title">Nueva Venta</h3>
 						</div>
 						<div class="panel-body">
-							<h:panelGroup layout="block" id="panel">
-							<div style="float: left; width: 25%; min-width: 300px;">
-								<p:dataTable id="TablaVentas2" var="venta2"
-									value="#{ventaBean.lineasVenta2}" editable="true"
-									editMode="row" editingRow="true" rowStyleClass="primefacesRow">
+							<div class="container-fluid">
+								<h:panelGroup layout="block" id="panel">
 
-									<p:column headerText="Presentacion">
-										<h:outputText value=" #{venta2.presentacion}">
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Precio">
-										<h:outputText value=" #{venta2.precioVenta}">
-										</h:outputText>
-									</p:column>
-									<p:column headerText="Cantidad">
-										<p:inputText id="cantidad" value="#{venta2.cantidad}"
-											style="width: 75px;">
-										     <p:ajax event="change" update="TablaVentas2 :form1:total" process="@this" />
-										</p:inputText>
-									</p:column>
+									<div style="float: left; width: 25%; min-width: 300px;">
 
-								</p:dataTable>
-								<div>
-									<table style="float: right; text-align: right; width: 250px;">
-										<tr>
-											<td style="font-weight: bold;">Total</td>
-											<td><h:outputText id="total"
-													value=" #{ventaBean.strTotal()}"></h:outputText></td>
-										</tr>
-									</table>
-									<div class="clearBoth"></div>
-								</div>
-								<div style="margin-top: 20px; text-align: right;">
-								
-								<p:commandButton value="Enviar a facturar" id="ajax2" update="@form"
-											actionListener="#{ventaBean.facturarVenta()}" process="@this"
-											styleClass="ui-priority-primary" />
-								</div>
+										<p:dataGrid var="venta2" value="#{ventaBean.lineasVenta2}"
+											columns="1" layout="grid" rows="20" id="GridVentas2">
+											<p:panel style="text-align:center">
+												<h:panelGrid columns="1" style="width:100%">
+													<h:outputText value=" #{venta2.presentacion}" />
+													<h:outputText value=" #{venta2.precioVenta}" />
+													<h:outputText value=" #{venta2.precioVenta}" />
+													<p:inputText id="cantidad" value="#{venta2.cantidad}"
+														style="width: 75px;">
+														<p:ajax event="change" update="GridVentas2 :form1:total"
+															process="@this" />
+													</p:inputText>
+												</h:panelGrid>
+											</p:panel>
+										</p:dataGrid>
+										<div>
+											<table style="float: right; text-align: right; width: 250px;">
+												<tr>
+													<td style="font-weight: bold;">SubTotal</td>
+													<td><h:outputText id="subTotal"
+															value=" #{ventaBean.strSubTotal()}"></h:outputText></td>
+												</tr>
+											</table>
+											<div class="clearBoth"></div>
+										</div>
+										<div>
+											<table style="float: right; text-align: right; width: 250px;">
+												<tr>
+													<td style="font-weight: bold;">Total</td>
+													<td><h:outputText id="total"
+															value=" #{ventaBean.strTotal()}"></h:outputText></td>
+												</tr>
+											</table>
+											<div class="clearBoth"></div>
+										</div>
+										<div style="margin-top: 20px; text-align: right;">
+
+											<p:commandButton value="Enviar a facturar" id="ajax2"
+												update="@form" actionListener="#{ventaBean.facturarVenta()}"
+												process="@this" styleClass="ui-priority-primary" />
+										</div>
+									</div>
+									<div
+										style="float: left; width: 70%; margin-left: 25px; min-width: 500px;">
+
+										<div>
+											<p:inputText id="descripcion2"
+												style="vertical-align: 8px; margin-right: 5px;"
+												value="#{ventaBean.descripcionBusqueda}"
+												placeholder="Buscar...">
+											</p:inputText>
+											<p:commandButton value="" id="ajax3" update="GridVentas"
+												icon="ui-icon-search" style="width: 35px; height: 29px;"
+												actionListener="#{ventaBean.buscarArticulos}"
+												styleClass="ui-priority-primary" />
+										</div>
+										<p:dataGrid var="venta" value="#{ventaBean.lineasVenta}"
+											columns="1" layout="grid" rows="12" paginator="true"
+											id="GridVentas">
+											<p:panel style="text-align:center">
+												<h:panelGrid columns="3" style="width:100%">
+													<h:outputText value=" #{venta.descripcion}" />
+													<h:outputText value=" #{venta.principioActivo}" />
+													<h:outputText value=" #{venta.presentacion}" />
+													<h:outputText value=" #{venta.laboratorio}" />
+													<h:outputText value="$ #{venta.precioVenta}" />
+													<p:inputText id="descuento" value="#{venta.descuento}"
+														style="width: 40px;">
+													</p:inputText>
+													<p:commandButton value="Agregar" id="ajax2" update="@form"
+														actionListener="#{ventaBean.agregarLineaVenta(venta)}"
+														process="@this" styleClass="ui-priority-primary" />
+												</h:panelGrid>
+											</p:panel>
+										</p:dataGrid>
+
+									</div>
+									<div style="clear: both;"></div>
+								</h:panelGroup>
 							</div>
-							<div
-								style="float: left; width: 70%; margin-left: 25px; min-width: 500px;">
-								<div>
-									<p:inputText id="descripcion"
-										style="vertical-align: 8px; margin-right: 5px;"
-										value="#{ventaBean.descripcionBusqueda}"
-										placeholder="Buscar...">
-									</p:inputText>
-									<p:commandButton value="" id="ajax" update="TablaVentas"
-										icon="ui-icon-search" style="width: 35px; height: 29px;"
-										actionListener="#{ventaBean.buscarArticulos}"
-										styleClass="ui-priority-primary" />
-								</div>
-
-								<p:dataTable id="TablaVentas" var="venta"
-									style="margin-top: 15px;" selectionMode="multiple"
-									rowKey="#{venta.presentacion}-#{venta.precioVenta}-#{venta.descuento}"
-									value="#{ventaBean.lineasVenta}" editable="true" editMode="row"
-									selection="#{ventaBean.ventasSeleccionadas}" editingRow="true"
-									rowStyleClass="primefacesRow">
-									<p:ajax event="rowSelect" process="@this" />
-
-									<p:column headerText="Descripcion">
-										<h:outputText value=" #{venta.descripcion}" />
-									</p:column>
-
-									<p:column headerText="Principio Activo">
-										<h:outputText value=" #{venta.principioActivo}" />
-									</p:column>
-
-									<p:column headerText="Presentacion">
-										<h:outputText value=" #{venta.presentacion}" />
-									</p:column>
-
-									<p:column headerText="Laboratorio">
-										<h:outputText value=" #{venta.laboratorio}" />
-									</p:column>
-
-									<p:column headerText="Precio"
-										style="width: 80px; text-align: center;">
-										<h:outputText value="$ #{venta.precioVenta}" />
-									</p:column>
-
-									<p:column headerText="Descuento"
-										style="width: 100px; text-align: center;">
-										<p:inputText id="descuento" value="#{venta.descuento}"
-											style="width: 40px;">
-										</p:inputText>
-									</p:column>
-
-									<f:facet name="footer">
-										<p:commandButton value="Agregar" id="ajax2" update="@form"
-											actionListener="#{ventaBean.agregarLinea}" process="@this"
-											styleClass="ui-priority-primary" />
-
-									</f:facet>
-
-								</p:dataTable>
-
-							</div>
-							<div style="clear: both;"></div>
-							</h:panelGroup>
 						</div>
 					</div>
 				</div>
