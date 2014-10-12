@@ -19,4 +19,5 @@ public interface IStockPersistencia {
 	public void persistirPedido(Pedido p);
 	public boolean existeArticulo(String descripcion) throws Excepciones;
 	public List<Articulo> buscarArticulos(String busqueda);
+	public int getStock(long idArticulo);
 }

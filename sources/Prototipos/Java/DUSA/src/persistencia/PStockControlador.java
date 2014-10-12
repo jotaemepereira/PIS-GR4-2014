@@ -32,11 +32,11 @@ public class PStockControlador implements IStockPersistencia {
 		PreparedStatement stmt = null;
 		
 		String query = "INSERT INTO PRODUCTS " +
-						"(PRODUCT_TYPE, DESCRIPTION, KEY1, KEY2, KEY3, IS_PSYCHOTROPIC, IS_NARCOTIC, SALE_CODE, AUTHORIZATION_TYPE,"
-						+ " UNIT_PRICE, SALE_PRICE, LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE, BARCODE, LAST_PRICE_DATE"
+						"(PRODUCT_TYPE, DESCRIPTION, KEY1, KEY2, KEY3, IS_PSYCHOTROPIC, IS_NARCOTIC, IS_REFRIGERATOR, SALE_CODE, AUTHORIZATION_TYPE,"
+						+ " UNIT_PRICE, SALE_PRICE, SALE_PRICE_PORCENTAGE,LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE, BARCODE, LAST_PRICE_DATE"
 						+ ", NEAREST_DUE_DATE, STOCK, MINIMUM_STOCK, LAST_MODIFIED, STATUS) " +
 						" VALUES " +
-						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, LOCALTIMESTAMP, ?);";
+						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, LOCALTIMESTAMP, ?);";
 		
 		try {
 			Connection c = Conexion.getConnection();
@@ -50,21 +50,23 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.setString(5, articulo.getClave3());//Null
 			stmt.setBoolean(6, articulo.isEsPsicofarmaco());//Not Null
 			stmt.setBoolean(7, articulo.isEsEstupefaciente());//Not Null
-			stmt.setString(8, String.valueOf(articulo.getCodigoVenta()));//Null
-			stmt.setString(9, String.valueOf(Enumerados.habilitado.HABILITADO));//Not Null
-			stmt.setBigDecimal(10, articulo.getPrecioUnitario());//Not Null
-			stmt.setBigDecimal(11, articulo.getPrecioVenta());//Not Null
-			stmt.setBigDecimal(12, articulo.getCostoLista());//Not Null
-			stmt.setBigDecimal(13, articulo.getCostoOferta());//Null
-			stmt.setBigDecimal(14, articulo.getUltimoCosto());//Null
-			stmt.setBigDecimal(15, articulo.getCostoPromedio());//Null
-			stmt.setInt(16, articulo.getTipoIva());//Null
-			stmt.setString(17, articulo.getCodigoBarras());//Null
+			stmt.setBoolean(8, articulo.isEsHeladera());//Not Null
+			stmt.setString(9, String.valueOf(articulo.getCodigoVenta()));//Null
+			stmt.setString(10, String.valueOf(Enumerados.habilitado.HABILITADO));//Not Null
+			stmt.setBigDecimal(11, articulo.getPrecioUnitario());//Not Null
+			stmt.setBigDecimal(12, articulo.getPrecioVenta());//Not Null
+			stmt.setBigDecimal(13, articulo.getPorcentajePrecioVenta());//Not Null
+			stmt.setBigDecimal(14, articulo.getCostoLista());//Not Null
+			stmt.setBigDecimal(15, articulo.getCostoOferta());//Null
+			stmt.setBigDecimal(16, articulo.getUltimoCosto());//Null
+			stmt.setBigDecimal(17, articulo.getCostoPromedio());//Null
+			stmt.setInt(18, articulo.getTipoIva());//Null
+			stmt.setString(19, articulo.getCodigoBarras());//Null
 			//stmt.setDate(18, new java.sql.Date(articulo.getFechaUltimoPrecio().getTime()));//Not Null
-			stmt.setNull(18, java.sql.Types.TIMESTAMP);//Null Vencimiento Más Cercano
-			stmt.setInt(19, articulo.getStock());//Not Null
-			stmt.setInt(20, articulo.getStockMinimo());//Null
-			stmt.setBoolean(21, true);//Not Null
+			stmt.setNull(20, java.sql.Types.TIMESTAMP);//Null Vencimiento Más Cercano
+			stmt.setInt(21, articulo.getStock());//Not Null
+			stmt.setInt(22, articulo.getStockMinimo());//Null
+			stmt.setBoolean(23, true);//Not Null
 			
 			stmt.executeUpdate();
 			stmt.close();
@@ -140,6 +142,10 @@ public class PStockControlador implements IStockPersistencia {
 		
 	}
 	
+	public List<Long> obtenerIdTodosLosArticulos(){
+		return null;
+	}
+	
 	@Override
 	public List<Articulo> buscarArticulos(String busqueda){
 		String urlString = "http://localhost:8080/solr";
@@ -158,6 +164,11 @@ public class PStockControlador implements IStockPersistencia {
 		}
 		
 		return null;
+	}
+
+	public int getStock(long idArticulo){
+	//consulta que obtiene el stock de un articulo
+		return 0;
 	}
 
 }

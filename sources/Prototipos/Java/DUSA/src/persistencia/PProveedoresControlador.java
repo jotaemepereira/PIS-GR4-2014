@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import controladores.Excepciones;
 import model.Proveedor;
@@ -105,8 +107,8 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 		return (cant > 0);
 	}
 	
-	public List<DTProveedor> obtenerProveedores() throws Excepciones{		
-		List<DTProveedor> ret = null;
+	public Map<Integer,DTProveedor> obtenerProveedores() throws Excepciones{		
+		Map<Integer,DTProveedor> ret = null;
 		PreparedStatement stmt = null;
 		String query = "SELECT s.supplier_id, s.comercialname " +
 						"FROM SUPPLIERS s " +
@@ -116,12 +118,12 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 			Connection c = Conexion.getConnection();			
 			stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
-			ret = new ArrayList<DTProveedor>();
+			ret = new HashMap<Integer,DTProveedor>();
 			while(rs.next()){
 				DTProveedor nuevo = new DTProveedor();
 				nuevo.setIdProveedor(rs.getInt("supplier_id"));
 				nuevo.setNombreComercial(rs.getString("comercialname"));
-				ret.add(nuevo);
+				ret.put(nuevo.getIdProveedor(), nuevo);
 			}
 		} catch (Exception e){
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));

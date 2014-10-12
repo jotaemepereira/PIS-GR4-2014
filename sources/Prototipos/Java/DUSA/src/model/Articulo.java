@@ -1,8 +1,14 @@
 package model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import datatypes.DTProveedor;
 
 public class Articulo {
 	private int idArticulo;
@@ -32,7 +38,7 @@ public class Articulo {
 	private int stockMinimo;
 	private Date fechaUltimaModificacion;
 	private boolean status;
-	private List<Proveedor> proveedores;
+	private Map<Integer,DTProveedor> proveedores = new HashMap<Integer,DTProveedor>();
 	private List<Presentacion> presentaciones;
 	private List<Droga> drogas;
 	private List<AccionTer> accionesTer;
@@ -199,10 +205,10 @@ public class Articulo {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	public List<Proveedor> getProveedores() {
+	public Map<Integer, DTProveedor> getProveedores() {
 		return proveedores;
 	}
-	public void setProveedores(List<Proveedor> proveedores) {
+	public void setProveedores(Map<Integer, DTProveedor> proveedores) {
 		this.proveedores = proveedores;
 	}
 	public List<Presentacion> getPresentaciones() {
@@ -222,5 +228,8 @@ public class Articulo {
 	}
 	public void setAccionesTer(List<AccionTer> accionesTer) {
 		this.accionesTer = accionesTer;
+	}
+	public void agregarProveedor(DTProveedor p) {
+		this.proveedores.put(p.getIdProveedor(), p);		
 	}
 }

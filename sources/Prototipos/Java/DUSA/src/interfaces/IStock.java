@@ -12,7 +12,14 @@ public interface IStock {
 
 	public void altaArticulo(Articulo articulo) throws Excepciones;
 //	public List<DTLineaPedido> pedidoPorVentas();//Deprecated
+	public Pedido generarPedidoEnBaseAHistorico(int diasAPredecir) throws Excepciones;
 	public void generarPedido(Pedido p);
 	public Pedido generarPedidoEnBaseAPedidoAnterior() throws Excepciones;
+	/**
+	 * retorna los articulos que coincidan con el string ingresado
+	 * @param busqueda
+	 * @return
+	 * @author Victoria Diaz
+	 */
 	public List<Articulo> buscarArticulos(String busqueda);
 }

@@ -1,5 +1,7 @@
 package controladores;
 
+import interfaces.IPredictor;
+import interfaces.ISeleccionador;
 import interfaces.IStock;
 import interfaces.IStockPersistencia;
 import model.Articulo;
@@ -19,21 +21,19 @@ import controladores.FabricaPersistencia;
 
 public class StockControlador implements IStock {
 
-
-
 	@Override
 	public void altaArticulo(Articulo articulo) throws Excepciones {
 		
 		// Me fijo si ya existe otro articulo con la misma descripcion
-		if((articulo.getDescripcion() != "") && (FabricaPersistencia.getIStockPersistencia().existeArticulo(articulo.getDescripcion()))){
+		if((articulo.getDescripcion() != "") && (FabricaPersistencia.getStockPersistencia().existeArticulo(articulo.getDescripcion()))){
 			throw(new Excepciones(Excepciones.MENSAJE_ART_DUPLICADO, Excepciones.ERROR_DATOS));
 		}
-		FabricaPersistencia.getIStockPersistencia().persistirArticulo(articulo);
+		FabricaPersistencia.getStockPersistencia().persistirArticulo(articulo);
 	}
 
 	public List<Articulo> buscarArticulo(String descripcion){
 
-		PStockControlador ps = (PStockControlador) FabricaPersistencia.getIStockPersistencia();
+		PStockControlador ps = (PStockControlador) FabricaPersistencia.getStockPersistencia();
 		return ps.buscarArticulo(descripcion);
 
 	}
@@ -43,6 +43,8 @@ public class StockControlador implements IStock {
 		return null;
 
 	}
+	
+	
 //Deprecated
 //	public List<DTLineaPedido> pedidoPorVentas() {
 //		IStockPersistencia isp = FabricaPersistencia.getIStockPersistencia();
@@ -82,7 +84,7 @@ public class StockControlador implements IStock {
 	@Override
 	public Pedido generarPedidoEnBaseAPedidoAnterior() throws Excepciones {
 		
-		IStockPersistencia sp = FabricaPersistencia.getIStockPersistencia();
+		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
 		Date ultimoPedido = sp.obtenerFechaUltimoPedido();
 		SeleccionarArticulosDesde seleccionarDesde = new SeleccionarArticulosDesde(ultimoPedido);
 		PredecirCantidadDesde predecirDesde = new PredecirCantidadDesde(ultimoPedido);
@@ -103,6 +105,25 @@ public class StockControlador implements IStock {
 	
 	@Override
 	public List<Articulo> buscarArticulos(String busqueda){
-		return FabricaPersistencia.getIStockPersistencia().buscarArticulos(busqueda);
+		return FabricaPersistencia.getStockPersistencia().buscarArticulos(busqueda);
 	}
+
+	public Pedido generarPedidoEnBaseAHistorico(int diasAPredecir) {
+		
+		ISeleccionador st = new SeleccionarTodos();
+		IPredictor pr = (IPredictor) new PredecirEnBaseAHistorico(diasAPredecir);
+		GeneradorPedido gp = new GeneradorPedido(st,pr);
+		
+		Pedido pedidoGenerado = null;
+		try {
+			pedidoGenerado = gp.generar();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			//Generar las excepciones personalizadas para "mostrar" en pantalla
+		}
+		return pedidoGenerado;
+
+	}
+	
+	
 }

@@ -47,7 +47,8 @@
 													<h:outputText value="#{venta.usuario.nombre}" />
 												</p:column>
 
-												<p:column headerText="Cantidad de artículos" style="text-align: center;">
+												<p:column headerText="Cantidad de artículos"
+													style="text-align: center;">
 													<h:outputText value="#{venta.cantidadLineas}" />
 												</p:column>
 
@@ -58,8 +59,8 @@
 												<p:column style="text-align: center;width: 150px;">
 													<p:commandButton id="facturar" update=":formFacturar"
 														actionListener="#{facturacionBean.cargarFactura(venta)}"
-														oncomplete="PF('dlg2').show();" ajax="true" value="Detallar"
-														title="Detallar" />
+														oncomplete="PF('dlg2').show();" ajax="true"
+														value="Detallar" title="Detallar" />
 
 												</p:column>
 
@@ -83,33 +84,46 @@
 					value="#{facturacionBean.ventaSeleccionada.lineas}">
 
 					<p:column headerText="Nombre" style="text-align: center;">
-						<h:outputText
-							value="#{facturacionBean.obtenerNombre(lineaVenta.precio)}" />
+						<h:outputText value="#{lineaVenta.articulo.descripcion}" />
+					</p:column>
+
+					<p:column headerText="Presentación" style="text-align: center;">
+						<h:outputText value="-" />
+					</p:column>
+
+					<p:column headerText="Receta" style="text-align: center;">
+						<h:outputText value="-" />
 					</p:column>
 
 					<p:column headerText="Cantidad" style="text-align: center;">
-						<h:outputText
-							value="#{lineaVenta.cantidad}" />
+						<h:outputText value="#{lineaVenta.cantidad}" />
 					</p:column>
 
 					<p:column headerText="Precio" style="text-align: center;">
 						<h:outputText value="$ #{lineaVenta.precio}" />
 					</p:column>
 
+					<p:column headerText="Descuento" style="text-align: center;">
+						<h:outputText value="% #{lineaVenta.descuento}" />
+					</p:column>
+
 					<p:column headerText="Subtotal" style="text-align: center;">
-						<h:outputText value="$ #{facturacionBean.calculcarSubtotal(lineaVenta.cantidad, lineaVenta.precio)}" />
+						<h:outputText
+							value="$ #{facturacionBean.calculcarSubtotal(lineaVenta)}" />
 					</p:column>
 
 				</p:dataTable>
 				<div style="text-align: right; margin-top: 10px; font-weight: bold;">
-				TOTAL: $ <h:outputText value="#{facturacionBean.ventaSeleccionada.montoTotalAPagar}" />
+					TOTAL: $
+					<h:outputText
+						value="#{facturacionBean.ventaSeleccionada.montoTotalAPagar}" />
 				</div>
 				<p:commandButton style="margin-top: 15px;"
-							actionListener="#{facturacionBean.facturar(ventaSeleccionada)}"
-							styleClass="btn btn-default pull-right" oncomplete="PF('dlg2').hide()"
-							update="tablaVentas :form1:messages" value="Facturar"
-							title="Facturar">
-						</p:commandButton>
+					actionListener="#{facturacionBean.facturar(ventaSeleccionada)}"
+					styleClass="btn btn-default pull-right"
+					oncomplete="PF('dlg2').hide()" update="tablaVentas :form1:messages"
+					value="Facturar" title="Facturar">
+				</p:commandButton>
 			</h:form>
 		</p:dialog>
 	</h:body>
