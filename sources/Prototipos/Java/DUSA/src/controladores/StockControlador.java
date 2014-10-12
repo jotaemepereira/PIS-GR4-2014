@@ -113,7 +113,6 @@ public class StockControlador implements IStock {
 		ISeleccionador st = new SeleccionarTodos();
 		IPredictor pr = (IPredictor) new PredecirEnBaseAHistorico(diasAPredecir);
 		GeneradorPedido gp = new GeneradorPedido(st,pr);
-		
 		Pedido pedidoGenerado = null;
 		try {
 			pedidoGenerado = gp.generar();
