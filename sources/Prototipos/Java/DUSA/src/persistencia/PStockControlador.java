@@ -17,6 +17,9 @@ import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrDocumentList;
+import org.primefaces.json.JSONObject;
 
 import controladores.Excepciones;
 import model.Articulo;
@@ -147,28 +150,94 @@ public class PStockControlador implements IStockPersistencia {
 	}
 	
 	@Override
-	public List<Articulo> buscarArticulos(String busqueda){
+	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones{
+		List<Articulo> listaArticulos = new ArrayList<Articulo>();
+		
 		String urlString = "http://localhost:8080/solr";
 		SolrServer solr = new HttpSolrServer(urlString);
 		SolrQuery parameters = new SolrQuery();
 		parameters.setRequestHandler("/articulos/select");
-		parameters.set("q", "*:*");
+		String regexpBusqueda = "*" + busqueda + "*";
+		parameters.set("q", "KEY1:" + regexpBusqueda + 
+							" KEY2:" + regexpBusqueda + 
+							" KEY3:" + regexpBusqueda + 
+							" CRITERIO_INTERNO:" + regexpBusqueda + 
+							" DESCRIPTION:" + regexpBusqueda + 
+							" BARCODE:" + regexpBusqueda);
 		parameters.set("wt", "json");
+		parameters.set("fl", "DESCRIPTION id");
 
 		try {
-			QueryResponse response = solr.query(parameters);
+			SolrDocumentList response = solr.query(parameters).getResults();
 			System.out.println(response);
+			Long cant = response.getNumFound();
+			for(int i = 0; i < cant; i++){
+				System.out.println(response.get(i));
+				
+				SolrDocument item = response.get(i);
+				
+				Articulo articulo = new Articulo();
+				articulo.setDescripcion(item.getFieldValue("DESCRIPTION").toString());
+				articulo.setIdArticulo(Integer.parseInt(item.getFieldValue("id").toString()));
+				
+				listaArticulos.add(articulo);
+			}
 		} catch (SolrServerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		
-		return null;
+		return listaArticulos;
+	}
+	
+	@Override
+	public void fullImportSolr() throws Excepciones {
+		String urlString = "http://localhost:8080/solr";
+		SolrServer solr = new HttpSolrServer(urlString);
+		SolrQuery parameters = new SolrQuery();
+		parameters.setRequestHandler("/articulos/dataimport");
+		parameters.setParam("command", "full-import");
+		parameters.setParam("entity", "stock");
+		parameters.setParam("clean", true);
+		parameters.setParam("commit", true);
+		
+		QueryResponse response;
+		try {
+			response = solr.query(parameters);
+			System.out.println(response);
+		} catch (SolrServerException e) {
+			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+	}
+
+
+	@Override
+	public void deltaImportSolr() throws Excepciones {
+		String urlString = "http://localhost:8080/solr";
+		SolrServer solr = new HttpSolrServer(urlString);
+		SolrQuery parameters = new SolrQuery();
+		parameters.setRequestHandler("/articulos/dataimport");
+		parameters.setParam("command", "delta-import");
+		parameters.setParam("entity", "stock");
+		parameters.setParam("clean", true);
+		parameters.setParam("commit", true);
+		
+		SolrDocumentList response;
+		try {
+			response = solr.query(parameters).getResults();
+			System.out.println(response);
+		} catch (SolrServerException e) {
+			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
 	}
 
 	public int getStock(long idArticulo){
 	//consulta que obtiene el stock de un articulo
 		return 0;
 	}
+
+
 
 }

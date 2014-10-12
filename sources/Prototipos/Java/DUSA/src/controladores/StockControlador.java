@@ -104,7 +104,7 @@ public class StockControlador implements IStock {
 	}
 	
 	@Override
-	public List<Articulo> buscarArticulos(String busqueda){
+	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones{
 		return FabricaPersistencia.getStockPersistencia().buscarArticulos(busqueda);
 	}
 

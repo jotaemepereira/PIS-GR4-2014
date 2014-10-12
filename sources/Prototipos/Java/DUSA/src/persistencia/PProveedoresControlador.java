@@ -48,7 +48,6 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 			c.close();
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-			System.exit(0);
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 	}
@@ -74,7 +73,6 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 			c.close();
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-			System.exit(0);
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		return (cant > 0);
@@ -101,7 +99,6 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 			c.close();
 		} catch ( Exception e ) {
 			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-			System.exit(0);
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		return (cant > 0);
