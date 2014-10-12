@@ -21,5 +21,7 @@ public interface IStockPersistencia {
 	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones;
 	public void fullImportSolr() throws Excepciones;
 	public void deltaImportSolr() throws Excepciones;
-	public int getStock(long idArticulo);
+	public int getStock(long idArticulo) throws Excepciones;
+	public List<Long> obtenerIdTodosLosArticulos() throws Excepciones;
+
 }

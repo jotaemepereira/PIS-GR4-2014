@@ -27,7 +27,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 
 			String sqlQuery = "SELECT * FROM sales s "
 					+ "INNER JOIN sale_details sd ON s.sale_id = sd.sale_id "
-					+ "INNER JOIN products p ON p.product_id = sd.product_id " 
+					+ "INNER JOIN products p ON p.product_id = sd.product_id "
 					+ "INNER JOIN users u ON s.user_id = u.user_id "
 					+ "LEFT JOIN clients c ON s.client_id = c.client_id "
 					+ "WHERE s.sale_status = '"
@@ -101,9 +101,9 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				lv.setProductoId(rs.getLong("product_id"));
 				a = new Articulo();
 				a.setDescripcion(rs.getString("description"));
-				//TODO: Agregar presentacion
+				// TODO: Agregar presentacion
 				lv.setArticulo(a);
-				
+
 				lv.setPrecio(rs.getBigDecimal("sale_price"));
 				lv.setCantidad(rs.getInt("quantity"));
 				lv.setDescuento(rs.getBigDecimal("discount"));
@@ -127,7 +127,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	}
 
 	@Override
-	public Venta obtenerVentaParaFacturar(long ventaId) throws Exception {
+	public void facturarVenta(Venta venta) throws Exception {
 		Connection con = Conexion.getConnection();
 		con.setAutoCommit(false);
 		Statement st = con.createStatement();
@@ -137,92 +137,31 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 					+ "INNER JOIN sale_details sd ON s.sale_id = sd.sale_id "
 					+ "INNER JOIN clients c ON s.client_id = c.client_id "
 					+ "INNER JOIN users u ON s.user_id = u.user_id "
-					+ "WHERE s.sale_id = " + ventaId + " "
+					+ "WHERE s.sale_id = " + venta.getVentaId() + " "
 					+ "AND s.sale_status = '"
 					+ Enumerados.EstadoVenta.PENDIENTE + "'";
 			ResultSet rs = st.executeQuery(sqlQuery);
 
-			Venta v = null;
-			Cliente c = null;
-			Usuario u = null;
-			LineaVenta lv = null;
-			boolean first = true;
 			if (rs.next()) {
-				if (first) {
-					first = false;
-					v = new Venta();
-					u = new Usuario();
-					c = new Cliente();
-
-					v.setVentaId(rs.getLong("sale_id"));
-
-					v.setClienteId(rs.getInt("client_id"));
-					c.setClientId(rs.getInt("client_id"));
-					c.setApellido(rs.getString("surname"));
-					c.setDireccion(rs.getString("client_address"));
-					c.setNombre(rs.getString("client_name"));
-					c.setTelefono(rs.getString("phone"));
-					c.setUltimaModificacion(rs.getDate("last_modified"));
-
-					v.setUsuarioId(rs.getInt("user_id"));
-					u.setUsuarioId(rs.getInt("user_id"));
-					u.setEstado(rs.getBoolean("status"));
-					u.setNombre(rs.getString("username"));
-					u.setPwd_hash(rs.getString("pwd_hash"));
-
-					v.setFechaVenta(rs.getDate("sale_date"));
-					v.setEstadoVenta((char) rs.getByte("sale_status"));
-					v.setTipoDgi(rs.getInt("sale_dgi_type"));
-					v.setSerial(rs.getString("serial"));
-					v.setFormaDePago(rs.getString("payment_type"));
-					v.setMontoNoGravado(rs.getBigDecimal("not_taxed_amount"));
-					v.setMontoNetoGravadoIvaMinimo(rs
-							.getBigDecimal("taxed_minimum_net_amount"));
-					v.setMontoNetoGravadoIvaBasico(rs
-							.getBigDecimal("taxed_basic_net_amount"));
-					v.setTotalIvaMinimo(rs.getBigDecimal("minimum_tax_total"));
-					v.setTotalIvaBasico(rs.getBigDecimal("basic_tax_total"));
-					v.setMontoTotal(rs.getBigDecimal("total_amount"));
-					v.setMontoRetenidoIVA(rs
-							.getBigDecimal("iva_withheld_amount"));
-					v.setMontoRetenidoIRAE(rs
-							.getBigDecimal("irae_withheld_amount"));
-					v.setMontoNoFacturable(rs
-							.getBigDecimal("not_billable_amount"));
-					v.setMontoTributoIvaMinimo(rs
-							.getBigDecimal("taxed_minimum_amount"));
-					v.setMontoTributoIvaBasico(rs
-							.getBigDecimal("taxed_basic_amount"));
-					v.setMontoTotalAPagar(rs.getBigDecimal("total"));
-
-					v.setCantidadLineas(0);
-					v.setLineas(new ArrayList<LineaVenta>());
-
-					v.setUsuario(u);
-					v.setCliente(c);
-				}
-
-				lv = new LineaVenta();
-				lv.setVentaId(rs.getLong("sale_id"));
-				lv.setLinea(rs.getInt("line"));
-				lv.setProductoId(rs.getLong("product_id"));
-				lv.setPrecio(rs.getBigDecimal("sale_price"));
-				lv.setCantidad(rs.getInt("quantity"));
-				lv.setDescuento(rs.getBigDecimal("discount"));
-
-				v.getLineas().add(lv);
-				v.setCantidadLineas(v.getCantidadLineas() + 1);
-			}
-
-			if (v != null) {
 				String sqlUpdate = "UPDATE sales SET sale_status = '"
-						+ Enumerados.EstadoVenta.FACTURANDO
-						+ "'  WHERE sale_id = " + ventaId;
+						+ Enumerados.EstadoVenta.FACTURADA
+						+ "'  WHERE sale_id = " + venta.getVentaId();
 				st.executeUpdate(sqlUpdate);
-			}		
-		
+
+				for (LineaVenta lv : venta.getLineas()) {
+					sqlUpdate = "UPDATE sale_details SET white_recipe = "
+							+ lv.isRecetaBlanca() + " " + "green_recipe = "
+							+ lv.isRecetaVerde() + " " + "orange_recipe = "
+							+ lv.isRecetaNaranja() + " " + "WHERE sale_id = "
+							+ venta.getVentaId() + " AND product_id = "
+							+ lv.getArticulo().getIdArticulo();
+					st.executeUpdate(sqlUpdate);
+				}
+			}
+			
+			// TODO: Falta recalcular totales
+
 			con.commit();
-			return v;
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -238,23 +177,24 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		con.setAutoCommit(false);
 		Statement st = con.createStatement();
 		try {
-			
+
 			String sqlUpdate = "UPDATE sales SET sale_status = '"
 					+ Enumerados.EstadoVenta.FACTURADA + "'  WHERE sale_id = "
 					+ ventaId;
 			st.executeUpdate(sqlUpdate);
-			
+
 			String sqlQuery = "SELECT product_id, quantity "
-							+ "FROM sale_details sd"
-							+ "INNER JOIN products p ON p.produt_id = sd.product_id "
-							+ "WHERE sd.sale_id = " + ventaId;
+					+ "FROM sale_details sd"
+					+ "INNER JOIN products p ON p.produt_id = sd.product_id "
+					+ "WHERE sd.sale_id = " + ventaId;
 			ResultSet rs = st.executeQuery(sqlQuery);
 			while (rs.next()) {
-				sqlUpdate = "UPDATE products SET stock = stock - " + rs.getInt("quantity") + " "
-						  +	"WHERE product_id = " + rs.getLong("product_id");
+				sqlUpdate = "UPDATE products SET stock = stock - "
+						+ rs.getInt("quantity") + " " + "WHERE product_id = "
+						+ rs.getLong("product_id");
 				st.executeUpdate(sqlUpdate);
 			}
-			
+
 		} catch (Exception e) {
 			throw e;
 		} finally {
