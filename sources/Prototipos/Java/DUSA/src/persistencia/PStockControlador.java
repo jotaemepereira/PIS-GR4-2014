@@ -139,15 +139,6 @@ public class PStockControlador implements IStockPersistencia {
 		return ret;
 	}
 
-	@Override
-	public void persistirPedido(Pedido p) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public List<Long> obtenerIdTodosLosArticulos(){
-		return null;
-	}
 	
 	@Override
 	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones{
@@ -232,12 +223,73 @@ public class PStockControlador implements IStockPersistencia {
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 	}
-
-	public int getStock(long idArticulo){
+	
+	
+	/**
+	 * @author santiago 
+	 * no deberia ser solo a los articulos de DUSA ?
+	 * @throws Excepciones 
+	 */
+	@Override
+	public int getStock(long idArticulo) throws Excepciones{
 	//consulta que obtiene el stock de un articulo
-		return 0;
-	}
+		
+		PreparedStatement stmt = null;
+		
+		String query = "SELECT stock  FROM products WHERE product_id=" +idArticulo +";";
+		int ret;
+		try {
+			
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			ret = (int) rs.getLong(1);
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		}
+		return ret ;
 
+
+	}
+	
+	@Override
+	public void persistirPedido(Pedido p){
+		// TODO Auto-generated method stub
+	}
+	
+	
+	/**
+	 * @author santiago 
+	 * no deberia ser solo a los articulos de DUSA ?
+	 */
+	@Override
+	public List<Long> obtenerIdTodosLosArticulos() throws Excepciones{
+		List<Long> idArts = new ArrayList<Long>();
+		PreparedStatement stmt = null;
+		String query = "SELECT product_id FROM products; ";
+		
+		try {
+			
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()){
+				idArts.add(rs.getLong(1));
+			}
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		}
+		return idArts;
+	}
 
 
 }
