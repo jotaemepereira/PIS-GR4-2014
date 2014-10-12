@@ -19,10 +19,8 @@ public class FacturacionControlador implements IFacturacion {
 	@Override
 	public List<Venta> listarVentasPendientes() throws Exception {
 		try {
-			// IFacturacionPersistencia ifp = FabricaPersistencia
-			// .getInstanciaFacturacionPersistencia();
-			// return ifp.listarVentasPendientes();
-			return listarVentasPendientesMock();
+			 IFacturacionPersistencia ifp = FabricaPersistencia.getInstanciaFacturacionPersistencia();
+			 return ifp.listarVentasPendientes();
 		} catch (Exception e) {
 			throw e;
 		}

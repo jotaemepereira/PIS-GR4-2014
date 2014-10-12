@@ -15,6 +15,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import controladores.FabricaLogica;
+import model.LineaVenta;
 import model.Venta;
 
 @ManagedBean
@@ -38,10 +39,8 @@ public class FacturacionBean implements Serializable {
 
 	public void facturar(Venta v) {
 		try {
-			// IFacturacion ifact = FabricaLogica.getIFacturacion();
-			// ifact.facturarVenta(v.getVentaId());
-
-			ventas.remove(v);
+			IFacturacion ifact = FabricaLogica.getIFacturacion();
+			ifact.facturarVenta(v.getVentaId());
 
 			FacesContext.getCurrentInstance().addMessage(
 					null,
@@ -54,37 +53,18 @@ public class FacturacionBean implements Serializable {
 							"Error al facturar.", ""));
 		}
 	}
-	
-	public void cargarFactura(Venta v){
+
+	public void cargarFactura(Venta v) {
 		ventaSeleccionada = v;
 	}
 
 	public String parseFechaVenta(Date d) {
-		// long diff = (new Date()).getTime() - d.getTime();
-		// return "" + (diff / (60 * 1000));
-		Random r = new Random();
-		int a = Math.abs(r.nextInt() % 15);
-		if (a == 0) {
-			a = 1;
-		}
-		return "Hace " + a + " minutos";
+		 long diff = (new Date()).getTime() - d.getTime();
+		 return "Hace " + (diff / (60 * 1000)) + " minutos";
 	}
 
-	public String obtenerNombre(BigDecimal precio) {
-		// sacar
-		if (precio.intValue() == 25){
-			return "Producto1";
-		} else if (precio.intValue() == 15) {
-			return "Producto2";
-		} else if (precio.intValue() == 45) {
-			return "Producto3";
-		} else {
-			return "Producto4";
-		}
-	}
-
-	public BigDecimal calculcarSubtotal(int cantidad, BigDecimal precio){
-		return precio.multiply(new BigDecimal(cantidad));
+	public BigDecimal calculcarSubtotal(LineaVenta lv) {
+		return (lv.getPrecio().multiply(new BigDecimal(lv.getCantidad()))).multiply(lv.getDescuento());
 	}
 
 	public List<Venta> getVentas() {
