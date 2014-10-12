@@ -9,6 +9,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import com.sun.org.apache.xpath.internal.functions.Function;
+
 import controladores.Excepciones;
 import controladores.FabricaSistema;
 import model.AccionTer;
@@ -44,6 +46,8 @@ public class StockBean implements Serializable{
 	private String messageClass;
 	private Boolean disableDesdeUltimoPedido = false;
 	private Boolean disablePrediccionDePedido = false;
+	private String busqueda = "";
+	private List<Articulo> resBusqueda;
 	
 	public List<DTLineaPedido> getPedidos() {
 		return pedidos;
@@ -162,6 +166,26 @@ public class StockBean implements Serializable{
 	}
 	public void setMessageClass(String messageClass) {
 		this.messageClass = messageClass;
+	}
+	
+	public String getBusqueda() {
+		return busqueda;
+	}
+	public void setBusqueda(String busqueda) {
+		this.busqueda = busqueda;
+	}
+	
+	/**
+	 * @return the resBusqueda
+	 */
+	public List<Articulo> getResBusqueda() {
+		return resBusqueda;
+	}
+	/**
+	 * @param resBusqueda the resBusqueda to set
+	 */
+	public void setResBusqueda(List<Articulo> resBusqueda) {
+		this.resBusqueda = resBusqueda;
 	}
 	
 	/**
@@ -378,6 +402,15 @@ public class StockBean implements Serializable{
 		fv.setFormaVenta(model.Enumerados.formasVenta.controlMedico);
 		fv.setDescripcion("Control médico");
 		formasVenta.add(fv);
+	}
+	
+	public void buscarArticulos(){
+		try {
+			resBusqueda = FabricaSistema.getISistema().buscarArticulos(busqueda);
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

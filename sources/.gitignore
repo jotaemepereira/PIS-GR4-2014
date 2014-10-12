@@ -2,6 +2,8 @@
 /build/
 /bin/
 target/
+# Solr
+data/
  
 # OS Files #
 .DS_Store
@@ -69,3 +71,4 @@ local.properties
  
 # PDT-specific
 .buildpath
+

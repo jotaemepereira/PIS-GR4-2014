@@ -33,4 +33,10 @@ public class SistemaControlador implements ISistema {
 		return FabricaLogica.getInstanciaProveedores().obtenerProveedores();
 	}
 
+	@Override
+	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones {
+		// TODO chequeo permisos del usuario
+		return FabricaLogica.getIStock().buscarArticulos(busqueda);
+	}
+
 }

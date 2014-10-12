@@ -12,6 +12,12 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.response.QueryResponse;
+
 import controladores.Excepciones;
 import model.Articulo;
 import model.Enumerados;
@@ -132,6 +138,26 @@ public class PStockControlador implements IStockPersistencia {
 	public void persistirPedido(Pedido p) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public List<Articulo> buscarArticulos(String busqueda){
+		String urlString = "http://localhost:8080/solr";
+		SolrServer solr = new HttpSolrServer(urlString);
+		SolrQuery parameters = new SolrQuery();
+		parameters.setRequestHandler("/articulos/select");
+		parameters.set("q", "*:*");
+		parameters.set("wt", "json");
+
+		try {
+			QueryResponse response = solr.query(parameters);
+			System.out.println(response);
+		} catch (SolrServerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 }

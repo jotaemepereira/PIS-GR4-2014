@@ -17,5 +17,6 @@ public interface ISistema {
 	public List<DTLineaPedido> pedidoAutomaticoVentas();
 	public void altaArticulo(Articulo articulo) throws Excepciones;
 	public List<DTProveedor> obtenerProveedores() throws Excepciones;
+	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones;
 
 }

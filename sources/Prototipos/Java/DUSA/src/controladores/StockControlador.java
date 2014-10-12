@@ -100,4 +100,9 @@ public class StockControlador implements IStock {
 		
 		return pedidoGenerado;
 	}
+	
+	@Override
+	public List<Articulo> buscarArticulos(String busqueda){
+		return FabricaPersistencia.getIStockPersistencia().buscarArticulos(busqueda);
+	}
 }

@@ -14,4 +14,5 @@ public interface IStock {
 //	public List<DTLineaPedido> pedidoPorVentas();//Deprecated
 	public void generarPedido(Pedido p);
 	public Pedido generarPedidoEnBaseAPedidoAnterior() throws Excepciones;
+	public List<Articulo> buscarArticulos(String busqueda);
 }
