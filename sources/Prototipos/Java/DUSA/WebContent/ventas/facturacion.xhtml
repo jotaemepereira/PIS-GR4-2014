@@ -20,7 +20,7 @@
 	</h:head>
 	<h:body>
 		<h:form id="form1">
-			<p:growl id="messages" showDetail="true" />
+			<p:growl id="messages" showDetail="true" globalOnly="true"/>
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/ventas.xhtml" />
 
@@ -93,6 +93,33 @@
 
 					<p:column headerText="Receta" style="text-align: center;">
 						<h:outputText value="-" />
+					</p:column>
+
+					<p:column headerText="Receta" style="text-align: center; width: 100px;">
+
+						<p:outputPanel visible="#{lineaVenta.articulo.esPsicofarmaco}" style="width: 100px; padding: 0; margin: 0;">
+							<p:selectBooleanCheckbox
+								value="#{lineaVenta.articulo.recetaVerde}">
+								<f:ajax event="change" execute="@this" />
+							</p:selectBooleanCheckbox>
+							<img src="../Images/receta_verde.png" />
+						</p:outputPanel>
+						<p:outputPanel visible="#{lineaVenta.articulo.esEstupefaciente}" style="width: 100px; padding: 0; margin: 0;">
+							<p:selectBooleanCheckbox
+								value="#{lineaVenta.articulo.recetaNaranja}">
+								<f:ajax event="change" execute="@this" />
+							</p:selectBooleanCheckbox>
+							<img src="../Images/receta_naranja.png" />
+						</p:outputPanel>
+						<!-- TODO: falta la condicion de receta blanca. -->
+						<p:outputPanel visible="true" style="width: 100px; padding: 0; margin: 0;">
+							<p:selectBooleanCheckbox
+								value="#{lineaVenta.articulo.recetaBlanca}">
+								<f:ajax event="change" execute="@this" />
+							</p:selectBooleanCheckbox>
+							<img src="../Images/receta_blanca.png" />
+						</p:outputPanel>
+
 					</p:column>
 
 					<p:column headerText="Cantidad" style="text-align: center;">
