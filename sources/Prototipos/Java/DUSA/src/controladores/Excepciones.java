@@ -15,7 +15,8 @@ public class Excepciones extends Exception {
 	public static String MENSAJE_ERROR_DATOS					= "Para continuar complete todos los campos obligatorios";
 	
 	// Mensajes para Proveedor
-	public static String MENSAJE_RUT_DUPLICADO					= "Ya existe un Proveedor en el sistema con ese RUT";
+	public static String MENSAJE_RUT_DUPLICADO					= "Ya existe un Proveedor en el sistema con ese documento";
+	public static String MENSAJE_RUT_ERRONEO					= "El documento ingresado no es válido";
 	public static String MENSAJE_NOMBRE_COMERCIAL_DUPLICADO		= "Ya existe un Proveedor en el sistema con ese Nombre Comercial";
      
 	// Mensajes para pedido automático
