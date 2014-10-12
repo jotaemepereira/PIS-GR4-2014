@@ -135,5 +135,14 @@ public class PStockControlador implements IStockPersistencia {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public List<Long> obtenerIdTodosLosArticulos(){
+		return null;
+	}
+	
+	public int getStock(long idArticulo){
+	//consulta que obtiene el stock de un articulo
+		return 0;
+	}
 
 }

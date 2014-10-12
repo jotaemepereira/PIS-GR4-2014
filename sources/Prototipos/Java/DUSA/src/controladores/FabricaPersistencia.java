@@ -9,13 +9,14 @@ import persistencia.PStockControlador;
 
 public class FabricaPersistencia {
 	
-	public static IStockPersistencia getIStockPersistencia(){
+	public static IStockPersistencia getStockPersistencia(){
 		return new PStockControlador();
 	}
 	
 	public static IProveedoresPersistencia getInstanciaProveedoresPersistencia(){
 		return new PProveedoresControlador();
 	}
+	
 
 	public static IFacturacionPersistencia getInstanciaFacturacionPersistencia(){
 		return new PFacturacionControlador();
