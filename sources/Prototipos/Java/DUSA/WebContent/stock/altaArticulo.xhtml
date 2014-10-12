@@ -130,7 +130,7 @@
 													<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 														<p:selectOneMenu id="proveedor" value="#{stockBean.proveedor}"
 												        			filter="true" filterMatchMode="contains" required="false" >
-												            <f:selectItem itemLabel="Seleccione proveedor" itemValue="" />
+												            <f:selectItem itemLabel="Seleccione proveedor" itemValue="#{null}" />
 												            <f:selectItems value="#{stockBean.listaProveedores}" var="p" itemLabel="#{p.nombreComercial}" itemValue="#{p.idProveedor}"/>
 												        	<f:ajax event="change" execute="@this" />
 												        </p:selectOneMenu>
@@ -302,7 +302,7 @@
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<p:selectOneMenu id="formaVenta" value="#{stockBean.articulo.codigoVenta}" required="false" >
-										            <f:selectItem itemLabel="Seleccione forma de venta" itemValue="-1" />
+										            <f:selectItem itemLabel="Seleccione forma de venta" itemValue="0" />
 										            <f:selectItems value="#{stockBean.formasVenta}" var="f" itemLabel="#{f.descripcion}" itemValue="#{f.formaVenta}"/>
 										        </p:selectOneMenu>
 										    </div>
@@ -317,7 +317,7 @@
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<p:selectOneMenu id="tipoIVA" value="#{stockBean.articulo.tipoIva}" style="height: 100%" required="false" >
-										            <f:selectItem itemLabel="Seleccione tipo de IVA" itemValue="-1" />
+										            <f:selectItem itemLabel="Seleccione tipo de IVA" itemValue="0" />
 										            <f:selectItems value="#{stockBean.tiposIVA}" />
 										        </p:selectOneMenu>
 										    </div>
@@ -342,8 +342,8 @@
 								<div class="row" style="margin-bottom: 1%;">
 									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<div class="btn-group pull-right">									
-											<p:commandButton value="Confirmar" update="panel msgs" actionListener="#{stockBean.altaArticulo}" styleClass="btn btn-success" />
-											<p:commandButton value="Cancelar"  update="panel" actionListener="#{stockBean.cancelarAltaArticulo}" styleClass="btn btn-default" type="reset" />
+											<h:commandButton value="Confirmar" update="panel msgs" actionListener="#{stockBean.altaArticulo}" styleClass="btn btn-success" />
+											<h:commandButton value="Cancelar"  update="panel" actionListener="#{stockBean.cancelarAltaArticulo}" styleClass="btn btn-default" type="reset" />
 										</div>
 									</div>								
 								</div>

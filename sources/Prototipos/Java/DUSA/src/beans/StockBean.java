@@ -315,7 +315,7 @@ public class StockBean implements Serializable{
 				null,
 				new FacesMessage(
 						FacesMessage.SEVERITY_WARN,
-						"Ya seleccionó el proveedor.",
+						"Ya seleccionï¿½ el proveedor.",
 						""));
 			}
 		}
@@ -324,7 +324,7 @@ public class StockBean implements Serializable{
 					null,
 					new FacesMessage(
 							FacesMessage.SEVERITY_WARN,
-							"Debe seleccionar un proveedor e ingresar su código que lo identifica.",
+							"Debe seleccionar un proveedor e ingresar su cï¿½digo que lo identifica.",
 							""));
 		}
 	}
@@ -338,46 +338,44 @@ public class StockBean implements Serializable{
 		return ret;
 	}
 	public void altaArticulo(){		
-		//FacesContext context = FacesContext.getCurrentInstance();
+		FacesContext context = FacesContext.getCurrentInstance();
 		try {
-			/* Llamo a la logica para que se de de alta el articulo en el sistema y
-			 en caso de error lo muestro */
-			Iterator i = proveedoresSeleccionados.iterator();
+			/* Cargo los proveedores seleccionados en el articulo */
+			Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
 			while (i.hasNext()){
+				DTProveedor next = i.next();
 				DTProveedor p = new DTProveedor();
-				p.setIdProveedor(proveedor);
-				p.setNombreComercial(proveedores.get(proveedor).getNombreComercial());
-				p.setCodigoIdentificador(codigoIdentificador);
+				p.setIdProveedor(next.getIdProveedor());
+				p.setNombreComercial(proveedores.get(next.getIdProveedor()).getNombreComercial());
+				p.setCodigoIdentificador(next.getCodigoIdentificador());
 				this.articulo.agregarProveedor(p);
 			}
+			/* Llamo a la logica para que se de de alta el articulo en el sistema y
+			 en caso de error lo muestro */
 			FabricaSistema.getISistema().altaArticulo(articulo);
+			// si todo bien aviso y vacio el formulario
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,Excepciones.MENSAJE_OK_ALTA, ""));
+			this.articulo = new Articulo();
+			this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
+			this.proveedor = 0;
+			this.codigoIdentificador = 0;
 		} catch (Excepciones e) {
 			if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
-//				context.addMessage(
-//						null,
-//						new FacesMessage(
-//								FacesMessage.SEVERITY_WARN,
-//								e.getMessage(),
-//								""));
-				this.message = e.getMessage();
-				this.messageClass = "alert alert-danger";
+				context.addMessage(
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_WARN,
+								e.getMessage(),
+								""));
 			} else {
-//				context.addMessage(
-//						null,
-//						new FacesMessage(
-//								FacesMessage.SEVERITY_ERROR,
-//								e.getMessage(),
-//								""));
-				this.message = e.getMessage();
-				this.messageClass = "alert alert-danger";
-				return;
+				context.addMessage(
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_ERROR,
+								e.getMessage(),
+								""));
 			}
-		}
-		// si todo bien aviso y vacio el formulario
-		//context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,Excepciones.MENSAJE_OK_ALTA, ""));
-		this.message = Excepciones.MENSAJE_OK_ALTA;
-		this.messageClass = "alert alert-success";
-		this.articulo = new Articulo();
+		}		
 	}
 	
 	public void cancelarAltaArticulo(){
