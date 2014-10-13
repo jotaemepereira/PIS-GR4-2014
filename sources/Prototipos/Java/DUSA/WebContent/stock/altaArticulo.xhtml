@@ -30,7 +30,7 @@
 						<div class="panel-heading">
 							<h3 class="panel-title">Alta de artículo</h3>
 						</div>
-						<p:messages id="msgs" />					
+						<p:messages id="msgs" showIcon="false" globalOnly="true" />					
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
 							<div class="container-fluid">
@@ -39,7 +39,7 @@
 										<p:outputLabel for="descripcion" value="Descripción:" />
 										<p:inputText id="descripcion" styleClass="form-control" value="#{stockBean.articulo.descripcion}" size="60" requiredMessage="Dato Requerido." style="height: 100%"
 										required="true" />
-										<p:message for="descripcion" />
+										<p:message for="descripcion" display="text" />
 									</div>
 									<div class="col-xs-12 col-sm-12 col-md-2 col-lg-2">
 										<div class="row">
@@ -53,7 +53,7 @@
 										            <f:selectItem itemLabel="Seleccione tipo de artículo" itemValue="#{null}" noSelectionOption="true" />
 										            <f:selectItems value="#{stockBean.tiposArticulo}" var="ta" itemLabel="#{ta.descripcion}" itemValue="#{ta.tipoArticulo}"/>
 										        </p:selectOneMenu>
-										        <p:message for="tipoArticulo" />
+										        <p:message for="tipoArticulo" display="text" />
 											</div>
 										</div>
 									</div>
@@ -168,7 +168,7 @@
 												    <p:column headerText="Código identificador">
 												        <h:outputText value="#{proveedor.codigoIdentificador}" />
 												    </p:column>
-												 </p:dataTable>
+												 </p:dataTable>												 
 											 </div>
 										</div>
 									</div>
@@ -255,7 +255,7 @@
 										required="true" >
 						                	<f:convertNumber type="number"/>
 						            	</p:inputText>
-						            	<p:message for="costoLista" />
+						            	<p:message for="costoLista" display="text" />
 									</div>
 <!-- 									<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"> -->
 <!-- 										<p:outputLabel for="costoReal" value="Costo real ($):" /> -->
@@ -274,21 +274,19 @@
 										required="true" >
 						                	<f:convertNumber type="number"/>
 						            	</p:inputText>
-						            	<p:message for="precioPublico" />
+						            	<p:message for="precioPublico" display="text" />
 									</div>
 									<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 										<p:outputLabel for="precioVenta" value="Precio de venta ($):" />
 										<p:inputText id="precioVenta" styleClass="form-control" value="#{stockBean.articulo.precioVenta}" converterMessage="Dato Inválido." style="height: 100%" >
 						                	<f:convertNumber type="number"/>
 						            	</p:inputText>
-						            	<p:message for="precioVenta" />
 									</div>
 									<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 										<p:outputLabel for="porcentajePrecioVenta" value="Precio de venta (%):" />
 										<p:inputText id="porcentajePrecioVenta" styleClass="form-control" value="#{stockBean.articulo.porcentajePrecioVenta}" converterMessage="Dato Inválido." style="height: 100%" >
 						                	<f:convertNumber type="number"/>
 						            	</p:inputText>
-						            	<p:message for="porcentajePrecioVenta" />
 									</div>
 								</div>
 								
@@ -342,8 +340,8 @@
 								<div class="row" style="margin-bottom: 1%;">
 									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<div class="btn-group pull-right">									
-											<h:commandButton value="Confirmar" update="panel msgs" actionListener="#{stockBean.altaArticulo}" styleClass="btn btn-success" />
-											<h:commandButton value="Cancelar"  update="panel" actionListener="#{stockBean.cancelarAltaArticulo}" styleClass="btn btn-default" type="reset" />
+											<h:commandButton value="Confirmar" update="panel msgs msgTabla" actionListener="#{stockBean.altaArticulo}" styleClass="btn btn-success" />
+											<h:commandButton value="Cancelar"  update="panel" actionListener="#{stockBean.cancelarAltaArticulo}" styleClass="btn btn-default" immediate="true"/>
 										</div>
 									</div>								
 								</div>

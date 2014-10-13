@@ -7,9 +7,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.ViewHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 import com.sun.org.apache.xpath.internal.functions.Function;
@@ -177,7 +181,6 @@ public class StockBean implements Serializable{
 	public void setMessageClass(String messageClass) {
 		this.messageClass = messageClass;
 	}
-	
 	public String getBusqueda() {
 		return busqueda;
 	}
@@ -370,48 +373,68 @@ public class StockBean implements Serializable{
 	}
 	public void altaArticulo(){		
 		FacesContext context = FacesContext.getCurrentInstance();
-		try {
-			/* Cargo los proveedores seleccionados en el articulo */
-			Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
-			while (i.hasNext()){
-				DTProveedor next = i.next();
-				DTProveedor p = new DTProveedor();
-				p.setIdProveedor(next.getIdProveedor());
-				p.setNombreComercial(proveedores.get(next.getIdProveedor()).getNombreComercial());
-				p.setCodigoIdentificador(next.getCodigoIdentificador());
-				this.articulo.agregarProveedor(p);
-			}
-			/* Llamo a la logica para que se de de alta el articulo en el sistema y
-			 en caso de error lo muestro */
-			FabricaSistema.getISistema().altaArticulo(articulo);
-			// si todo bien aviso y vacio el formulario
-			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,Excepciones.MENSAJE_OK_ALTA, ""));
-			this.articulo = new Articulo();
-			this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
-			this.proveedor = 0;
-			this.codigoIdentificador = 0;
-		} catch (Excepciones e) {
-			if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
-				context.addMessage(
-						null,
-						new FacesMessage(
-								FacesMessage.SEVERITY_WARN,
-								e.getMessage(),
-								""));
-			} else {
-				context.addMessage(
-						null,
-						new FacesMessage(
-								FacesMessage.SEVERITY_ERROR,
-								e.getMessage(),
-								""));
-			}
-		}		
+		if (!proveedoresSeleccionados.isEmpty()){
+			try {
+				/* Cargo los proveedores seleccionados en el articulo */
+				Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
+				while (i.hasNext()){
+					DTProveedor next = i.next();
+					DTProveedor p = new DTProveedor();
+					p.setIdProveedor(next.getIdProveedor());
+					p.setNombreComercial(proveedores.get(next.getIdProveedor()).getNombreComercial());
+					p.setCodigoIdentificador(next.getCodigoIdentificador());
+					this.articulo.agregarProveedor(p);
+				}
+				/* Llamo a la logica para que se de de alta el articulo en el sistema y
+				 en caso de error lo muestro */
+				FabricaSistema.getISistema().altaArticulo(articulo);
+				// si todo bien aviso y vacio el formulario
+				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,Excepciones.MENSAJE_OK_ALTA, ""));
+				this.articulo = new Articulo();
+				this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
+				this.proveedor = 0;
+				this.codigoIdentificador = 0;
+			} catch (Excepciones e) {
+				if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
+					context.addMessage(
+							null,
+							new FacesMessage(
+									FacesMessage.SEVERITY_WARN,
+									e.getMessage(),
+									""));
+				} else {
+					context.addMessage(
+							null,
+							new FacesMessage(
+									FacesMessage.SEVERITY_ERROR,
+									e.getMessage(),
+									""));
+				}
+			}	
+		}
+		else{
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"Debe seleccionar al menos un proveedor",
+							""));
+		}
 	}
 	
 	public void cancelarAltaArticulo(){
-		
+		refresh();
 	}
+	
+	public void refresh() {
+		  FacesContext context = FacesContext.getCurrentInstance();
+		  Application application = context.getApplication();
+		  ViewHandler viewHandler = application.getViewHandler();
+		  UIViewRoot viewRoot = viewHandler.createView(context, context
+		   .getViewRoot().getViewId());
+		  context.setViewRoot(viewRoot);
+		  context.renderResponse(); //Optional
+		}
 	
 	public StockBean(){
 		
