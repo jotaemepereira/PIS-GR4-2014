@@ -23,6 +23,7 @@ public class DTVenta implements Serializable {
 	private BigDecimal descuento2 = new BigDecimal(0);
 	private BigDecimal descuento3 = new BigDecimal(0);
 	private String CodigoBarras;
+	private int stock;
 
 	public int getProductId() {
 		return productId;
@@ -174,5 +175,13 @@ public class DTVenta implements Serializable {
 
 	public void setRefrigerado(boolean refrigerado) {
 		this.refrigerado = refrigerado;
+	}
+
+	public int getStock() {
+		return stock;
+	}
+
+	public void setStock(int stock) {
+		this.stock = stock;
 	}
 }

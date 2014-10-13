@@ -101,7 +101,15 @@
 													<h:outputText value=" #{venta.nombre}" />
 													<h:outputText value=" #{venta.presentacion}" />
 													<h:outputText value="$ #{venta.precioVenta}" />
-													<h:outputText value="receta Blanca #{venta.recetaBlanca}" />
+													<p:outputPanel
+														visible="#{venta.isRecetaVerde}"
+														style="width: 100px; padding: 0; margin: 0;">
+														<p:selectBooleanCheckbox
+															value="#{venta.recetaVerde}">
+															<f:ajax event="change" execute="@this" />
+														</p:selectBooleanCheckbox>
+														<img src="../Images/receta_verde.png" />
+													</p:outputPanel>
 													<p:commandButton value="Articulo Perdido" id="ajax4"
 														update="@form"
 														actionListener="#{ventaBean.agregarLineaVentaPerdida(venta)}"
@@ -109,16 +117,32 @@
 
 													<h:outputText value=" #{venta.principioActivo}" />
 													<h:outputText value=" #{venta.descripcion}" />
-													<h:outputText value="% #{venta.descuento1}" />
-													<h:outputText value="receta Verde #{venta.recetaVerde}" />
-													<h:outputText value="      " />
+													<h:outputText value="(% #{venta.descuento1})" />
+													<p:outputPanel
+														visible="#{venta.isRecetaNaranja}"
+														style="width: 100px; padding: 0; margin: 0;">
+														<p:selectBooleanCheckbox
+															value="#{venta.recetaBlanca}">
+															<f:ajax event="change" execute="@this" />
+														</p:selectBooleanCheckbox>
+														<img src="../Images/receta_blanca.png" />
+													</p:outputPanel>
+													<h:outputText value="stock:#{venta.stock}" />
 
 													<h:outputText value=" #{venta.concentracion}" />
 													<h:outputText value=" #{venta.laboratorio}" />
 													<p:inputText id="descuento" value="#{venta.descuento}"
 														style="width: 40px;">
 													</p:inputText>
-													<h:outputText value="receta Naranja #{venta.recetaNaranja}" />
+													<p:outputPanel
+														visible="#{venta.isRecetaNaranja}"
+														style="width: 100px; padding: 0; margin: 0;">
+														<p:selectBooleanCheckbox
+															value="#{venta.recetaNaranja}">
+															<f:ajax event="change" execute="@this" />
+														</p:selectBooleanCheckbox>
+														<img src="../Images/receta_naranja.png" />
+													</p:outputPanel>
 													<p:commandButton value="Agregar" id="ajax2" update="@form"
 														actionListener="#{ventaBean.agregarLineaVenta(venta)}"
 														process="@this" styleClass="ui-priority-primary" />
