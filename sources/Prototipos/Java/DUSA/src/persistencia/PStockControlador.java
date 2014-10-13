@@ -330,6 +330,39 @@ public class PStockControlador implements IStockPersistencia {
 		}
 		return idArts;
 	}
-
+	
+	/**
+	 * @author Guille 
+	 */
+	@Override
+	public boolean existeArticuloDeDUSA(Long idArticulo) throws Excepciones {
+		
+		int cant = 0;
+		PreparedStatement stmt = null;
+		String query = "SELECT count(*) AS cant" + 
+						"FROM products_suppliers ps " + 
+						"WHERE ps.product_id = ? AND " + 
+								"ps.supplier_id = ?;";
+		
+		try {
+			
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			stmt.setLong(1, idArticulo);
+			stmt.setInt(2, 0); //Hay que ver cual es para hardcodearlo en un logar solo.
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()){
+				cant = rs.getInt("cant");
+			}
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		}
+		return cant > 0;
+	}
 
 }

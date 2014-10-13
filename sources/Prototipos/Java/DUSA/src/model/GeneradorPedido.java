@@ -5,8 +5,10 @@ package model;
 import java.util.List;
 
 import controladores.Excepciones;
+import controladores.FabricaPersistencia;
 import interfaces.IPredictor;
 import interfaces.ISeleccionador;
+import interfaces.IStockPersistencia;
 
 /**  
 * @author Santiago
@@ -37,12 +39,16 @@ public class GeneradorPedido {
 		
 		Pedido pedido = new Pedido();
 		List<Long> articulos = this.seleccionador.getIDArticulos();
+		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
 		
 		for (Long idArticulo : articulos) {
 			
-			int cantidad = this.predictor.predecir(idArticulo);
-			if (cantidad > 0){		
-				pedido.agregarArticulo(idArticulo, cantidad);
+			if (sp.existeArticuloDeDUSA(idArticulo)) {
+				
+				int cantidad = this.predictor.predecir(idArticulo);
+				if (cantidad > 0){		
+					pedido.agregarArticulo(idArticulo, cantidad);
+				}
 			}
 		}
 		

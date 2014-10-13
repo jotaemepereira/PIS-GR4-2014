@@ -23,5 +23,11 @@ public interface IStockPersistencia {
 	public void deltaImportSolr() throws Excepciones;
 	public int getStock(long idArticulo) throws Excepciones;
 	public List<Long> obtenerIdTodosLosArticulos() throws Excepciones;
-
+	
+	/**
+	 * @author Guille
+	 * @param idArticulo
+	 * @return true si D.U.S.A. maneja el articulo con id "idArticulo"
+	 */
+	public boolean existeArticuloDeDUSA(Long idArticulo) throws Excepciones;
 }
