@@ -98,9 +98,12 @@ public class StockControlador implements IStock {
 			DTLineaPedido dtlPedido = new DTLineaPedido();
 			
 			 Articulo articulo = this.obtenerArticulo(lPedido.getIdArticulo());
-			 dtlPedido.setCantidad(lPedido.getCantidad());
+			 
 			 dtlPedido.setIdArticulo(lPedido.getIdArticulo());
-			 dtlPedido.setNombreArticulo(articulo.getDescripcion());
+			 dtlPedido.setDescripcionArticulo(articulo.getDescripcion());
+			 dtlPedido.setStockMinimo(articulo.getStockMinimo());
+			 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
+			 dtlPedido.setCantidad(lPedido.getCantidad());
 			 
 		}
 		pedidoGenerado.getLineas();

@@ -1,14 +1,16 @@
 package datatypes;
 
+import java.math.BigDecimal;
+
 public class DTLineaPedido {
 	private int numeroArticulo;
 	private Long idArticulo;
 	private int cantidad;
-	private String nombreArticulo;
-	private int precioUnitario;
-	private int precioPonderado;
-	private int stockMinimo;
-	private int subtotal;
+	private String descripcionArticulo;
+	private BigDecimal precioUnitario;
+	private BigDecimal precioPonderado;
+	private Long stockMinimo;
+	private BigDecimal subtotal;
 	
 	public int getNumeroArticulo() {
 		return numeroArticulo;
@@ -31,35 +33,65 @@ public class DTLineaPedido {
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}
-	public String getNombreArticulo() {
-		return nombreArticulo;
+	public String getDescripcionArticulo() {
+		return descripcionArticulo;
 	}
-	public void setNombreArticulo(String nombreArticulo) {
-		this.nombreArticulo = nombreArticulo;
+	public void setDescripcionArticulo(String descripcionArticulo) {
+		this.descripcionArticulo = descripcionArticulo;
 	}
-	public int getPrecioUnitario() {
+	public BigDecimal getPrecioUnitario() {
 		return precioUnitario;
 	}
-	public void setPrecioUnitario(int precioUnitario) {
+	public void setPrecioUnitario(BigDecimal precioUnitario) {
 		this.precioUnitario = precioUnitario;
 	}
-	public int getPrecioPonderado() {
+	public void setPrecioUnitario(int precioUnitario) {
+		this.precioUnitario = new BigDecimal(precioUnitario);
+	}
+	public void setPrecioUnitario(long precioUnitario) {
+		this.precioUnitario = new BigDecimal(precioUnitario);
+	}
+	public void setPrecioUnitario(double precioUnitario) {
+		this.precioUnitario = new BigDecimal(precioUnitario);
+	}
+	public BigDecimal getPrecioPonderado() {
 		return precioPonderado;
 	}
-	public void setPrecioPonderado(int precioPonderado) {
+	public void setPrecioPonderado(BigDecimal precioPonderado) {
 		this.precioPonderado = precioPonderado;
 	}
-	public int getStockMinimo() {
+	public void setPrecioPonderado(int precioPonderado) {
+		this.precioPonderado = new BigDecimal(precioPonderado);
+	}
+	public void setPrecioPonderado(long precioPonderado) {
+		this.precioPonderado = new BigDecimal(precioPonderado);
+	}
+	public void setPrecioPonderado(double precioPonderado) {
+		this.precioPonderado = new BigDecimal(precioPonderado);
+	}
+	public Long getStockMinimo() {
 		return stockMinimo;
 	}
-	public void setStockMinimo(int stockMinimo) {
+	public void setStockMinimo(Long stockMinimo) {
 		this.stockMinimo = stockMinimo;
 	}
-	public int getSubtotal() {
+	public void setStockMinimo(int stockMinimo) {
+		this.stockMinimo = new Long(stockMinimo);
+	}
+	public BigDecimal getSubtotal() {
 		return subtotal;
 	}
-	public void setSubtotal(int subtotal) {
+	public void setSubtotal(BigDecimal subtotal) {
 		this.subtotal = subtotal;
+	}
+	public void setSubtotal(int subtotal) {
+		this.subtotal = new BigDecimal(subtotal);
+	}
+	public void setSubtotal(long subtotal) {
+		this.subtotal = new BigDecimal(subtotal);
+	}
+	public void setSubtotal(double subtotal) {
+		this.subtotal = new BigDecimal(subtotal);
 	}
 }
 
