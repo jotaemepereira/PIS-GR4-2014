@@ -36,6 +36,7 @@ public class Database {
 			dt.setDescuento1(desc1);
 			dt.setDescuento2(desc2);
 			dt.setDescuento3(desc3);
+			dt.setStock(0 + i);
 			if (i%2==0){
 				dt.setRecetaBlanca(true);
 				dt.setRecetaNaranja(true);

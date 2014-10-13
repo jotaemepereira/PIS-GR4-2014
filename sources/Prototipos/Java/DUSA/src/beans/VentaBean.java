@@ -2,6 +2,7 @@ package beans;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -35,7 +36,9 @@ public class VentaBean implements Serializable {
 	private List<DTVenta> lineasVenta = new ArrayList<DTVenta>();
 	private List<DTVenta> lineasVenta2 = new ArrayList<DTVenta>();
 	private List<DTVenta> lineasVentaPerdidas = new ArrayList<DTVenta>();
-	private List<DTVenta> ventasSeleccionadas = new ArrayList<DTVenta>();	
+	private List<DTVenta> ventasSeleccionadas = new ArrayList<DTVenta>();
+	private List<Integer> descuentos = new ArrayList<Integer>();
+	private List<Integer> descuentosseleccionados = new ArrayList<Integer>();
 
 	public VentaBean() {
 		// agregarLineasVenta();
@@ -64,6 +67,8 @@ public class VentaBean implements Serializable {
 		vp.setCantidad(1);
 		lineasVentaPerdidas.add(vp);
 	}
+	
+
 
 	public void agregarLineaVenta(DTVenta v){
 		BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento()));
@@ -74,7 +79,7 @@ public class VentaBean implements Serializable {
 	}
 	
 	// este agregar es para agregar los productos buscados a la venta
-	public void agregarLinea(ActionEvent actionEvent) {
+	/**public void agregarLinea(ActionEvent actionEvent) {
 
 		Iterator<DTVenta> it = ventasSeleccionadas.iterator();
 		while (it.hasNext()) {
@@ -88,7 +93,7 @@ public class VentaBean implements Serializable {
 
 		}
 
-	}
+	}**/
 
 	public String strTotal() {
 		BigDecimal total = new BigDecimal(0);
@@ -215,6 +220,22 @@ public class VentaBean implements Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public List<Integer> getDescuentos() {
+		return descuentos;
+	}
+
+	public void setDescuentos(List<Integer> descuentos) {
+		this.descuentos = descuentos;
+	}
+
+	public List<Integer> getDescuentosseleccionados() {
+		return descuentosseleccionados;
+	}
+
+	public void setDescuentosseleccionados(List<Integer> descuentosseleccionados) {
+		this.descuentosseleccionados = descuentosseleccionados;
 	}
 
 
