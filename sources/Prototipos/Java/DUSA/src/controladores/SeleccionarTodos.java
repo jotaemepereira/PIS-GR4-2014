@@ -4,16 +4,15 @@ package controladores;
 
 import java.util.List;
 
-import persistencia.PStockControlador;
 import interfaces.ISeleccionador;
 import interfaces.IStockPersistencia;
 
 
 public class SeleccionarTodos implements ISeleccionador {
 	
-	public List <Long> getIDArticulos() throws Exception{
+	public List <Long> getIDArticulos() throws Excepciones{
 		//ver el cast
-		PStockControlador ps =  (PStockControlador) FabricaPersistencia.getStockPersistencia();
+		IStockPersistencia ps = FabricaPersistencia.getStockPersistencia();
 		
 		List<Long> articulosID = null;
 		try {

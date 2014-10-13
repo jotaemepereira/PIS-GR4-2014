@@ -39,7 +39,7 @@ public class PredecirEnBaseAHistorico implements IPredictor{
 	
 	}
 	
-	public int predecir(Long idArticulo) throws Exception{
+	public int predecir(Long idArticulo) throws Excepciones{
 		
 		IFacturacionPersistencia fp = FabricaPersistencia.getInstanciaFacturacionPersistencia();
 		IStockPersistencia st = FabricaPersistencia.getStockPersistencia();
