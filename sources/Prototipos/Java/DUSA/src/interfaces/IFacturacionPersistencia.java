@@ -12,10 +12,10 @@ public interface IFacturacionPersistencia {
 
 	public void facturarVenta(long ventaId) throws Exception;
 
-	public Venta obtenerVentaParaFacturar(long ventaId) throws Exception;
+	public void facturarVenta(Venta venta) throws Exception;
 	
 	public void marcarVentaFacturada(long ventaId) throws Exception;
-	
+
 	/**
 	 * @author Guille
 	 * @param desde

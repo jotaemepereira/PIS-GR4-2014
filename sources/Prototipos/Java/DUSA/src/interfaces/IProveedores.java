@@ -1,6 +1,7 @@
 package interfaces;
 
 import java.util.List;
+import java.util.Map;
 
 import controladores.Excepciones;
 import model.Proveedor;
@@ -24,13 +25,13 @@ public interface IProveedores {
 	
 	/**
 	 * 
-	 * @return Devuelve una lista de DTProveedor con todos los proveedores del sistema
+	 * @return Devuelve un Map de DTProveedor con todos los proveedores del sistema
 	 * 
 	 * @throws Excepciones
 	 *             - ERROR_SISTEMA (en caso que suceda algún error a la hora de
 	 *             conectarse o comunicarse con la base)
 	 * @author José Aguerre
 	 */
-	public List<DTProveedor> obtenerProveedores() throws Excepciones;
+	public Map<Integer, DTProveedor> obtenerProveedores() throws Excepciones;
 
 }

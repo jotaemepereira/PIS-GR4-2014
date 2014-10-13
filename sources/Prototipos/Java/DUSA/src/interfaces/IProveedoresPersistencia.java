@@ -1,6 +1,8 @@
 package interfaces;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import controladores.Excepciones;
 import datatypes.DTProveedor;
@@ -56,5 +58,5 @@ public interface IProveedoresPersistencia {
 	 *             conectarse o comunicarse con la base)
 	 * @author José Aguerre
 	 */
-	public List<DTProveedor> obtenerProveedores() throws Excepciones;
+	public Map<Integer, DTProveedor> obtenerProveedores() throws Excepciones;
 }

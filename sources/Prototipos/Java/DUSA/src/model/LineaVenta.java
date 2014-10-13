@@ -5,9 +5,14 @@ import java.math.BigDecimal;
 public class LineaVenta {
 	private long ventaId;
 	private long productoId;
+	private Articulo articulo;
 	private BigDecimal precio;
 	private int cantidad;
 	private BigDecimal descuento;
+	private int linea;
+	private boolean recetaBlanca;
+	private boolean recetaNaranja;
+	private boolean recetaVerde;
 
 	public long getVentaId() {
 		return ventaId;
@@ -47,6 +52,46 @@ public class LineaVenta {
 
 	public void setDescuento(BigDecimal descuento) {
 		this.descuento = descuento;
+	}
+
+	public int getLinea() {
+		return linea;
+	}
+
+	public void setLinea(int linea) {
+		this.linea = linea;
+	}
+
+	public Articulo getArticulo() {
+		return articulo;
+	}
+
+	public void setArticulo(Articulo articulo) {
+		this.articulo = articulo;
+	}
+
+	public boolean isRecetaBlanca() {
+		return recetaBlanca;
+	}
+
+	public void setRecetaBlanca(boolean recetaBlanca) {
+		this.recetaBlanca = recetaBlanca;
+	}
+
+	public boolean isRecetaNaranja() {
+		return recetaNaranja;
+	}
+
+	public void setRecetaNaranja(boolean recetaNaranja) {
+		this.recetaNaranja = recetaNaranja;
+	}
+
+	public boolean isRecetaVerde() {
+		return recetaVerde;
+	}
+
+	public void setRecetaVerde(boolean recetaVerde) {
+		this.recetaVerde = recetaVerde;
 	}
 
 }

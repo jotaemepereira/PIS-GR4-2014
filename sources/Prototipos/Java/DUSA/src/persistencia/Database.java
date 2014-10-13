@@ -18,8 +18,11 @@ public class Database {
 	 
     private void PopulateDatabase() {
     	int i = 0;
+    	BigDecimal desc1 = new BigDecimal(10);
+    	BigDecimal desc2 = new BigDecimal(30);
+    	BigDecimal desc3 = new BigDecimal(50);
+    	
     	while (i < 100){
-    		
     		DTVenta dt = new DTVenta();
 			dt.setCantidad(i);
 			dt.setDescripcion("descripcion" + i);
@@ -28,6 +31,20 @@ public class Database {
 			dt.setPrincipioActivo("principioActivo" + i);
     		dt.setCodigoBarras("" + i);
 			dt.setPresentacion("presentacion" + i);
+			dt.setNombre("nombre" + 1);
+			dt.setConcentracion("concentracion" + i);
+			dt.setDescuento1(desc1);
+			dt.setDescuento2(desc2);
+			dt.setDescuento3(desc3);
+			if (i%2==0){
+				dt.setRecetaBlanca(true);
+				dt.setRecetaNaranja(true);
+				dt.setRecetaVerde(true);
+			}else{
+				dt.setRecetaBlanca(false);
+				dt.setRecetaNaranja(false);
+				dt.setRecetaVerde(false);
+			}
     		ventas.add(dt);		
     		i++;
     	}

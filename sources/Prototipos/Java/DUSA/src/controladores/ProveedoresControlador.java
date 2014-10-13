@@ -1,6 +1,7 @@
 package controladores;
 
 import java.util.List;
+import java.util.Map;
 
 import datatypes.DTProveedor;
 import model.Proveedor;
@@ -41,7 +42,7 @@ public class ProveedoresControlador implements IProveedores {
 	}
 
 	@Override
-	public List<DTProveedor> obtenerProveedores() throws Excepciones {
+	public Map<Integer, DTProveedor> obtenerProveedores() throws Excepciones {
 		return FabricaPersistencia.getInstanciaProveedoresPersistencia().obtenerProveedores();
 	}
 	

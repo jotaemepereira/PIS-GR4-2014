@@ -2,6 +2,7 @@ package beans;
 
 import java.io.Serializable;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -112,7 +113,7 @@ public class ProveedoresBean implements Serializable {
 	public void setNombreComercial(String nombreComercial) {
 		this.nombreComercial = nombreComercial;
 	}
-	
+
 	/**
 	 * @return the tipoDocumento
 	 */
@@ -121,7 +122,8 @@ public class ProveedoresBean implements Serializable {
 	}
 
 	/**
-	 * @param tipoDocumento the tipoDocumento to set
+	 * @param tipoDocumento
+	 *            the tipoDocumento to set
 	 */
 	public void setTipoDocumento(String tipoDocumento) {
 		this.tipoDocumento = tipoDocumento;
@@ -131,13 +133,48 @@ public class ProveedoresBean implements Serializable {
 	 * Método encargado de crear el objeto proveedor, en caso que haya algun
 	 * error lo muestra en pantalla al usuario y se comunica con la l�gica para
 	 * dar de alta definitivamente al proveedor
+	 * 
 	 * @author Victoria Díaz
 	 */
 	public void altaProveedor() {
 		Proveedor proveedor;
 		FacesContext context = FacesContext.getCurrentInstance();
 
-		// Creo el proveedor y en caso de error aviso al usuario y cancelo la operaci�n
+		// Verifico que el documento sea correcto en caso de rut y ci
+		if (tipoDocumento.equals("C")) { // en caso de ci
+			// Inicializo los coefcientes en el orden correcto
+			int[] arrCoefs = { 2, 9, 8, 7, 6, 3, 4, 1 };
+			int suma = 0;
+			// Para el caso en el que la CI tiene menos de 8 digitos
+			// calculo cuantos coeficientes no voy a usar
+			int difCoef = arrCoefs.length - RUT.length();
+			// recorro cada digito empezando por el de más a la derecha
+			// o sea, el digito verificador, el que tiene indice mayor en el
+			// array
+			for (int i = (RUT.length() - 1); i > -1; i--) {
+				// Obtengo el digito correspondiente de la ci recibida
+				String dig = RUT.substring(i, i + 1);
+				// Lo tenía como caracter, lo transformo a int para poder operar
+				int digInt = Integer.parseInt(dig);
+				// Obtengo el coeficiente correspondiente al ésta posición del
+				// digito
+				int coef = arrCoefs[i + difCoef];
+				// Multiplico dígito por coeficiente y lo acumulo a la suma
+				// total
+				suma = suma + digInt * coef;
+			}
+			// si la suma es múltiplo de 10 es una ci válida
+			if (((suma % 10) != 0) || ((RUT.length() != 8) || (RUT.length() != 7))){
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, Excepciones.MENSAJE_RUT_ERRONEO, ""));
+				return;
+			}
+		} else if (tipoDocumento == "R") { // en caso de rut
+
+		}
+
+		// Creo el proveedor y en caso de error aviso al usuario y cancelo la
+		// operaci�n
 		try {
 			proveedor = new Proveedor(nombreComercial);
 			proveedor.setTipoDocumento(tipoDocumento);
@@ -146,34 +183,24 @@ public class ProveedoresBean implements Serializable {
 			proveedor.setTelefono(telefono);
 			proveedor.setDireccion(direccion);
 		} catch (Excepciones e1) {
-			context.addMessage(
-					null,
-					new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							e1.getMessage(),
-							""));
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e1.getMessage(), ""));
 			return;
 		}
 
-		/* Llamo a la l�gica para que se de de alta el proveedor en el sistema y
-		 en caso de error lo muestro */
+		/*
+		 * Llamo a la l�gica para que se de de alta el proveedor en el sistema y
+		 * en caso de error lo muestro
+		 */
 		try {
 			FabricaSistema.getISistema().altaProveedor(proveedor);
 		} catch (Excepciones e) {
 			if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
-				context.addMessage(
-						null,
-						new FacesMessage(
-								FacesMessage.SEVERITY_WARN,
-								e.getMessage(),
-								""));
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_WARN, e.getMessage(), ""));
 			} else {
-				context.addMessage(
-						null,
-						new FacesMessage(
-								FacesMessage.SEVERITY_ERROR,
-								e.getMessage(),
-								""));
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 				return;
 			}
 		}

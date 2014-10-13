@@ -2,12 +2,17 @@ package beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+
+import com.sun.org.apache.xpath.internal.functions.Function;
 
 import controladores.Excepciones;
 import controladores.FabricaSistema;
@@ -26,9 +31,8 @@ public class StockBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	private Articulo articulo = new Articulo();
-	private DTProveedor proveedor = new DTProveedor();
-	private List<DTProveedor> proveedores = new ArrayList<DTProveedor>();
-	private List<DTProveedor> proveedoresSeleccionados = new ArrayList<DTProveedor>();
+	private int proveedor;
+	private Map<Integer,DTProveedor> proveedores = new HashMap<Integer,DTProveedor>();
 	private long codigoIdentificador;
 	private Presentacion presentacion = new Presentacion();
 	private List<Presentacion> presentaciones = new ArrayList<Presentacion>();
@@ -44,6 +48,10 @@ public class StockBean implements Serializable{
 	private String messageClass;
 	private Boolean disableDesdeUltimoPedido = false;
 	private Boolean disablePrediccionDePedido = false;
+	private String busqueda = "";
+	private List<Articulo> resBusqueda;
+	private List<DTProveedor> listaProveedores;
+	private List<DTProveedor> proveedoresSeleccionados = new ArrayList<DTProveedor>();
 	
 	public List<DTLineaPedido> getPedidos() {
 		return pedidos;
@@ -57,16 +65,16 @@ public class StockBean implements Serializable{
 	public void setArticulo(Articulo articulo) {
 		this.articulo = articulo;
 	}
-	public DTProveedor getProveedor() {
+	public int getProveedor() {
 		return proveedor;
 	}
-	public void setProveedor(DTProveedor proveedor) {
+	public void setProveedor(int proveedor) {
 		this.proveedor = proveedor;
 	}
-	public List<DTProveedor> getProveedores() {
+	public Map<Integer, DTProveedor> getProveedores() {
 		return proveedores;
 	}
-	public void setProveedores(List<DTProveedor> proveedores) {
+	public void setProveedores(Map<Integer, DTProveedor> proveedores) {
 		this.proveedores = proveedores;
 	}
 	public Presentacion getPresentacion() {
@@ -117,6 +125,18 @@ public class StockBean implements Serializable{
 	public void setTiposArticulo(List<DTTipoArticulo> tiposArticulo) {
 		this.tiposArticulo = tiposArticulo;
 	}
+	public List<DTProveedor> getListaProveedores() {
+		return listaProveedores;
+	}
+	public void setListaProveedores(List<DTProveedor> listaProveedores) {
+		this.listaProveedores = listaProveedores;
+	}
+	public List<DTProveedor> getProveedoresSeleccionados() {
+		return proveedoresSeleccionados;
+	}
+	public void setProveedoresSeleccionados(List<DTProveedor> proveedoresSeleccionados) {
+		this.proveedoresSeleccionados = proveedoresSeleccionados;
+	}
 	public int[] getTiposIVA() {
 		return tiposIVA;
 	}
@@ -131,12 +151,6 @@ public class StockBean implements Serializable{
 	}
 	public void setCodigoIdentificador(long codigoIdentificador) {
 		this.codigoIdentificador = codigoIdentificador;
-	}
-	public List<DTProveedor> getProveedoresSeleccionados() {
-		return proveedoresSeleccionados;
-	}
-	public void setProveedoresSeleccionados(List<DTProveedor> proveedoresSeleccionados) {
-		this.proveedoresSeleccionados = proveedoresSeleccionados;
 	}
 	public Boolean getDisableDesdeUltimoPedido() {
 		return disableDesdeUltimoPedido;
@@ -162,6 +176,26 @@ public class StockBean implements Serializable{
 	}
 	public void setMessageClass(String messageClass) {
 		this.messageClass = messageClass;
+	}
+	
+	public String getBusqueda() {
+		return busqueda;
+	}
+	public void setBusqueda(String busqueda) {
+		this.busqueda = busqueda;
+	}
+	
+	/**
+	 * @return the resBusqueda
+	 */
+	public List<Articulo> getResBusqueda() {
+		return resBusqueda;
+	}
+	/**
+	 * @param resBusqueda the resBusqueda to set
+	 */
+	public void setResBusqueda(List<Articulo> resBusqueda) {
+		this.resBusqueda = resBusqueda;
 	}
 	
 	/**
@@ -291,46 +325,81 @@ public class StockBean implements Serializable{
 
 	
 	public void agregarProveedor(){
-		DTProveedor p = new DTProveedor();
-		p.setIdProveedor(proveedor.getIdProveedor());
-		p.setNombreComercial(proveedor.getNombreComercial());
-		p.setCodigoIdentificador(codigoIdentificador);
-		proveedoresSeleccionados.add(p);
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (codigoIdentificador != 0 && proveedor != 0){
+			if (!existeProveedor(proveedor)){
+				DTProveedor p = new DTProveedor();
+				p.setIdProveedor(proveedor);
+				p.setNombreComercial(proveedores.get(proveedor).getNombreComercial());
+				p.setCodigoIdentificador(codigoIdentificador);
+				this.proveedoresSeleccionados.add(p);
+			}
+			else{
+				context.addMessage(
+				null,
+				new FacesMessage(
+						FacesMessage.SEVERITY_WARN,
+						"Ya seleccion� el proveedor.",
+						""));
+			}
+		}
+		else{
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_WARN,
+							"Debe seleccionar un proveedor e ingresar su c�digo que lo identifica.",
+							""));
+		}
 	}
 	
+	private boolean existeProveedor(int proveedor) {
+		boolean ret = false;
+		Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
+		while (i.hasNext() && !ret){
+			ret = proveedor == i.next().getIdProveedor();
+		}
+		return ret;
+	}
 	public void altaArticulo(){		
-		//FacesContext context = FacesContext.getCurrentInstance();
+		FacesContext context = FacesContext.getCurrentInstance();
 		try {
+			/* Cargo los proveedores seleccionados en el articulo */
+			Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
+			while (i.hasNext()){
+				DTProveedor next = i.next();
+				DTProveedor p = new DTProveedor();
+				p.setIdProveedor(next.getIdProveedor());
+				p.setNombreComercial(proveedores.get(next.getIdProveedor()).getNombreComercial());
+				p.setCodigoIdentificador(next.getCodigoIdentificador());
+				this.articulo.agregarProveedor(p);
+			}
 			/* Llamo a la logica para que se de de alta el articulo en el sistema y
 			 en caso de error lo muestro */
 			FabricaSistema.getISistema().altaArticulo(articulo);
+			// si todo bien aviso y vacio el formulario
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,Excepciones.MENSAJE_OK_ALTA, ""));
+			this.articulo = new Articulo();
+			this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
+			this.proveedor = 0;
+			this.codigoIdentificador = 0;
 		} catch (Excepciones e) {
 			if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
-//				context.addMessage(
-//						null,
-//						new FacesMessage(
-//								FacesMessage.SEVERITY_WARN,
-//								e.getMessage(),
-//								""));
-				this.message = e.getMessage();
-				this.messageClass = "alert alert-danger";
+				context.addMessage(
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_WARN,
+								e.getMessage(),
+								""));
 			} else {
-//				context.addMessage(
-//						null,
-//						new FacesMessage(
-//								FacesMessage.SEVERITY_ERROR,
-//								e.getMessage(),
-//								""));
-				this.message = e.getMessage();
-				this.messageClass = "alert alert-danger";
-				return;
+				context.addMessage(
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_ERROR,
+								e.getMessage(),
+								""));
 			}
-		}
-		// si todo bien aviso y vacio el formulario
-		//context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,Excepciones.MENSAJE_OK_ALTA, ""));
-		this.message = Excepciones.MENSAJE_OK_ALTA;
-		this.messageClass = "alert alert-success";
-		this.articulo = new Articulo();
+		}		
 	}
 	
 	public void cancelarAltaArticulo(){
@@ -342,6 +411,7 @@ public class StockBean implements Serializable{
 		//Cargo los proveedores de la base de datos
 		try {
 			this.proveedores = FabricaSistema.getISistema().obtenerProveedores();
+			this.setListaProveedores(new ArrayList<DTProveedor>(this.proveedores.values()));
 		} catch (Excepciones e) {
 			this.message = e.getMessage();
 			this.messageClass = "alert alert-danger";
@@ -378,6 +448,15 @@ public class StockBean implements Serializable{
 		fv.setFormaVenta(model.Enumerados.formasVenta.controlMedico);
 		fv.setDescripcion("Control médico");
 		formasVenta.add(fv);
+	}
+	
+	public void buscarArticulos(){
+		try {
+			resBusqueda = FabricaSistema.getISistema().buscarArticulos(busqueda);
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

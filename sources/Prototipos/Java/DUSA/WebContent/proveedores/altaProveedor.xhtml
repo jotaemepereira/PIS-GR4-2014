@@ -18,6 +18,16 @@
 			<title>DUSA</title>
 		</f:facet>
 		<script src="../JS/altaProveedores.js"></script>
+		<style>
+			.ui-icon-bullet {
+			    background-position: -81.5px -145px !important;
+			}
+			.ui-selectoneradio label{
+				margin-right: 8px;
+				margin-left: 3px;
+				margin-top: 0px !important;
+			}
+		</style>
 	</h:head>
 	<h:body>
 		<link href="../CSS/altaProveedor.css" rel="stylesheet" />
@@ -40,7 +50,7 @@
 							<div class="container-fluid">
 								<div class="row" style="margin-bottom: 1%;">
 									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-										<p:outputLabel for="RUT" value="RUT:" />
+										<p:outputLabel for="RUT" value="Documento:" />
 										<p:selectOneRadio id="tipoDocumento" value="#{proveedoresBean.tipoDocumento}">
 								            <f:selectItem itemLabel="RUT" itemValue="R" />
 								            <f:selectItem itemLabel="CI" itemValue="C" />
@@ -74,7 +84,7 @@
 								<div class="row" style="margin-bottom: 1%;">
 									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 										<p:outputLabel for="nombreComercial" value="Nombre Comercial:" />
-										<p:inputText id="nombreComercial" styleClass="form-control" value="#{proveedoresBean.nombreComercial}" style="height: 100%" required="true" />
+										<p:inputText id="nombreComercial" styleClass="form-control" value="#{proveedoresBean.nombreComercial}" requiredMessage="Para continuar complete todos los campos obligatorios" height="100%" required="true" />
 									</div>
 								</div>
 									

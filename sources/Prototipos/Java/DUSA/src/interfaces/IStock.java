@@ -11,13 +11,27 @@ import datatypes.DTProduct;
 public interface IStock {
 
 	public void altaArticulo(Articulo articulo) throws Excepciones;
-//	public List<DTLineaPedido> pedidoPorVentas();//Deprecated
+
+	// public List<DTLineaPedido> pedidoPorVentas();//Deprecated
+	public Pedido generarPedidoEnBaseAHistorico(int diasAPredecir)	throws Excepciones;
+
 	public void generarPedido(Pedido p);
-	
+
 	/**
 	 * @author Guille
 	 * @return Genera un pedido de artículos, de D.U.S.A. La cantidad de cada artículo es igual a la cantidad vendida, del artículo, desde el pedido anterior. 
 	 * @throws Excepciones
 	 */
 	public Pedido generarPedidoEnBaseAPedidoAnterior() throws Excepciones;
+
+	/**
+	 * retorna los articulos que coincidan con el string ingresado
+	 * 
+	 * @param busqueda
+	 * @return List<Articulo> lista de los articulos encontrados segun el texto
+	 *         ingresado
+	 * @throws Excepciones
+	 * @author Victoria Diaz
+	 */
+	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones;
 }

@@ -1,6 +1,7 @@
 package controladores;
 
 import java.util.List;
+import java.util.Map;
 
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
@@ -31,9 +32,15 @@ public class SistemaControlador implements ISistema {
 	}
 
 	@Override
-	public List<DTProveedor> obtenerProveedores() throws Excepciones {
+	public Map<Integer, DTProveedor> obtenerProveedores() throws Excepciones {
 		// TODO chequeo permisos del usuario
 		return FabricaLogica.getInstanciaProveedores().obtenerProveedores();
+	}
+	
+	@Override
+	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones {
+		// TODO chequeo permisos del usuario
+		return FabricaLogica.getIStock().buscarArticulos(busqueda);
 	}
 
 	
