@@ -2,6 +2,7 @@ package controladores;
 
 import interfaces.IPredictor;
 import interfaces.ISeleccionador;
+import interfaces.IServicio;
 import interfaces.IStock;
 import interfaces.IStockPersistencia;
 import model.Articulo;
@@ -129,6 +130,17 @@ public class StockControlador implements IStock {
 		}
 		return pedidoGenerado;
 
+	}
+	/**
+	 * 
+	 * @author Santiago
+	 */
+	public void realizarPedido(Pedido p){
+		IServicio is = FabricaServicios.getIServicios();
+		is.realizarPedido(p);
+		IStockPersistencia isp = FabricaPersistencia.getStockPersistencia();
+		isp.persistirPedido(p);
+		
 	}
 	
 	
