@@ -4,6 +4,7 @@ package model;
 
 import java.util.List;
 
+import controladores.Excepciones;
 import interfaces.IPredictor;
 import interfaces.ISeleccionador;
 
@@ -30,9 +31,9 @@ public class GeneradorPedido {
 	/**
 	 * @author Guille
 	 * @return Pedido con todas las lineaPedido generado con el ISeleccionador y IPredictor
-	 * @throws Exception
+	 * @throws Excepciones
 	 */
-	public Pedido generar() throws Exception{
+	public Pedido generar() throws Excepciones{
 		
 		Pedido pedido = new Pedido();
 		List<Long> articulos = this.seleccionador.getIDArticulos();

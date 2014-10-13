@@ -5,8 +5,11 @@ import java.util.List;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
 import model.Articulo;
+import model.LineaPedido;
+import model.Pedido;
 import model.Proveedor;
 import interfaces.ISistema;
+import interfaces.IStock;
 
 public class SistemaControlador implements ISistema {
 
@@ -33,4 +36,11 @@ public class SistemaControlador implements ISistema {
 		return FabricaLogica.getInstanciaProveedores().obtenerProveedores();
 	}
 
+	
+	@Override
+	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior() throws Excepciones {
+		// TODO chequeo permisos del usuario
+//		return FabricaLogica.getIStock().generarPedidoEnBaseAPedidoAnterior();
+		return null;
+	}
 }

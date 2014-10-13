@@ -38,7 +38,7 @@ public class StockControlador implements IStock {
 
 	}
 
-	public Articulo obtenerArticulo(String id){
+	public Articulo obtenerArticulo(Long id){
 
 		return null;
 
@@ -89,15 +89,19 @@ public class StockControlador implements IStock {
 		
 		GeneradorPedido gr = new GeneradorPedido(seleccionarDesde, predecirDesde);
 		
-		Pedido pedidoGenerado = null;
+		Pedido pedidoGenerado = gr.generar();
 		
-		try {
-			pedidoGenerado = gr.generar();
-		} catch (Exception e) {
-			// TODO: handle exception
-			//Generar las excepciones personalizadas para "mostrar" en pantalla
+		for (LineaPedido lPedido : pedidoGenerado.getLineas()) {
+			
+			DTLineaPedido dtlPedido = new DTLineaPedido();
+			
+			 Articulo articulo = this.obtenerArticulo(lPedido.getIdArticulo());
+			 dtlPedido.setCantidad(lPedido.getCantidad());
+			 dtlPedido.setIdArticulo(lPedido.getIdArticulo());
+			 dtlPedido.setNombreArticulo(articulo.getDescripcion());
+			 
 		}
-		
-		return pedidoGenerado;
+		pedidoGenerado.getLineas();
+		return null;
 	}
 }

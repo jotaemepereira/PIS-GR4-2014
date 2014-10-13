@@ -6,10 +6,9 @@ import java.util.List;
 
 import interfaces.IFacturacionPersistencia;
 import interfaces.ISeleccionador;
-import model.Articulo;
 
 /**  
-* @author Santiago
+* @author Guille
 *
 */
 
@@ -30,15 +29,7 @@ public class SeleccionarArticulosDesde implements ISeleccionador  {
 	public List <Long> getIDArticulos() throws Excepciones{
 		
 		IFacturacionPersistencia pf = FabricaPersistencia.getInstanciaFacturacionPersistencia();
-		List<Long> articulosID = null;
-		try {
-			
-			articulosID= pf.getIdArticulosEnPeriodo(fechaDesde, new Date(Calendar.getInstance().getTimeInMillis()));
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		
-		return articulosID;
+		return pf.getIdArticulosEnPeriodo(fechaDesde, new Date(Calendar.getInstance().getTimeInMillis()));
 	}
 	
 }

@@ -2,7 +2,7 @@ package datatypes;
 
 public class DTLineaPedido {
 	private int numeroArticulo;
-	private int idArticulo;
+	private Long idArticulo;
 	private int cantidad;
 	private String nombreArticulo;
 	private int precioUnitario;
@@ -16,10 +16,13 @@ public class DTLineaPedido {
 	public void setNumeroArticulo(int numeroArticulo) {
 		this.numeroArticulo = numeroArticulo;
 	}
-	public int getIdArticulo() {
+	public Long getIdArticulo() {
 		return idArticulo;
 	}
 	public void setIdArticulo(int idArticulo) {
+		this.idArticulo = new Long(idArticulo);
+	}
+	public void setIdArticulo(Long idArticulo) {
 		this.idArticulo = idArticulo;
 	}
 	public int getCantidad() {

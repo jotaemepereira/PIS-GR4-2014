@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import controladores.Excepciones;
 import model.Cliente;
 import model.Enumerados;
 import model.LineaVenta;
@@ -238,30 +239,43 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	 * @author Guille
 	 */
 	@Override
-	public List<Long> getIdArticulosEnPeriodo(Date desde, Date hasta) throws Exception{
+	public List<Long> getIdArticulosEnPeriodo(Date desde, Date hasta) throws Excepciones{
 		
-		Connection con = Conexion.getConnection();
+		Connection con = null;
 		PreparedStatement stmt = null;
 		List<Long> articulos = new ArrayList<Long>();
+		
 		try {
-			String sql = "SELECT distinct product_id FROM sale_details sd "
-								+ "WHERE sd.sale_id in " + "(SELECT sale_id FROM sales s" 
+			
+			con = Conexion.getConnection();
+			String sql = "SELECT distinct product_id " + 
+							"FROM sale_details sd " +
+								"INNER JOIN products_suppliers ps ON sd.product_id = ps.product_id " +
+								"INNER JOIN products p ON p.product_id = sd.product_id " +
+								  "WHERE ps.supplier_id = ? AND " +
+								  		"p.status = ? AND " +
+								  		"sd.sale_id in " + "(SELECT sale_id FROM sales s" 
 															+ "WHERE s.sale_status = ? "
-																+ "and s.sale_date BETWEEN ? and ?);";
+																+ "AND s.sale_date BETWEEN ? AND ?);";
 			stmt = con.prepareStatement(sql);
-			stmt.setString(1, "'" + Enumerados.EstadoVenta.FACTURADA + "'");
-			stmt.setString(2, desde.toString());
-			stmt.setString(3, hasta.toString());
+			stmt.setInt(1, 1); //Hay que ver cual es el bien el identificador para hardcodearlo
+			stmt.setBoolean(2, true);
+			stmt.setString(3, "'" + Enumerados.EstadoVenta.FACTURADA + "'");
+			stmt.setString(4, desde.toString());
+			stmt.setString(5, hasta.toString());
 			ResultSet rs = stmt.executeQuery();
+			
+			stmt.close();
+			con.close();
 			
 			while (rs.next()) {
 				articulos.add(new Long(rs.getLong("product_id"))); 
 			}
 		} catch (Exception e) {
-			throw e;
-		} finally {
-			stmt.close();
-			con.close();
+			
+			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+			System.exit(0);
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		return articulos;
 	}
@@ -269,35 +283,39 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	/**
 	 * @author Guille
 	 */
-	
 	@Override
-	public int cantidadVendidaEnPeriodo(Long idArticulo, Date desde, Date hasta) throws Exception {
+	public int cantidadVendidaEnPeriodo(Long idArticulo, Date desde, Date hasta) throws Excepciones {
 		
-		Connection con = Conexion.getConnection();
-		PreparedStatement stmt = null;
 		int cantidadVendida = 0;
 		try {
+			
+			Connection con = Conexion.getConnection();
+			
 			String sql = "SELECT sum(quantity) as total" + 
 							"FROM sales s INNER JOIN sale_details sd " + 
 									"ON s.sale_id = sd.sale_id" +
 							"WHERE sd.product_id = ? and s.sale_status = ? and s.sale_date BETWEEN ? and ?" +
 							"GROUP BY product_id";
-			stmt = con.prepareStatement(sql);
+			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, idArticulo.longValue());
 			stmt.setString(2, "'" + Enumerados.EstadoVenta.FACTURADA + "'");
 			stmt.setString(3, desde.toString());
 			stmt.setString(4, hasta.toString());
 			ResultSet rs = stmt.executeQuery();
 			
+			stmt.close();
+			con.close();
+			
 			while (rs.next()) {
 				cantidadVendida = rs.getInt("total"); 
 			}
 		} catch (Exception e) {
-			throw e;
-		} finally {
-			stmt.close();
-			con.close();
+			
+			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+			System.exit(0);
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
+		
 		return cantidadVendida;
 	}
 
