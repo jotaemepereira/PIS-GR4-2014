@@ -18,7 +18,7 @@ import interfaces.IStock;
 
 public class SistemaControlador implements ISistema {
 	
-	public ArrayList<Usuario> users;
+	public Usuario user;
 
 	@Override
 	public void altaProveedor(Proveedor proveedor) throws Excepciones{
