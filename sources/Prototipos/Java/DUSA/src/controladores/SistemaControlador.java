@@ -1,5 +1,6 @@
 package controladores;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,11 +11,14 @@ import model.Articulo;
 import model.Droga;
 import model.LineaPedido;
 import model.Pedido;
+import model.Usuario;
 import model.Proveedor;
 import interfaces.ISistema;
 import interfaces.IStock;
 
 public class SistemaControlador implements ISistema {
+	
+	public ArrayList<Usuario> users;
 
 	@Override
 	public void altaProveedor(Proveedor proveedor) throws Excepciones{
@@ -63,5 +67,13 @@ public class SistemaControlador implements ISistema {
 	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
 		// TODO chequeo permisos del usuario
 		return FabricaLogica.getIStock().obtenerAccionesTerapeuticas();
+	}
+	@Override
+	public void iniciarSesion(long idUsuario, String contrasenia){
+		
+	}
+	@Override
+	public void cerrarSesion(long idUsuario, String contrasenia){
+		
 	}
 }

@@ -70,4 +70,10 @@ public interface ISistema {
 	 * @throws Excepciones
 	 */
 	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior() throws Excepciones;
+	/**
+	 * @author santiago
+	 */
+	 public void iniciarSesion(long idUsuario, String contrasenia );
+	 public void cerrarSesion(long idUsuario, String contrasenia);
+	 
 }
