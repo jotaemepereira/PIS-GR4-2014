@@ -40,13 +40,16 @@
 											columns="1" layout="grid" rows="20" id="GridVentas2">
 											<p:panel style="text-align:center">
 												<h:panelGrid columns="1" style="width:100%">
+													<h:outputText value=" #{venta2.nombre}" />
 													<h:outputText value=" #{venta2.presentacion}" />
-													<h:outputText value=" #{venta2.precioVenta}" />
 													<h:outputText value=" #{venta2.precioVenta}" />
 													<p:inputText id="cantidad" value="#{venta2.cantidad}"
 														style="width: 75px;">
-														<p:ajax event="change" update="GridVentas2 :form1:total"
+														<p:ajax listener="#{ventaBean.strTotal()}" update="GridVentas2 :form1:total"
 															process="@this" />
+														<p:ajax listener="#{ventaBean.strSubTotal()}" update="GridVentas2 :form1:subTotal"
+															process="@this" />
+
 													</p:inputText>
 												</h:panelGrid>
 											</p:panel>
@@ -66,7 +69,8 @@
 												<tr>
 													<td style="font-weight: bold;">Total</td>
 													<td><h:outputText id="total"
-															value=" #{ventaBean.strTotal()}"></h:outputText></td>
+															value=" #{ventaBean.strTotal()}">
+														</h:outputText></td>
 												</tr>
 											</table>
 											<div class="clearBoth"></div>
@@ -115,9 +119,18 @@
 														actionListener="#{ventaBean.agregarLineaVentaPerdida(venta)}"
 														process="@this" styleClass="ui-priority-primary" />
 
+
 													<h:outputText value=" #{venta.principioActivo}" />
 													<h:outputText value=" #{venta.descripcion}" />
-													<h:outputText value="(% #{venta.descuento1})" />
+													<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+        												<p:outputLabel for="descuento" value="descuentos:" />
+														<p:selectOneRadio id="descuento" value="#{ventaBean.descuento}"
+															layout="grid" columns="3">
+															<f:selectItems value="#{ventaBean.descuentos}" var="d"
+																itemLabel="#{descuento}" itemValue="#{descuento}"  />
+															
+														</p:selectOneRadio>
+													</h:panelGrid>
 													<p:outputPanel
 														visible="#{venta.isRecetaNaranja}"
 														style="width: 100px; padding: 0; margin: 0;">
@@ -129,11 +142,12 @@
 													</p:outputPanel>
 													<h:outputText value="stock:#{venta.stock}" />
 
+
 													<h:outputText value=" #{venta.concentracion}" />
 													<h:outputText value=" #{venta.laboratorio}" />
-													<p:inputText id="descuento" value="#{venta.descuento}"
-														style="width: 40px;">
-													</p:inputText>
+													<h:outputText id="descuentoPrecio"
+															value=" #{ventaBean.strDescuento}">
+													</h:outputText>
 													<p:outputPanel
 														visible="#{venta.isRecetaNaranja}"
 														style="width: 100px; padding: 0; margin: 0;">

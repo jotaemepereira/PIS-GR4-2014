@@ -2,7 +2,6 @@ package beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,15 +34,28 @@ public class StockBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	private Articulo articulo = new Articulo();
+	
+	//Proveedores
 	private int proveedor;
-	private Map<Integer,DTProveedor> proveedores = new HashMap<Integer,DTProveedor>();
 	private long codigoIdentificador;
+	private Map<Integer,DTProveedor> proveedores;	
+	private List<DTProveedor> listaProveedores;
+	private List<DTProveedor> proveedoresSeleccionados = new ArrayList<DTProveedor>();
+	
+	//Presentaciones	
 	private Presentacion presentacion = new Presentacion();
 	private List<Presentacion> presentaciones = new ArrayList<Presentacion>();
-	private Droga droga = new Droga();
-	private List<Droga> drogas = new ArrayList<Droga>();
-	private AccionTer accionTer = new AccionTer();
-	private List<AccionTer> accionesTer = new ArrayList<AccionTer>();
+	
+	//Drogas
+	private long[] drogasSeleccionadas;
+	private Map<Long,Droga> drogas;
+	private List<Droga> listaDrogas;
+	
+	//Acciones Terapeuticas
+	private long[] accionesTerSeleccionadas;
+	private Map<Long,AccionTer> accionesTer;
+	private List<AccionTer> listaAccionesTer;
+	
 	private List<DTFormasVenta> formasVenta = new ArrayList<DTFormasVenta>();
 	private List<DTTipoArticulo> tiposArticulo = new ArrayList<DTTipoArticulo>();
 	private int[] tiposIVA;
@@ -54,8 +66,7 @@ public class StockBean implements Serializable{
 	private Boolean disablePrediccionDePedido = false;
 	private String busqueda = "";
 	private List<Articulo> resBusqueda;
-	private List<DTProveedor> listaProveedores;
-	private List<DTProveedor> proveedoresSeleccionados = new ArrayList<DTProveedor>();
+	
 	
 	public List<DTLineaPedido> getPedidos() {
 		return pedidos;
@@ -93,29 +104,41 @@ public class StockBean implements Serializable{
 	public void setPresentaciones(List<Presentacion> presentaciones) {
 		this.presentaciones = presentaciones;
 	}
-	public Droga getDroga() {
-		return droga;
+	public long[] getDrogasSeleccionadas() {
+		return drogasSeleccionadas;
 	}
-	public void setDroga(Droga droga) {
-		this.droga = droga;
+	public void setDrogasSeleccionadas(long[] drogasSeleccionadas) {
+		this.drogasSeleccionadas = drogasSeleccionadas;
 	}
-	public List<Droga> getDrogas() {
+	public Map<Long, Droga> getDrogas() {
 		return drogas;
 	}
-	public void setDrogas(List<Droga> drogas) {
+	public void setDrogas(Map<Long, Droga> drogas) {
 		this.drogas = drogas;
 	}
-	public AccionTer getAccionTer() {
-		return accionTer;
+	public List<Droga> getListaDrogas() {
+		return listaDrogas;
 	}
-	public void setAccionTer(AccionTer accionTer) {
-		this.accionTer = accionTer;
+	public void setListaDrogas(List<Droga> listaDrogas) {
+		this.listaDrogas = listaDrogas;
 	}
-	public List<AccionTer> getAccionesTer() {
+	public long[] getAccionesTerSeleccionadas() {
+		return accionesTerSeleccionadas;
+	}
+	public void setAccionesTerSeleccionadas(long[] accionesTerSeleccionadas) {
+		this.accionesTerSeleccionadas = accionesTerSeleccionadas;
+	}
+	public Map<Long, AccionTer> getAccionesTer() {
 		return accionesTer;
 	}
-	public void setAccionesTer(List<AccionTer> accionesTer) {
+	public void setAccionesTer(Map<Long, AccionTer> accionesTer) {
 		this.accionesTer = accionesTer;
+	}
+	public List<AccionTer> getListaAccionesTer() {
+		return listaAccionesTer;
+	}
+	public void setListaAccionesTer(List<AccionTer> listaAccionesTer) {
+		this.listaAccionesTer = listaAccionesTer;
 	}
 	public List<DTFormasVenta> getFormasVenta() {
 		return formasVenta;
@@ -439,15 +462,52 @@ public class StockBean implements Serializable{
 	public StockBean(){
 		
 		//Cargo los proveedores de la base de datos
+		cargarProveedores();
+		
+		//Cargo las drogas de la base de datos
+		cargarDrogas();
+		
+		//Cargo las acciones terapéuticas de la base de datos
+		cargarAccionesTerapeuticas();
+		
+		//Cargo tipos de articulo para el combo
+		cargarTiposArticulo();
+		
+		//Cargo formas de venta para el combo
+		cargarFormasVenta();
+	}
+	
+	public void cargarProveedores(){
 		try {
 			this.proveedores = FabricaSistema.getISistema().obtenerProveedores();
-			this.setListaProveedores(new ArrayList<DTProveedor>(this.proveedores.values()));
+			this.listaProveedores = new ArrayList<DTProveedor>(this.proveedores.values());
 		} catch (Excepciones e) {
 			this.message = e.getMessage();
 			this.messageClass = "alert alert-danger";
 		}
-			
-		//Cargo tipos de articulo para el combo
+	}
+	
+	public void cargarDrogas(){
+		try{
+			this.drogas = FabricaSistema.getISistema().obtenerDrogas();
+			this.listaDrogas = new ArrayList<Droga>(this.drogas.values());
+		} catch (Excepciones e){
+			this.message = e.getMessage();
+			this.messageClass = "alert alert-danger";
+		}
+	}
+	
+	public void cargarAccionesTerapeuticas(){
+		try{
+			this.accionesTer = FabricaSistema.getISistema().obtenerAccionesTerapeuticas();
+			this.listaAccionesTer = new ArrayList<AccionTer>(this.accionesTer.values());
+		} catch (Excepciones e){
+			this.message = e.getMessage();
+			this.messageClass = "alert alert-danger";
+		}
+	}
+	
+	public void cargarTiposArticulo(){
 		DTTipoArticulo ta = new DTTipoArticulo();
 		ta.setTipoArticulo(model.Enumerados.tipoArticulo.MEDICAMENTO);
 		ta.setDescripcion("Medicamento");
@@ -460,8 +520,9 @@ public class StockBean implements Serializable{
 		ta.setTipoArticulo(model.Enumerados.tipoArticulo.OTROS);
 		ta.setDescripcion("Otros");
 		tiposArticulo.add(ta);
-		
-		//Cargo formas de venta para el combo
+	}
+	
+	public void cargarFormasVenta(){
 		DTFormasVenta fv = new DTFormasVenta();
 		fv.setFormaVenta(model.Enumerados.formasVenta.ventaLibre);
 		fv.setDescripcion("Venta libre");

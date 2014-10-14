@@ -1,15 +1,29 @@
 package interfaces;
 
 import java.util.List;
+import java.util.Map;
 
 import controladores.Excepciones;
+import model.AccionTer;
 import model.Articulo;
+import model.Droga;
 import model.Pedido;
 import datatypes.DTLineaPedido;
 import datatypes.DTProduct;
 
 public interface IStock {
 
+	/**
+	 * Da de alta un articulo en el sistema
+	 * 
+	 * @param articulo
+	 *            - Articulo
+	 * @throws Excepciones
+	 *             MENSAJE_ART_DUPLICADO (si ya existe un articulo con esa descripción)
+	 *             ERROR_SISTEMA (en caso de error a la hora de persistir en la base de datos)
+	 * @author Jmaguerre
+	 *      
+	 */
 	public void altaArticulo(Articulo articulo) throws Excepciones;
 
 	// public List<DTLineaPedido> pedidoPorVentas();//Deprecated
@@ -34,4 +48,16 @@ public interface IStock {
 	 * @author Victoria Diaz
 	 */
 	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones;
+
+	/**
+	 * @author Jmaguerre
+	 * @return Devuelve todas las drogas del sistema en un Map para un acceso rápido.
+	 */
+	public Map<Long, Droga> obtenerDrogas() throws Excepciones;
+
+	/**
+	 * @author Jmaguerre
+	 * @return Devuelve todas las acciones terapéuticas del sistema en un Map para un acceso rápido.
+	 */
+	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones;
 }
