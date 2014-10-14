@@ -179,32 +179,20 @@
 										<p:selectManyMenu id="presentaciones" value="#{stockBean.articulo.presentaciones}" required="false" 
 					                          var="p" filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
 								            <f:selectItems value="#{stockBean.presentaciones}" var="presentacion" itemLabel="#{presentacion.descripcion}" itemValue="#{presentacion.idPresentacion}" />
-								 
-								            <p:column>
-								                <h:outputText value="#{p.descripcion}" />
-								            </p:column>
 							        	</p:selectManyMenu>
 									</div>
 									<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 					       				<p:outputLabel for="drogas" value="Drogas:" />
-					       				<p:selectManyMenu id="drogas" value="#{stockBean.articulo.drogas}" required="false"
-					                          var="d" filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
-								            <f:selectItems value="#{stockBean.drogas}" var="droga" itemLabel="#{droga.descripcion}" itemValue="#{droga.idDroga}" />
-								 
-								            <p:column>
-								                <h:outputText value="#{d.descripcion}" />
-								            </p:column>
+					       				<p:selectManyMenu id="drogas" value="#{stockBean.drogasSeleccionadas}" required="false"
+					                          filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
+								            <f:selectItems value="#{stockBean.listaDrogas}" var="droga" itemLabel="#{droga.descripcion}" itemValue="#{droga.idDroga}" />
 							        	</p:selectManyMenu>
 									</div>
 									<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 						       			<p:outputLabel for="accionesTer" value="Acciones Terapéuticas:" />
-						       			<p:selectManyMenu id="accionesTer" value="#{stockBean.articulo.accionesTer}" required="false"
-						                          var="a" filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
-								            <f:selectItems value="#{stockBean.accionesTer}" var="accionTer" itemLabel="#{accionTer.descripcion}" itemValue="#{accionTer.idAccionTer}" />
-								 
-								            <p:column>
-								                <h:outputText value="#{a.descripcion}" />
-								            </p:column>
+						       			<p:selectManyMenu id="accionesTer" value="#{stockBean.accionesTerSeleccionadas}" required="false"
+						                          filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
+								            <f:selectItems value="#{stockBean.listaAccionesTer}" var="accionTer" itemLabel="#{accionTer.descripcion}" itemValue="#{accionTer.idAccionTer}" />
 								        </p:selectManyMenu>
 									</div>
 								</div>

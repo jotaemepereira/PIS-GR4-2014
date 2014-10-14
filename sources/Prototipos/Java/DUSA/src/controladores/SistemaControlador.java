@@ -5,7 +5,9 @@ import java.util.Map;
 
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
+import model.AccionTer;
 import model.Articulo;
+import model.Droga;
 import model.LineaPedido;
 import model.Pedido;
 import model.Proveedor;
@@ -49,5 +51,17 @@ public class SistemaControlador implements ISistema {
 		// TODO chequeo permisos del usuario
 //		return FabricaLogica.getIStock().generarPedidoEnBaseAPedidoAnterior();
 		return null;
+	}
+
+	@Override
+	public Map<Long, Droga> obtenerDrogas() throws Excepciones {
+		// TODO chequeo permisos del usuario
+		return FabricaLogica.getIStock().obtenerDrogas();
+	}
+
+	@Override
+	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
+		// TODO chequeo permisos del usuario
+		return FabricaLogica.getIStock().obtenerAccionesTerapeuticas();
 	}
 }

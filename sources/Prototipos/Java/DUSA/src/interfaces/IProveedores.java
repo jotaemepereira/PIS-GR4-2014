@@ -24,6 +24,7 @@ public interface IProveedores {
 	public void altaProveedor(Proveedor proveedor) throws Excepciones;
 	
 	/**
+	 * Retorna todos los proveedores activos existentes en el sistema.
 	 * 
 	 * @return Devuelve un Map de DTProveedor con todos los proveedores del sistema
 	 * 

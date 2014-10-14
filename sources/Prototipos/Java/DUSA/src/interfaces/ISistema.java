@@ -21,7 +21,30 @@ public interface ISistema {
 
 	public void altaArticulo(Articulo articulo) throws Excepciones;
 
+	
+	/**
+	 * Retorna todos los proveedores activos existentes en el sistema.
+	 * 
+	 * @return Devuelve un Map de DTProveedor con todos los proveedores del sistema
+	 * 
+	 * @throws Excepciones
+	 *             - ERROR_SISTEMA (en caso que suceda algún error a la hora de
+	 *             conectarse o comunicarse con la base)
+	 * @author José Aguerre
+	 */
 	public Map<Integer, DTProveedor> obtenerProveedores() throws Excepciones;
+	
+	/**
+	 * @author Jmaguerre
+	 * @return Devuelve todas las drogas del sistema en un Map para un acceso rápido.
+	 */
+	public Map<Long, Droga> obtenerDrogas() throws Excepciones;
+	
+	/**
+	 * @author Jmaguerre
+	 * @return Devuelve todas las acciones terapéuticas del sistema en un Map para un acceso rápido.
+	 */
+	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones;
 
 	/**
 	 * retorna los articulos que coincidan con el string ingresado

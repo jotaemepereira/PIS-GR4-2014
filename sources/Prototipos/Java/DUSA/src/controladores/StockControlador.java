@@ -5,7 +5,9 @@ import interfaces.ISeleccionador;
 import interfaces.IServicio;
 import interfaces.IStock;
 import interfaces.IStockPersistencia;
+import model.AccionTer;
 import model.Articulo;
+import model.Droga;
 import model.GeneradorPedido;
 import model.LineaPedido;
 import model.Pedido;
@@ -13,6 +15,7 @@ import model.Pedido;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import persistencia.PStockControlador;
 import datatypes.DTLineaPedido;
@@ -141,6 +144,16 @@ public class StockControlador implements IStock {
 		IStockPersistencia isp = FabricaPersistencia.getStockPersistencia();
 		isp.persistirPedido(p);
 		
+	}
+
+	@Override
+	public Map<Long, Droga> obtenerDrogas() throws Excepciones {
+		return FabricaPersistencia.getStockPersistencia().obtenerDrogas();
+	}
+
+	@Override
+	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
+		return FabricaPersistencia.getStockPersistencia().obtenerAccionesTerapeuticas();
 	}
 	
 	

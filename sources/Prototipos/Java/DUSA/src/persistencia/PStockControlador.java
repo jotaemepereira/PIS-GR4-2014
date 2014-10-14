@@ -8,8 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.NamingException;
 
@@ -24,7 +26,9 @@ import org.primefaces.json.JSONObject;
 
 import controladores.Excepciones;
 import datatypes.DTProveedor;
+import model.AccionTer;
 import model.Articulo;
+import model.Droga;
 import model.Enumerados;
 import model.LineaPedido;
 import model.Pedido;
@@ -363,6 +367,65 @@ public class PStockControlador implements IStockPersistencia {
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 		return cant > 0;
+	}
+
+
+	@Override
+	public Map<Long, Droga> obtenerDrogas() throws Excepciones {
+		Map<Long,Droga> ret = null;
+		PreparedStatement stmt = null;
+		String query = "SELECT d.drug_id, d.description " +
+						"FROM DRUGS d ";
+		
+		try {
+			Connection c = Conexion.getConnection();
+			c.setAutoCommit(false);
+			stmt = c.prepareStatement(query);
+			stmt.setFetchSize(100);
+			ResultSet rs = stmt.executeQuery();
+			ret = new HashMap<Long,Droga>();
+			while(rs.next()){
+				Droga nuevo = new Droga();
+				nuevo.setIdDroga(rs.getLong("drug_id"));
+				nuevo.setDescripcion(rs.getString("description"));
+				ret.put(nuevo.getIdDroga(), nuevo);
+			}
+			rs.close();
+			stmt.close();
+		} catch (Exception e){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		return ret;	
+	}
+
+
+	@Override
+	public Map<Long, AccionTer> obtenerAccionesTerapeuticas()
+			throws Excepciones {
+		Map<Long,AccionTer> ret = null;
+		PreparedStatement stmt = null;
+		String query = "SELECT ta.therapeutic_action_id, ta.description " +
+						"FROM THERAPEUTIC_ACTIONS ta ";
+		
+		try {
+			Connection c = Conexion.getConnection();
+			c.setAutoCommit(false);
+			stmt = c.prepareStatement(query);
+			stmt.setFetchSize(100);
+			ResultSet rs = stmt.executeQuery();
+			ret = new HashMap<Long,AccionTer>();
+			while(rs.next()){
+				AccionTer nuevo = new AccionTer();
+				nuevo.setIdAccionTer(rs.getLong("therapeutic_action_id"));
+				nuevo.setDescripcion(rs.getString("description"));
+				ret.put(nuevo.getIdAccionTer(), nuevo);
+			}
+			rs.close();
+			stmt.close();
+		} catch (Exception e){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		return ret;	
 	}
 
 }
