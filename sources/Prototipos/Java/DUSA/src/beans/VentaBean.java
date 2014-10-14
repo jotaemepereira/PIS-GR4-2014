@@ -38,7 +38,8 @@ public class VentaBean implements Serializable {
 	private List<DTVenta> lineasVentaPerdidas = new ArrayList<DTVenta>();
 	private List<DTVenta> ventasSeleccionadas = new ArrayList<DTVenta>();
 	private List<Integer> descuentos = new ArrayList<Integer>();
-	private List<Integer> descuentosseleccionados = new ArrayList<Integer>();
+	private Integer descuento = 0;
+	private String strDescuento;
 
 	public VentaBean() {
 		// agregarLineasVenta();
@@ -58,9 +59,33 @@ public class VentaBean implements Serializable {
 			if (!(descripcionBusqueda.isEmpty())
 					&& v.getDescripcion().contains(descripcionBusqueda)) {
 				lineasVenta.add(v);
+				strDescuentoPrecio(v); // ****estoy llamando a esta funcion para calcular los precios con descuentos hay que ver bien lo de los descuentos y arreglarla ****
 			}
 		}
+		//llamo al inicializar los descuentos q puede seleccionar el vendedor
+		iniDescuentos();
 
+	}
+	
+	public void iniDescuentos(){
+		// inicializo los descuentos ya fijos q puede seleccionar el vendedor:
+		descuentos = new ArrayList<Integer>();
+		int x = 5;
+		while (x <= 15) {
+			descuentos.add(x);
+			x = x + 5;
+		}
+	}
+	
+	//para calcular el precio con el descuento a poner cuando lista los articulos en la busqueda, falta terminar
+	public String strDescuentoPrecio(DTVenta v){
+		
+		BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento())).divide(new BigDecimal(100));
+		
+		String res= venta.getPrecioVenta().subtract(x).toString()+"("+"%"+descuento.toString()+")";
+		
+		setStrDescuento(res);
+		return res;
 	}
 	
 	public void agregarLineaVentaPerdida(DTVenta vp){
@@ -71,11 +96,16 @@ public class VentaBean implements Serializable {
 
 
 	public void agregarLineaVenta(DTVenta v){
-		BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento()));
+		v.setDescuento(new BigDecimal(descuento));
+		
+		/**BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento()));
 		BigDecimal a = new BigDecimal(100);
 		v.setPrecioVenta(v.getPrecioVenta().subtract(x.divide(a)));
+		**/
+		
 		v.setCantidad(1);
 		lineasVenta2.add(v);
+		lineasVenta.remove(v);
 	}
 	
 	// este agregar es para agregar los productos buscados a la venta
@@ -100,7 +130,11 @@ public class VentaBean implements Serializable {
 		Iterator<DTVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
 			DTVenta v = it.next();
-			total = total.add(v.getPrecioVenta().multiply(
+			//calculo lo que tengo que restarle al precio segun el descuento seleccionado:
+			BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento())).divide(new BigDecimal(100));
+			
+			//sumo los totales restandole los descuentos correspondientes a cada uno y los multiplico por las cantidades
+			total = total.add((v.getPrecioVenta().subtract(x)).multiply(
 					new BigDecimal(v.getCantidad())));
 		}
 		return total.toString();
@@ -111,7 +145,8 @@ public class VentaBean implements Serializable {
 		Iterator<DTVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
 			DTVenta v = it.next();
-			total = total.add(v.getPrecioVenta());
+			total = total.add(v.getPrecioVenta().multiply(
+					new BigDecimal(v.getCantidad())));
 		}
 		return total.toString();
 	}
@@ -230,12 +265,20 @@ public class VentaBean implements Serializable {
 		this.descuentos = descuentos;
 	}
 
-	public List<Integer> getDescuentosseleccionados() {
-		return descuentosseleccionados;
+	public Integer getDescuento() {
+		return descuento;
 	}
 
-	public void setDescuentosseleccionados(List<Integer> descuentosseleccionados) {
-		this.descuentosseleccionados = descuentosseleccionados;
+	public void setDescuento(Integer descuento) {
+		this.descuento = descuento;
+	}
+
+	public String getStrDescuento() {
+		return strDescuento;
+	}
+
+	public void setStrDescuento(String strDescuento) {
+		this.strDescuento = strDescuento;
 	}
 
 
