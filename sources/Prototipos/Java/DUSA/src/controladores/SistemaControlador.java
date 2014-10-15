@@ -53,8 +53,8 @@ public class SistemaControlador implements ISistema {
 	@Override
 	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior() throws Excepciones {
 		// TODO chequeo permisos del usuario
-//		return FabricaLogica.getIStock().generarPedidoEnBaseAPedidoAnterior();
-		return null;
+		return FabricaLogica.getIStock().generarPedidoEnBaseAPedidoAnterior();
+//		return null;
 	}
 
 	@Override

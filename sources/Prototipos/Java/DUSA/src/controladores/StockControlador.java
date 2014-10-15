@@ -20,6 +20,7 @@ import java.util.Map;
 import persistencia.PStockControlador;
 import datatypes.DTLineaPedido;
 import datatypes.DTProduct;
+import datatypes.DTProveedor;
 import model.Articulo;
 import controladores.FabricaPersistencia;
 
@@ -48,35 +49,6 @@ public class StockControlador implements IStock {
 
 	}
 	
-	
-//Deprecated
-//	public List<DTLineaPedido> pedidoPorVentas() {
-//		IStockPersistencia isp = FabricaPersistencia.getIStockPersistencia();
-//		
-//		Date fechaPedido;
-//		List<LineaPedido> articulos = new ArrayList<LineaPedido>();
-//		List<DTLineaPedido> ret = new ArrayList<DTLineaPedido>();
-//
-//		try {
-//			fechaPedido = isp.getUltimoPedido();
-//			articulos = isp.obtenerArticulosDesde(fechaPedido); 
-//		}
-//		catch (Exception e) {
-//			//Que hago con las exceptions?
-//		}
-//		
-//		if (!articulos.isEmpty())
-//			for (LineaPedido p : articulos) {
-//				DTLineaPedido dt = new DTLineaPedido();
-//				dt.setCantidad(p.getCantidad());
-//				dt.setIdArticulo(p.getIdArticulo());
-//				dt.setNumeroArticulo(p.getNumeroArticulo());
-//				ret.add(dt);
-//			}
-//		return ret;
-//		
-//	}
-	
 	public void generarPedido(Pedido p){
 		
 	}
@@ -86,7 +58,7 @@ public class StockControlador implements IStock {
 	 * @author Guille
 	 */
 	@Override
-	public Pedido generarPedidoEnBaseAPedidoAnterior() throws Excepciones {
+	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior() throws Excepciones {
 		
 		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
 		Date ultimoPedido = sp.obtenerFechaUltimoPedido();
@@ -96,6 +68,8 @@ public class StockControlador implements IStock {
 		GeneradorPedido gr = new GeneradorPedido(seleccionarDesde, predecirDesde);
 		
 		Pedido pedidoGenerado = gr.generar();
+		
+		List<DTLineaPedido> lPedidos = new ArrayList<DTLineaPedido>();
 		
 		for (LineaPedido lPedido : pedidoGenerado.getLineas()) {
 			
@@ -108,10 +82,14 @@ public class StockControlador implements IStock {
 			 dtlPedido.setStockMinimo(articulo.getStockMinimo());
 			 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 			 dtlPedido.setCantidad(lPedido.getCantidad());
+			// TODO: hardcodear id de DUSA
+			 DTProveedor dtProveedor = articulo.getProveedores().get(0);
+			 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
 			 
+			 lPedidos.add(dtlPedido);
 		}
-		pedidoGenerado.getLineas();
-		return null;
+		
+		return lPedidos;
 	}
 	
 	@Override

@@ -32,11 +32,13 @@ public interface IStock {
 	public void generarPedido(Pedido p);
 
 	/**
+	 * Genera un pedido de artículos, de D.U.S.A. La cantidad de cada artículo es igual a la cantidad vendida, del artículo, desde el pedido anterior.
+	 * 
 	 * @author Guille
-	 * @return Genera un pedido de artículos, de D.U.S.A. La cantidad de cada artículo es igual a la cantidad vendida, del artículo, desde el pedido anterior. 
+	 * @return Una lista de dataType listaPedido con la informacion de articulos y cantidades del pedido generado.    
 	 * @throws Excepciones
 	 */
-	public Pedido generarPedidoEnBaseAPedidoAnterior() throws Excepciones;
+	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior() throws Excepciones;
 
 	/**
 	 * retorna los articulos que coincidan con el string ingresado

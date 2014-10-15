@@ -3,7 +3,7 @@ package datatypes;
 import java.math.BigDecimal;
 
 public class DTLineaPedido {
-	private int numeroArticulo;
+	private Long numeroArticulo;
 	private Long idArticulo;
 	private int cantidad;
 	private String descripcionArticulo;
@@ -12,11 +12,14 @@ public class DTLineaPedido {
 	private Long stockMinimo;
 	private BigDecimal subtotal;
 	
-	public int getNumeroArticulo() {
+	public Long getNumeroArticulo() {
 		return numeroArticulo;
 	}
-	public void setNumeroArticulo(int numeroArticulo) {
+	public void setNumeroArticulo(Long numeroArticulo) {
 		this.numeroArticulo = numeroArticulo;
+	}
+	public void setNumeroArticulo(int numeroArticulo) {
+		this.numeroArticulo = new Long(numeroArticulo);
 	}
 	public Long getIdArticulo() {
 		return idArticulo;
