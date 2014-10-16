@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import persistencia.PStockControlador;
+import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTProduct;
 import model.Articulo;
@@ -115,7 +116,7 @@ public class StockControlador implements IStock {
 	}
 	
 	@Override
-	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones{
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones{
 		return FabricaPersistencia.getStockPersistencia().buscarArticulos(busqueda);
 	}
 

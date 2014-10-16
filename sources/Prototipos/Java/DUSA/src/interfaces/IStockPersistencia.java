@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import controladores.Excepciones;
+import datatypes.DTBusquedaArticulo;
 import datatypes.DTProveedor;
 import model.AccionTer;
 import model.Articulo;
@@ -22,7 +23,7 @@ public interface IStockPersistencia {
 	public Date obtenerFechaUltimoPedido() throws Excepciones;
 	public void persistirPedido(Pedido p);
 	public boolean existeArticulo(String descripcion) throws Excepciones;
-	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones;
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones;
 	public void fullImportSolr() throws Excepciones;
 	public void deltaImportSolr() throws Excepciones;
 	public int getStock(long idArticulo) throws Excepciones;

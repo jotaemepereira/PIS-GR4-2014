@@ -23,6 +23,7 @@ import model.AccionTer;
 import model.Articulo;
 import model.Droga;
 import model.Presentacion;
+import datatypes.DTBusquedaArticulo;
 import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
@@ -64,8 +65,10 @@ public class StockBean implements Serializable{
 	private String messageClass;
 	private Boolean disableDesdeUltimoPedido = false;
 	private Boolean disablePrediccionDePedido = false;
+	
+	//Busqueda de artículos
 	private String busqueda = "";
-	private List<Articulo> resBusqueda;
+	private List<DTBusquedaArticulo> resBusqueda = new ArrayList<DTBusquedaArticulo>();
 	
 	
 	public List<DTLineaPedido> getPedidos() {
@@ -214,13 +217,13 @@ public class StockBean implements Serializable{
 	/**
 	 * @return the resBusqueda
 	 */
-	public List<Articulo> getResBusqueda() {
+	public List<DTBusquedaArticulo> getResBusqueda() {
 		return resBusqueda;
 	}
 	/**
 	 * @param resBusqueda the resBusqueda to set
 	 */
-	public void setResBusqueda(List<Articulo> resBusqueda) {
+	public void setResBusqueda(List<DTBusquedaArticulo> resBusqueda) {
 		this.resBusqueda = resBusqueda;
 	}
 	
@@ -542,8 +545,10 @@ public class StockBean implements Serializable{
 	}
 	
 	public void buscarArticulos(){
+		resBusqueda = new ArrayList<DTBusquedaArticulo>();
 		try {
 			resBusqueda = FabricaSistema.getISistema().buscarArticulos(busqueda);
+			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -36,6 +36,7 @@
 	<field name="NOMLAB" type="text_es_fuzzy" indexed="true" stored="true" required="true" multiValued="false" /
 	<field name="autocompletar" type="text_es_fuzzy" indexed="true" stored="true" required="true" multiValued="false" /> >-->
 	<field name="CRITERIO_INTERNO" type="string_ci" indexed="true" stored="true" required="false" multiValued="false" />
+	<field name="DROGA" type="string_ci" indexed="true" stored="true" required="false" multiValued="true" />
 <!-- 
 		[DUSA-FIN]
 	-->

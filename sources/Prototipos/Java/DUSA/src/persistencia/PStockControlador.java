@@ -25,6 +25,7 @@ import org.apache.solr.common.SolrDocumentList;
 import org.primefaces.json.JSONObject;
 
 import controladores.Excepciones;
+import datatypes.DTBusquedaArticulo;
 import datatypes.DTProveedor;
 import model.AccionTer;
 import model.Articulo;
@@ -185,8 +186,8 @@ public class PStockControlador implements IStockPersistencia {
 
 	
 	@Override
-	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones{
-		List<Articulo> listaArticulos = new ArrayList<Articulo>();
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones{
+		List<DTBusquedaArticulo> listaArticulos = new ArrayList<DTBusquedaArticulo>();
 		
 		String urlString = "http://localhost:8080/solr";
 		SolrServer solr = new HttpSolrServer(urlString);
@@ -198,9 +199,10 @@ public class PStockControlador implements IStockPersistencia {
 							" KEY3:" + regexpBusqueda + 
 							" CRITERIO_INTERNO:" + regexpBusqueda + 
 							" DESCRIPTION:" + regexpBusqueda + 
-							" BARCODE:" + regexpBusqueda);
+							" BARCODE:" + regexpBusqueda +
+							" DROGA: " + regexpBusqueda);
 		parameters.set("wt", "json");
-		parameters.set("fl", "DESCRIPTION id");
+		parameters.set("fl", "DESCRIPTION id BARCODE DROGA");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
@@ -211,9 +213,19 @@ public class PStockControlador implements IStockPersistencia {
 				
 				SolrDocument item = response.get(i);
 				
-				Articulo articulo = new Articulo();
-				articulo.setDescripcion(item.getFieldValue("DESCRIPTION").toString());
+				DTBusquedaArticulo articulo = new DTBusquedaArticulo();
 				articulo.setIdArticulo(Integer.parseInt(item.getFieldValue("id").toString()));
+				articulo.setDescripcion(item.getFieldValue("DESCRIPTION").toString());
+				articulo.setTipoDeArticulo("tipo");
+				articulo.setProveedores("proveedores");
+				articulo.setPresentacion("presentaciones");
+				articulo.setDroga(item.getFieldValue("DROGA").toString().replace("[", "").replace("]", ""));
+				articulo.setControlDeVenta("controlDeVenta");
+				articulo.setPrecioPublico(100);
+				articulo.setPrecioDeVenta(100);
+				articulo.setCostoDeLista(100);
+				articulo.setCostoReal(100);
+				articulo.setCostoPonderado(100);
 				
 				listaArticulos.add(articulo);
 			}

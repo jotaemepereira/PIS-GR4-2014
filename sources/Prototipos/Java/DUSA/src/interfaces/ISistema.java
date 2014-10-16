@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import controladores.Excepciones;
+import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
+import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
@@ -55,7 +57,7 @@ public interface ISistema {
 	 * @throws Excepciones
 	 * @author Victoria Diaz
 	 */
-	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones;
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones;
 
 	/**
 	 * realiza la indexación de todos los articulos

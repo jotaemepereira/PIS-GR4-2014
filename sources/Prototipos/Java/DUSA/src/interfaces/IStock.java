@@ -8,6 +8,7 @@ import model.AccionTer;
 import model.Articulo;
 import model.Droga;
 import model.Pedido;
+import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTProduct;
 
@@ -47,7 +48,7 @@ public interface IStock {
 	 * @throws Excepciones
 	 * @author Victoria Diaz
 	 */
-	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones;
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones;
 
 	/**
 	 * @author Jmaguerre

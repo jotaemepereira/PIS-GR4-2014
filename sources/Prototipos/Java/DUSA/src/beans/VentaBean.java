@@ -46,6 +46,7 @@ public class VentaBean implements Serializable {
 	}
 
 	public void buscarArticulos(ActionEvent event) {
+		System.out.println("buscar articulos");
 		// aca en realidad hay q buscar las ventas con el buscarArticulo y
 		// agregar todos los que coinciden con la descripcion buscados
 

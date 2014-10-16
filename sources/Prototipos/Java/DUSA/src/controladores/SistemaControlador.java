@@ -3,6 +3,7 @@ package controladores;
 import java.util.List;
 import java.util.Map;
 
+import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
 import model.AccionTer;
@@ -40,7 +41,7 @@ public class SistemaControlador implements ISistema {
 	}
 	
 	@Override
-	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones {
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones {
 		// TODO chequeo permisos del usuario
 		return FabricaLogica.getIStock().buscarArticulos(busqueda);
 	}

@@ -12,7 +12,7 @@
 		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
 		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
 		<link href="../CSS/font-awesome.min.css" rel="stylesheet" />
-		<script src="../JS/bootstrap.min.js"></script>	
+		<script src="../JS/bootstrap.min.js"></script>
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
@@ -20,36 +20,104 @@
 	</h:head>
 	<h:body>
 		<h:form id="form1">
-<!-- 			<p:hotkey bind="Ctrl+return" update="panel msgs" actionListener=""/> -->
+			<!-- 			<p:hotkey bind="Ctrl+return" update="panel msgs" actionListener=""/> -->
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
 			<p:focus></p:focus>
 			<div class="vpanel_right">
-				<div class="wrapper">				
+				<div class="wrapper">
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title">Busqueda de art&iacute;culo</h3>
 						</div>
 						<p:messages id="msgs" />
-						
+
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
-							<div class="container-fluid">
-								<div class="row" style="margin-bottom: 1%;">
-									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-										<p:outputLabel for="busqueda" value="Buscar:" />
-										<p:inputText id="busqueda" styleClass="form-control" value="#{stockBean.busqueda}" style="height: 100%" required="false" />
-									</div>
-								</div>
-								
-								<div class="row" style="margin-bottom: 1%;">
-									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-										<div class="btn-group pull-right">
-											<h:commandButton value="Buscar" update="panel" actionListener="#{stockBean.buscarArticulos}" class="btn btn-success" />
+								<div class="container-fluid">
+									<div class="row" style="margin-bottom: 1%;">
+										<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+											<p:outputLabel for="busqueda" value="Buscar:" />
+											<p:inputText id="busqueda" styleClass="form-control"
+												value="#{stockBean.busqueda}" style="height: 100%"
+												required="false" />
 										</div>
-									</div>								
-								</div>								
-							</div>	
+										<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
+											style="bottom: -26px;">
+											<div class="btn-group ">
+												<h:commandButton value="Buscar" update="panel"
+													actionListener="#{stockBean.buscarArticulos}"
+													class="btn btn-success" />
+											</div>
+										</div>
+									</div>
+
+									<div class="row" style="margin-bottom: 1%; text-align: center;">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:dataTable var="articuloBusqueda" id="tableBusqueda"
+												value="#{stockBean.resBusqueda}">
+												<div class="row">
+													<p:column headerText="Descripción"
+														styleClass="col-xs-3 col-sm-2 col-md-2 col-lg-2">
+														<h:outputText value="#{articuloBusqueda.descripcion}" />
+													</p:column>
+
+													<p:column headerText="Tipo de artículo"
+														styleClass="hidden-xs col-sm-2 col-md-1 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.tipoDeArticulo}" />
+													</p:column>
+
+													<p:column headerText="Proveedores"
+														styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.proveedores}" />
+													</p:column>
+
+													<p:column headerText="Presentación"
+														styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.presentacion}" />
+													</p:column>
+
+													<p:column headerText="Droga"
+														styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.droga}" />
+													</p:column>
+
+													<p:column headerText="Control de venta"
+														styleClass="col-xs-4 col-sm-3 col-md-1 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.controlDeVenta}" />
+													</p:column>
+
+													<p:column headerText="Precio público"
+														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.precioPublico}" />
+													</p:column>
+													
+													<p:column headerText="Precio de venta"
+														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.precioDeVenta}" />
+													</p:column>
+													
+													<p:column headerText="Costo de lista"
+														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.costoDeLista}" />
+													</p:column>
+													
+													<p:column headerText="Costo real"
+														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.costoReal}" />
+													</p:column>
+													
+													<p:column headerText="Costo ponderado"
+														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.costoPonderado}" />
+													</p:column>
+
+												</div>
+											</p:dataTable>
+										</div>
+									</div>
+
+								</div>
 							</h:panelGroup>
 						</div>
 					</div>
