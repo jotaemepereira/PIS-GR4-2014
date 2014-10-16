@@ -1,12 +1,14 @@
 package model;
 
+import java.util.ArrayList;
+
 public class Usuario {
-	int usuarioId;
+	long usuarioId;
 	String nombre;
 	String pwd_hash;
 	boolean estado;
-
-	public int getUsuarioId() {
+    private ArrayList<Rol> roles;
+	public long getUsuarioId() {
 		return usuarioId;
 	}
 
@@ -37,5 +39,15 @@ public class Usuario {
 	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
+
+	public ArrayList<Rol> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(ArrayList<Rol> roles) {
+		this.roles = roles;
+	}
+	           
+	
 
 }

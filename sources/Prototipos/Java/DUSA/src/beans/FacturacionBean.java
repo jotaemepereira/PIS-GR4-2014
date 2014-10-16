@@ -35,7 +35,7 @@ public class FacturacionBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"Error al cargar la p·gina.", ""));
+							"Error al cargar la p√°gina.", ""));
 		}
 	}
 
@@ -49,7 +49,7 @@ public class FacturacionBean implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
-								"Se facturÛ correctamente.", ""));
+								"Se factur√≥ correctamente.", ""));
 				ventas = ifact.listarVentasPendientes();
 			} else {
 				for (String s : messages) {

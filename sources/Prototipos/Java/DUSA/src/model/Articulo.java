@@ -11,7 +11,7 @@ import java.util.Map;
 import datatypes.DTProveedor;
 
 public class Articulo {
-	private int idArticulo;
+	private long idArticulo;
 	private int numero;
 	private char tipoArticulo;
 	private String descripcion;
@@ -34,8 +34,8 @@ public class Articulo {
 	private String codigoBarras;
 	private Date fechaUltimoPrecio;
 	private Date vencimientoMasCercano;
-	private int stock;
-	private int stockMinimo;
+	private Long stock;
+	private Long stockMinimo;
 	private Date fechaUltimaModificacion;
 	private boolean status;
 	private Map<Integer,DTProveedor> proveedores = new HashMap<Integer,DTProveedor>();
@@ -43,10 +43,10 @@ public class Articulo {
 	private List<Droga> drogas;
 	private List<AccionTer> accionesTer;
 	
-	public int getIdArticulo() {
+	public long getIdArticulo() {
 		return idArticulo;
 	}
-	public void setIdArticulo(int idArticulo) {
+	public void setIdArticulo(long idArticulo) {
 		this.idArticulo = idArticulo;
 	}
 	public int getNumero() {
@@ -181,17 +181,23 @@ public class Articulo {
 	public void setVencimientoMasCercano(Date vencimientoMasCercano) {
 		this.vencimientoMasCercano = vencimientoMasCercano;
 	}
-	public int getStock() {
+	public Long getStock() {
 		return stock;
 	}
-	public void setStock(int stock) {
+	public void setStock(Long stock) {
 		this.stock = stock;
 	}
-	public int getStockMinimo() {
+	public void setStock(long stock) {
+		this.stock = new Long(stock);
+	}
+	public Long getStockMinimo() {
 		return stockMinimo;
 	}
-	public void setStockMinimo(int stockMinimo) {
+	public void setStockMinimo(Long stockMinimo) {
 		this.stockMinimo = stockMinimo;
+	}
+	public void setStockMinimo(long stockMinimo) {
+		this.stockMinimo = new Long(stockMinimo);
 	}
 	public Date getFechaUltimaModificacion() {
 		return fechaUltimaModificacion;

@@ -235,6 +235,21 @@ public class StockBean implements Serializable{
 		disableDesdeUltimoPedido = true;
 		pedidos.clear();
 		
+		try {
+			
+			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAPedidoAnterior();
+		} catch (Exception e) {
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							e.getMessage(),
+							""));
+		}
+		
+		/*
 		DTLineaPedido dt = new DTLineaPedido();
 		dt.setCantidad(5);
 		dt.setIdArticulo(5);
@@ -270,6 +285,8 @@ public class StockBean implements Serializable{
 		dt.setStockMinimo(4);
 		dt.setSubtotal(360);
 		pedidos.add(dt);
+		
+		*/
 	}
 	
 	/**
@@ -280,6 +297,20 @@ public class StockBean implements Serializable{
 		disableDesdeUltimoPedido = true;
 		pedidos.clear();
 		
+		try {
+			
+			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAHistorico(5);
+		} catch (Exception e) {
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							e.getMessage(),
+							""));
+		}
+		/*
 		DTLineaPedido dt = new DTLineaPedido();
 		dt.setCantidad(3);
 		dt.setIdArticulo(1);
@@ -327,6 +358,7 @@ public class StockBean implements Serializable{
 		dt.setStockMinimo(10);
 		dt.setSubtotal(60);
 		pedidos.add(dt);
+		*/
 	}
 	
 	public void removeItem(DTLineaPedido item) {
