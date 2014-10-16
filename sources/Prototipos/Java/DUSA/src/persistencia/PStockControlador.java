@@ -300,10 +300,65 @@ public class PStockControlador implements IStockPersistencia {
 
 
 	}
-	
+	/**
+	 * @author Guille
+	 * @throws Excepciones 
+	 */
 	@Override
-	public void persistirPedido(Pedido p){
+	public void persistirPedido(Pedido p) throws Excepciones{
 		// TODO Auto-generated method stub
+		
+		PreparedStatement stmt = null;
+		
+		String query = "INSERT INTO ORDERS_DUSA "
+						+ "(USER_ID, PAYMENT_TYPE, ORDER_DATE) VALUES "
+						+ " (?, ?, LOCALTIMESTAMP) RETURNING ORDER_DUSA_ID;";
+		try {
+			
+			Connection c = Conexion.getConnection();
+			try {
+				
+				stmt = c.prepareStatement(query);
+				stmt.setInt(1, p.getIdUsuario());
+				stmt.setString(2, "" + p.getFormaDePago() + "");
+				
+				ResultSet rs = stmt.executeQuery();
+				//Obtengo la clave del pedido persistido
+				long pedidoID = 0;
+				while (rs.next()){
+					pedidoID = rs.getLong(1);
+				}
+				//Cierro canal y su dependencia, porque voy abrir uno nuevo.
+				rs.close();
+				stmt.close();
+				//Para cada linea pedido asociado inserto una fila en ORDER_DUSA_DETAILS
+				for (Iterator<LineaPedido> iter = p.getLineas().iterator(); iter.hasNext();) {
+					
+					LineaPedido lPedido = iter.next();
+					
+					query = "INSERT INTO ORDER_DUSA_DETAILS "
+							+ "(ORDER_DUSA_ID, PRODUCT_ID, QUANTITY) VALUES "
+							+ " (?, ?);";
+					stmt = c.prepareStatement(query);
+					stmt.setLong(1, pedidoID);
+					stmt.setLong(2, lPedido.getIdArticulo().longValue());
+					stmt.setInt	(3, lPedido.getCantidad());
+					
+					stmt.executeUpdate();
+				}
+				stmt.close();
+				c.close();
+			} catch ( Exception e ) {
+				//Regreso al estado anterior de la base y lanzo la excepcion correspondiente
+				
+				c.rollback();
+				e.printStackTrace();
+				throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+			}
+		} catch (Exception e) {
+			// Error de conexión con la base de datos
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		}
 	}
 	
 	

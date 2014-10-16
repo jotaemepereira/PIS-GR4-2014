@@ -32,8 +32,9 @@ public interface IStockPersistencia {
 	 * Persiste el pedido realizado a D.U.S.A. con todas las LineasPedidos asignadas.
 	 * @author Guille
 	 * @param p Pedido a persistir.
+	 * @throws Excepciones
 	 */
-	public void persistirPedido(Pedido p);
+	public void persistirPedido(Pedido p) throws Excepciones;
 	public boolean existeArticulo(String descripcion) throws Excepciones;
 	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones;
 	public void fullImportSolr() throws Excepciones;
