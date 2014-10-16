@@ -294,6 +294,19 @@ public class StockBean implements Serializable{
 		disableDesdeUltimoPedido = true;
 		pedidos.clear();
 		
+		try {
+			
+			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAHistorico(5);
+		} catch (Exception e) {
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							e.getMessage(),
+							""));
+		}
 		/*
 		DTLineaPedido dt = new DTLineaPedido();
 		dt.setCantidad(3);

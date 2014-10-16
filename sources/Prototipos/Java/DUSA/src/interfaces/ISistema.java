@@ -65,11 +65,25 @@ public interface ISistema {
 	 */
 
 	/**
+	 * Genera un pedido de artículos de D.U.S.A. La cantidad de cada artículo es igual a la cantidad vendida, del artículo, desde el pedido anterior.
+	 * 
 	 * @author Guille
-	 * @return Genera un pedido de artículos, de D.U.S.A. La cantidad de cada artículo es igual a la cantidad vendida, del artículo, desde el pedido anterior. 
+	 * @return Lista de dataType LineaPedido con la informacion del articulo y su cantidad  
 	 * @throws Excepciones
 	 */
 	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior() throws Excepciones;
+	
+	/**
+	 * Genera un pedido de artículos de D.U.S.A. Donde la cantidad de cada articulo se obtiene de forma predictiva tomando 
+	 * en cuenta mismo periodo de años anteriores y estimando los próximos días por medio de mínimos cuadrados.
+	 * 
+	 * @author Santiago, Guille
+	 * @param diasAPredecir cantidad de días a predecir.
+	 * @return Lista de dataType LineaPedido con la información del articulo y su cantidad
+	 * @throws Excepciones
+	 */
+	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir) throws Excepciones;
+	
 	/**
 	 * @author santiago
 	 */

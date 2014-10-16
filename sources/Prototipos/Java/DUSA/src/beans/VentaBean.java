@@ -158,7 +158,7 @@ public class VentaBean implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(
 				null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Factura ingresada con �xito", ""));
+						"Factura ingresada con éxito", ""));
 	}
 
 	public List<DTVenta> getLineasVenta() {

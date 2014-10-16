@@ -45,8 +45,17 @@ public class StockControlador implements IStock {
 
 	public Articulo obtenerArticulo(Long id){
 
-		return null;
-
+		Articulo articulo = null;
+		
+		try {
+			
+			articulo = FabricaPersistencia.getStockPersistencia().obtenerArticuloConId(id.longValue());
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+		return articulo;
 	}
 	
 	public void generarPedido(Pedido p){
@@ -77,16 +86,19 @@ public class StockControlador implements IStock {
 			
 			 Articulo articulo = this.obtenerArticulo(lPedido.getIdArticulo());
 			 
-			 dtlPedido.setIdArticulo(lPedido.getIdArticulo());
-			 dtlPedido.setDescripcionArticulo(articulo.getDescripcion());
-			 dtlPedido.setStockMinimo(articulo.getStockMinimo());
-			 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
-			 dtlPedido.setCantidad(lPedido.getCantidad());
-			// TODO: hardcodear id de DUSA
-			 DTProveedor dtProveedor = articulo.getProveedores().get(0);
-			 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
-			 
-			 lPedidos.add(dtlPedido);
+			 if (articulo != null) {
+				 
+				 dtlPedido.setIdArticulo(lPedido.getIdArticulo());
+				 dtlPedido.setDescripcionArticulo(articulo.getDescripcion());
+				 dtlPedido.setStockMinimo(articulo.getStockMinimo());
+				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
+				 dtlPedido.setCantidad(lPedido.getCantidad());
+				// TODO: hardcodear id de DUSA
+				 DTProveedor dtProveedor = articulo.getProveedores().get(0);
+				 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
+				 
+				 lPedidos.add(dtlPedido);
+			}
 		}
 		
 		return lPedidos;
@@ -97,19 +109,36 @@ public class StockControlador implements IStock {
 		return FabricaPersistencia.getStockPersistencia().buscarArticulos(busqueda);
 	}
 
-	public Pedido generarPedidoEnBaseAHistorico(int diasAPredecir) {
+	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir) throws Excepciones {
 		
 		ISeleccionador st = new SeleccionarTodos();
-		IPredictor pr = (IPredictor) new PredecirEnBaseAHistorico(diasAPredecir);
+		IPredictor pr = new PredecirEnBaseAHistorico(diasAPredecir);
 		GeneradorPedido gp = new GeneradorPedido(st,pr);
-		Pedido pedidoGenerado = null;
-		try {
-			pedidoGenerado = gp.generar();
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			//Generar las excepciones personalizadas para "mostrar" en pantalla
+		Pedido pedidoGenerado = gp.generar();
+		
+		List<DTLineaPedido> lPedidos = new ArrayList<DTLineaPedido>();
+		
+		for (LineaPedido lPedido : pedidoGenerado.getLineas()) {
+			
+			DTLineaPedido dtlPedido = new DTLineaPedido();
+			Articulo articulo = this.obtenerArticulo(lPedido.getIdArticulo());
+			 
+			if (articulo != null) {
+				 
+				dtlPedido.setIdArticulo(lPedido.getIdArticulo());
+				dtlPedido.setDescripcionArticulo(articulo.getDescripcion());
+				dtlPedido.setStockMinimo(articulo.getStockMinimo());
+				dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
+				dtlPedido.setCantidad(lPedido.getCantidad());
+				// TODO: hardcodear id de DUSA
+				DTProveedor dtProveedor = articulo.getProveedores().get(0);
+				dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
+				
+				lPedidos.add(dtlPedido);
+			}
 		}
-		return pedidoGenerado;
+		
+		return lPedidos;
 
 	}
 	/**

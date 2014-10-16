@@ -56,6 +56,12 @@ public class SistemaControlador implements ISistema {
 		return FabricaLogica.getIStock().generarPedidoEnBaseAPedidoAnterior();
 //		return null;
 	}
+	
+	@Override
+	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir) throws Excepciones {
+		// TODO Auto-generated method stub
+		return FabricaLogica.getIStock().generarPedidoEnBaseAHistorico(diasAPredecir);
+	}
 
 	@Override
 	public Map<Long, Droga> obtenerDrogas() throws Excepciones {
