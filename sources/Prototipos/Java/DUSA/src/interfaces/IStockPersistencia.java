@@ -19,7 +19,20 @@ import model.Pedido;
 public interface IStockPersistencia {
 	
 	public void persistirArticulo(Articulo articulo)throws Excepciones;
+	
+	/**
+	 * Retorna la fecha del ultimo pedido realizado a D.U.S.A.
+	 * @author Juan Manuel, Guille
+	 * @return Date, fecha del ultimo pedido.
+	 * @throws Excepciones
+	 */
 	public Date obtenerFechaUltimoPedido() throws Excepciones;
+	
+	/**
+	 * Persiste el pedido realizado a D.U.S.A. con todas las LineasPedidos asignadas.
+	 * @author Guille
+	 * @param p Pedido a persistir.
+	 */
 	public void persistirPedido(Pedido p);
 	public boolean existeArticulo(String descripcion) throws Excepciones;
 	public List<Articulo> buscarArticulos(String busqueda) throws Excepciones;
@@ -46,4 +59,12 @@ public interface IStockPersistencia {
 	 * @return Devuelve todas las acciones terapéuticas del sistema en un Map para un acceso rápido.
 	 */
 	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones;
+	
+	/**
+	 * Obtener el articulo con id "idArticulo" y su informacion basica de proveedores (DTProveedores)
+	 * @param idArticulo 
+	 * @return Articulo con id idArticulo, null si no lo encuentra
+	 * @throws Excepciones
+	 */
+	public Articulo obtenerArticuloConId(long idArticulo) throws Excepciones;
 }

@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -74,8 +75,8 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.setString(19, articulo.getCodigoBarras());//Null
 				//stmt.setDate(18, new java.sql.Date(articulo.getFechaUltimoPrecio().getTime()));//Not Null
 				stmt.setNull(20, java.sql.Types.TIMESTAMP);//Null Vencimiento Más Cercano
-				stmt.setInt(21, articulo.getStock());//Not Null
-				stmt.setInt(22, articulo.getStockMinimo());//Null
+				stmt.setLong(21, articulo.getStock());//Not Null
+				stmt.setLong(22, articulo.getStockMinimo());//Null
 				stmt.setBoolean(23, true);//Not Null
 				
 				ResultSet rs = stmt.executeQuery();
@@ -353,7 +354,7 @@ public class PStockControlador implements IStockPersistencia {
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			stmt.setLong(1, idArticulo);
-			stmt.setInt(2, 0); //Hay que ver cual es para hardcodearlo en un logar solo.
+			stmt.setInt(2, 0); //Hay que ver cual es para hardcodearlo en un lugar solo.
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()){
@@ -428,4 +429,81 @@ public class PStockControlador implements IStockPersistencia {
 		return ret;	
 	}
 
+	/**
+	 * @author Guille
+	 */
+	@Override
+	public Articulo obtenerArticuloConId(long idArticulo) throws Excepciones {
+		// TODO Auto-generated method stub
+		
+		Articulo articulo = null;
+		Map<Integer, DTProveedor> ret = null;
+		PreparedStatement stmt = null;
+		String query = "SELECT * " +
+						"FROM products p INNER JOIN products_suppliers ps ON p.product_id = ps.product_id " +
+							"INNER JOIN (SELECT supplier_id, comercialname FROM suppliers) as s ON s.supplier_id = ps.supplier_id " +
+						"WHERE p.product_id = ?;";
+		try {
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			stmt.setLong(1, idArticulo);
+			ResultSet rs = stmt.executeQuery();
+			ret = new HashMap<Integer, DTProveedor>();
+			while(rs.next()){
+				
+				if (articulo == null) {
+					
+					articulo = new Articulo();
+					
+					articulo.setIdArticulo(rs.getLong(""));
+					articulo.setTipoArticulo(rs.getString("product_type").charAt(0));
+					articulo.setDescripcion(rs.getString("description"));
+					articulo.setClave1(rs.getString("key1"));
+					articulo.setClave2(rs.getString("key2"));
+					articulo.setClave3(rs.getString("key3"));
+					articulo.setEsPsicofarmaco(rs.getBoolean("is_psychotropic"));
+					articulo.setEsEstupefaciente(rs.getBoolean("is_narcotic"));
+					articulo.setEsHeladera(rs.getBoolean("is_refrigerator"));
+					articulo.setCodigoVenta(rs.getString("sale_code").charAt(0));
+					articulo.setTipoAutorizacion(rs.getString("authorization_type").charAt(0));
+					articulo.setPrecioUnitario(rs.getBigDecimal("unit_price"));
+					articulo.setPrecioVenta(rs.getBigDecimal("sale_price"));
+					articulo.setPorcentajePrecioVenta(rs.getBigDecimal("sale_price_porcentage"));
+					articulo.setCostoLista(rs.getBigDecimal("list_cost"));
+					articulo.setCostoOferta(rs.getBigDecimal("offer_cost"));
+					articulo.setUltimoCosto(rs.getBigDecimal("last_cost"));
+					articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
+					articulo.setTipoIva(rs.getBigDecimal("tax_type").intValue());
+					articulo.setCodigoBarras(rs.getString("barcode"));
+					Timestamp timestamp = rs.getTimestamp("nearest_due_date");
+					if (timestamp != null) {
+						
+						articulo.setVencimientoMasCercano(new java.util.Date(timestamp.getTime()));
+					}
+					articulo.setStock(rs.getLong("stock"));
+					articulo.setStockMinimo(rs.getLong("minimum_stock"));
+					articulo.setStatus(rs.getBoolean("status"));
+				}
+				
+				DTProveedor dtProveedor = new DTProveedor();
+				dtProveedor.setIdProveedor(rs.getInt("supplier_id"));
+				dtProveedor.setCodigoIdentificador(rs.getLong("product_number"));
+				dtProveedor.setNombreComercial(rs.getString("comercialname"));
+				dtProveedor.setIdLinea(rs.getString("line_id"));
+				
+				ret.put(dtProveedor.getIdProveedor(), dtProveedor);
+			}
+			if (articulo != null) {
+				
+				articulo.setProveedores(ret);
+			}
+			rs.close();
+			stmt.close();
+		} catch (Exception e){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		
+		return articulo;
+	}
 }
+
