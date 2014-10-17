@@ -4,6 +4,7 @@
 target/
 # Solr
 data/
+conf/dataimport.properties
  
 # OS Files #
 .DS_Store
