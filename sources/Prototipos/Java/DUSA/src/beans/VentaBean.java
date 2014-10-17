@@ -40,7 +40,6 @@ public class VentaBean implements Serializable {
 	private List<DTVenta> lineasVenta2 = new ArrayList<DTVenta>();
 	private List<DTVenta> lineasVentaPerdidas = new ArrayList<DTVenta>();
 	private List<DTVenta> ventasSeleccionadas = new ArrayList<DTVenta>();
-	private List<Integer> descuentos = new ArrayList<Integer>();
 	private Integer descuento = 0;
 	private String strDescuento;
 
@@ -54,7 +53,7 @@ public class VentaBean implements Serializable {
 		// agregar todos los que coinciden con la descripcion buscados
 
 		// Probando con el Database.java para buscar simulando la busqueda :
-	/*	Database DB = Database.getInstance();
+		Database DB = Database.getInstance();
 		List<DTVenta> list = DB.getVentas();
 		Iterator<DTVenta> it = list.iterator();
 		lineasVenta = new ArrayList<DTVenta>();
@@ -65,7 +64,9 @@ public class VentaBean implements Serializable {
 				lineasVenta.add(v);
 				strDescuentoPrecio(v); // ****estoy llamando a esta funcion para calcular los precios con descuentos hay que ver bien lo de los descuentos y arreglarla ****
 			}
-		}*/
+		}
+		
+		/**
 		
 		// Busqueda con solr
 		lineasVenta = new ArrayList<DTVenta>();
@@ -76,12 +77,14 @@ public class VentaBean implements Serializable {
 			e.printStackTrace();
 		}
 		
+		**/
+		
 		//llamo al inicializar los descuentos q puede seleccionar el vendedor
-		iniDescuentos();
+		//iniDescuentos();
 
 	}
 	
-	public void iniDescuentos(){
+	/**public void iniDescuentos(){
 		// inicializo los descuentos ya fijos q puede seleccionar el vendedor:
 		descuentos = new ArrayList<Integer>();
 		int x = 5;
@@ -89,12 +92,12 @@ public class VentaBean implements Serializable {
 			descuentos.add(x);
 			x = x + 5;
 		}
-	}
+	}**/
 	
 	//para calcular el precio con el descuento a poner cuando lista los articulos en la busqueda, falta terminar
 	public String strDescuentoPrecio(DTVenta v){
 		
-		BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento())).divide(new BigDecimal(100));
+		BigDecimal x = (v.getPrecioVenta().multiply(new BigDecimal(descuento))).divide(new BigDecimal(100));
 		
 		String res= venta.getPrecioVenta().subtract(x).toString()+"("+"%"+descuento.toString()+")";
 		
@@ -110,13 +113,7 @@ public class VentaBean implements Serializable {
 
 
 	public void agregarLineaVenta(DTVenta v){
-		v.setDescuento(new BigDecimal(descuento));
-		
-		/**BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento()));
-		BigDecimal a = new BigDecimal(100);
-		v.setPrecioVenta(v.getPrecioVenta().subtract(x.divide(a)));
-		**/
-		
+
 		v.setCantidad(1);
 		lineasVenta2.add(v);
 		lineasVenta.remove(v);
@@ -269,14 +266,6 @@ public class VentaBean implements Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public List<Integer> getDescuentos() {
-		return descuentos;
-	}
-
-	public void setDescuentos(List<Integer> descuentos) {
-		this.descuentos = descuentos;
 	}
 
 	public Integer getDescuento() {

@@ -39,10 +39,11 @@
 										<p:dataGrid var="venta2" value="#{ventaBean.lineasVenta2}"
 											columns="1" layout="grid" rows="20" id="GridVentas2">
 											<p:panel style="text-align:center">
-												<h:panelGrid columns="1" style="width:100%">
+												<h:panelGrid columns="2" style="width:100%">
 													<h:outputText value=" #{venta2.nombre}" />
+													<h:outputText value="$ #{venta2.precioVenta}" />
+													
 													<h:outputText value=" #{venta2.presentacion}" />
-													<h:outputText value=" #{venta2.precioVenta}" />
 													<p:inputText id="cantidad" value="#{venta2.cantidad}"
 														style="width: 75px;">
 														<p:ajax listener="#{ventaBean.strTotal()}" update="GridVentas2 :form1:total"
@@ -89,7 +90,7 @@
 											<p:inputText id="descripcion2"
 												style="vertical-align: 8px; margin-right: 5px;"
 												value="#{ventaBean.descripcionBusqueda}"
-												placeholder="Buscar...">
+												placeholder="Buscar Articulo...">
 											</p:inputText>
 											<p:commandButton value="" id="ajax3" update="GridVentas"
 												icon="ui-icon-search" style="width: 35px; height: 29px;"
@@ -120,14 +121,13 @@
 														
 														
 													<h:outputText value=" #{venta.presentacion}" />
-													<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
-        												<p:outputLabel for="descuento" value="descuentos:" />
-														<p:selectOneRadio id="descuento" value="#{ventaBean.descuento}"
-															layout="grid" columns="3">
-															<f:selectItems value="#{ventaBean.descuentos}" var="d"
-																itemLabel="#{descuento}" itemValue="#{descuento}"  />
-														</p:selectOneRadio>
-													</h:panelGrid>
+													<p:inputText id="descuento" value="#{venta.descuento}"
+														style="width: 75px;">
+														<p:ajax listener="#{ventaBean.strDescuentoPrecio(venta)}" update="@form"
+															process="@this" />
+														<p:ajax listener="#{ventaBean.strDescuentoPrecio(venta)}" update="GridVentas"
+															process="@this" />
+													</p:inputText>
 													<p:outputPanel
 														visible="#{venta.isRecetaNaranja}"
 														style="width: 100px; padding: 0; margin: 0;">
@@ -138,9 +138,9 @@
 														<img src="../Images/receta_blanca.png" />
 													</p:outputPanel>
 													<h:outputText value="stock:#{venta.stock}" />
-													<h:outputText value=" #{venta.principioActivo}" />
-
 													
+													
+													<h:outputText value=" #{venta.principioActivo}" />
 													<h:outputText id="descuentoPrecio"
 															value=" #{ventaBean.strDescuento}">
 													</h:outputText>
