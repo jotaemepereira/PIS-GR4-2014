@@ -100,10 +100,9 @@
 											columns="1" layout="grid" rows="12" paginator="true"
 											id="GridVentas">
 											<p:panel style="text-align:center">
-												<h:panelGrid columns="5" style="width:100%">
-
-													<h:outputText value=" #{venta.nombre}" />
-													<h:outputText value=" #{venta.presentacion}" />
+												<h:panelGrid columns="4" style="width:100%">
+													
+													<h:outputText value=" #{venta.descripcion}" />
 													<h:outputText value="$ #{venta.precioVenta}" />
 													<p:outputPanel
 														visible="#{venta.isRecetaVerde}"
@@ -118,17 +117,15 @@
 														update="@form"
 														actionListener="#{ventaBean.agregarLineaVentaPerdida(venta)}"
 														process="@this" styleClass="ui-priority-primary" />
-
-
-													<h:outputText value=" #{venta.principioActivo}" />
-													<h:outputText value=" #{venta.descripcion}" />
+														
+														
+													<h:outputText value=" #{venta.presentacion}" />
 													<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
         												<p:outputLabel for="descuento" value="descuentos:" />
 														<p:selectOneRadio id="descuento" value="#{ventaBean.descuento}"
 															layout="grid" columns="3">
 															<f:selectItems value="#{ventaBean.descuentos}" var="d"
 																itemLabel="#{descuento}" itemValue="#{descuento}"  />
-															
 														</p:selectOneRadio>
 													</h:panelGrid>
 													<p:outputPanel
@@ -141,10 +138,9 @@
 														<img src="../Images/receta_blanca.png" />
 													</p:outputPanel>
 													<h:outputText value="stock:#{venta.stock}" />
+													<h:outputText value=" #{venta.principioActivo}" />
 
-
-													<h:outputText value=" #{venta.concentracion}" />
-													<h:outputText value=" #{venta.laboratorio}" />
+													
 													<h:outputText id="descuentoPrecio"
 															value=" #{ventaBean.strDescuento}">
 													</h:outputText>
@@ -160,6 +156,9 @@
 													<p:commandButton value="Agregar" id="ajax2" update="@form"
 														actionListener="#{ventaBean.agregarLineaVenta(venta)}"
 														process="@this" styleClass="ui-priority-primary" />
+														
+														
+													<h:outputText value=" #{venta.laboratorio}" />
 
 												</h:panelGrid>
 											</p:panel>

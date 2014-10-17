@@ -14,6 +14,7 @@ import model.Pedido;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTProduct;
 import datatypes.DTProveedor;
+import datatypes.DTVenta;
 import model.Articulo;
 import controladores.FabricaPersistencia;
 
@@ -162,6 +164,28 @@ public class StockControlador implements IStock {
 	@Override
 	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
 		return FabricaPersistencia.getStockPersistencia().obtenerAccionesTerapeuticas();
+	}
+
+	@Override
+	public List<DTVenta> buscarArticulosVenta(String busqueda)
+			throws Excepciones {
+		List<DTVenta> articulos = new ArrayList<DTVenta>();
+		List<DTBusquedaArticulo> lista = FabricaPersistencia.getStockPersistencia().buscarArticulos(busqueda);
+		
+		Iterator<DTBusquedaArticulo> it = lista.iterator();
+		
+		while (it.hasNext()) {
+			DTBusquedaArticulo articuloB = (DTBusquedaArticulo) it.next();
+			DTVenta articuloV = FabricaPersistencia.getStockPersistencia().getDatosArticuloVenta(articuloB.getIdArticulo());
+			articuloV.setDescripcion(articuloB.getDescripcion());
+			articuloV.setProductId(articuloB.getIdArticulo());
+			articuloV.setBarcode(articuloB.getCodigoBarras());
+			articuloV.setPresentacion(articuloB.getPresentaciones());
+			articuloV.setPrincipioActivo(articuloB.getDroga());
+			articulos.add(articuloV);
+		}
+		
+		return articulos;
 	}
 	
 	

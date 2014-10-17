@@ -26,11 +26,26 @@
 			<field column="CRITERIO_INTERNO" name="CRITERIO_INTERNO" />
 			
 			<entity name="drugs"
-				query="SELECT D.DESCRIPTION AS DROGA 
+				query="SELECT D.DESCRIPTION AS DROGAS
 							FROM PRODUCT_DRUGS PD 
 							INNER JOIN DRUGS D ON D.DRUG_ID = PD.DRUG_ID
+							WHERE PD.PRODUCT_ID = '${stock.id}'">
+					<field column="DROGAS" name="DROGAS" />
+			</entity>
+			
+			<entity name="presentaciones"
+				query="SELECT DESCRIPTION AS PRESENTACIONES 
+							FROM PRODUCT_PRESENTATIONS 
 							WHERE PRODUCT_ID = '${stock.id}'">
-					<field column="DROGA" name="DROGA" />
+					<field column="PRESENTACIONES" name="PRESENTACIONES" />
+			</entity>
+			
+			<entity name="acciones_terapeuticas"
+				query="SELECT D.DESCRIPTION AS ACCIONES_TERAPEUTICAS 
+							FROM PRODUCT_THERAP_ACTIONS PTA 
+							INNER JOIN THERAPEUTIC_ACTIONS D ON D.THERAPEUTIC_ACTION_ID = PTA.THERAPEUTIC_ACTION_ID
+							WHERE PTA.PRODUCT_ID = '${stock.id}'">
+					<field column="ACCIONES_TERAPEUTICAS" name="ACCIONES_TERAPEUTICAS" />
 			</entity>
 
 		</entity>

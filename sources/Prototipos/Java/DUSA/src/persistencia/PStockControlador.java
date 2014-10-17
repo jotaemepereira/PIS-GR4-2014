@@ -1,5 +1,6 @@
 package persistencia;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -28,6 +29,7 @@ import org.primefaces.json.JSONObject;
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTProveedor;
+import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
@@ -201,9 +203,11 @@ public class PStockControlador implements IStockPersistencia {
 							" CRITERIO_INTERNO:" + regexpBusqueda + 
 							" DESCRIPTION:" + regexpBusqueda + 
 							" BARCODE:" + regexpBusqueda +
-							" DROGA: " + regexpBusqueda);
+							" DROGAS: " + regexpBusqueda +
+							" PRESENTACIONES: " + regexpBusqueda + 
+							" ACCIONES_TERAPEUTICAS: " + regexpBusqueda);
 		parameters.set("wt", "json");
-		parameters.set("fl", "DESCRIPTION id BARCODE DROGA");
+		parameters.set("fl", "DESCRIPTION id BARCODE DROGAS PRESENTACIONES ACCIONES_TERAPEUTICAS");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
@@ -216,17 +220,23 @@ public class PStockControlador implements IStockPersistencia {
 				
 				DTBusquedaArticulo articulo = new DTBusquedaArticulo();
 				articulo.setIdArticulo(Integer.parseInt(item.getFieldValue("id").toString()));
+				articulo.setCodigoBarras(item.getFieldValue("BARCODE").toString());
 				articulo.setDescripcion(item.getFieldValue("DESCRIPTION").toString());
-				articulo.setTipoDeArticulo("tipo");
-				articulo.setProveedores("proveedores");
-				articulo.setPresentacion("presentaciones");
-				articulo.setDroga(item.getFieldValue("DROGA").toString().replace("[", "").replace("]", ""));
-				articulo.setControlDeVenta("controlDeVenta");
-				articulo.setPrecioPublico(100);
-				articulo.setPrecioDeVenta(100);
-				articulo.setCostoDeLista(100);
-				articulo.setCostoReal(100);
-				articulo.setCostoPonderado(100);
+				if(item.getFieldValue("DROGAS") == null){
+					articulo.setDroga("");
+				}else{
+					articulo.setDroga(item.getFieldValue("DROGAS").toString().replace("[", "").replace("]", ""));
+				}
+				if(item.getFieldValue("PRESENTACIONES") == null){
+					articulo.setPresentaciones("");
+				}else{
+					articulo.setPresentaciones(item.getFieldValue("PRESENTACIONES").toString().replace("[", "").replace("]", ""));
+				}
+				if(item.getFieldValue("ACCIONES_TERAPEUTICAS") == null){
+					articulo.setAccionesTerapeuticas("");
+				}else{
+					articulo.setAccionesTerapeuticas(item.getFieldValue("ACCIONES_TERAPEUTICAS").toString().replace("[", "").replace("]", ""));
+				}
 				
 				listaArticulos.add(articulo);
 			}
@@ -236,6 +246,49 @@ public class PStockControlador implements IStockPersistencia {
 		}
 		
 		return listaArticulos;
+	}
+	
+	@Override
+	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones{
+		DTVenta articulo = new DTVenta();
+		PreparedStatement stmt = null;
+		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, AUTHORIZATION_TYPE, STOCK "
+				+ "FROM PRODUCTS "
+				+ "WHERE PRODUCT_ID = ?";
+		try {
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			stmt.setInt(1, idArticulo);
+			ResultSet rs = stmt.executeQuery();
+			//Obtengo la cantidad de proveedores con ese rut
+			while (rs.next()){
+				articulo.setPrecioVenta(rs.getBigDecimal("SALE_PRICE"));
+				articulo.setRecetaVerde(rs.getBoolean("IS_PSYCHOTROPIC"));
+				articulo.setRecetaNaranja(rs.getBoolean("IS_NARCOTIC"));
+				articulo.setStock(rs.getInt("STOCK"));
+			}
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		}
+		
+		articulo.setCantidad(0);
+		articulo.setLaboratorio("laboratorio");
+		articulo.setRecetaBlanca(false);
+		
+		/*
+		BigDecimal desc1 = new BigDecimal(10);
+    	BigDecimal desc2 = new BigDecimal(30);
+    	BigDecimal desc3 = new BigDecimal(50);
+		articulo.setDescuento1(desc1);
+		articulo.setDescuento2(desc2);
+		articulo.setDescuento3(desc3);
+		*/
+			
+		return articulo;
 	}
 	
 	@Override

@@ -13,7 +13,10 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import controladores.Excepciones;
+import controladores.FabricaSistema;
 import persistencia.Database;
+import datatypes.DTBusquedaArticulo;
 import datatypes.DTVenta;
 
 @ManagedBean
@@ -51,7 +54,7 @@ public class VentaBean implements Serializable {
 		// agregar todos los que coinciden con la descripcion buscados
 
 		// Probando con el Database.java para buscar simulando la busqueda :
-		Database DB = Database.getInstance();
+	/*	Database DB = Database.getInstance();
 		List<DTVenta> list = DB.getVentas();
 		Iterator<DTVenta> it = list.iterator();
 		lineasVenta = new ArrayList<DTVenta>();
@@ -62,7 +65,17 @@ public class VentaBean implements Serializable {
 				lineasVenta.add(v);
 				strDescuentoPrecio(v); // ****estoy llamando a esta funcion para calcular los precios con descuentos hay que ver bien lo de los descuentos y arreglarla ****
 			}
+		}*/
+		
+		// Busqueda con solr
+		lineasVenta = new ArrayList<DTVenta>();
+		try {
+			lineasVenta = FabricaSistema.getISistema().buscarArticulosVenta(descripcionBusqueda);
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		//llamo al inicializar los descuentos q puede seleccionar el vendedor
 		iniDescuentos();
 

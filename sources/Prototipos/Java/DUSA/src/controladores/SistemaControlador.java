@@ -7,6 +7,7 @@ import java.util.Map;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
+import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
@@ -82,5 +83,11 @@ public class SistemaControlador implements ISistema {
 	@Override
 	public void cerrarSesion(long idUsuario, String contrasenia){
 		
+	}
+
+	@Override
+	public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones {
+		// TODO Auto-generated method stub
+		return FabricaLogica.getIStock().buscarArticulosVenta(busqueda);
 	}
 }

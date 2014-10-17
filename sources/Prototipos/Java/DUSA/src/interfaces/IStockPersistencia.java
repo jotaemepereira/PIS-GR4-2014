@@ -7,6 +7,7 @@ import java.util.Map;
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTProveedor;
+import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
@@ -69,4 +70,6 @@ public interface IStockPersistencia {
 	 * @throws Excepciones
 	 */
 	public Articulo obtenerArticuloConId(long idArticulo) throws Excepciones;
+
+	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones;
 }

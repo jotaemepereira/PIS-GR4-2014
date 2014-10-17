@@ -92,4 +92,14 @@ public interface ISistema {
 	 public void iniciarSesion(long idUsuario, String contrasenia );
 	 public void cerrarSesion(long idUsuario, String contrasenia);
 	 
+	 /**
+	  * Busca los articulos que coinciden con el string buscar y devuelve los datos necesarios
+	  * para la venta
+	  * @param busqueda - string ingresado
+	  * @return List<DTVenta> Lista de articulos encontrados
+	  * @throws Excepciones
+	  * @author Victoria Diaz
+	  */
+	 public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones;
+	 
 }

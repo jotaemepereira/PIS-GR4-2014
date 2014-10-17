@@ -11,6 +11,7 @@ import model.Pedido;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTProduct;
+import datatypes.DTVenta;
 
 public interface IStock {
 
@@ -62,4 +63,14 @@ public interface IStock {
 	 * @return Devuelve todas las acciones terapéuticas del sistema en un Map para un acceso rápido.
 	 */
 	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones;
+	
+	 /**
+	  * Busca los articulos que coinciden con el string buscar y devuelve los datos necesarios
+	  * para la venta
+	  * @param busqueda - string ingresado
+	  * @return List<DTVenta> Lista de articulos encontrados
+	  * @throws Excepciones
+	  * @author Victoria Diaz
+	  */
+	public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones;
 }
