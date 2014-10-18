@@ -1,4 +1,5 @@
 package interfaces;
+import controladores.Excepciones;
 import model.Pedido;
 
 /**  
@@ -6,5 +7,10 @@ import model.Pedido;
 *
 */
 public interface IServicio {
-	public void realizarPedido (Pedido p);
+	
+	/**
+	 * @author Guille
+	 * @param p Pedido 
+	 */
+	public void realizarPedido (Pedido p) throws Excepciones;
 }

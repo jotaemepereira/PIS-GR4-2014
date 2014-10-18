@@ -148,12 +148,13 @@ public class StockControlador implements IStock {
 	 * 
 	 * @author Santiago
 	 */
-	public void realizarPedido(Pedido p){
+	@Override
+	public void realizarPedido(Pedido p) throws Excepciones{
 		IServicio is = FabricaServicios.getIServicios();
 		is.realizarPedido(p);
+		
 		IStockPersistencia isp = FabricaPersistencia.getStockPersistencia();
 		isp.persistirPedido(p);
-		
 	}
 
 	@Override

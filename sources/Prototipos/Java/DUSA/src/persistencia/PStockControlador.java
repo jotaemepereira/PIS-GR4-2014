@@ -445,6 +445,9 @@ public class PStockControlador implements IStockPersistencia {
 				e.printStackTrace();
 				throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 			}
+		} catch (Excepciones e){
+			//Paso las excepciones personalizadas. 
+			throw e;
 		} catch (Exception e) {
 			// Error de conexión con la base de datos
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
@@ -645,6 +648,7 @@ public class PStockControlador implements IStockPersistencia {
 			rs.close();
 			stmt.close();
 		} catch (Exception e){
+			e.printStackTrace();
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		
