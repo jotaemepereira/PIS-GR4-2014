@@ -30,7 +30,6 @@
 		</style>
 	</h:head>
 	<h:body>
-		<link href="../CSS/altaProveedor.css" rel="stylesheet" />
 		<h:form id="form1">
 			<p:hotkey bind="Ctrl+return" update="panel msgs" actionListener="#{proveedoresBean.altaProveedor}"/>
 			<ui:include src="../cabezal.xhtml" />
@@ -87,7 +86,14 @@
 										<p:inputText id="nombreComercial" styleClass="form-control" value="#{proveedoresBean.nombreComercial}" requiredMessage="Para continuar complete todos los campos obligatorios" height="100%" required="true" />
 									</div>
 								</div>
-									
+								
+								<div class="row" style="margin-bottom: 1%;">
+									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+										<p:outputLabel for="marcaOlab" value="Es marca o laboratorio:" />
+										<p:selectBooleanCheckbox  id="marcaOlab" styleClass="checkbox" value="#{proveedoresBean.marcaOlab}" height="100%" required="false" type="checkbox" />
+									</div>
+								</div>
+
 								<div class="row" style="margin-bottom: 1%;">
 									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 										<div class="btn-group pull-right">

@@ -9,6 +9,7 @@ public class Proveedor {
 	private String direccion = "";
 	private String nombreComercial = "";
 	private String tipoDocumento = "";
+	private Boolean marcaOlab = false;
 	
 	public Proveedor(String nombreComercial) throws Excepciones{
 		if((nombreComercial == null) || (nombreComercial.trim().isEmpty())){
@@ -72,5 +73,16 @@ public class Proveedor {
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		this.tipoDocumento = tipoDocumento;
+	}
+
+	public Boolean getMarcaOlab() {
+		return marcaOlab;
+	}
+
+	public void setMarcaOlab(Boolean marcaOlab) throws Excepciones{
+		if(marcaOlab == null){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		this.marcaOlab = marcaOlab;
 	}
 }
