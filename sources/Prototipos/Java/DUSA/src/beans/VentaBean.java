@@ -62,7 +62,7 @@ public class VentaBean implements Serializable {
 			if (!(descripcionBusqueda.isEmpty())
 					&& v.getDescripcion().contains(descripcionBusqueda)) {
 				lineasVenta.add(v);
-				strDescuentoPrecio(v); // ****estoy llamando a esta funcion para calcular los precios con descuentos hay que ver bien lo de los descuentos y arreglarla ****
+				//strDescuentoPrecio(v); // ****estoy llamando a esta funcion para calcular los precios con descuentos hay que ver bien lo de los descuentos y arreglarla ****
 			}
 		}
 		
@@ -79,8 +79,6 @@ public class VentaBean implements Serializable {
 		
 		**/
 		
-		//llamo al inicializar los descuentos q puede seleccionar el vendedor
-		//iniDescuentos();
 
 	}
 	
@@ -95,14 +93,18 @@ public class VentaBean implements Serializable {
 	}**/
 	
 	//para calcular el precio con el descuento a poner cuando lista los articulos en la busqueda, falta terminar
-	public String strDescuentoPrecio(DTVenta v){
+	public void strDescuentoPrecio(){
 		
-		BigDecimal x = (v.getPrecioVenta().multiply(new BigDecimal(descuento))).divide(new BigDecimal(100));
+		Iterator<DTVenta> it = lineasVenta.iterator();
+		while (it.hasNext()) {
+			DTVenta v = it.next();
 		
-		String res= venta.getPrecioVenta().subtract(x).toString()+"("+"%"+descuento.toString()+")";
+		BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento())).divide(new BigDecimal(100));
 		
-		setStrDescuento(res);
-		return res;
+		  v.setDescuentoPrecio(venta.getPrecioVenta().subtract(x).toString()+"("+"%"+v.getDescuento().toString()+")");
+		
+		}
+		
 	}
 	
 	public void agregarLineaVentaPerdida(DTVenta vp){
