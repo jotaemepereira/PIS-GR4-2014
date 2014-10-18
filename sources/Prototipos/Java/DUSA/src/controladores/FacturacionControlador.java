@@ -27,13 +27,13 @@ public class FacturacionControlador implements IFacturacion {
 	}
 
 	@Override
-	public void facturarVenta(Venta venta) throws Exception {
+	public void facturarVenta(long ventaId) throws Exception {
 		try {
 			IFacturacionPersistencia ifp = FabricaPersistencia
 					.getInstanciaFacturacionPersistencia();
 
 			// Obtengo venta pendiente y la marco como en proceso de facturación
-			ifp.facturarVenta(venta);
+			Venta venta = ifp.facturarVenta(ventaId);
 
 			// Creo factura
 			File f = XMLUtil.jaxbObjectToXML(venta);

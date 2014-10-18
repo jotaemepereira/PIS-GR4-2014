@@ -1,0 +1,36 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+<meta charset="utf-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<link href="CSS/bootstrap.min.css" rel="stylesheet"></link>
+<link href="CSS/signin.css" rel="stylesheet"></link>
+
+<title>Inicio de sesion</title>
+
+</head>
+
+<body>
+
+	<div class="container">
+
+		<form class="form-signin" role="form">
+			<div class="text-center">
+				<img src="Images/Drcurita.png" style="height: 150px; width: 120px"></img>
+			</div>
+			<h2 class="form-signin-heading">Iniciar sesión</h2>
+			<p:inputText value="#{loginBean.nomUsuario}" type="text" styleClass="form-control"
+				placeholder="Nombre de usuario"/>
+			<p:inputText value="#{loginBean.contrasenia}" type="password" styleClass="form-control"
+				placeholder="Contraseña"/>
+			<h:commandButton value="Entrar" actionListener="#{loginBean.iniciarSesion()}" styleClass="btn btn-lg btn-primary btn-block" type="submit"/>
+		</form>
+
+	</div>
+	<!-- /container -->
+</body>
+</html>

@@ -21,9 +21,9 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 		PreparedStatement stmt = null;
 		
 		String query = "INSERT INTO suppliers " +
-						"(document_type, document, companyname, phone, supplier_address, comercialname, last_modified, status) " +
+						"(document_type, document, companyname, phone, supplier_address, comercialname, last_modified, is_lab_or_brand, status) " +
 						" VALUES " +
-						" (?, ?, ?, ?, ?, ?, ?, ?);";
+						" (?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		
 		try {
 			Connection c = Conexion.getConnection();
@@ -41,7 +41,8 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 			stmt.setString(5, proveedor.getDireccion());
 			stmt.setString(6, proveedor.getNombreComercial());
 			stmt.setDate(7, new java.sql.Date(time));
-			stmt.setBoolean(8, true);
+			stmt.setBoolean(8, proveedor.getMarcaOlab());
+			stmt.setBoolean(9, true);
 			
 			stmt.executeUpdate();
 			stmt.close();

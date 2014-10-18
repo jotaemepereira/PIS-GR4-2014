@@ -3,8 +3,8 @@ package datatypes;
 public class DTBusquedaArticulo {
 	private int idArticulo;
 	private String descripcion;
-	private String proveedores;
-	private String presentaciones;
+	private String marca;
+	private String presentacion;
 	private String droga;
 	private String accionesTerapeuticas;
 	private String codigoBarras;
@@ -14,12 +14,6 @@ public class DTBusquedaArticulo {
 	}
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
-	}
-	public String getProveedores() {
-		return proveedores;
-	}
-	public void setProveedores(String proveedores) {
-		this.proveedores = proveedores;
 	}
 	public String getDroga() {
 		return droga;
@@ -33,12 +27,6 @@ public class DTBusquedaArticulo {
 	public void setIdArticulo(int idArticulo) {
 		this.idArticulo = idArticulo;
 	}
-	public String getPresentaciones() {
-		return presentaciones;
-	}
-	public void setPresentaciones(String presentaciones) {
-		this.presentaciones = presentaciones;
-	}
 	public String getCodigoBarras() {
 		return codigoBarras;
 	}
@@ -50,6 +38,18 @@ public class DTBusquedaArticulo {
 	}
 	public void setAccionesTerapeuticas(String accionesTerapeuticas) {
 		this.accionesTerapeuticas = accionesTerapeuticas;
+	}
+	public String getMarca() {
+		return marca;
+	}
+	public void setMarca(String marca) {
+		this.marca = marca;
+	}
+	public String getPresentacion() {
+		return presentacion;
+	}
+	public void setPresentacion(String presentacion) {
+		this.presentacion = presentacion;
 	}
 
 }
