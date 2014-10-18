@@ -26,7 +26,12 @@ public class Excepciones extends Exception {
 	// Mensajes para Artículo
 	public static String MENSAJE_ART_DUPLICADO					= "Ya existe un artículo en el sistema con esa descripción";
 	
-    public Excepciones(String message, int errorCode){
+    // Mensajes para el Login
+	public static String USUARIO_INVALIDO						= "No existe un usuario con ese nombre";
+	public static String CONSTRASENIA_INVALIDA					= "Contrasenia incorrecta";
+	
+	
+	public Excepciones(String message, int errorCode){
         super(message);
         this.errorCode = errorCode;
     }
