@@ -58,58 +58,65 @@
 												value="#{stockBean.resBusqueda}">
 												<div class="row">
 													<p:column headerText="Descripción"
-														styleClass="col-xs-3 col-sm-2 col-md-2 col-lg-2">
+														styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 														<h:outputText value="#{articuloBusqueda.descripcion}" />
 													</p:column>
 
 													<p:column headerText="Tipo de artículo"
-														styleClass="hidden-xs col-sm-2 col-md-1 col-lg-1">
+														styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 														<h:outputText value="#{articuloBusqueda.tipoDeArticulo}" />
 													</p:column>
 
-													<p:column headerText="Proveedores"
-														styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
-														<h:outputText value="#{articuloBusqueda.proveedores}" />
+													<p:column headerText="Marca"
+														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.marca}" />
 													</p:column>
 
-													<p:column headerText="Presentación"
-														styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+													<p:column headerText="Present."
+														styleClass="col-xs-3 col-xs-2 col-md-2 col-lg-1">
 														<h:outputText value="#{articuloBusqueda.presentacion}" />
 													</p:column>
 
 													<p:column headerText="Droga"
-														styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+														styleClass="hidden-xs col-sm-2 col-md-2 col-lg-1">
 														<h:outputText value="#{articuloBusqueda.droga}" />
 													</p:column>
 
 													<p:column headerText="Control de venta"
-														styleClass="col-xs-4 col-sm-3 col-md-1 col-lg-1">
+														styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 														<h:outputText value="#{articuloBusqueda.controlDeVenta}" />
 													</p:column>
 
-													<p:column headerText="Precio público"
-														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-														<h:outputText value="#{articuloBusqueda.precioPublico}" />
-													</p:column>
-													
-													<p:column headerText="Precio de venta"
-														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-														<h:outputText value="#{articuloBusqueda.precioDeVenta}" />
+													<p:column headerText="Precios"
+														styleClass="col-xs-3 col-sm-3 col-md-1 col-lg-2">
+														
+														<div>
+															<h:outputLabel>P&uacute;blico: </h:outputLabel>
+															<h:outputText value="#{articuloBusqueda.precioPublico}" />
+														</div>
+														
+														<div>
+															<h:outputLabel>De venta: </h:outputLabel>
+															<h:outputText value="#{articuloBusqueda.precioDeVenta}" />
+														</div>
 													</p:column>
 													
 													<p:column headerText="Costo de lista"
-														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-														<h:outputText value="#{articuloBusqueda.costoDeLista}" />
-													</p:column>
-													
-													<p:column headerText="Costo real"
-														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-														<h:outputText value="#{articuloBusqueda.costoReal}" />
-													</p:column>
-													
-													<p:column headerText="Costo ponderado"
-														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-														<h:outputText value="#{articuloBusqueda.costoPonderado}" />
+														styleClass="hidden-xs hidden-sm col-md-1 col-lg-2">
+														<div>
+															<h:outputLabel>De lista: </h:outputLabel>
+															<h:outputText value="#{articuloBusqueda.costoDeLista}" />
+														</div>
+														
+														<div>
+															<h:outputLabel>Real: </h:outputLabel>
+															<h:outputText value="#{articuloBusqueda.costoReal}" />
+														</div>
+														
+														<div>
+															<h:outputLabel>Pond: </h:outputLabel>
+															<h:outputText value="#{articuloBusqueda.costoPonderado}" />
+														</div>
 													</p:column>
 
 												</div>

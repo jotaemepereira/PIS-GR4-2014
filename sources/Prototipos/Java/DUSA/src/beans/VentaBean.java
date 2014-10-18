@@ -16,7 +16,7 @@ import javax.faces.event.ActionEvent;
 import controladores.Excepciones;
 import controladores.FabricaSistema;
 import persistencia.Database;
-import datatypes.DTBusquedaArticulo;
+import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTVenta;
 
 @ManagedBean
