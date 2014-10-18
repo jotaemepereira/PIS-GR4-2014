@@ -41,6 +41,8 @@ public class VentaBean implements Serializable {
 	private List<DTVenta> lineasVentaPerdidas = new ArrayList<DTVenta>();
 	private List<DTVenta> ventasSeleccionadas = new ArrayList<DTVenta>();
 	private String strDescuento;
+	private boolean descuentoReceta1 = false;
+	private boolean descuentoReceta2 = false;
 
 	public VentaBean() {
 		// agregarLineasVenta();
@@ -81,16 +83,6 @@ public class VentaBean implements Serializable {
 
 	}
 	
-	/**public void iniDescuentos(){
-		// inicializo los descuentos ya fijos q puede seleccionar el vendedor:
-		descuentos = new ArrayList<Integer>();
-		int x = 5;
-		while (x <= 15) {
-			descuentos.add(x);
-			x = x + 5;
-		}
-	}**/
-	
 	//para calcular el precio con el descuento a poner cuando lista los articulos en la busqueda, falta terminar
 	public void strDescuentoPrecio(){
 		
@@ -108,34 +100,22 @@ public class VentaBean implements Serializable {
 	
 	public void agregarLineaVentaPerdida(DTVenta vp){
 		vp.setCantidad(1);
+		lineasVenta.remove(vp);
 		lineasVentaPerdidas.add(vp);
+		FacesContext.getCurrentInstance().addMessage(
+				null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Venta perdida ingresada con éxito", ""));
 	}
 	
 
-
 	public void agregarLineaVenta(DTVenta v){
-
+		
 		v.setCantidad(1);
 		lineasVenta2.add(v);
 		lineasVenta.remove(v);
 	}
 	
-	// este agregar es para agregar los productos buscados a la venta
-	/**public void agregarLinea(ActionEvent actionEvent) {
-
-		Iterator<DTVenta> it = ventasSeleccionadas.iterator();
-		while (it.hasNext()) {
-			DTVenta d = it.next();
-			// Aca se hace el descuento correspondiente:
-			BigDecimal x = (d.getPrecioVenta().multiply(d.getDescuento()));
-			BigDecimal a = new BigDecimal(100);
-			d.setPrecioVenta(d.getPrecioVenta().subtract(x.divide(a)));
-			d.setCantidad(1);
-			lineasVenta2.add(d);
-
-		}
-
-	}**/
 
 	public String strTotal() {
 		BigDecimal total = new BigDecimal(0);
@@ -145,9 +125,22 @@ public class VentaBean implements Serializable {
 			//calculo lo que tengo que restarle al precio segun el descuento seleccionado:
 			BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento())).divide(new BigDecimal(100));
 			
+			BigDecimal n = new BigDecimal(0);
+			//calculo descuento por receta blanca 1 
+			if (descuentoReceta1){
+				n = (v.getPrecioVenta().multiply(new BigDecimal(25))).divide(new BigDecimal(100));
+				descuentoReceta1 = false;
+			}
+			//calculo descuento por receta blanca 2 
+			if (descuentoReceta2){
+				n = (v.getPrecioVenta().multiply(new BigDecimal(30))).divide(new BigDecimal(100));
+				descuentoReceta2 = false;
+			}
+			
 			//sumo los totales restandole los descuentos correspondientes a cada uno y los multiplico por las cantidades
-			total = total.add((v.getPrecioVenta().subtract(x)).multiply(
+			total = total.add(((v.getPrecioVenta().subtract(x)).subtract(n)).multiply(
 					new BigDecimal(v.getCantidad())));
+			
 		}
 		return total.toString();
 	}
@@ -275,6 +268,22 @@ public class VentaBean implements Serializable {
 
 	public void setStrDescuento(String strDescuento) {
 		this.strDescuento = strDescuento;
+	}
+
+	public boolean isDescuentoReceta1() {
+		return descuentoReceta1;
+	}
+
+	public void setDescuentoReceta1(boolean descuentoReceta1) {
+		this.descuentoReceta1 = descuentoReceta1;
+	}
+
+	public boolean isDescuentoReceta2() {
+		return descuentoReceta2;
+	}
+
+	public void setDescuentoReceta2(boolean descuentoReceta2) {
+		this.descuentoReceta2 = descuentoReceta2;
 	}
 
 

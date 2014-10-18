@@ -43,6 +43,9 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 				usr.setPwd_hash(rs.getString("pwd_hash"));
 				usr.setEstado(rs.getBoolean("status"));
 			}
+			stmt.close();
+			c.close();
+
 			
 		} catch (Exception e){
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
@@ -67,11 +70,16 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 				roles.add(rol);
 			}
 			usr.setRoles(roles);
+			stmt.close();
+			c.close();
+
 		} catch (Exception e){
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		
-		
+		/**
+		 * obtengo las operaciones permitidas por cada rol que tiene el usuario
+		 */
 		
 		Iterator<Rol> it = usr.getRoles().iterator();
 		while (it.hasNext()){
@@ -93,6 +101,9 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 					ops.add(op);
 				}
 				rol.setOperaciones(ops);
+				stmt.close();
+				c.close();
+
 
 			} catch (Exception e){
 				throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
@@ -116,13 +127,32 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 				while(rs.next()){ 
 				    rol.setNombre(rs.getString("rolename"));
 				}
+				stmt.close();
+				c.close();
+
 			} catch (Exception e){
 				throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 			}
 		}
 		return usr;
 }
-	public void registrarActividad(Actividad actividad)throws Excepciones{
+	public void registrarActividad(Actividad act)throws Excepciones{
+		PreparedStatement stmt = null;
+		String query = "INSERT INTO USER_ACTIVITY "+ 
+						"(USER_ID, OPERATION_ID, OPERATION_NAME, LOG_DATE) " +
+						"VALUES (  " + act.getUserId() + " , "+ act.getOpId() +" , '"+ act.getOpName() +"' , " + "LOCALTIMESTAMP );" ;
+		
+		try {
+			Connection c = Conexion.getConnection();			
+			stmt = c.prepareStatement(query);
+			stmt.executeUpdate();
+			stmt.close();
+			c.close();
+
+		} catch (Exception e){
+			e.printStackTrace();
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
 		
 	}
 

@@ -10,9 +10,7 @@ public interface IFacturacionPersistencia {
 	
 	public List<Venta> listarVentasPendientes() throws Exception;
 
-	public void facturarVenta(long ventaId) throws Exception;
-
-	public void facturarVenta(Venta venta) throws Exception;
+	public Venta facturarVenta(long ventaId) throws Exception;
 	
 	public void marcarVentaFacturada(long ventaId) throws Exception;
 
