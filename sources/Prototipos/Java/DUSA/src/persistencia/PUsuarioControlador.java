@@ -27,9 +27,10 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 	public Usuario getUsuario(long idUsuario, String contrasenia) throws Excepciones{
 		Usuario usr = null;
 		PreparedStatement stmt = null;
-		String query = "SELECT u.user_id, u.username, u.pwd_hash " + 
+		contrasenia = "\'" + contrasenia + "\'";
+		String query = "SELECT u.user_id, u.username, u.pwd_hash, u.status " + 
 						"FROM USERS u " +
-						"WHERE status <> FALSE AND user_id=" + idUsuario +" AND psw_hash ="+ contrasenia;
+						"WHERE status <> FALSE AND user_id=" + idUsuario +" AND pwd_hash ="+ contrasenia + ";";
 		
 		try {
 			Connection c = Conexion.getConnection();			
@@ -40,6 +41,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 				usr.setUsuarioId(rs.getInt("user_id"));
 				usr.setNombre(rs.getString("username"));
 				usr.setPwd_hash(rs.getString("pwd_hash"));
+				usr.setEstado(rs.getBoolean("status"));
 			}
 			
 		} catch (Exception e){
@@ -47,13 +49,13 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 		}
 		/**
 		 * obtengo los roles del usuario
-		 * falta sacar el nombre del rol
+		 * 
 		 */
 		stmt = null;
 		query = null;
 		query = "SELECT ur.role_id " + 
 				"FROM USER_ROLES ur " +
-				"WHERE user_id=" + idUsuario;
+				"WHERE user_id=" + idUsuario + ";";
 		try{
 			Connection c = Conexion.getConnection();			
 			stmt = c.prepareStatement(query);
@@ -76,9 +78,9 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 			Rol rol = (Rol)it.next();
 			stmt = null;
 			query = null;
-			query = "SELECT op.operation_id " + 
+			query = "SELECT op.operation_id ," + " operation_name " + 
 					"FROM OPERATION_PERMISSIONS op " +
-					"WHERE role_id=" + rol.getId();
+					"WHERE role_id=" + rol.getId() + ";";
 			try{
 				Connection c = Conexion.getConnection();			
 				stmt = c.prepareStatement(query);
@@ -91,12 +93,33 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 					ops.add(op);
 				}
 				rol.setOperaciones(ops);
-		
+
 			} catch (Exception e){
 				throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 			}
 		}
-		
+		/**
+		 * le agrego los nombres a los roles
+		 */
+		it = usr.getRoles().iterator();
+		while (it.hasNext()){
+			Rol rol = (Rol)it.next();
+			stmt = null;
+			query = null;
+			query = "SELECT rolename " + 
+					"FROM ROLES " +
+					"WHERE role_id=" + rol.getId() + ";";
+			try{
+				Connection c = Conexion.getConnection();			
+				stmt = c.prepareStatement(query);
+				ResultSet rs = stmt.executeQuery();
+				while(rs.next()){ 
+				    rol.setNombre(rs.getString("rolename"));
+				}
+			} catch (Exception e){
+				throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+			}
+		}
 		return usr;
 }
 	public void registrarActividad(Actividad actividad)throws Excepciones{
