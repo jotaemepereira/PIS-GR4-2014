@@ -39,16 +39,17 @@ public class GeneradorPedido {
 		
 		Pedido pedido = new Pedido();
 		List<Long> articulos = this.seleccionador.getIDArticulos();
-		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
 		
 		for (Long idArticulo : articulos) {
-			
-			if (sp.existeArticuloDeDUSA(idArticulo)) {
+
+			int cantidad = this.predictor.predecir(idArticulo);
+			if (cantidad > 0){		
+
+				LineaPedido lPedido = new LineaPedido();
+				lPedido.setIdArticulo(idArticulo);
+				lPedido.setCantidad(cantidad);
 				
-				int cantidad = this.predictor.predecir(idArticulo);
-				if (cantidad > 0){		
-					pedido.agregarArticulo(idArticulo, cantidad);
-				}
+				pedido.getLineas().add(lPedido);
 			}
 		}
 		

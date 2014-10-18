@@ -362,7 +362,6 @@ public class PStockControlador implements IStockPersistencia {
 	
 	/**
 	 * @author santiago 
-	 * no deberia ser solo a los articulos de DUSA ?
 	 * @throws Excepciones 
 	 */
 	@Override
@@ -406,6 +405,7 @@ public class PStockControlador implements IStockPersistencia {
 		try {
 			
 			Connection c = Conexion.getConnection();
+			c.setAutoCommit(false);
 			try {
 				
 				stmt = c.prepareStatement(query);
@@ -436,6 +436,9 @@ public class PStockControlador implements IStockPersistencia {
 					
 					stmt.executeUpdate();
 				}
+				//commit de los cambios y cerrar los canales
+				c.commit();
+				
 				stmt.close();
 				c.close();
 			} catch ( Exception e ) {
@@ -457,23 +460,29 @@ public class PStockControlador implements IStockPersistencia {
 	
 	/**
 	 * @author santiago 
-	 * no deberia ser solo a los articulos de DUSA ?
 	 */
 	@Override
 	public List<Long> obtenerIdTodosLosArticulos() throws Excepciones{
 		List<Long> idArts = new ArrayList<Long>();
 		PreparedStatement stmt = null;
-		String query = "SELECT product_id FROM products; ";
+		String query = "SELECT product_id "
+						+ "FROM products p "
+						+ "INNER JOIN products_suppliers ps ON p.product_id = ps.product_id "
+						+ "WHERE ps.supplier_id = ? AND p.status = ?;";
 		
 		try {
 			
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
+			stmt.setInt		(1, 1); //Hay que ver cual es el bien el identificador para hardcodearlo
+			stmt.setBoolean	(2, true);
+			
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()){
 				idArts.add(rs.getLong(1));
 			}
+			
 			rs.close();
 			stmt.close();
 			c.close();
@@ -481,6 +490,7 @@ public class PStockControlador implements IStockPersistencia {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
+		
 		return idArts;
 	}
 	

@@ -221,6 +221,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			con = Conexion.getConnection();
 			String sql = "SELECT distinct product_id " + 
 							"FROM sale_details sd " +
+								"INNER JOIN products_suppliers ps ON sd.product_id = ps.product_id " +
 								"INNER JOIN products p ON p.product_id = sd.product_id " +
 								  "WHERE ps.supplier_id = ? AND " +
 								  		"p.status = ? AND " +
@@ -228,10 +229,11 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 															+ "WHERE s.sale_status = ? "
 																+ "AND s.sale_date BETWEEN ? AND ?);";
 			stmt = con.prepareStatement(sql);
-			stmt.setBoolean(1, true);
-			stmt.setString(2, "'" + Enumerados.EstadoVenta.FACTURADA + "'");
-			stmt.setString(3, desde.toString());
-			stmt.setString(4, hasta.toString());
+			stmt.setInt		(1, 1); //Hay que ver cual es el bien el identificador para hardcodearlo
+			stmt.setBoolean	(2, true);
+			stmt.setString	(3, "'" + Enumerados.EstadoVenta.FACTURADA + "'");
+			stmt.setString	(4, desde.toString());
+			stmt.setString	(5, hasta.toString());
 			ResultSet rs = stmt.executeQuery();
 			
 			stmt.close();
@@ -274,7 +276,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			
 			stmt.close();
 			con.close();
-			
+			//Obtengo la cantidad total
 			while (rs.next()) {
 				cantidadVendida = rs.getInt("total"); 
 			}

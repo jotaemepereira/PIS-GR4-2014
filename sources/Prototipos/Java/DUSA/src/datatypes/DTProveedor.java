@@ -1,9 +1,14 @@
 package datatypes;
 
+/**
+ * 
+ * @author Guille
+ * 
+ */
 public class DTProveedor {
 	private int idProveedor;
 	private String nombreComercial;
-	private long codigoIdentificador;
+	private long codigoIdentificador; //Id del articulo para el proveedor 
 	private String idLinea;
 	
 	public int getIdProveedor() {

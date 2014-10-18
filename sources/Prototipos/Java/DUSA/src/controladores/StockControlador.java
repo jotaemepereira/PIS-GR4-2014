@@ -150,6 +150,7 @@ public class StockControlador implements IStock {
 	 */
 	@Override
 	public void realizarPedido(Pedido p) throws Excepciones{
+		
 		IServicio is = FabricaServicios.getIServicios();
 		is.realizarPedido(p);
 		

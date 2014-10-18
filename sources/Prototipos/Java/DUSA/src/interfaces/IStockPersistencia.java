@@ -24,7 +24,8 @@ public interface IStockPersistencia {
 	
 	/**
 	 * Retorna la fecha del ultimo pedido realizado a D.U.S.A.
-	 * @author Juan Manuel, Guille
+	 * @author Juan Manuel
+	 * @author Guille
 	 * @return Date, fecha del ultimo pedido.
 	 * @throws Excepciones
 	 */
@@ -41,10 +42,26 @@ public interface IStockPersistencia {
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones;
 	public void fullImportSolr() throws Excepciones;
 	public void deltaImportSolr() throws Excepciones;
+	
+	/**
+	 * @author Santiago
+	 * @param idArticulo
+	 * @return cantidad de Stock del articulo con id articulo
+	 * @throws Excepciones
+	 */
 	public int getStock(long idArticulo) throws Excepciones;
+	
+	/**
+	 * Retorna una lista de ids de articulos, SOLO de D.U.S.A. y no borrados.
+	 * @return Lista de ids de articulos de D.U.S.A.
+	 * @throws Excepciones
+	 * @author Santiago
+	 * @author Guille
+	 */
 	public List<Long> obtenerIdTodosLosArticulos() throws Excepciones;
 	
 	/**
+	 * @deprecated
 	 * @author Guille
 	 * @param idArticulo
 	 * @return true si D.U.S.A. maneja el articulo con id "idArticulo"
@@ -65,6 +82,7 @@ public interface IStockPersistencia {
 	
 	/**
 	 * Obtener el articulo con id "idArticulo" y su informacion basica de proveedores (DTProveedores)
+	 * @author Guille
 	 * @param idArticulo 
 	 * @return Articulo con id idArticulo, null si no lo encuentra
 	 * @throws Excepciones
