@@ -39,9 +39,10 @@
 										<p:dataGrid var="venta2" value="#{ventaBean.lineasVenta2}"
 											columns="1" layout="grid" rows="20" id="GridVentas2">
 											<p:panel style="text-align:center">
-												<h:panelGrid columns="2" style="width:100%">
+												<h:panelGrid columns="3" style="width:100%">
 													<h:outputText value=" #{venta2.nombre}" />
 													<h:outputText value="$ #{venta2.precioVenta}" />
+													<h:outputText value=" " />
 													
 													<h:outputText value=" #{venta2.presentacion}" />
 													<p:inputText id="cantidad" value="#{venta2.cantidad}"
@@ -50,8 +51,26 @@
 															process="@this" />
 														<p:ajax listener="#{ventaBean.strSubTotal()}" update="GridVentas2 :form1:subTotal"
 															process="@this" />
-
 													</p:inputText>
+													
+													<p:outputPanel
+														visible="#{venta2.isRecetaBlanca}"
+														style="width: 100px; padding: 0; margin: 0;">
+															<h:panelGrid columns="2" cellpadding="5">
+															<h:outputText value=" %25 " />
+															<p:selectBooleanCheckbox
+																value="#{ventaBen.descuentoReceta1}">
+															</p:selectBooleanCheckbox>
+															<h:outputText value=" %30 " />
+															<p:selectBooleanCheckbox
+																value="#{ventaBen.descuentoReceta2}">
+															</p:selectBooleanCheckbox>
+															<p:commandButton value="Agregar Descuento Receta" id="ajax5"
+															actionlistener="#{ventaBean.strTotal()}" update="GridVentas2 :form1:total"
+															process="@this"/>
+															</h:panelGrid>
+														
+													</p:outputPanel>
 												</h:panelGrid>
 											</p:panel>
 										</p:dataGrid>
@@ -127,7 +146,7 @@
 															process="@this" />
 													</p:inputText>
 													<p:outputPanel
-														visible="#{venta.isRecetaNaranja}"
+														visible="#{venta.isRecetaBlanca}"
 														style="width: 100px; padding: 0; margin: 0;">
 														<p:selectBooleanCheckbox
 															value="#{venta.recetaBlanca}">
