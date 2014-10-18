@@ -1,5 +1,6 @@
 package interfaces;
 
+import controladores.Excepciones;
 import model.Actividad;
 import model.Usuario;
 
@@ -10,7 +11,7 @@ import model.Usuario;
  */
 public interface IUsuarioPersistencia {
 	
-	public Usuario getUsuario(long idUsuario, String contrasenia);
-	public void registrarActividad(Actividad actividad);
+	public Usuario getUsuario(long idUsuario, String contrasenia) throws Excepciones;
+	public void registrarActividad(Actividad actividad) throws Excepciones;
 
 }
