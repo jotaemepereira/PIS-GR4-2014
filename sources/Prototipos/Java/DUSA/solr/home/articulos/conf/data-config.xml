@@ -6,11 +6,13 @@
 
 	<document name="productos">
 		<entity name="stock"
-			query="SELECT P.PRODUCT_ID AS id, P.PRODUCT_ID, P.DESCRIPTION, P.KEY1, P.KEY2, P.KEY3, P.BARCODE, P.KEY1 || P.KEY2 || P.KEY3 AS CRITERIO_INTERNO
+			query="SELECT P.PRODUCT_ID AS id, P.PRODUCT_ID, P.DESCRIPTION, P.KEY1, P.KEY2, P.KEY3, P.BARCODE, P.KEY1 || P.KEY2 || P.KEY3 AS CRITERIO_INTERNO, P.PRESENTATION, M.COMERCIALNAME AS MARCA
 				                       FROM PRODUCTS P 
+				                       LEFT JOIN SUPPLIERS M ON M.SUPPLIER_ID = P.BRAND_ID
 				                       WHERE KEY1 != 'PRODU' AND SALE_PRICE > 0 AND STATUS = 't'"
-			deltaImportQuery="SELECT PRODUCT_ID AS id, DESCRIPTION, KEY1, KEY2, KEY3, BARCODE, KEY1 || KEY2 || KEY3 AS CRITERIO_INTERNO 
-					 					FROM PRODUCTS 
+			deltaImportQuery="SELECT P.PRODUCT_ID AS id, P.DESCRIPTION, P.KEY1, P.KEY2, P.KEY3, P.BARCODE, P.KEY1 || P.KEY2 || P.KEY3 AS CRITERIO_INTERNO, P.PRESENTATION, M.COMERCIALNAME AS MARCA
+					 					FROM PRODUCTS P
+					 					LEFT JOIN SUPPLIERS M ON M.SUPPLIER_ID = P.BRAND_ID
 					 					WHERE PRODUCT_ID = '${dih.delta.id}'"
 			deltaQuery="SELECT P.PRODUCT_ID AS id
 				                       FROM PRODUCTS P 
@@ -24,6 +26,8 @@
 			<field column="KEY3" name="KEY3" />
 			<field column="BARCODE" name="BARCODE" />
 			<field column="CRITERIO_INTERNO" name="CRITERIO_INTERNO" />
+			<field column="MARCA" name="MARCA" />
+			<field column="PRESENTATION" name="PRESENTATION" />
 			
 			<entity name="drugs"
 				query="SELECT D.DESCRIPTION AS DROGAS
@@ -31,13 +35,6 @@
 							INNER JOIN DRUGS D ON D.DRUG_ID = PD.DRUG_ID
 							WHERE PD.PRODUCT_ID = '${stock.id}'">
 					<field column="DROGAS" name="DROGAS" />
-			</entity>
-			
-			<entity name="presentaciones"
-				query="SELECT DESCRIPTION AS PRESENTACIONES 
-							FROM PRODUCT_PRESENTATIONS 
-							WHERE PRODUCT_ID = '${stock.id}'">
-					<field column="PRESENTACIONES" name="PRESENTACIONES" />
 			</entity>
 			
 			<entity name="acciones_terapeuticas"

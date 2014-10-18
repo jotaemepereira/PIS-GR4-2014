@@ -204,10 +204,11 @@ public class PStockControlador implements IStockPersistencia {
 							" DESCRIPTION:" + regexpBusqueda + 
 							" BARCODE:" + regexpBusqueda +
 							" DROGAS: " + regexpBusqueda +
-							" PRESENTACIONES: " + regexpBusqueda + 
-							" ACCIONES_TERAPEUTICAS: " + regexpBusqueda);
+							" PRESENTATION: " + regexpBusqueda + 
+							" ACCIONES_TERAPEUTICAS: " + regexpBusqueda +
+							" MARCA: " + regexpBusqueda);
 		parameters.set("wt", "json");
-		parameters.set("fl", "DESCRIPTION id BARCODE DROGAS PRESENTACIONES ACCIONES_TERAPEUTICAS");
+		parameters.set("fl", "DESCRIPTION id BARCODE DROGAS PRESENTATION ACCIONES_TERAPEUTICAS MARCA");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
@@ -227,17 +228,21 @@ public class PStockControlador implements IStockPersistencia {
 				}else{
 					articulo.setDroga(item.getFieldValue("DROGAS").toString().replace("[", "").replace("]", ""));
 				}
-				if(item.getFieldValue("PRESENTACIONES") == null){
-					articulo.setPresentaciones("");
+				if(item.getFieldValue("PRESENTATION") == null){
+					articulo.setPresentacion("");
 				}else{
-					articulo.setPresentaciones(item.getFieldValue("PRESENTACIONES").toString().replace("[", "").replace("]", ""));
+					articulo.setPresentacion(item.getFieldValue("PRESENTATION").toString());
 				}
 				if(item.getFieldValue("ACCIONES_TERAPEUTICAS") == null){
 					articulo.setAccionesTerapeuticas("");
 				}else{
 					articulo.setAccionesTerapeuticas(item.getFieldValue("ACCIONES_TERAPEUTICAS").toString().replace("[", "").replace("]", ""));
 				}
-				
+				if(item.getFieldValue("MARCA") == null){
+					articulo.setMarca("");
+				}else{
+					articulo.setMarca(item.getFieldValue("MARCA").toString());
+				}
 				listaArticulos.add(articulo);
 			}
 		} catch (SolrServerException e) {
@@ -276,7 +281,6 @@ public class PStockControlador implements IStockPersistencia {
 		}
 		
 		articulo.setCantidad(0);
-		articulo.setLaboratorio("laboratorio");
 		articulo.setRecetaBlanca(false);
 		
 		/*
