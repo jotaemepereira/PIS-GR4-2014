@@ -127,5 +127,30 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 		}
 		return ret;		
 	}
+
+	@Override
+	public List<DTProveedor> obtenerMarcas() throws Excepciones {
+		List<DTProveedor> ret = null;
+		PreparedStatement stmt = null;
+		String query = "SELECT s.supplier_id, s.comercialname " +
+						"FROM SUPPLIERS s " +
+						"WHERE s.is_lab_or_brand = TRUE AND s.status <> FALSE";
+		
+		try {
+			Connection c = Conexion.getConnection();			
+			stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			ret = new ArrayList<DTProveedor>();
+			while(rs.next()){
+				DTProveedor nuevo = new DTProveedor();
+				nuevo.setIdProveedor(rs.getInt("supplier_id"));
+				nuevo.setNombreComercial(rs.getString("comercialname"));
+				ret.add(nuevo);
+			}
+		} catch (Exception e){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		return ret;		
+	}
 	
 }

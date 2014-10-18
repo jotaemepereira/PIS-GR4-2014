@@ -45,5 +45,10 @@ public class ProveedoresControlador implements IProveedores {
 	public Map<Integer, DTProveedor> obtenerProveedores() throws Excepciones {
 		return FabricaPersistencia.getInstanciaProveedoresPersistencia().obtenerProveedores();
 	}
+
+	@Override
+	public List<DTProveedor> obtenerMarcas() throws Excepciones {
+		return FabricaPersistencia.getInstanciaProveedoresPersistencia().obtenerMarcas(); 
+	}
 	
 }

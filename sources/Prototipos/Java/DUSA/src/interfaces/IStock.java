@@ -54,15 +54,15 @@ public interface IStock {
 
 	/**
 	 * @author Jmaguerre
-	 * @return Devuelve todas las drogas del sistema en un Map para un acceso rápido.
+	 * @return Devuelve una lista con todas las drogas del sistema.
 	 */
-	public Map<Long, Droga> obtenerDrogas() throws Excepciones;
+	public List<Droga> obtenerDrogas() throws Excepciones;
 
 	/**
 	 * @author Jmaguerre
-	 * @return Devuelve todas las acciones terapéuticas del sistema en un Map para un acceso rápido.
+	 * @return Devuelve una lista con todas las acciones terapéuticas del sistema.
 	 */
-	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones;
+	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones;
 	
 	 /**
 	  * Busca los articulos que coinciden con el string buscar y devuelve los datos necesarios

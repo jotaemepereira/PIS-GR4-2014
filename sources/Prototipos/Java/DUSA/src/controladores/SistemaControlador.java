@@ -66,13 +66,13 @@ public class SistemaControlador implements ISistema {
 	}
 
 	@Override
-	public Map<Long, Droga> obtenerDrogas() throws Excepciones {
+	public List<Droga> obtenerDrogas() throws Excepciones {
 		// TODO chequeo permisos del usuario
 		return FabricaLogica.getIStock().obtenerDrogas();
 	}
 
 	@Override
-	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
+	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
 		// TODO chequeo permisos del usuario
 		return FabricaLogica.getIStock().obtenerAccionesTerapeuticas();
 	}
@@ -89,5 +89,10 @@ public class SistemaControlador implements ISistema {
 	public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones {
 		// TODO Auto-generated method stub
 		return FabricaLogica.getIStock().buscarArticulosVenta(busqueda);
+	}
+
+	@Override
+	public List<DTProveedor> obtenerMarcas() throws Excepciones {
+		return FabricaLogica.getInstanciaProveedores().obtenerMarcas();
 	}
 }

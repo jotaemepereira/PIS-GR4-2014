@@ -45,11 +45,11 @@ public class PStockControlador implements IStockPersistencia {
 		PreparedStatement stmt = null;
 		
 		String query = "INSERT INTO PRODUCTS " +
-						"(PRODUCT_TYPE, DESCRIPTION, KEY1, KEY2, KEY3, IS_PSYCHOTROPIC, IS_NARCOTIC, IS_REFRIGERATOR, SALE_CODE, AUTHORIZATION_TYPE,"
+						"(BRAND_ID, PRODUCT_TYPE, DESCRIPTION, PRESENTATION, KEY1, KEY2, KEY3, IS_PSYCHOTROPIC, IS_NARCOTIC, IS_REFRIGERATOR, SALE_CODE, AUTHORIZATION_TYPE,"
 						+ " UNIT_PRICE, SALE_PRICE, SALE_PRICE_PORCENTAGE,LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE, BARCODE, LAST_PRICE_DATE"
 						+ ", NEAREST_DUE_DATE, STOCK, MINIMUM_STOCK, LAST_MODIFIED, STATUS) " +
 						" VALUES " +
-						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, LOCALTIMESTAMP, ?) RETURNING PRODUCT_ID;";
+						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, LOCALTIMESTAMP, ?) RETURNING PRODUCT_ID;";
 		Connection c;
 		try {
 			c = Conexion.getConnection();
@@ -57,36 +57,37 @@ public class PStockControlador implements IStockPersistencia {
 			try {
 				// Seteo los datos a insertar en la bd
 				stmt = c.prepareStatement(query);
-				stmt.setString(1, String.valueOf(articulo.getTipoArticulo()));//Null
-				stmt.setString(2, articulo.getDescripcion());//Not Null
-				stmt.setString(3, articulo.getClave1());//Null
-				stmt.setString(4, articulo.getClave2());//Null
-				stmt.setString(5, articulo.getClave3());//Null
-				stmt.setBoolean(6, articulo.isEsPsicofarmaco());//Not Null
-				stmt.setBoolean(7, articulo.isEsEstupefaciente());//Not Null
-				stmt.setBoolean(8, articulo.isEsHeladera());//Not Null
-				stmt.setString(9, String.valueOf(articulo.getCodigoVenta()));//Null
-				stmt.setString(10, String.valueOf(Enumerados.habilitado.HABILITADO));//Not Null
-				stmt.setBigDecimal(11, articulo.getPrecioUnitario());//Not Null
-				stmt.setBigDecimal(12, articulo.getPrecioVenta());//Not Null
-				stmt.setBigDecimal(13, articulo.getPorcentajePrecioVenta());//Not Null
-				stmt.setBigDecimal(14, articulo.getCostoLista());//Not Null
-				stmt.setBigDecimal(15, articulo.getCostoOferta());//Null
-				stmt.setBigDecimal(16, articulo.getUltimoCosto());//Null
-				stmt.setBigDecimal(17, articulo.getCostoPromedio());//Null
-				stmt.setInt(18, articulo.getTipoIva());//Null
-				stmt.setString(19, articulo.getCodigoBarras());//Null
-				//stmt.setDate(18, new java.sql.Date(articulo.getFechaUltimoPrecio().getTime()));//Not Null
-				stmt.setNull(20, java.sql.Types.TIMESTAMP);//Null Vencimiento Más Cercano
-				stmt.setLong(21, articulo.getStock());//Not Null
-				stmt.setLong(22, articulo.getStockMinimo());//Null
-				stmt.setBoolean(23, true);//Not Null
+				stmt.setInt(1, articulo.getIdMarca());
+				stmt.setString(2, String.valueOf(articulo.getTipoArticulo()));//Null
+				stmt.setString(3, articulo.getDescripcion());//Not Null
+				stmt.setString(4, articulo.getPresentacion());//Null
+				stmt.setString(5, articulo.getClave1());//Null
+				stmt.setString(6, articulo.getClave2());//Null
+				stmt.setString(7, articulo.getClave3());//Null
+				stmt.setBoolean(8, articulo.isEsPsicofarmaco());//Not Null
+				stmt.setBoolean(9, articulo.isEsEstupefaciente());//Not Null
+				stmt.setBoolean(10, articulo.isEsHeladera());//Not Null
+				stmt.setString(11, String.valueOf(articulo.getCodigoVenta()));//Null
+				stmt.setString(12, String.valueOf(Enumerados.habilitado.HABILITADO));//Not Null
+				stmt.setBigDecimal(13, articulo.getPrecioUnitario());//Not Null
+				stmt.setBigDecimal(14, articulo.getPrecioVenta());//Not Null
+				stmt.setBigDecimal(15, articulo.getPorcentajePrecioVenta());//Not Null
+				stmt.setBigDecimal(16, articulo.getCostoLista());//Not Null
+				stmt.setBigDecimal(17, articulo.getCostoOferta());//Null
+				stmt.setBigDecimal(18, articulo.getUltimoCosto());//Null
+				stmt.setBigDecimal(19, articulo.getCostoPromedio());//Null
+				stmt.setInt(20, articulo.getTipoIva());//Null
+				stmt.setString(21, articulo.getCodigoBarras());//Null
+				stmt.setNull(22, java.sql.Types.TIMESTAMP);//Null Vencimiento Más Cercano
+				stmt.setLong(23, articulo.getStock());//Not Null
+				stmt.setLong(24, articulo.getStockMinimo());//Null
+				stmt.setBoolean(25, true);//Not Null
 				
 				ResultSet rs = stmt.executeQuery();
 				//Obtengo la clave del nuevo artículo creado
-				int key = 0;
+				long key = 0;
 				while (rs.next()){
-					key = rs.getInt(1);
+					key = rs.getLong(1);
 				}
 				
 				//Para cada proveedor asociado inserto una fila en products_suppliers
@@ -100,9 +101,33 @@ public class PStockControlador implements IStockPersistencia {
 							"(?, ?, ?, ?)";
 					stmt = c.prepareStatement(query);
 					stmt.setInt(1, next.getIdProveedor());
-					stmt.setInt(2, key);
+					stmt.setLong(2, key);
 					stmt.setLong(3, next.getCodigoIdentificador());
 					stmt.setString(4, next.getIdLinea());
+					stmt.executeUpdate();
+				}
+				
+				//Para cada droga seleccionada inserto una fila en product_drugs
+				for(long idDroga : articulo.getDrogas()){
+					query = "INSERT INTO PRODUCT_DRUGS " +
+							"(PRODUCT_ID, DRUG_ID) " +
+							"VALUES " +
+							"(?, ?)";
+					stmt = c.prepareStatement(query);
+					stmt.setLong(1, key);
+					stmt.setLong(2, idDroga);
+					stmt.executeUpdate();
+				}
+				
+				//Para cada acción terapéutica seleccionada inserto una fila en product_therap_actions
+				for(long idAccTer : articulo.getAccionesTer()){
+					query = "INSERT INTO PRODUCT_THERAP_ACTIONS " +
+							"(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " +
+							"VALUES " +
+							"(?, ?)";
+					stmt = c.prepareStatement(query);
+					stmt.setLong(1, key);
+					stmt.setLong(2, idAccTer);
 					stmt.executeUpdate();
 				}
 				
@@ -492,8 +517,8 @@ public class PStockControlador implements IStockPersistencia {
 
 
 	@Override
-	public Map<Long, Droga> obtenerDrogas() throws Excepciones {
-		Map<Long,Droga> ret = null;
+	public List<Droga> obtenerDrogas() throws Excepciones {
+		List<Droga> ret = null;
 		PreparedStatement stmt = null;
 		String query = "SELECT d.drug_id, d.description " +
 						"FROM DRUGS d ";
@@ -504,12 +529,12 @@ public class PStockControlador implements IStockPersistencia {
 			stmt = c.prepareStatement(query);
 			stmt.setFetchSize(100);
 			ResultSet rs = stmt.executeQuery();
-			ret = new HashMap<Long,Droga>();
+			ret = new ArrayList<Droga>();
 			while(rs.next()){
 				Droga nuevo = new Droga();
 				nuevo.setIdDroga(rs.getLong("drug_id"));
 				nuevo.setDescripcion(rs.getString("description"));
-				ret.put(nuevo.getIdDroga(), nuevo);
+				ret.add(nuevo);
 			}
 			rs.close();
 			stmt.close();
@@ -521,9 +546,9 @@ public class PStockControlador implements IStockPersistencia {
 
 
 	@Override
-	public Map<Long, AccionTer> obtenerAccionesTerapeuticas()
+	public List<AccionTer> obtenerAccionesTerapeuticas()
 			throws Excepciones {
-		Map<Long,AccionTer> ret = null;
+		List<AccionTer> ret = null;
 		PreparedStatement stmt = null;
 		String query = "SELECT ta.therapeutic_action_id, ta.description " +
 						"FROM THERAPEUTIC_ACTIONS ta ";
@@ -534,12 +559,12 @@ public class PStockControlador implements IStockPersistencia {
 			stmt = c.prepareStatement(query);
 			stmt.setFetchSize(100);
 			ResultSet rs = stmt.executeQuery();
-			ret = new HashMap<Long,AccionTer>();
+			ret = new ArrayList<AccionTer>();
 			while(rs.next()){
 				AccionTer nuevo = new AccionTer();
 				nuevo.setIdAccionTer(rs.getLong("therapeutic_action_id"));
 				nuevo.setDescripcion(rs.getString("description"));
-				ret.put(nuevo.getIdAccionTer(), nuevo);
+				ret.add(nuevo);
 			}
 			rs.close();
 			stmt.close();

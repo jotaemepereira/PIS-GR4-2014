@@ -12,6 +12,7 @@ import datatypes.DTProveedor;
 
 public class Articulo {
 	private long idArticulo;
+	private int idMarca;
 	private int numero;
 	private char tipoArticulo;
 	private String descripcion;
@@ -34,20 +35,26 @@ public class Articulo {
 	private String codigoBarras;
 	private Date fechaUltimoPrecio;
 	private Date vencimientoMasCercano;
-	private Long stock;
-	private Long stockMinimo;
+	private long stock;
+	private long stockMinimo;
 	private Date fechaUltimaModificacion;
 	private boolean status;
 	private Map<Integer,DTProveedor> proveedores = new HashMap<Integer,DTProveedor>();
-	private List<Presentacion> presentaciones;
-	private List<Droga> drogas;
-	private List<AccionTer> accionesTer;
+	private String presentacion;
+	private long[] drogas;
+	private long[] accionesTer;
 	
 	public long getIdArticulo() {
 		return idArticulo;
 	}
 	public void setIdArticulo(long idArticulo) {
 		this.idArticulo = idArticulo;
+	}
+	public int getIdMarca() {
+		return idMarca;
+	}
+	public void setIdMarca(int idMarca) {
+		this.idMarca = idMarca;
 	}
 	public int getNumero() {
 		return numero;
@@ -217,22 +224,22 @@ public class Articulo {
 	public void setProveedores(Map<Integer, DTProveedor> proveedores) {
 		this.proveedores = proveedores;
 	}
-	public List<Presentacion> getPresentaciones() {
-		return presentaciones;
+	public String getPresentacion() {
+		return presentacion;
 	}
-	public void setPresentaciones(List<Presentacion> presentaciones) {
-		this.presentaciones = presentaciones;
+	public void setPresentacion(String presentacion) {
+		this.presentacion = presentacion;
 	}
-	public List<Droga> getDrogas() {
+	public long[] getDrogas() {
 		return drogas;
 	}
-	public void setDrogas(List<Droga> drogas) {
+	public void setDrogas(long[] drogas) {
 		this.drogas = drogas;
 	}
-	public List<AccionTer> getAccionesTer() {
+	public long[] getAccionesTer() {
 		return accionesTer;
 	}
-	public void setAccionesTer(List<AccionTer> accionesTer) {
+	public void setAccionesTer(long[] accionesTer) {
 		this.accionesTer = accionesTer;
 	}
 	public void agregarProveedor(DTProveedor p) {

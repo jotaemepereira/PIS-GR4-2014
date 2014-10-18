@@ -41,6 +41,7 @@ public class StockBean implements Serializable{
 	private long codigoIdentificador;
 	private Map<Integer,DTProveedor> proveedores;	
 	private List<DTProveedor> listaProveedores;
+	private List<DTProveedor> listaMarcas;
 	private List<DTProveedor> proveedoresSeleccionados = new ArrayList<DTProveedor>();
 	
 	//Presentaciones	
@@ -49,12 +50,10 @@ public class StockBean implements Serializable{
 	
 	//Drogas
 	private long[] drogasSeleccionadas;
-	private Map<Long,Droga> drogas;
 	private List<Droga> listaDrogas;
 	
 	//Acciones Terapeuticas
 	private long[] accionesTerSeleccionadas;
-	private Map<Long,AccionTer> accionesTer;
 	private List<AccionTer> listaAccionesTer;
 	
 	private List<DTFormasVenta> formasVenta = new ArrayList<DTFormasVenta>();
@@ -113,12 +112,6 @@ public class StockBean implements Serializable{
 	public void setDrogasSeleccionadas(long[] drogasSeleccionadas) {
 		this.drogasSeleccionadas = drogasSeleccionadas;
 	}
-	public Map<Long, Droga> getDrogas() {
-		return drogas;
-	}
-	public void setDrogas(Map<Long, Droga> drogas) {
-		this.drogas = drogas;
-	}
 	public List<Droga> getListaDrogas() {
 		return listaDrogas;
 	}
@@ -130,12 +123,6 @@ public class StockBean implements Serializable{
 	}
 	public void setAccionesTerSeleccionadas(long[] accionesTerSeleccionadas) {
 		this.accionesTerSeleccionadas = accionesTerSeleccionadas;
-	}
-	public Map<Long, AccionTer> getAccionesTer() {
-		return accionesTer;
-	}
-	public void setAccionesTer(Map<Long, AccionTer> accionesTer) {
-		this.accionesTer = accionesTer;
 	}
 	public List<AccionTer> getListaAccionesTer() {
 		return listaAccionesTer;
@@ -160,6 +147,12 @@ public class StockBean implements Serializable{
 	}
 	public void setListaProveedores(List<DTProveedor> listaProveedores) {
 		this.listaProveedores = listaProveedores;
+	}
+	public List<DTProveedor> getListaMarcas() {
+		return listaMarcas;
+	}
+	public void setListaMarcas(List<DTProveedor> listaMarcas) {
+		this.listaMarcas = listaMarcas;
 	}
 	public List<DTProveedor> getProveedoresSeleccionados() {
 		return proveedoresSeleccionados;
@@ -496,6 +489,9 @@ public class StockBean implements Serializable{
 	
 	public StockBean(){
 		
+		//Cargo las marcas de la base de datos
+		cargarMarcas();
+		
 		//Cargo los proveedores de la base de datos
 		cargarProveedores();
 		
@@ -512,6 +508,15 @@ public class StockBean implements Serializable{
 		cargarFormasVenta();
 	}
 	
+	public void cargarMarcas(){
+		try {
+			this.listaMarcas = FabricaSistema.getISistema().obtenerMarcas();
+		} catch (Excepciones e){
+			this.message = e.getMessage();
+			this.messageClass = "alert alert-danger";
+		}
+	}
+	
 	public void cargarProveedores(){
 		try {
 			this.proveedores = FabricaSistema.getISistema().obtenerProveedores();
@@ -524,8 +529,7 @@ public class StockBean implements Serializable{
 	
 	public void cargarDrogas(){
 		try{
-			this.drogas = FabricaSistema.getISistema().obtenerDrogas();
-			this.listaDrogas = new ArrayList<Droga>(this.drogas.values());
+			this.listaDrogas = FabricaSistema.getISistema().obtenerDrogas();
 		} catch (Excepciones e){
 			this.message = e.getMessage();
 			this.messageClass = "alert alert-danger";
@@ -534,8 +538,7 @@ public class StockBean implements Serializable{
 	
 	public void cargarAccionesTerapeuticas(){
 		try{
-			this.accionesTer = FabricaSistema.getISistema().obtenerAccionesTerapeuticas();
-			this.listaAccionesTer = new ArrayList<AccionTer>(this.accionesTer.values());
+			this.listaAccionesTer = FabricaSistema.getISistema().obtenerAccionesTerapeuticas();
 		} catch (Excepciones e){
 			this.message = e.getMessage();
 			this.messageClass = "alert alert-danger";
