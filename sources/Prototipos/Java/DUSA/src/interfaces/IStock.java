@@ -30,7 +30,13 @@ public interface IStock {
 
 	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir)	throws Excepciones;
 
-	public void generarPedido(Pedido p);
+	/**
+	 * Se realiza conexión con el servidor de D.U.S.A. y se les envía el pedido. Si no hay error se persiste el pedido.
+	 * @author Guille, Santiago
+	 * @param p Pedido a realizar
+	 * @throws Excepciones
+	 */
+	public void realizarPedido(Pedido p) throws Excepciones;
 
 	/**
 	 * Genera un pedido de artículos, de D.U.S.A. La cantidad de cada artículo es igual a la cantidad vendida, del artículo, desde el pedido anterior.
@@ -54,15 +60,15 @@ public interface IStock {
 
 	/**
 	 * @author Jmaguerre
-	 * @return Devuelve todas las drogas del sistema en un Map para un acceso rápido.
+	 * @return Devuelve una lista con todas las drogas del sistema.
 	 */
-	public Map<Long, Droga> obtenerDrogas() throws Excepciones;
+	public List<Droga> obtenerDrogas() throws Excepciones;
 
 	/**
 	 * @author Jmaguerre
-	 * @return Devuelve todas las acciones terapéuticas del sistema en un Map para un acceso rápido.
+	 * @return Devuelve una lista con todas las acciones terapéuticas del sistema.
 	 */
-	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones;
+	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones;
 	
 	 /**
 	  * Busca los articulos que coinciden con el string buscar y devuelve los datos necesarios

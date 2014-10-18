@@ -35,4 +35,16 @@ public interface IProveedores {
 	 */
 	public Map<Integer, DTProveedor> obtenerProveedores() throws Excepciones;
 
+	/**
+	 * Retorna todos los proveedores activos existentes en el sistema marcados como marca o laboratorio.
+	 * 
+	 * @return Devuelve un List de DTProveedor con todos los proveedores del sistema marcados como marca o laboratorio.
+	 * 
+	 * @throws Excepciones
+	 *             - ERROR_SISTEMA (en caso que suceda algún error a la hora de
+	 *             conectarse o comunicarse con la base)
+	 * @author José Aguerre
+	 */
+	public List<DTProveedor> obtenerMarcas() throws Excepciones;
+
 }

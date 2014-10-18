@@ -148,21 +148,22 @@ public class StockControlador implements IStock {
 	 * 
 	 * @author Santiago
 	 */
-	public void realizarPedido(Pedido p){
+	@Override
+	public void realizarPedido(Pedido p) throws Excepciones{
 		IServicio is = FabricaServicios.getIServicios();
 		is.realizarPedido(p);
+		
 		IStockPersistencia isp = FabricaPersistencia.getStockPersistencia();
 		isp.persistirPedido(p);
-		
 	}
 
 	@Override
-	public Map<Long, Droga> obtenerDrogas() throws Excepciones {
+	public List<Droga> obtenerDrogas() throws Excepciones {
 		return FabricaPersistencia.getStockPersistencia().obtenerDrogas();
 	}
 
 	@Override
-	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
+	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
 		return FabricaPersistencia.getStockPersistencia().obtenerAccionesTerapeuticas();
 	}
 

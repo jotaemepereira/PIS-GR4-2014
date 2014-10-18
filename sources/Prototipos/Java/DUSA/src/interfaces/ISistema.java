@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -38,15 +39,15 @@ public interface ISistema {
 	
 	/**
 	 * @author Jmaguerre
-	 * @return Devuelve todas las drogas del sistema en un Map para un acceso rápido.
+	 * @return Devuelve una lista con todas las drogas del sistema.
 	 */
-	public Map<Long, Droga> obtenerDrogas() throws Excepciones;
+	public List<Droga> obtenerDrogas() throws Excepciones;
 	
 	/**
 	 * @author Jmaguerre
-	 * @return Devuelve todas las acciones terapéuticas del sistema en un Map para un acceso rápido.
+	 * @return Devuelve una lista con todas las acciones terapéuticas del sistema.
 	 */
-	public Map<Long, AccionTer> obtenerAccionesTerapeuticas() throws Excepciones;
+	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones;
 
 	/**
 	 * retorna los articulos que coincidan con el string ingresado
@@ -101,5 +102,17 @@ public interface ISistema {
 	  * @author Victoria Diaz
 	  */
 	 public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones;
+
+	 /**
+		 * Retorna todos los proveedores activos existentes en el sistema marcados como marca o laboratorio.
+		 * 
+		 * @return Devuelve un List de DTProveedor con todos los proveedores del sistema marcados como marca o laboratorio.
+		 * 
+		 * @throws Excepciones
+		 *             - ERROR_SISTEMA (en caso que suceda algún error a la hora de
+		 *             conectarse o comunicarse con la base)
+		 * @author José Aguerre
+		 */
+	 public List<DTProveedor> obtenerMarcas() throws Excepciones;
 	 
 }
