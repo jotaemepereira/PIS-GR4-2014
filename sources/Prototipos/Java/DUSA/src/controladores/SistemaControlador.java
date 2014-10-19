@@ -28,11 +28,6 @@ public class SistemaControlador implements ISistema {
 		else
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 	}
-	
-	public List<DTLineaPedido> pedidoAutomaticoVentas() {
-		
-		return null;//FabricaLogica.getIStock().pedidoPorVentas(); Deprecated por ahora
-	}
 
 	@Override
 	public void altaArticulo(Articulo articulo) throws Excepciones {

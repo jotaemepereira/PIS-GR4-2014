@@ -62,10 +62,6 @@ public class StockControlador implements IStock {
 		return articulo;
 	}
 	
-	public void generarPedido(Pedido p){
-		
-	}
-	
 	/**
 	 * 
 	 * @author Guille

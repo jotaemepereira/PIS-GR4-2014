@@ -1,14 +1,10 @@
 package controladores;
-import java.net.URL;
 import java.util.Iterator;
-
-import javax.xml.namespace.QName;
 
 import uy.com.dusa.ws.DataLineaPedidoSimple;
 import uy.com.dusa.ws.DataPedidoSimple;
 import uy.com.dusa.ws.MensajeError;
 import uy.com.dusa.ws.PedidoFormaDePago;
-import uy.com.dusa.ws.PedidoObjectFactory;
 import uy.com.dusa.ws.ResultRealizarPedido;
 import uy.com.dusa.ws.WSPedidos;
 import uy.com.dusa.ws.WSPedidosService;
@@ -39,8 +35,6 @@ public class ServicioDusaControlador implements IServicio {
 		
 		try {
 			
-//			URL url = new URL(dusaComprobantesURL);
-//			QName qName = new PedidoObjectFactory();
 			DataPedidoSimple dPedido = new DataPedidoSimple();
 			if (p.getFormaDePago() == TipoFormaDePago.CONTADO) {
 				
@@ -65,11 +59,10 @@ public class ServicioDusaControlador implements IServicio {
 			ResultRealizarPedido resPedido = wsPedido.realizarPedidoSimple(userTest, passTest, dPedido);
 			
 			MensajeError error = resPedido.getMensaje();
-			
-			
+			System.out.println(error.getMensaje());
 		} catch (Exception e) {
-			// TODO: handle exception
+			
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_CONEXION_WS, Excepciones.ERROR_SIN_CONEXION);
 		}
-		
 	}
 }
