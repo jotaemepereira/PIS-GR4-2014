@@ -102,7 +102,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				lv.setProductoId(rs.getLong("product_id"));
 				a = new Articulo();
 				a.setDescripcion(rs.getString("description"));
-				// TODO: Agregar presentacion
+				a.setPresentacion(rs.getString("presentation"));
 				lv.setArticulo(a);
 
 				lv.setPrecio(rs.getBigDecimal("sale_price"));

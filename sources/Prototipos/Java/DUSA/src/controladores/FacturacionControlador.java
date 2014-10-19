@@ -1,18 +1,13 @@
 package controladores;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import Util.XMLUtil;
-import model.LineaVenta;
-import model.Usuario;
-import model.Venta;
 import interfaces.IFacturacion;
 import interfaces.IFacturacionPersistencia;
+
+import java.io.File;
+import java.util.List;
+
+import model.Venta;
+import Util.XMLUtil;
 
 public class FacturacionControlador implements IFacturacion {
 

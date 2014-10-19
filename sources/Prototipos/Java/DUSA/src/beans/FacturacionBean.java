@@ -30,7 +30,6 @@ public class FacturacionBean implements Serializable {
 		try {
 			IFacturacion ifact = FabricaLogica.getIFacturacion();
 			ventas = ifact.listarVentasPendientes();
-
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
