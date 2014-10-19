@@ -17,6 +17,16 @@
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
 		</f:facet>
+		<style>
+			.ui-icon-bullet {
+			    background-position: -81.5px -145px !important;
+			}
+			.ui-selectoneradio label{
+				margin-right: 8px;
+				margin-left: 3px;
+				margin-top: 0px !important;
+			}
+		</style>
 	</h:head>
 	<h:body>
 	    <link href="../CSS/bootstrap.min.css" rel="stylesheet" />
@@ -47,7 +57,10 @@
 										<h:commandButton id="btn2" value="Predicción de pedido" update="btn1 btn2 tablePedido" actionListener="#{stockBean.prediccionDePedido}"
 											styleClass="btn btn-default elegirTipo" style="margin:0 0 10px 0;" disabled="${stockBean.disablePrediccionDePedido}" />
 									</div>
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"  style="text-align:center;">
+								</div>
+								
+								<div class="row">
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 										<p:outputLabel value="Forma de Pago:" />
 										<p:selectOneRadio id="tipoDocumento" value="#{stockBean.formaDePago}">
 											<f:selectItem itemLabel="Contado" itemValue="contado" />
