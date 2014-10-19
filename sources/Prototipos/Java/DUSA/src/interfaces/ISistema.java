@@ -89,9 +89,8 @@ public interface ISistema {
 	/**
 	 * @author santiago
 	 */
-	public void iniciarSesion(long idUsuario, String contrasenia);
-
-	public void cerrarSesion(long idUsuario, String contrasenia);
+	 public void iniciarSesion(String nombreUsuario, String contrasenia );
+	 public void cerrarSesion(String nombreUsuario, String contrasenia);
 
 	/**
 	 * Busca los articulos que coinciden con el string buscar y devuelve los

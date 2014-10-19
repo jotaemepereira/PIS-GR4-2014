@@ -1,7 +1,9 @@
 package beans;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,9 @@ import controladores.FabricaSistema;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Enumerados.TipoFormaDePago;
+import model.LineaPedido;
+import model.Pedido;
 import model.Presentacion;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
@@ -367,6 +372,19 @@ public class StockBean implements Serializable{
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					Excepciones.MENSAJE_PEDIDO_VACIO, ""));
 			return;
+		}
+		
+		Pedido p = new Pedido();
+		
+		p.setFecha(new Date(Calendar.getInstance().getTimeInMillis()));
+		p.setFormaDePago(TipoFormaDePago.CONTADO);
+		
+		for (Iterator<DTLineaPedido> iterator = pedidos.iterator(); iterator.hasNext();) {
+			
+			DTLineaPedido dtLineaPedido = iterator.next();
+			
+			LineaPedido lPedido = new LineaPedido(dtLineaPedido.getIdArticulo(), dtLineaPedido.getNumeroArticulo(), dtLineaPedido.getCantidad());
+			p.getLineas().add(lPedido);
 		}
 		
 		pedidos.clear();

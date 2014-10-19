@@ -78,11 +78,11 @@ public class SistemaControlador implements ISistema {
 		return FabricaLogica.getIStock().obtenerAccionesTerapeuticas();
 	}
 	@Override
-	public void iniciarSesion(long idUsuario, String contrasenia){
+	public void iniciarSesion(String nombreUsuario, String contrasenia){
 		
 	}
 	@Override
-	public void cerrarSesion(long idUsuario, String contrasenia){
+	public void cerrarSesion(String nombreUsuario, String contrasenia){
 		
 	}
 
