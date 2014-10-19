@@ -13,18 +13,6 @@ public class Pedido {
 	int					idUsuario; 
 	List<LineaPedido>	lineas;
 	
-	/**
-	 * Crea y almacena una LineaPedido con el id del articulo y su cantidad
-	 * @author Guille
-	 * @param idArticulo
-	 * @param cantidad
-	 */
-	public void agregarArticulo(Long idArticulo, int cantidad){
-		
-		LineaPedido lp = new LineaPedido(idArticulo, cantidad);
-		this.lineas.add(lp);
-	}
-	
 	//Getters y Setters
 	public Long getIdPedido() {
 		return idPedido;

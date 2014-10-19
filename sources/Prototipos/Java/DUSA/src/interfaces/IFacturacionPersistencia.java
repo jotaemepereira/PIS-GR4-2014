@@ -18,8 +18,8 @@ public interface IFacturacionPersistencia {
 	 * @author Guille
 	 * @param desde
 	 * @param hasta
-	 * @return Retorna una lista de id de artículos no borrados, que se vendieron entre las fechas "desde" hasta la fecha "hasta", ambas inclusive. 
-	 * @throws Exception
+	 * @return Retorna una lista de ids articulos, de D.U.S.A. no borrados, que se vendieron entre las fechas "desde" hasta la fecha "hasta", ambas inclusive. 
+	 * @throws Excepciones
 	 */
 	public List<Long> getIdArticulosEnPeriodo(Date desde, Date hasta) throws Excepciones;
 	

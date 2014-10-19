@@ -1,5 +1,7 @@
 package model;
 
+import datatypes.DTFormasVenta;
+
 public class Enumerados {
 
 	public enum TipoFormaDePago {
@@ -28,5 +30,34 @@ public class Enumerados {
 		public static final char MEDICAMENTO = 'M';
 		public static final char PERFUMERIA = 'P';
 		public static final char OTROS = 'O';
+		
+	}
+	
+	public static String descripcionTipoArticulo(String tipo){
+		switch (tipo.charAt(0)) {
+			case tipoArticulo.MEDICAMENTO:
+				return "Medicamento";
+			case tipoArticulo.PERFUMERIA:
+				return "Perfumer&iacute;a";
+			case tipoArticulo.OTROS:
+				return "Otros";
+			default:
+				return "";
+		}
+	}
+	
+	public static String descripcionTipoVenta(String tipo){
+		switch (tipo.charAt(0)) {
+		case formasVenta.bajoReceta:
+			return "Bajo receta";
+		case formasVenta.controlado:
+			return "Controlado";
+		case formasVenta.controlMedico:
+			return "Control m&eacute;dico";
+		case formasVenta.ventaLibre:
+			return "Venta libre";
+		default:
+			return "";
+		}
 	}
 }

@@ -1,15 +1,27 @@
 package model;
 
-
-//@author Guille
+/**
+ * 
+ * @author Guille
+ *
+ */
 public class LineaPedido {
 
 	Long 	idArticulo;
+	Long	numeroArticulo;
 	int 	cantidad;
-
-	public LineaPedido(Long articulo, int cant) {
-		super();
+	
+	public LineaPedido() {
+		
+		this.idArticulo = new Long(0);
+		this.numeroArticulo = new Long(0);
+		this.cantidad = 0;
+	}
+	
+	public LineaPedido(Long articulo, Long numArticulo,int cant) {
+		
 		this.idArticulo = articulo;
+		this.numeroArticulo = numArticulo;
 		this.cantidad = cant;
 	}
 
@@ -21,6 +33,14 @@ public class LineaPedido {
 	
 	public void setIdArticulo(Long idArticulo) {
 		this.idArticulo = idArticulo;
+	}
+	
+	public Long getNumeroArticulo() {
+		return numeroArticulo;
+	}
+	
+	public void setNumeroArticulo(Long numeroArticulo) {
+		this.numeroArticulo = numeroArticulo;
 	}
 	
 	public int getCantidad() {

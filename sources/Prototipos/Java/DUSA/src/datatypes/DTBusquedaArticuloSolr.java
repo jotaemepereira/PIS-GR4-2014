@@ -1,6 +1,6 @@
 package datatypes;
 
-public class DTBusquedaArticulo {
+public class DTBusquedaArticuloSolr {
 	private int idArticulo;
 	private String descripcion;
 	private String marca;
@@ -9,6 +9,21 @@ public class DTBusquedaArticulo {
 	private String accionesTerapeuticas;
 	private String codigoBarras;
 	
+	public DTBusquedaArticuloSolr(String accionesTerapeuticas2,
+			String codigoBarras2, String descripcion2, String droga2,
+			int idArticulo2, String marca2, String presentacion2) {
+		
+		this.accionesTerapeuticas = accionesTerapeuticas2;
+		this.codigoBarras = codigoBarras2;
+		this.descripcion = descripcion2;
+		this.droga = droga2;
+		this.idArticulo = idArticulo2;
+		this.marca = marca2;
+		this.presentacion = presentacion2;
+	}
+	
+	public DTBusquedaArticuloSolr() {
+	}
 	public String getDescripcion() {
 		return descripcion;
 	}

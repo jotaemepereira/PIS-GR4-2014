@@ -6,6 +6,7 @@ import java.util.Map;
 
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
+import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTProveedor;
 import datatypes.DTVenta;
 import model.AccionTer;
@@ -24,7 +25,8 @@ public interface IStockPersistencia {
 	
 	/**
 	 * Retorna la fecha del ultimo pedido realizado a D.U.S.A.
-	 * @author Juan Manuel, Guille
+	 * @author Juan Manuel
+	 * @author Guille
 	 * @return Date, fecha del ultimo pedido.
 	 * @throws Excepciones
 	 */
@@ -38,13 +40,29 @@ public interface IStockPersistencia {
 	 */
 	public void persistirPedido(Pedido p) throws Excepciones;
 	public boolean existeArticulo(String descripcion) throws Excepciones;
-	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones;
+	public List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda) throws Excepciones;
 	public void fullImportSolr() throws Excepciones;
 	public void deltaImportSolr() throws Excepciones;
+	
+	/**
+	 * @author Santiago
+	 * @param idArticulo
+	 * @return cantidad de Stock del articulo con id articulo
+	 * @throws Excepciones
+	 */
 	public int getStock(long idArticulo) throws Excepciones;
+	
+	/**
+	 * Retorna una lista de ids de articulos, SOLO de D.U.S.A. y no borrados.
+	 * @return Lista de ids de articulos de D.U.S.A.
+	 * @throws Excepciones
+	 * @author Santiago
+	 * @author Guille
+	 */
 	public List<Long> obtenerIdTodosLosArticulos() throws Excepciones;
 	
 	/**
+	 * @deprecated
 	 * @author Guille
 	 * @param idArticulo
 	 * @return true si D.U.S.A. maneja el articulo con id "idArticulo"
@@ -65,6 +83,7 @@ public interface IStockPersistencia {
 	
 	/**
 	 * Obtener el articulo con id "idArticulo" y su informacion basica de proveedores (DTProveedores)
+	 * @author Guille
 	 * @param idArticulo 
 	 * @return Articulo con id idArticulo, null si no lo encuentra
 	 * @throws Excepciones
@@ -72,4 +91,12 @@ public interface IStockPersistencia {
 	public Articulo obtenerArticuloConId(long idArticulo) throws Excepciones;
 
 	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones;
+
+	/**
+	 * En base a lo encontrado usando solr, complementa los datos para ese artícuo
+	 * @param articulo - los datos parciales del articulo
+	 * @author Victoria Díaz
+	 * @throws Excepciones 
+	 */
+	void buscarArticulosId(DTBusquedaArticulo articulo) throws Excepciones;
 }

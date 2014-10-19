@@ -10,6 +10,7 @@ public class Operacion {
 	private String nombre;
 	
 	public Operacion(){
+	
 		
 	}
 
