@@ -123,9 +123,7 @@
 													<h:outputText value=" #{venta.presentacion}" />
 													<p:inputText id="descuento" value="#{venta.descuento}"
 														style="width: 75px;">
-														<p:ajax listener="#{ventaBean.strDescuentoPrecio(venta)}" update="@form"
-															process="@this" />
-														<p:ajax listener="#{ventaBean.strDescuentoPrecio(venta)}" update="GridVentas"
+														<p:ajax listener="#{ventaBean.strDescuentoPrecio()}" update="@form"
 															process="@this" />
 													</p:inputText>
 													<p:outputPanel
@@ -142,7 +140,7 @@
 													
 													<h:outputText value=" #{venta.principioActivo}" />
 													<h:outputText id="descuentoPrecio"
-															value=" #{ventaBean.strDescuento}">
+															value=" #{venta.descuentoPrecio}">
 													</h:outputText>
 													<p:outputPanel
 														visible="#{venta.isRecetaNaranja}"

@@ -40,7 +40,6 @@ public class VentaBean implements Serializable {
 	private List<DTVenta> lineasVenta2 = new ArrayList<DTVenta>();
 	private List<DTVenta> lineasVentaPerdidas = new ArrayList<DTVenta>();
 	private List<DTVenta> ventasSeleccionadas = new ArrayList<DTVenta>();
-	private Integer descuento = 0;
 	private String strDescuento;
 
 	public VentaBean() {
@@ -61,8 +60,8 @@ public class VentaBean implements Serializable {
 			DTVenta v = it.next();
 			if (!(descripcionBusqueda.isEmpty())
 					&& v.getDescripcion().contains(descripcionBusqueda)) {
+				v.setDescuentoPrecio("$"+v.getPrecioVenta().toString()+"(%0)");
 				lineasVenta.add(v);
-				strDescuentoPrecio(v); // ****estoy llamando a esta funcion para calcular los precios con descuentos hay que ver bien lo de los descuentos y arreglarla ****
 			}
 		}
 		
@@ -79,8 +78,6 @@ public class VentaBean implements Serializable {
 		
 		**/
 		
-		//llamo al inicializar los descuentos q puede seleccionar el vendedor
-		//iniDescuentos();
 
 	}
 	
@@ -95,14 +92,18 @@ public class VentaBean implements Serializable {
 	}**/
 	
 	//para calcular el precio con el descuento a poner cuando lista los articulos en la busqueda, falta terminar
-	public String strDescuentoPrecio(DTVenta v){
+	public void strDescuentoPrecio(){
 		
-		BigDecimal x = (v.getPrecioVenta().multiply(new BigDecimal(descuento))).divide(new BigDecimal(100));
+		Iterator<DTVenta> it = lineasVenta.iterator();
+		while (it.hasNext()) {
+			DTVenta v = it.next();
 		
-		String res= venta.getPrecioVenta().subtract(x).toString()+"("+"%"+descuento.toString()+")";
+		BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento())).divide(new BigDecimal(100));
 		
-		setStrDescuento(res);
-		return res;
+		  v.setDescuentoPrecio("$"+v.getPrecioVenta().subtract(x).toString()+"("+"%"+v.getDescuento().toString()+")");
+		
+		}
+		
 	}
 	
 	public void agregarLineaVentaPerdida(DTVenta vp){
@@ -266,14 +267,6 @@ public class VentaBean implements Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public Integer getDescuento() {
-		return descuento;
-	}
-
-	public void setDescuento(Integer descuento) {
-		this.descuento = descuento;
 	}
 
 	public String getStrDescuento() {

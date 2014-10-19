@@ -1,4 +1,6 @@
 package model;
+
+
 /**
  * 
  * @author santiago
@@ -6,21 +8,43 @@ package model;
  */
 public class Actividad {
 	
-	private long id;
-	private String nombre;
-
-	public Actividad(long id, String nombre){
-		this.id = id;
-		this.nombre =nombre;
+	/**
+	 * user_activityUsr y log_date se generan en la base de datos 
+	 */
+	
+	private long userId;
+	private long opId;
+	private String opName;
+	
+	public Actividad(Operacion op, long userId){
+		this.opId = op.getId();
+		this.opName = op.getNombre();
+		this.userId = userId;
 	}
 
-	public long getId() {
-		return id;
+	public long getUserId() {
+		return userId;
 	}
 
-	public String getNombre() {
-		return nombre;
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
+	public long getOpId() {
+		return opId;
+	}
+
+	public void setOpId(long opId) {
+		this.opId = opId;
+	}
+
+	public String getOpName() {
+		return opName;
+	}
+
+	public void setOpName(String opName) {
+		this.opName = opName;
 	}
 	
 	
-}
+} 
