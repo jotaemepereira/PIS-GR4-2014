@@ -76,7 +76,6 @@ public class Enumerados {
 	}
 	
 	public static String descripcionTipoVenta(String tipo){
-		System.out.println("*** TIPO DE VENTA " + tipo + " num " + Character.getNumericValue(tipo.charAt(0)));
 		switch (tipo.charAt(0)) {
 		case formasVenta.bajoReceta:
 			return "Bajo receta";
