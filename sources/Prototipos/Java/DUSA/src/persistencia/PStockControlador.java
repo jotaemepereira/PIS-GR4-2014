@@ -136,6 +136,9 @@ public class PStockControlador implements IStockPersistencia {
 				c.commit();
 				stmt.close();
 				c.close();
+				
+				// indexacion de solr del producto nuevo
+				deltaImportSolr();
 			} catch ( Exception e ) {
 				//Hago rollback de las cosas y lanzo excepcion
 				c.rollback();
@@ -283,7 +286,7 @@ public class PStockControlador implements IStockPersistencia {
 	public void buscarArticulosId(DTBusquedaArticulo articulo) throws Excepciones{
 		PreparedStatement stmt = null;
 		
-		String query = "SELECT UNIT_PRICE, SALE_PRICE, LIST_COST, LAST_COST, AVG_COST, AUTHORIZATION_TYPE, PRODUCT_TYPE "
+		String query = "SELECT UNIT_PRICE, SALE_PRICE, LIST_COST, LAST_COST, AVG_COST, SALE_CODE, PRODUCT_TYPE "
 				+ "FROM PRODUCTS "
 				+ "WHERE PRODUCT_ID = ?";
 		try {
@@ -294,7 +297,7 @@ public class PStockControlador implements IStockPersistencia {
 			//Obtengo la cantidad de proveedores con ese rut
 			while (rs.next()){
 				articulo.setTipoDeArticulo(model.Enumerados.descripcionTipoArticulo(rs.getString("PRODUCT_TYPE")));
-				articulo.setControlDeVenta(model.Enumerados.descripcionTipoVenta(rs.getString("AUTHORIZATION_TYPE")));
+				articulo.setControlDeVenta(model.Enumerados.descripcionTipoVenta(rs.getString("SALE_CODE")));
 				articulo.setPrecioDeVenta(rs.getBigDecimal("UNIT_PRICE"));
 				articulo.setPrecioPublico(rs.getBigDecimal("SALE_PRICE"));
 				articulo.setCostoDeLista(rs.getBigDecimal("LIST_COST"));
@@ -384,7 +387,7 @@ public class PStockControlador implements IStockPersistencia {
 		parameters.setRequestHandler("/articulos/dataimport");
 		parameters.setParam("command", "delta-import");
 		parameters.setParam("entity", "stock");
-		parameters.setParam("clean", true);
+		parameters.setParam("clean", false);
 		parameters.setParam("commit", true);
 		
 		SolrDocumentList response;
