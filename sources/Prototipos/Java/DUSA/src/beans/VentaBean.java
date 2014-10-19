@@ -53,6 +53,7 @@ public class VentaBean implements Serializable {
 		// aca en realidad hay q buscar las ventas con el buscarArticulo y
 		// agregar todos los que coinciden con la descripcion buscados
 
+		/**
 		// Probando con el Database.java para buscar simulando la busqueda :
 		Database DB = Database.getInstance();
 		List<DTVenta> list = DB.getVentas();
@@ -67,18 +68,24 @@ public class VentaBean implements Serializable {
 			}
 		}
 		
-		/**
+		**/
 		
 		// Busqueda con solr
 		lineasVenta = new ArrayList<DTVenta>();
 		try {
 			lineasVenta = FabricaSistema.getISistema().buscarArticulosVenta(descripcionBusqueda);
+			
+			Iterator<DTVenta> it = lineasVenta.iterator();
+			while (it.hasNext()) {
+				DTVenta dtVenta = (DTVenta) it.next();
+				dtVenta.setDescuentoPrecio("$"+dtVenta.getPrecioVenta().toString()+"(%0)");	
+			}
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		**/
+		
 		
 
 	}
