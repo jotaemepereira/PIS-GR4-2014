@@ -10,7 +10,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 public class XMLUtil {
-	
+
 	public static File jaxbObjectToXML(Venta v) {
 
 		try {
@@ -24,7 +24,7 @@ public class XMLUtil {
 
 			// Write to File
 
-			File f = new File("temp.xml");
+			File f = new File("/facturas/" + v.getVentaId() + ".xml");
 			m.marshal(v, f);
 			return f;
 		} catch (JAXBException e) {

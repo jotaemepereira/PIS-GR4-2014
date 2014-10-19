@@ -116,16 +116,7 @@ public class StockControlador implements IStock {
 			
 			DTBusquedaArticulo articulo = new DTBusquedaArticulo(dtBusquedaArticulo);
 			FabricaPersistencia.getStockPersistencia().buscarArticulosId(articulo);
-			
-	/*		
-			articulo.setTipoDeArticulo("tipo");
-			articulo.setControlDeVenta("control");
-			articulo.setCostoDeLista(100);
-			articulo.setCostoPonderado(100);
-			articulo.setCostoReal(100);
-			articulo.setPrecioDeVenta(100);
-			articulo.setPrecioPublico(100);
-			*/
+
 			articulos.add(articulo);
 		}
 		

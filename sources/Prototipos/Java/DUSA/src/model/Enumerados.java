@@ -46,6 +46,7 @@ public class Enumerados {
 	public class EstadoVenta {
 		public static final char PENDIENTE = 'P';
 		public static final char FACTURADA = 'F';
+		public static final char CANCELADA = 'C';
 	}
 	
 	public final class habilitado {	    
@@ -66,7 +67,7 @@ public class Enumerados {
 			case tipoArticulo.MEDICAMENTO:
 				return "Medicamento";
 			case tipoArticulo.PERFUMERIA:
-				return "Perfumer&iacute;a";
+				return "Perfumería";
 			case tipoArticulo.OTROS:
 				return "Otros";
 			default:
@@ -75,13 +76,14 @@ public class Enumerados {
 	}
 	
 	public static String descripcionTipoVenta(String tipo){
+		System.out.println("*** TIPO DE VENTA " + tipo + " num " + Character.getNumericValue(tipo.charAt(0)));
 		switch (tipo.charAt(0)) {
 		case formasVenta.bajoReceta:
 			return "Bajo receta";
 		case formasVenta.controlado:
 			return "Controlado";
 		case formasVenta.controlMedico:
-			return "Control m&eacute;dico";
+			return "Control médico";
 		case formasVenta.ventaLibre:
 			return "Venta libre";
 		default:

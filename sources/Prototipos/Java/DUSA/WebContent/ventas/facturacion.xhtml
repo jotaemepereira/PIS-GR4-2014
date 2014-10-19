@@ -88,13 +88,13 @@
 					</p:column>
 
 					<p:column headerText="Presentación" style="text-align: center;">
-						<h:outputText value="-" />
+						<h:outputText value="#{lineaVenta.articulo.presentacion}" />
 					</p:column>
 
 					<p:column headerText="Receta"
 						style="text-align: center; width: 100px;">
 						<p:outputPanel visible="#{lineaVenta.articulo.recetaNaranja}"
-							style="width: 100px; padding: 0; margin: 0;">
+							style="width: 98px; padding: 0; margin: 0;">
 							<img src="../Images/receta_naranja.png" />
 						</p:outputPanel>
 
@@ -102,7 +102,7 @@
 							style="width: 100px; padding: 0; margin: 0;">
 							<img src="../Images/receta_verde.png" />
 						</p:outputPanel>
-						
+
 						<p:outputPanel visible="recetaBlanca"
 							style="width: 100px; padding: 0; margin: 0;">
 							<img src="../Images/receta_blanca.png" />
@@ -133,12 +133,22 @@
 					<h:outputText
 						value="#{facturacionBean.ventaSeleccionada.montoTotalAPagar}" />
 				</div>
-				<p:commandButton style="margin-top: 15px;"
-					actionListener="#{facturacionBean.facturar(ventaSeleccionada)}"
-					styleClass="btn btn-default pull-right"
-					oncomplete="PF('dlg2').hide()" update="tablaVentas :form1:messages"
-					value="Facturar" title="Facturar">
-				</p:commandButton>
+				<div style="margin-top: 15px;">
+					<p:commandButton style="margin-right: 45px;"
+						actionListener="#{facturacionBean.facturar(ventaSeleccionada)}"
+						styleClass="btn btn-default pull-right"
+						oncomplete="PF('dlg2').hide()"
+						update="tablaVentas :form1:messages" value="Facturar"
+						title="Facturar">
+					</p:commandButton>
+					<p:commandButton
+						actionListener="#{facturacionBean.cancelar(ventaSeleccionada)}"
+						styleClass="btn btn-default pull-right"
+						oncomplete="PF('dlg2').hide()"
+						update="tablaVentas :form1:messages" value="Cancelar"
+						title="Facturar">
+					</p:commandButton>
+				</div>
 			</h:form>
 		</p:dialog>
 	</h:body>

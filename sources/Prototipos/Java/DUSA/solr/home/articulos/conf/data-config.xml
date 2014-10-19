@@ -9,14 +9,14 @@
 			query="SELECT P.PRODUCT_ID AS id, P.PRODUCT_ID, P.DESCRIPTION, P.KEY1, P.KEY2, P.KEY3, P.BARCODE, P.KEY1 || P.KEY2 || P.KEY3 AS CRITERIO_INTERNO, P.PRESENTATION, M.COMERCIALNAME AS MARCA
 				                       FROM PRODUCTS P 
 				                       LEFT JOIN SUPPLIERS M ON M.SUPPLIER_ID = P.BRAND_ID
-				                       WHERE P.KEY1 != 'PRODU' AND P.SALE_PRICE > 0 AND P.STATUS = 't'"
+				                       WHERE P.KEY1 != 'PRODU' AND P.STATUS = 't'"
 			deltaImportQuery="SELECT P.PRODUCT_ID AS id, P.DESCRIPTION, P.KEY1, P.KEY2, P.KEY3, P.BARCODE, P.KEY1 || P.KEY2 || P.KEY3 AS CRITERIO_INTERNO, P.PRESENTATION, M.COMERCIALNAME AS MARCA
 					 					FROM PRODUCTS P
 					 					LEFT JOIN SUPPLIERS M ON M.SUPPLIER_ID = P.BRAND_ID
 					 					WHERE PRODUCT_ID = '${dih.delta.id}'"
 			deltaQuery="SELECT P.PRODUCT_ID AS id
 				                       FROM PRODUCTS P 
-				                       WHERE KEY1 != 'PRODU' AND SALE_PRICE > 0 AND STATUS = 't'
+				                       WHERE KEY1 != 'PRODU' AND STATUS = 't'
                            					AND LAST_MODIFIED >='${dih.last_index_time}'">
 
 			<field column="id" name="id" />

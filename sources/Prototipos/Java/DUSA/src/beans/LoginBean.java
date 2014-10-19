@@ -44,7 +44,7 @@ public class LoginBean implements Serializable {
 		
 		if ((nomUsuario.compareTo("admin") == 0) && (contrasenia.compareTo("1234") == 0)) {
 			try {
-				FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/DUSA/stock/altaArticulo.jsf");
+				FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/dusa/stock/altaArticulo.jsf");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

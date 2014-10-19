@@ -11,4 +11,6 @@ public interface IFacturacion {
 	
 	public void facturarVenta(long venta) throws Exception;
 	
+	public void cancelarVenta(long venta) throws Exception;
+	
 }

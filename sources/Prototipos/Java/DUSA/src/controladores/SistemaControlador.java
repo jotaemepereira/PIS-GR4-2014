@@ -23,57 +23,57 @@ public class SistemaControlador implements ISistema {
 	@Override
 	public void altaProveedor(Proveedor proveedor) throws Excepciones{
 		// TODO: chequeo permisos del usuario
-		if (user.tienePermiso(casoDeUso.altaProveedor))
+		//if (user.tienePermiso(casoDeUso.altaProveedor))
 			FabricaLogica.getInstanciaProveedores().altaProveedor(proveedor);
-		else
-			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		//else
+		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 	}
 
 	@Override
 	public void altaArticulo(Articulo articulo) throws Excepciones {
-		if (user.tienePermiso(casoDeUso.altaArticulo))
+		//if (user.tienePermiso(casoDeUso.altaArticulo))
 			FabricaLogica.getIStock().altaArticulo(articulo);
-		else
-			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		//else
+		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		
 	}
 
 	@Override
 	public Map<Integer, DTProveedor> obtenerProveedores() throws Excepciones {
 		//*este caso de uso no aparece con el mismo nombre en el acta
-		if (user.tienePermiso(casoDeUso.buscarProveedor))
+		//if (user.tienePermiso(casoDeUso.buscarProveedor))
 			return FabricaLogica.getInstanciaProveedores().obtenerProveedores();
-		else
-			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		//else
+		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		
 	}
 	
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones {
 		// TODO chequeo permisos del usuario
-		if (user.tienePermiso(casoDeUso.buscarArticulo))
+		//if (user.tienePermiso(casoDeUso.buscarArticulo))
 			return FabricaLogica.getIStock().buscarArticulos(busqueda);
-		else
-			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		//else
+		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		
 	}
 
 	
 	@Override
 	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior() throws Excepciones {
-		if (user.tienePermiso(casoDeUso.generPeEnBaseAPedAnt))
+		//if (user.tienePermiso(casoDeUso.generPeEnBaseAPedAnt))
 			return FabricaLogica.getIStock().generarPedidoEnBaseAPedidoAnterior();
-		else
-			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		//else
+		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		
 	}
 	
 	@Override
 	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir) throws Excepciones {
-		if (user.tienePermiso(casoDeUso.genPedEnBaseAHist))
+		//if (user.tienePermiso(casoDeUso.genPedEnBaseAHist))
 			return FabricaLogica.getIStock().generarPedidoEnBaseAHistorico(diasAPredecir);
-		else
-			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		//else
+		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		
 	}
 
@@ -98,10 +98,10 @@ public class SistemaControlador implements ISistema {
 	}
 	@Override
 	public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones {
-		if (user.tienePermiso(casoDeUso.buscarArticulo))
+		//if (user.tienePermiso(casoDeUso.buscarArticulo))
 			return FabricaLogica.getIStock().buscarArticulosVenta(busqueda);
-		else
-			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		//else
+		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		
 	}
 

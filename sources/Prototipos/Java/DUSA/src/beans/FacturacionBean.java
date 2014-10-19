@@ -30,7 +30,6 @@ public class FacturacionBean implements Serializable {
 		try {
 			IFacturacion ifact = FabricaLogica.getIFacturacion();
 			ventas = ifact.listarVentasPendientes();
-
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
@@ -57,6 +56,24 @@ public class FacturacionBean implements Serializable {
 			// FacesMessage(FacesMessage.SEVERITY_ERROR, s, ""));
 			// }
 			// }
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Error al facturar.", ""));
+		}
+	}
+	
+	public void cancelar(Venta v) {
+		try {
+			IFacturacion ifact = FabricaLogica.getIFacturacion();
+			ifact.cancelarVenta(v.getVentaId());
+
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Se cancelada correctamente.", ""));
+			ventas = ifact.listarVentasPendientes();
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
