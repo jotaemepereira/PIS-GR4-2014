@@ -58,7 +58,11 @@ public class PStockControlador implements IStockPersistencia {
 			try {
 				// Seteo los datos a insertar en la bd
 				stmt = c.prepareStatement(query);
-				stmt.setInt(1, articulo.getIdMarca());
+				if (articulo.getIdMarca() != 0){
+					stmt.setInt(1, articulo.getIdMarca());
+				}else{
+					stmt.setNull(1, java.sql.Types.INTEGER);
+				}				
 				stmt.setString(2, String.valueOf(articulo.getTipoArticulo()));//Null
 				stmt.setString(3, articulo.getDescripcion());//Not Null
 				stmt.setString(4, articulo.getPresentacion());//Null
