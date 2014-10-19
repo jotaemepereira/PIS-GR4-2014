@@ -45,7 +45,14 @@
 										<h:commandButton id="btn1" value="Desde el último pedido" update="btn1 btn2 tablePedido" actionListener="#{stockBean.desdeUltimoPedido}" 
 											styleClass="btn btn-default elegirTipo" style="margin:0 2% 10px 0;" disabled="${stockBean.disableDesdeUltimoPedido}" />
 										<h:commandButton id="btn2" value="Predicción de pedido" update="btn1 btn2 tablePedido" actionListener="#{stockBean.prediccionDePedido}"
-											styleClass="btn btn-default elegirTipo" style="margin:0 0 10px 0;" disabled="${stockBean.disablePrediccionDePedido}" /> 
+											styleClass="btn btn-default elegirTipo" style="margin:0 0 10px 0;" disabled="${stockBean.disablePrediccionDePedido}" />
+									</div>
+									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"  style="text-align:center;">
+										<p:outputLabel value="Forma de Pago:" />
+										<p:selectOneRadio id="tipoDocumento" value="#{stockBean.formaDePago}">
+											<f:selectItem itemLabel="Contado" itemValue="contado" />
+											<f:selectItem itemLabel="Credito" itemValue="credito" />
+										</p:selectOneRadio>
 									</div>
 								</div>
 								
@@ -105,6 +112,7 @@
 										</p:commandButton>
 										</div>
 									</div>
+										
 								</div>
 							</div>
 							</h:panelGroup>
@@ -125,11 +133,12 @@
 			</p:ajaxStatus>
 			
 		</h:form>
-		
+
 		<p:confirmDialog id="confirmDialog" global="true" showEffect="fade" hideEffect="fade" widgetVar="confirmDialog">
+
 			<h:commandButton value="Cancelar" styleClass="btn btn-danger ui-confirmdialog-no pull-right" />
-			<h:commandButton value="Continuar" styleClass="btn btn-success ui-confirmdialog-yes pull-right"  style="margin-right:2%"/>
-	   	</p:confirmDialog>
+			<h:commandButton value="Continuar" styleClass="btn btn-success ui-confirmdialog-yes pull-right" style="margin-right:2%" />
+		</p:confirmDialog>
 	</h:body>
 
 
