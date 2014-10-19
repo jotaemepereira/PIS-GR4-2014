@@ -323,7 +323,7 @@ public class PStockControlador implements IStockPersistencia {
 	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones{
 		DTVenta articulo = new DTVenta();
 		PreparedStatement stmt = null;
-		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, AUTHORIZATION_TYPE, STOCK "
+		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK "
 				+ "FROM PRODUCTS "
 				+ "WHERE PRODUCT_ID = ?";
 		try {
