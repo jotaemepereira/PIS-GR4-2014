@@ -28,6 +28,7 @@ import model.Enumerados.TipoFormaDePago;
 import model.LineaPedido;
 import model.Pedido;
 import model.Presentacion;
+import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
@@ -221,7 +222,7 @@ public class StockBean implements Serializable{
 	/**
 	 * @param resBusqueda the resBusqueda to set
 	 */
-	public void setResBusqueda(List<DTBusquedaArticulo> resBusqueda) {
+	public void setResBusqueda(List<DTBusquedaArticulo > resBusqueda) {
 		this.resBusqueda = resBusqueda;
 	}
 	

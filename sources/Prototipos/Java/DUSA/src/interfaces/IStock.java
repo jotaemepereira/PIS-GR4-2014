@@ -8,6 +8,7 @@ import model.AccionTer;
 import model.Articulo;
 import model.Droga;
 import model.Pedido;
+import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTProduct;
@@ -21,42 +22,39 @@ public interface IStock {
 	 * @param articulo
 	 *            - Articulo
 	 * @throws Excepciones
-	 *             MENSAJE_ART_DUPLICADO (si ya existe un articulo con esa descripción)
-	 *             ERROR_SISTEMA (en caso de error a la hora de persistir en la base de datos)
+	 *             MENSAJE_ART_DUPLICADO (si ya existe un articulo con esa
+	 *             descripción) ERROR_SISTEMA (en caso de error a la hora de
+	 *             persistir en la base de datos)
 	 * @author Jmaguerre
-	 *      
+	 * 
 	 */
 	public void altaArticulo(Articulo articulo) throws Excepciones;
 
-	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir)	throws Excepciones;
+	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir)
+			throws Excepciones;
 
 	/**
-	 * Se realiza conexión con el servidor de D.U.S.A. y se les envía el pedido. Si no hay error se persiste el pedido.
+	 * Se realiza conexión con el servidor de D.U.S.A. y se les envía el pedido.
+	 * Si no hay error se persiste el pedido.
+	 * 
 	 * @author Guille, Santiago
-	 * @param p Pedido a realizar
+	 * @param p
+	 *            Pedido a realizar
 	 * @throws Excepciones
 	 */
 	public void realizarPedido(Pedido p) throws Excepciones;
 
 	/**
-	 * Genera un pedido de artículos, de D.U.S.A. La cantidad de cada artículo es igual a la cantidad vendida, del artículo, desde el pedido anterior.
+	 * Genera un pedido de artículos, de D.U.S.A. La cantidad de cada artículo
+	 * es igual a la cantidad vendida, del artículo, desde el pedido anterior.
 	 * 
 	 * @author Guille
-	 * @return Una lista de dataType listaPedido con la informacion de articulos y cantidades del pedido generado.    
+	 * @return Una lista de dataType listaPedido con la informacion de articulos
+	 *         y cantidades del pedido generado.
 	 * @throws Excepciones
 	 */
-	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior() throws Excepciones;
-
-	/**
-	 * retorna los articulos que coincidan con el string ingresado
-	 * 
-	 * @param busqueda
-	 * @return List<Articulo> lista de los articulos encontrados segun el texto
-	 *         ingresado
-	 * @throws Excepciones
-	 * @author Victoria Diaz
-	 */
-	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones;
+	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior()
+			throws Excepciones;
 
 	/**
 	 * @author Jmaguerre
@@ -66,17 +64,34 @@ public interface IStock {
 
 	/**
 	 * @author Jmaguerre
-	 * @return Devuelve una lista con todas las acciones terapéuticas del sistema.
+	 * @return Devuelve una lista con todas las acciones terapéuticas del
+	 *         sistema.
 	 */
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones;
-	
-	 /**
-	  * Busca los articulos que coinciden con el string buscar y devuelve los datos necesarios
-	  * para la venta
-	  * @param busqueda - string ingresado
-	  * @return List<DTVenta> Lista de articulos encontrados
-	  * @throws Excepciones
-	  * @author Victoria Diaz
-	  */
-	public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones;
+
+	/**
+	 * Busca los articulos que coinciden con el string buscar y devuelve los
+	 * datos necesarios para la venta
+	 * 
+	 * @param busqueda
+	 *            - string ingresado
+	 * @return List<DTVenta> Lista de articulos encontrados
+	 * @throws Excepciones
+	 * @author Victoria Diaz
+	 */
+	public List<DTVenta> buscarArticulosVenta(String busqueda)
+			throws Excepciones;
+
+	/**
+	 * retorna los articulos que coincidan con el string ingresado
+	 * 
+	 * @param busqueda
+	 * @return List<Articulo> lista de los articulos encontrados segun el texto
+	 *         ingresado con los datos necesarios para el caso de uso busqueda
+	 *         articulo
+	 * @throws Excepciones
+	 * @author Victoria Diaz
+	 */
+	public List<DTBusquedaArticulo> buscarArticulos(
+			String busqueda) throws Excepciones;
 }

@@ -28,6 +28,7 @@ import org.primefaces.json.JSONObject;
 
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
+import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTProveedor;
 import datatypes.DTVenta;
 import model.AccionTer;
@@ -214,8 +215,8 @@ public class PStockControlador implements IStockPersistencia {
 
 	
 	@Override
-	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones{
-		List<DTBusquedaArticulo> listaArticulos = new ArrayList<DTBusquedaArticulo>();
+	public List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda) throws Excepciones{
+		List<DTBusquedaArticuloSolr> listaArticulos = new ArrayList<DTBusquedaArticuloSolr>();
 		
 		String urlString = "http://localhost:8080/solr";
 		SolrServer solr = new HttpSolrServer(urlString);
@@ -244,7 +245,7 @@ public class PStockControlador implements IStockPersistencia {
 				
 				SolrDocument item = response.get(i);
 				
-				DTBusquedaArticulo articulo = new DTBusquedaArticulo();
+				DTBusquedaArticuloSolr articulo = new DTBusquedaArticuloSolr();
 				articulo.setIdArticulo(Integer.parseInt(item.getFieldValue("id").toString()));
 				articulo.setCodigoBarras(item.getFieldValue("BARCODE").toString());
 				articulo.setDescripcion(item.getFieldValue("DESCRIPTION").toString());
@@ -277,6 +278,39 @@ public class PStockControlador implements IStockPersistencia {
 		
 		return listaArticulos;
 	}
+	
+	@Override
+	public void buscarArticulosId(DTBusquedaArticulo articulo) throws Excepciones{
+		PreparedStatement stmt = null;
+		
+		String query = "SELECT UNIT_PRICE, SALE_PRICE, LIST_COST, LAST_COST, AVG_COST, AUTHORIZATION_TYPE, PRODUCT_TYPE "
+				+ "FROM PRODUCTS "
+				+ "WHERE PRODUCT_ID = ?";
+		try {
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			stmt.setInt(1, articulo.getIdArticulo());
+			ResultSet rs = stmt.executeQuery();
+			//Obtengo la cantidad de proveedores con ese rut
+			while (rs.next()){
+				articulo.setTipoDeArticulo(model.Enumerados.descripcionTipoArticulo(rs.getString("PRODUCT_TYPE")));
+				articulo.setControlDeVenta(model.Enumerados.descripcionTipoVenta(rs.getString("AUTHORIZATION_TYPE")));
+				articulo.setPrecioDeVenta(rs.getBigDecimal("UNIT_PRICE"));
+				articulo.setPrecioPublico(rs.getBigDecimal("SALE_PRICE"));
+				articulo.setCostoDeLista(rs.getBigDecimal("LIST_COST"));
+				articulo.setCostoReal(rs.getBigDecimal("LAST_COST"));
+				articulo.setCostoPonderado(rs.getBigDecimal("AVG_COST"));
+			}
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch ( Exception e ) {
+			e.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		}
+			
+	}
+	
 	
 	@Override
 	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones{

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
+import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTProveedor;
 import datatypes.DTVenta;
 import model.AccionTer;
@@ -39,7 +40,7 @@ public interface IStockPersistencia {
 	 */
 	public void persistirPedido(Pedido p) throws Excepciones;
 	public boolean existeArticulo(String descripcion) throws Excepciones;
-	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones;
+	public List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda) throws Excepciones;
 	public void fullImportSolr() throws Excepciones;
 	public void deltaImportSolr() throws Excepciones;
 	
@@ -90,4 +91,12 @@ public interface IStockPersistencia {
 	public Articulo obtenerArticuloConId(long idArticulo) throws Excepciones;
 
 	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones;
+
+	/**
+	 * En base a lo encontrado usando solr, complementa los datos para ese artícuo
+	 * @param articulo - los datos parciales del articulo
+	 * @author Victoria Díaz
+	 * @throws Excepciones 
+	 */
+	void buscarArticulosId(DTBusquedaArticulo articulo) throws Excepciones;
 }

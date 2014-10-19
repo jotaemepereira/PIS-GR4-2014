@@ -1,55 +1,60 @@
 package datatypes;
 
-public class DTBusquedaArticulo {
-	private int idArticulo;
-	private String descripcion;
-	private String marca;
-	private String presentacion;
-	private String droga;
-	private String accionesTerapeuticas;
-	private String codigoBarras;
-	
-	public String getDescripcion() {
-		return descripcion;
-	}
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-	public String getDroga() {
-		return droga;
-	}
-	public void setDroga(String droga) {
-		this.droga = droga;
-	}
-	public int getIdArticulo() {
-		return idArticulo;
-	}
-	public void setIdArticulo(int idArticulo) {
-		this.idArticulo = idArticulo;
-	}
-	public String getCodigoBarras() {
-		return codigoBarras;
-	}
-	public void setCodigoBarras(String codigoBarras) {
-		this.codigoBarras = codigoBarras;
-	}
-	public String getAccionesTerapeuticas() {
-		return accionesTerapeuticas;
-	}
-	public void setAccionesTerapeuticas(String accionesTerapeuticas) {
-		this.accionesTerapeuticas = accionesTerapeuticas;
-	}
-	public String getMarca() {
-		return marca;
-	}
-	public void setMarca(String marca) {
-		this.marca = marca;
-	}
-	public String getPresentacion() {
-		return presentacion;
-	}
-	public void setPresentacion(String presentacion) {
-		this.presentacion = presentacion;
-	}
+import java.math.BigDecimal;
 
+public class DTBusquedaArticulo extends DTBusquedaArticuloSolr {
+	private String tipoDeArticulo;
+	private String controlDeVenta;
+	private BigDecimal precioPublico;
+	private BigDecimal precioDeVenta;
+	private BigDecimal costoDeLista;
+	private BigDecimal costoReal;
+	private BigDecimal costoPonderado;
+	
+	public DTBusquedaArticulo(DTBusquedaArticuloSolr busqueda){
+		super(busqueda.getAccionesTerapeuticas(), busqueda.getCodigoBarras(), busqueda.getDescripcion(), busqueda.getDroga(), busqueda.getIdArticulo(), busqueda.getMarca(), busqueda.getPresentacion());
+	}
+	
+	public String getControlDeVenta() {
+		return controlDeVenta;
+	}
+	public void setControlDeVenta(String controlDeVenta) {
+		this.controlDeVenta = controlDeVenta;
+	}
+	public String getTipoDeArticulo() {
+		return tipoDeArticulo;
+	}
+	public void setTipoDeArticulo(String tipoDeArticulo) {
+		this.tipoDeArticulo = tipoDeArticulo;
+	}
+	public BigDecimal getPrecioDeVenta() {
+		return precioDeVenta;
+	}
+	public void setPrecioDeVenta(BigDecimal precioDeVenta) {
+		this.precioDeVenta = precioDeVenta;
+	}
+	public BigDecimal getPrecioPublico() {
+		return precioPublico;
+	}
+	public void setPrecioPublico(BigDecimal precioPublico) {
+		this.precioPublico = precioPublico;
+	}
+	public BigDecimal getCostoDeLista() {
+		return costoDeLista;
+	}
+	public void setCostoDeLista(BigDecimal costoDeLista) {
+		this.costoDeLista = costoDeLista;
+	}
+	public BigDecimal getCostoReal() {
+		return costoReal;
+	}
+	public void setCostoReal(BigDecimal costoReal) {
+		this.costoReal = costoReal;
+	}
+	public BigDecimal getCostoPonderado() {
+		return costoPonderado;
+	}
+	public void setCostoPonderado(BigDecimal costoPonderado) {
+		this.costoPonderado = costoPonderado;
+	}
 }

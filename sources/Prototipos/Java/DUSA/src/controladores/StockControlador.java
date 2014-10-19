@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import persistencia.PStockControlador;
+import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTProduct;
@@ -109,7 +110,30 @@ public class StockControlador implements IStock {
 	
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones{
-		return FabricaPersistencia.getStockPersistencia().buscarArticulos(busqueda);
+		List<DTBusquedaArticulo> articulos = new ArrayList<DTBusquedaArticulo>();
+		List<DTBusquedaArticuloSolr> encontrados = FabricaPersistencia.getStockPersistencia().buscarArticulosSolr(busqueda);
+		
+		Iterator<DTBusquedaArticuloSolr> it = encontrados.iterator();
+		while (it.hasNext()) {
+			DTBusquedaArticuloSolr dtBusquedaArticulo = (DTBusquedaArticuloSolr) it
+					.next();
+			
+			DTBusquedaArticulo articulo = new DTBusquedaArticulo(dtBusquedaArticulo);
+			FabricaPersistencia.getStockPersistencia().buscarArticulosId(articulo);
+			
+	/*		
+			articulo.setTipoDeArticulo("tipo");
+			articulo.setControlDeVenta("control");
+			articulo.setCostoDeLista(100);
+			articulo.setCostoPonderado(100);
+			articulo.setCostoReal(100);
+			articulo.setPrecioDeVenta(100);
+			articulo.setPrecioPublico(100);
+			*/
+			articulos.add(articulo);
+		}
+		
+		return articulos;
 	}
 
 	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir) throws Excepciones {
@@ -172,12 +196,12 @@ public class StockControlador implements IStock {
 	public List<DTVenta> buscarArticulosVenta(String busqueda)
 			throws Excepciones {
 		List<DTVenta> articulos = new ArrayList<DTVenta>();
-		List<DTBusquedaArticulo> lista = FabricaPersistencia.getStockPersistencia().buscarArticulos(busqueda);
+		List<DTBusquedaArticuloSolr> lista = FabricaPersistencia.getStockPersistencia().buscarArticulosSolr(busqueda);
 		
-		Iterator<DTBusquedaArticulo> it = lista.iterator();
+		Iterator<DTBusquedaArticuloSolr> it = lista.iterator();
 		
 		while (it.hasNext()) {
-			DTBusquedaArticulo articuloB = (DTBusquedaArticulo) it.next();
+			DTBusquedaArticuloSolr articuloB = (DTBusquedaArticuloSolr) it.next();
 			DTVenta articuloV = FabricaPersistencia.getStockPersistencia().getDatosArticuloVenta(articuloB.getIdArticulo());
 			articuloV.setDescripcion(articuloB.getDescripcion());
 			articuloV.setProductId(articuloB.getIdArticulo());
