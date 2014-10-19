@@ -46,6 +46,7 @@ public class Enumerados {
 	public class EstadoVenta {
 		public static final char PENDIENTE = 'P';
 		public static final char FACTURADA = 'F';
+		public static final char CANCELADA = 'C';
 	}
 	
 	public final class habilitado {	    

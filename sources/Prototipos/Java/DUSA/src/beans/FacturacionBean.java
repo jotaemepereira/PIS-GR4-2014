@@ -63,6 +63,24 @@ public class FacturacionBean implements Serializable {
 							"Error al facturar.", ""));
 		}
 	}
+	
+	public void cancelar(Venta v) {
+		try {
+			IFacturacion ifact = FabricaLogica.getIFacturacion();
+			ifact.cancelarVenta(v.getVentaId());
+
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Se cancelada correctamente.", ""));
+			ventas = ifact.listarVentasPendientes();
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Error al facturar.", ""));
+		}
+	}
 
 	// private List<String> chequearRecetas() {
 	// List<String> errores = new ArrayList<String>();

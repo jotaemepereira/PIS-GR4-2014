@@ -122,6 +122,23 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	}
 
 	@Override
+	public void cancelarVenta(long ventaId) throws Exception {
+		Connection con = Conexion.getConnection();
+		Statement st = con.createStatement();
+		try {
+			String sqlUpdate = "UPDATE sales SET sale_status = '"
+					+ Enumerados.EstadoVenta.CANCELADA + "'  WHERE sale_id = "
+					+ ventaId;
+			st.executeUpdate(sqlUpdate);
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			st.close();
+			con.close();
+		}
+	}
+	
+	@Override
 	public Venta facturarVenta(long ventaId) throws Exception {
 		Connection con = Conexion.getConnection();
 		Statement st = con.createStatement();
@@ -224,7 +241,6 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			throw e;
 		} finally {
 			st.close();
-			con.rollback();
 			con.close();
 		}
 	}

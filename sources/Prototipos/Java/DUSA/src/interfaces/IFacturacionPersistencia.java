@@ -12,6 +12,8 @@ public interface IFacturacionPersistencia {
 
 	public Venta facturarVenta(long ventaId) throws Exception;
 	
+	public void cancelarVenta(long ventaId) throws Exception;
+	
 	public void marcarVentaFacturada(long ventaId) throws Exception;
 
 	/**

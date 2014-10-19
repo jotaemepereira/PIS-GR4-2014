@@ -3,7 +3,6 @@ package controladores;
 import interfaces.IFacturacion;
 import interfaces.IFacturacionPersistencia;
 
-import java.io.File;
 import java.util.List;
 
 import model.Venta;
@@ -27,11 +26,23 @@ public class FacturacionControlador implements IFacturacion {
 			IFacturacionPersistencia ifp = FabricaPersistencia
 					.getInstanciaFacturacionPersistencia();
 
-			// Obtengo venta pendiente y la marco como en proceso de facturación
+			// Obtengo venta pendiente y la marco como facturada
 			Venta venta = ifp.facturarVenta(ventaId);
 
 			// Creo factura
-			File f = XMLUtil.jaxbObjectToXML(venta);
+			XMLUtil.jaxbObjectToXML(venta);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	@Override
+	public void cancelarVenta(long ventaId) throws Exception{
+		try {
+			IFacturacionPersistencia ifp = FabricaPersistencia
+					.getInstanciaFacturacionPersistencia();
+
+			ifp.cancelarVenta(ventaId);
 		} catch (Exception e) {
 			throw e;
 		}
