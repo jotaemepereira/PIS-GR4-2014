@@ -19,15 +19,15 @@
 		</f:facet>
 
 		<style>
-			.tablaBusqueda td {
-				padding-right: 1%;
-				width: 18%;
-			}
-			
-			.tablaBusqueda td:first-child{
-				width: 40%;
-			}
-		</style>
+.tablaBusqueda td {
+	padding-right: 1%;
+	width: 18%;
+}
+
+.tablaBusqueda td:first-child {
+	width: 40%;
+}
+</style>
 	</h:head>
 	<h:body>
 		<h:form id="form1">
@@ -47,6 +47,18 @@
 									<div class="row">
 										<!-- <div style="float: left; width: 25%; min-width: 300px;">  -->
 										<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+
+											<div>
+												<p:inputText id="codigoLector"
+													style="vertical-align: 8px; margin-right: 5px;"
+													value="#{ventaBean.codigoBusqueda}"
+													placeholder="Codigo Articulo...">
+												</p:inputText>
+												<p:commandButton id="ajax7" update="@form"
+													value="Agregar Articulo a la venta" style="vertical-align: 8px; margin-right: 5px; height: 29px;"
+													actionListener="#{ventaBean.buscarArticuloLector}"
+													styleClass="ui-priority-primary" />
+											</div>
 
 											<p:dataGrid var="venta2" value="#{ventaBean.lineasVenta2}"
 												columns="1" layout="grid" rows="20" id="GridVentas2">
@@ -154,7 +166,8 @@
 
 
 														<h:outputText value=" #{venta.presentacion}" />
-														<p:inputText id="descuento" value="#{venta.descuento}" style="width:50%">
+														<p:inputText id="descuento" value="#{venta.descuento}"
+															style="width:50%">
 															<p:ajax listener="#{ventaBean.strDescuentoPrecio()}"
 																update="@form" process="@this" />
 														</p:inputText>
