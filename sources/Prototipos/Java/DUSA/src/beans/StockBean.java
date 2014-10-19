@@ -70,9 +70,10 @@ public class StockBean implements Serializable{
 	private String messageClass;
 	private Boolean disableDesdeUltimoPedido = false;
 	private Boolean disablePrediccionDePedido = false;
+	private String formaDePago = "contado";  
 	
 	//Busqueda de artículos
-	private String busqueda = "";
+	private String busqueda = "Contado";
 	private List<DTBusquedaArticulo> resBusqueda = new ArrayList<DTBusquedaArticulo>();
 	
 	
@@ -181,6 +182,12 @@ public class StockBean implements Serializable{
 	public void setCodigoIdentificador(long codigoIdentificador) {
 		this.codigoIdentificador = codigoIdentificador;
 	}
+	public String getFormaDePago() {
+		return formaDePago;
+	}
+	public void setFormaDePago(String formaDePago) {
+		this.formaDePago = formaDePago;
+	}
 	public Boolean getDisableDesdeUltimoPedido() {
 		return disableDesdeUltimoPedido;
 	}
@@ -234,21 +241,21 @@ public class StockBean implements Serializable{
 		disableDesdeUltimoPedido = true;
 		pedidos.clear();
 		
-		try {
-			
-			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAPedidoAnterior();
-		} catch (Exception e) {
-			
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(
-					null,
-					new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							e.getMessage(),
-							""));
-		}
+//		try {
+//			
+//			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAPedidoAnterior();
+//		} catch (Exception e) {
+//			
+//			FacesContext context = FacesContext.getCurrentInstance();
+//			context.addMessage(
+//					null,
+//					new FacesMessage(
+//							FacesMessage.SEVERITY_ERROR,
+//							e.getMessage(),
+//							""));
+//		}
 		
-		/*
+		
 		DTLineaPedido dt = new DTLineaPedido();
 		dt.setCantidad(5);
 		dt.setIdArticulo(5);
@@ -285,7 +292,7 @@ public class StockBean implements Serializable{
 		dt.setSubtotal(360);
 		pedidos.add(dt);
 		
-		*/
+		
 	}
 	
 	/**
@@ -296,20 +303,20 @@ public class StockBean implements Serializable{
 		disableDesdeUltimoPedido = true;
 		pedidos.clear();
 		
-		try {
-			
-			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAHistorico(5);
-		} catch (Exception e) {
-			
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(
-					null,
-					new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							e.getMessage(),
-							""));
-		}
-		/*
+//		try {
+//			
+//			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAHistorico(5);
+//		} catch (Exception e) {
+//			
+//			FacesContext context = FacesContext.getCurrentInstance();
+//			context.addMessage(
+//					null,
+//					new FacesMessage(
+//							FacesMessage.SEVERITY_ERROR,
+//							e.getMessage(),
+//							""));
+//		}
+		
 		DTLineaPedido dt = new DTLineaPedido();
 		dt.setCantidad(3);
 		dt.setIdArticulo(1);
@@ -357,7 +364,6 @@ public class StockBean implements Serializable{
 		dt.setStockMinimo(10);
 		dt.setSubtotal(60);
 		pedidos.add(dt);
-		*/
 	}
 	
 	public void removeItem(DTLineaPedido item) {

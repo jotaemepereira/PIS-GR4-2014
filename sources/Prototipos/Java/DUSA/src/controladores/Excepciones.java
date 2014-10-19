@@ -10,6 +10,8 @@ public class Excepciones extends Exception {
 	public static int ADVERTENCIA_DATOS				= 1;
 	public static int ERROR_SISTEMA					= 2;
 	public static int USUARIO_NO_TIENE_PERMISOS     = 3;
+	public static int ERROR_SIN_CONEXION    		= 4;
+	
 	// Mensajes generales
 	public static String MENSAJE_ERROR_SISTEMA					= "Ha ocurrido un error, por favor vuelva a intentarlo";
 	public static String MENSAJE_OK_ALTA						= "El alta ha sido efectuada con éxito";
@@ -34,6 +36,8 @@ public class Excepciones extends Exception {
 	//Mensaje de no tiene permisos para realizar dicha operacion 
 	public static String MENSAJE_USUARIO_NO_TIENE_PERMISOS 				= "El usuario logueado no tiene permisos para realizar la operacion";
 	
+	//Mensajes de conexion con webServices
+	public static String MENSAJE_ERROR_CONEXION_WS						= "No se ha establecido conexión. Por favor, intentelo más tarde o verifique su conexión a internet.";
 	
 	public Excepciones(String message, int errorCode){
         super(message);
