@@ -91,17 +91,19 @@ public interface ISistema {
 	 */
 	 public void iniciarSesion(String nombreUsuario, String contrasenia );
 	 public void cerrarSesion(String nombreUsuario, String contrasenia);
-	 
-	 /**
-	  * Busca los articulos que coinciden con el string buscar y devuelve los datos necesarios
-	  * para la venta
-	  * @param busqueda - string ingresado
-	  * @return List<DTVenta> Lista de articulos encontrados
-	  * @throws Excepciones
-	  * @author Victoria Diaz
-	  */
-	 public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones;
 
+	/**
+	 * Busca los articulos que coinciden con el string buscar y devuelve los
+	 * datos necesarios para la venta
+	 * 
+	 * @param busqueda
+	 *            - string ingresado
+	 * @return List<DTVenta> Lista de articulos encontrados
+	 * @throws Excepciones
+	 * @author Victoria Diaz
+	 */
+	public List<DTVenta> buscarArticulosVenta(String busqueda)
+			throws Excepciones;
 
 	/**
 	 * Retorna todos los proveedores activos existentes en el sistema marcados
