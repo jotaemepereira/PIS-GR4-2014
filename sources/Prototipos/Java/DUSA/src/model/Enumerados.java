@@ -8,6 +8,34 @@ public class Enumerados {
 		CREDITO, CONTADO
 	}
 	
+	public enum casoDeUso{
+	    ventaLibre, 
+	    registrarVentaPerdida,
+	    registrarNuevaVenta, 
+	    facturarVentaPendiente,
+	    cancelarVentaPendiente,
+	    listarVentasPendientes,
+	    nuevaCompra,
+	    listarComprasDusa,
+	    altaArticulo,
+	    bajaArticulo,
+	    obtenerArticulo,
+	    modificarArticulo,
+	    modificarStock,
+	    buscarArticulo,
+	    generPeEnBaseAPedAnt,
+	    genPedEnBaseAHist,
+	    realizarPedido,
+	    altaCliente,
+	    modificarCliente,
+	    buscarCliente,
+	    altaProveedor,
+	    modificarProveedor,
+	    buscarProveedor,
+	    generarEstadistica,
+	    iniciarSesion,
+	    cerrarSesion,
+	}
 	public final class formasVenta {
 	    public static final char ventaLibre = '1';
 	    public static final char controlado = '2';

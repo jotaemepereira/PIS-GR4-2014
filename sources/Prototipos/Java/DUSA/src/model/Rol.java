@@ -1,6 +1,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import model.Enumerados.casoDeUso;
 /**
  * 
  * @author santiago
@@ -30,5 +33,13 @@ public class Rol {
 		this.operaciones = operaciones;
 	}
 	
+	public boolean tienePermiso(casoDeUso cu){
+		Iterator<Operacion> it = this.operaciones.iterator();
+		while (it.hasNext()){
+			if (it.next().getNombre().equalsIgnoreCase(cu.toString()))
+				return true; 
+		}
+		return false;
+	}
 
 }

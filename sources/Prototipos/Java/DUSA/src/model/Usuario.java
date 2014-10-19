@@ -1,6 +1,9 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+
+import model.Enumerados.casoDeUso;
 
 public class Usuario {
 	long usuarioId;
@@ -8,10 +11,19 @@ public class Usuario {
 	String pwd_hash;
 	boolean estado;
     private ArrayList<Rol> roles;
-	public long getUsuarioId() {
+	public long getUsuarioId() { 
 		return usuarioId;
 	}
-
+	public boolean tienePermiso(casoDeUso cu){
+		
+		Iterator<Rol> it = this.roles.iterator();
+		while (it.hasNext()){
+			Rol r = it.next();
+			if (r.tienePermiso(cu))
+				return true;
+		}
+		return false;
+	}
 	public void setUsuarioId(int usuarioId) {
 		this.usuarioId = usuarioId;
 	}
