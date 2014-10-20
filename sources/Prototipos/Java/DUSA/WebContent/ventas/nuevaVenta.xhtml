@@ -76,19 +76,17 @@
 														</p:inputText>
 
 														<p:outputPanel visible="#{venta2.isRecetaBlanca}"
-															style="width: 100px; padding: 0; margin: 0;">
+															style="width: 120px; padding: 0; margin: 0;">
 															<h:panelGrid columns="2" cellpadding="5">
-																<h:outputText value=" %25 " />
-																<p:selectBooleanCheckbox
-																	value="#{ventaBen.descuentoReceta1}">
-																</p:selectBooleanCheckbox>
-																<h:outputText value=" %30 " />
-																<p:selectBooleanCheckbox
-																	value="#{ventaBen.descuentoReceta2}">
-																</p:selectBooleanCheckbox>
-																<p:commandButton value="Agregar Descuento Receta"
-																	id="ajax5" actionlistener="#{ventaBean.strTotal()}"
-																	update="GridVentas2 :form1:total" process="@this" />
+
+																<p:outputLabel for="receta" value="receta:" />
+																<p:selectOneMenu id="receta"
+																	value="#{venta2.descuentoReceta}">
+																	<f:selectItem itemLabel="seleccionar desc." itemValue="" />
+																	<f:selectItem itemLabel="30% descuento" itemValue="30" />
+																	<f:selectItem itemLabel="25% descuento" itemValue="25" />
+																</p:selectOneMenu>
+
 															</h:panelGrid>
 
 														</p:outputPanel>
