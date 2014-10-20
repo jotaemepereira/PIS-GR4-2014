@@ -12,6 +12,7 @@ import model.GeneradorPedido;
 import model.LineaPedido;
 import model.Pedido;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -196,6 +197,8 @@ public class StockControlador implements IStock {
 			articuloV.setPresentacion(articuloB.getPresentacion());
 			articuloV.setPrincipioActivo(articuloB.getDroga());
 			articuloV.setLaboratorio(articuloB.getMarca());
+			articuloV.setDescuento1(new BigDecimal(10));
+			articuloV.setDescuento2(new BigDecimal(30));
 			articulos.add(articuloV);
 		}
 		
