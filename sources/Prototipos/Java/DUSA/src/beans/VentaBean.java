@@ -97,6 +97,9 @@ public class VentaBean implements Serializable {
 	public void buscarArticuloLector(){
 		//busco articulo con el codigo ingresado por el lector de codigo de barras y lo agrego a la venta.
 		
+				if(codigoBusqueda.equals("")){
+					return;
+				}
 		/**
 				List<DTVenta> lv = new ArrayList<DTVenta>();
 				try {
