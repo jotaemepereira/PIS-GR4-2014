@@ -35,6 +35,9 @@
 			.listaLineaVentas td:first-child {
 				width: 40%;
 			}
+			.ui-icon-triangle-1-s {
+			    background-position: -68px -16px !important;
+			}
 		</style>
 	</h:head>
 	<h:body>
@@ -84,23 +87,21 @@
 															<p:ajax listener="#{ventaBean.strSubTotal()}"
 																update="GridVentas2 :form1:subTotal" process="@this" />
 														</p:inputText>
-
+													
+													<!---------------- CON SELECTOR  ----------------------->
 														<p:outputPanel visible="#{venta2.isRecetaBlanca}"
-<<<<<<< HEAD
-															style="width: 120px; padding: 0; margin: 0;">
-															<h:panelGrid columns="2" cellpadding="5">
-
-																<p:outputLabel for="receta" value="receta:" />
+															style=" padding: 0; margin: 0;">
+																<p:outputLabel for="receta" value="Desc. receta:" style="width:100%" />
 																<p:selectOneMenu id="receta"
-																	value="#{venta2.descuentoReceta}">
-																	<f:selectItem itemLabel="seleccionar desc." itemValue="" />
-																	<f:selectItem itemLabel="30% descuento" itemValue="30" />
+																	value="#{venta2.descuentoReceta}" style="width:110%">
+																	<f:selectItem itemLabel="seleccionar" itemValue="" />
+																	<f:selectItem itemLabel="40% descuento" itemValue="40" />
 																	<f:selectItem itemLabel="25% descuento" itemValue="25" />
 																</p:selectOneMenu>
-
-															</h:panelGrid>
-
-=======
+														</p:outputPanel>
+														
+													<!------------------ CON CHECK
+														<p:outputPanel visible="#{venta2.isRecetaBlanca}"
 															style="padding: 0; margin: 0;">
 															<h:panelGrid columns="2" >
 																<h:outputText value=" %25 " />
@@ -115,8 +116,8 @@
 															<p:commandButton value="Agregar desc." style="width:100% !important"
 																	id="ajax5" actionlistener="#{ventaBean.strTotal()}"
 																	update="GridVentas2 :form1:total" process="@this" />
->>>>>>> branch 'develop' of https://github.com/jotaemepereira/PIS-GR4-2014.git
-														</p:outputPanel>
+														</p:outputPanel> 
+													------------------------------------------------->
 													</h:panelGrid>
 												</p:panel>
 											</p:dataGrid>

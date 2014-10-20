@@ -55,7 +55,7 @@ public class VentaBean implements Serializable {
 		// agregar todos los que coinciden con la descripcion buscados
 
 		
-		
+		/**
 		// Probando con el Database.java para buscar simulando la busqueda :
 		Database DB = Database.getInstance();
 		List<DTVenta> list = DB.getVentas();
@@ -71,8 +71,8 @@ public class VentaBean implements Serializable {
 		}
 		
 		
+		*/
 		
-		/**
 		
 		// Busqueda con solr
 		lineasVenta = new ArrayList<DTVenta>();
@@ -89,7 +89,7 @@ public class VentaBean implements Serializable {
 			e.printStackTrace();
 		}
 		
-		**/
+		
 		
 	}
 	
@@ -100,7 +100,7 @@ public class VentaBean implements Serializable {
 				if(codigoBusqueda.equals("")){
 					return;
 				}
-		/**
+		
 				List<DTVenta> lv = new ArrayList<DTVenta>();
 				try {
 					lv = FabricaSistema.getISistema().buscarArticulosVenta(codigoBusqueda);
@@ -116,8 +116,8 @@ public class VentaBean implements Serializable {
 					e.printStackTrace();
 				}
 				
-				**/
-		
+				
+				/**
 				
 				// Probando con el Database.java para agregar a mano un codigo, simulando el lector de codigo de barras :
 				Database DB = Database.getInstance();
@@ -132,7 +132,7 @@ public class VentaBean implements Serializable {
 				}
 					
 				
-				
+				**/
 	}
 	
 	//para calcular el precio con el descuento a poner cuando lista los articulos en la busqueda, falta terminar
