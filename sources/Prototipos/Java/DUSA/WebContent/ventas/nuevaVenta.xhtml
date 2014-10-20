@@ -53,11 +53,9 @@
 													style="vertical-align: 8px; margin-right: 5px;"
 													value="#{ventaBean.codigoBusqueda}"
 													placeholder="Codigo Articulo...">
+													<p:ajax listener="#{ventaBean.buscarArticuloLector()}"
+																update="@form" process="@this" />
 												</p:inputText>
-												<p:commandButton id="ajax7" update="@form"
-													value="Agregar Articulo a la venta" style="vertical-align: 8px; margin-right: 5px; height: 29px;"
-													actionListener="#{ventaBean.buscarArticuloLector}"
-													styleClass="ui-priority-primary" />
 											</div>
 
 											<p:dataGrid var="venta2" value="#{ventaBean.lineasVenta2}"
