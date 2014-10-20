@@ -33,6 +33,7 @@ public class VentaBean implements Serializable {
 	private String laboratorio = "Laboratorio prueba";
 	private BigDecimal precioVenta = new BigDecimal(0);
 	private String descripcionBusqueda;
+	private String codigoBusqueda;
 	private String nombre = "nombre";
 	
 	private DTVenta venta = new DTVenta();
@@ -50,10 +51,11 @@ public class VentaBean implements Serializable {
 
 	public void buscarArticulos(ActionEvent event) {
 		System.out.println("buscar articulos");
-		// aca en realidad hay q buscar las ventas con el buscarArticulo y
+		// aca hay q buscar las ventas con el buscarArticulo y
 		// agregar todos los que coinciden con la descripcion buscados
 
 		/**
+		
 		// Probando con el Database.java para buscar simulando la busqueda :
 		Database DB = Database.getInstance();
 		List<DTVenta> list = DB.getVentas();
@@ -69,6 +71,8 @@ public class VentaBean implements Serializable {
 		}
 		
 		**/
+		
+		
 		
 		// Busqueda con solr
 		lineasVenta = new ArrayList<DTVenta>();
@@ -87,7 +91,45 @@ public class VentaBean implements Serializable {
 		
 		
 		
+	}
+	
+	
+	public void buscarArticuloLector(){
+		//busco articulo con el codigo ingresado por el lector de codigo de barras y lo agrego a la venta.
+		
+				
+				List<DTVenta> lv = new ArrayList<DTVenta>();
+				try {
+					lv = FabricaSistema.getISistema().buscarArticulosVenta(codigoBusqueda);
+					
+					Iterator<DTVenta> it = lv.iterator();
+					while (it.hasNext()) {
+						DTVenta dtVenta = (DTVenta) it.next();
+						agregarLineaVenta(dtVenta);
+					}
 
+				} catch (Excepciones e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+		
+				/**
+				// Probando con el Database.java para agregar a mano un codigo, simulando el lector de codigo de barras :
+				Database DB = Database.getInstance();
+				List<DTVenta> list = DB.getVentas();
+				Iterator<DTVenta> it = list.iterator();
+				while (it.hasNext()) {
+					DTVenta v = it.next();
+					if (!(codigoBusqueda.isEmpty())
+							&& v.getCodigoBarras().contains(codigoBusqueda)) {
+						agregarLineaVenta(v);
+					}
+				}
+					**/
+				
+				
 	}
 	
 	//para calcular el precio con el descuento a poner cuando lista los articulos en la busqueda, falta terminar
@@ -291,6 +333,14 @@ public class VentaBean implements Serializable {
 
 	public void setDescuentoReceta2(boolean descuentoReceta2) {
 		this.descuentoReceta2 = descuentoReceta2;
+	}
+
+	public String getCodigoBusqueda() {
+		return codigoBusqueda;
+	}
+
+	public void setCodigoBusqueda(String codigoBusqueda) {
+		this.codigoBusqueda = codigoBusqueda;
 	}
 
 
