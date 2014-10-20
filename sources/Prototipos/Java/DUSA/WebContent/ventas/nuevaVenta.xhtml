@@ -69,6 +69,8 @@
 													style="vertical-align: 8px; margin-right: 5px; width:100%"
 													value="#{ventaBean.codigoBusqueda}"
 													placeholder="Codigo Articulo...">
+													<p:ajax listener="#{ventaBean.buscarArticuloLector()}"
+																update="@form" process="@this" />
 												</p:inputText>
 											</div>
 
@@ -88,7 +90,7 @@
 																update="GridVentas2 :form1:subTotal" process="@this" />
 														</p:inputText>
 													
-													<!---------------- CON SELECTOR  ----------------------->
+													<!--  CON SELECTOR  -->
 														<p:outputPanel visible="#{venta2.isRecetaBlanca}"
 															style=" padding: 0; margin: 0;">
 																<p:outputLabel for="receta" value="Desc. receta:" style="width:100%" />
@@ -100,7 +102,7 @@
 																</p:selectOneMenu>
 														</p:outputPanel>
 														
-													<!------------------ CON CHECK
+													<!-- CON CHECK
 														<p:outputPanel visible="#{venta2.isRecetaBlanca}"
 															style="padding: 0; margin: 0;">
 															<h:panelGrid columns="2" >
@@ -117,7 +119,7 @@
 																	id="ajax5" actionlistener="#{ventaBean.strTotal()}"
 																	update="GridVentas2 :form1:total" process="@this" />
 														</p:outputPanel> 
-													------------------------------------------------->
+													-->
 													</h:panelGrid>
 												</p:panel>
 											</p:dataGrid>
