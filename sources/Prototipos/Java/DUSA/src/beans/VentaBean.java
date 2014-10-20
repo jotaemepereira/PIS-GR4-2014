@@ -41,7 +41,7 @@ public class VentaBean implements Serializable {
 	private List<DTVenta> lineasVenta2 = new ArrayList<DTVenta>();
 	private List<DTVenta> lineasVentaPerdidas = new ArrayList<DTVenta>();
 	private List<DTVenta> ventasSeleccionadas = new ArrayList<DTVenta>();
-	private String strDescuento;
+	private String strDescuento = "";
 	private boolean descuentoReceta1 = false;
 	private boolean descuentoReceta2 = false;
 
@@ -54,7 +54,7 @@ public class VentaBean implements Serializable {
 		// aca hay q buscar las ventas con el buscarArticulo y
 		// agregar todos los que coinciden con la descripcion buscados
 
-		/**
+		
 		
 		// Probando con el Database.java para buscar simulando la busqueda :
 		Database DB = Database.getInstance();
@@ -70,9 +70,9 @@ public class VentaBean implements Serializable {
 			}
 		}
 		
-		**/
 		
 		
+		/**
 		
 		// Busqueda con solr
 		lineasVenta = new ArrayList<DTVenta>();
@@ -89,7 +89,7 @@ public class VentaBean implements Serializable {
 			e.printStackTrace();
 		}
 		
-		
+		**/
 		
 	}
 	
@@ -100,7 +100,7 @@ public class VentaBean implements Serializable {
 				if(codigoBusqueda.equals("")){
 					return;
 				}
-				
+		/**
 				List<DTVenta> lv = new ArrayList<DTVenta>();
 				try {
 					lv = FabricaSistema.getISistema().buscarArticulosVenta(codigoBusqueda);
@@ -116,9 +116,9 @@ public class VentaBean implements Serializable {
 					e.printStackTrace();
 				}
 				
-				
+				**/
 		
-				/**
+				
 				// Probando con el Database.java para agregar a mano un codigo, simulando el lector de codigo de barras :
 				Database DB = Database.getInstance();
 				List<DTVenta> list = DB.getVentas();
@@ -130,7 +130,7 @@ public class VentaBean implements Serializable {
 						agregarLineaVenta(v);
 					}
 				}
-					**/
+					
 				
 				
 	}
@@ -179,15 +179,14 @@ public class VentaBean implements Serializable {
 			
 			BigDecimal n = new BigDecimal(0);
 			//calculo descuento por receta blanca 1 
-			if (descuentoReceta1){
+			if (v.getDescuentoReceta().equals("25")){
 				n = (v.getPrecioVenta().multiply(new BigDecimal(25))).divide(new BigDecimal(100));
-				descuentoReceta1 = false;
 			}
 			//calculo descuento por receta blanca 2 
-			if (descuentoReceta2){
+			if (v.getDescuentoReceta().equals("30")){
 				n = (v.getPrecioVenta().multiply(new BigDecimal(30))).divide(new BigDecimal(100));
-				descuentoReceta2 = false;
 			}
+			
 			
 			//sumo los totales restandole los descuentos correspondientes a cada uno y los multiplico por las cantidades
 			total = total.add(((v.getPrecioVenta().subtract(x)).subtract(n)).multiply(
