@@ -70,6 +70,7 @@ public class StockBean implements Serializable{
 	private String messageClass;
 	private Boolean disableDesdeUltimoPedido = false;
 	private Boolean disablePrediccionDePedido = false;
+	private String hideElement = "hidden";
 	private String formaDePago = "contado";  
 	
 	//Busqueda de artículos
@@ -239,6 +240,7 @@ public class StockBean implements Serializable{
 	public void desdeUltimoPedido(){
 		disablePrediccionDePedido = true;
 		disableDesdeUltimoPedido = true;
+		hideElement = "visible";
 		pedidos.clear();
 		
 //		try {
@@ -301,6 +303,7 @@ public class StockBean implements Serializable{
 	public void prediccionDePedido(){
 		disablePrediccionDePedido = true;
 		disableDesdeUltimoPedido = true;
+		hideElement = "visible";
 		pedidos.clear();
 		
 //		try {
@@ -379,7 +382,7 @@ public class StockBean implements Serializable{
 					Excepciones.MENSAJE_PEDIDO_VACIO, ""));
 			return;
 		}
-		
+		/*
 		Pedido p = new Pedido();
 		
 		p.setFecha(new Date(Calendar.getInstance().getTimeInMillis()));
@@ -392,10 +395,11 @@ public class StockBean implements Serializable{
 			LineaPedido lPedido = new LineaPedido(dtLineaPedido.getIdArticulo(), dtLineaPedido.getNumeroArticulo(), dtLineaPedido.getCantidad());
 			p.getLineas().add(lPedido);
 		}
-		
+		*/
 		pedidos.clear();
 		disableDesdeUltimoPedido = false;
 		disablePrediccionDePedido = false;
+		hideElement = "hidden";
 		
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
 				Excepciones.MENSAJE_OK_PEDIDO, ""));
@@ -406,6 +410,7 @@ public class StockBean implements Serializable{
 		pedidos.clear();
 		disableDesdeUltimoPedido = false;
 		disablePrediccionDePedido = false;
+		hideElement = "hidden";
 	}
 	
 
@@ -613,6 +618,12 @@ public class StockBean implements Serializable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public String getHideElement() {
+		return hideElement;
+	}
+	public void setHideElement(String hideElement) {
+		this.hideElement = hideElement;
 	}
 
 }
