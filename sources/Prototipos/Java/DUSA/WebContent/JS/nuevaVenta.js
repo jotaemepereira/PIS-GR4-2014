@@ -8,10 +8,10 @@ $(document).ready(function(e){
 	});
 	
 	// Busco el artículo al hacer enter en el input de busqueda lector
-/*	$("[id*='ajax7']").bind('keydown', 'return', function(e){
+	$("[id*='codigoLector']").bind('keydown', 'return', function(e){
 		e.stopPropagation();
 		e.preventDefault();
-		console.log('enter');
+		console.log('enter lector');
 		buscarArticuloLector();
-	});*/
+	});
 });

@@ -66,8 +66,6 @@
 													style="vertical-align: 8px; margin-right: 5px; width:100%"
 													value="#{ventaBean.codigoBusqueda}"
 													placeholder="Codigo Articulo...">
-													<p:ajax listener="#{ventaBean.buscarArticuloLector()}"
-																update="@form" process="@this" />
 												</p:inputText>
 											</div>
 
@@ -92,11 +90,11 @@
 															<h:panelGrid columns="2" >
 																<h:outputText value=" %25 " />
 																<p:selectBooleanCheckbox
-																	value="#{ventaBen.descuentoReceta1}">
+																	value="#{ventaBean.descuentoReceta1}">
 																</p:selectBooleanCheckbox>
 																<h:outputText value=" %30 " />
 																<p:selectBooleanCheckbox
-																	value="#{ventaBen.descuentoReceta2}">
+																	value="#{ventaBean.descuentoReceta2}">
 																</p:selectBooleanCheckbox>
 															</h:panelGrid>
 															<p:commandButton value="Agregar desc." style="width:100% !important"
