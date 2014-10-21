@@ -74,7 +74,7 @@ public class StockBean implements Serializable{
 	private String formaDePago = "contado";  
 	
 	//Busqueda de artículos
-	private String busqueda = "Contado";
+	private String busqueda = "";
 	private List<DTBusquedaArticulo> resBusqueda = new ArrayList<DTBusquedaArticulo>();
 	
 	
@@ -611,6 +611,11 @@ public class StockBean implements Serializable{
 	
 	public void buscarArticulos(){
 		resBusqueda = new ArrayList<DTBusquedaArticulo>();
+		
+		if(busqueda.equals("")){
+			return;
+		}
+		
 		try {
 			resBusqueda = FabricaSistema.getISistema().buscarArticulos(busqueda);
 			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
