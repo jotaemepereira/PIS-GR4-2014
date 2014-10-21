@@ -98,6 +98,7 @@ public class SistemaControlador implements ISistema {
 	}
 	@Override
 	public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones {
+		System.out.println("********* BUSCAR ************** " + busqueda);
 		//if (user.tienePermiso(casoDeUso.buscarArticulo))
 			return FabricaLogica.getIStock().buscarArticulosVenta(busqueda);
 		//else

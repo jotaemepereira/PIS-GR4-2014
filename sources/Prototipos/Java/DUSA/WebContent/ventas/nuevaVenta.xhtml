@@ -13,87 +13,113 @@
 		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
 		<link href="../CSS/font-awesome.min.css" rel="stylesheet" />
 		<script src="../JS/bootstrap.min.js"></script>
+		<script src="../JS/nuevaVenta.js"></script>
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
 		</f:facet>
 
 		<style>
-.tablaBusqueda td {
-	padding-right: 1%;
-	width: 18%;
-}
-
-.tablaBusqueda td:first-child {
-	width: 40%;
-}
-</style>
+			.tablaBusqueda td {
+				padding-right: 1%;
+				width: 18%;
+			}
+			.tablaBusqueda td:first-child {
+				width: 40%;
+			}
+			
+			.listaLineaVentas td {
+				padding-right: 1%;
+				width: 30%;
+			}
+			.listaLineaVentas td:first-child {
+				width: 40%;
+			}
+			.ui-icon-triangle-1-s {
+			    background-position: -68px -16px !important;
+			}
+		</style>
 	</h:head>
 	<h:body>
 		<h:form id="form1">
-			<p:growl id="messages" showDetail="true" />
+			<p:hotkey bind="Ctrl+return" update="panel msgs" actionListener="#{ventaBean.facturarVenta}"/>
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/ventas.xhtml" />
-
+			<p:focus></p:focus>
+			
 			<div class="vpanel_right">
 				<div class="wrapper">
 					<div class="panel panel-default" id="panel">
 						<div class="panel-heading">
 							<h3 class="panel-title">Nueva Venta</h3>
 						</div>
+						<p:messages id="msgs" />
+						
+						<p:remoteCommand name="buscarArticulo" update="GridVentas" actionListener="#{ventaBean.buscarArticulos}"/>
+						<p:remoteCommand name="buscarArticuloLector" update="GridVentas2" actionListener="#{ventaBean.buscarArticuloLector}"/>
 						<div class="panel-body">
 							<div class="container-fluid">
 								<h:panelGroup layout="block" id="panel">
 									<div class="row">
 										<!-- <div style="float: left; width: 25%; min-width: 300px;">  -->
-										<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+										<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="margin-bottom:10px">
 
-											<div>
+											<div style="margin-bottom: 2px">
 												<p:inputText id="codigoLector"
-													style="vertical-align: 8px; margin-right: 5px;"
+													style="vertical-align: 8px; margin-right: 5px; width:100%"
 													value="#{ventaBean.codigoBusqueda}"
 													placeholder="Codigo Articulo...">
+													<p:ajax listener="#{ventaBean.buscarArticuloLector()}"
+																update="@form" process="@this" />
 												</p:inputText>
-												<p:commandButton id="ajax7" update="@form"
-													value="Agregar Articulo a la venta" style="vertical-align: 8px; margin-right: 5px; height: 29px;"
-													actionListener="#{ventaBean.buscarArticuloLector}"
-													styleClass="ui-priority-primary" />
 											</div>
 
 											<p:dataGrid var="venta2" value="#{ventaBean.lineasVenta2}"
 												columns="1" layout="grid" rows="20" id="GridVentas2">
 												<p:panel style="text-align:center">
-													<h:panelGrid columns="3" style="width:100%">
-														<h:outputText value=" #{venta2.nombre}" />
+													<h:panelGrid columns="3" style="width:100%" class="listaLineaVentas">
+														<h:outputText value=" #{venta2.descripcion}" />
 														<h:outputText value="$ #{venta2.precioVenta}" />
 														<h:outputText value=" " />
 
 														<h:outputText value=" #{venta2.presentacion}" />
-														<p:inputText id="cantidad" value="#{venta2.cantidad}"
-															style="width: 75px;">
+														<p:inputText id="cantidad" value="#{venta2.cantidad}" style="width:40px;">
 															<p:ajax listener="#{ventaBean.strTotal()}"
 																update="GridVentas2 :form1:total" process="@this" />
 															<p:ajax listener="#{ventaBean.strSubTotal()}"
 																update="GridVentas2 :form1:subTotal" process="@this" />
 														</p:inputText>
-
+													
+													<!--  CON SELECTOR  -->
 														<p:outputPanel visible="#{venta2.isRecetaBlanca}"
-															style="width: 100px; padding: 0; margin: 0;">
-															<h:panelGrid columns="2" cellpadding="5">
+															style=" padding: 0; margin: 0;">
+																<p:outputLabel for="receta" value="Desc. receta:" style="width:100%" />
+																<p:selectOneMenu id="receta"
+																	value="#{venta2.descuentoReceta}" style="width:110%">
+																	<f:selectItem itemLabel="seleccionar" itemValue="" />
+																	<f:selectItem itemLabel="40% descuento" itemValue="40" />
+																	<f:selectItem itemLabel="25% descuento" itemValue="25" />
+																</p:selectOneMenu>
+														</p:outputPanel>
+														
+													<!-- CON CHECK
+														<p:outputPanel visible="#{venta2.isRecetaBlanca}"
+															style="padding: 0; margin: 0;">
+															<h:panelGrid columns="2" >
 																<h:outputText value=" %25 " />
 																<p:selectBooleanCheckbox
-																	value="#{ventaBen.descuentoReceta1}">
+																	value="#{ventaBean.descuentoReceta1}">
 																</p:selectBooleanCheckbox>
 																<h:outputText value=" %30 " />
 																<p:selectBooleanCheckbox
-																	value="#{ventaBen.descuentoReceta2}">
+																	value="#{ventaBean.descuentoReceta2}">
 																</p:selectBooleanCheckbox>
-																<p:commandButton value="Agregar Descuento Receta"
+															</h:panelGrid>
+															<p:commandButton value="Agregar desc." style="width:100% !important"
 																	id="ajax5" actionlistener="#{ventaBean.strTotal()}"
 																	update="GridVentas2 :form1:total" process="@this" />
-															</h:panelGrid>
-
-														</p:outputPanel>
+														</p:outputPanel> 
+													-->
 													</h:panelGrid>
 												</p:panel>
 											</p:dataGrid>
@@ -132,16 +158,17 @@
 											style="float: left; width: 70%; margin-left: 25px; min-width: 500px;"> -->
 										<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 
-											<div>
+											<div class="row" style="padding-left:15px; margin-bottom:5px">
 												<p:inputText id="descripcion2"
 													style="vertical-align: 8px; margin-right: 5px;"
 													value="#{ventaBean.descripcionBusqueda}"
-													placeholder="Buscar Articulo...">
-												</p:inputText>
+													placeholder="Buscar Articulo..." 
+													styleClass="col-xs-9 col-sm-10 col-md-11 col-lg-11"
+													/>
 												<p:commandButton value="" id="ajax3" update="GridVentas"
-													icon="ui-icon-search" style="width: 35px; height: 29px;"
+													icon="ui-icon-search" style="width: 35px; height: 31px;"
 													actionListener="#{ventaBean.buscarArticulos}"
-													styleClass="ui-priority-primary" />
+													styleClass="ui-priority-primary col-xs-3 col-sm-2 col-md-1 col-lg-1 " />
 											</div>
 											<p:dataGrid var="venta" value="#{ventaBean.lineasVenta}"
 												columns="1" layout="grid" rows="12" paginator="true"

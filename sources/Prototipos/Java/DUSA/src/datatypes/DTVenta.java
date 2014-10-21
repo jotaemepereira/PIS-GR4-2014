@@ -25,6 +25,7 @@ public class DTVenta implements Serializable {
 	private String CodigoBarras;
 	private int stock;
 	private String descuentoPrecio;
+	private String descuentoReceta;
 
 	public int getProductId() {
 		return productId;
@@ -192,5 +193,13 @@ public class DTVenta implements Serializable {
 
 	public void setDescuentoPrecio(String descuentoPrecio) {
 		this.descuentoPrecio = descuentoPrecio;
+	}
+
+	public String getDescuentoReceta() {
+		return descuentoReceta;
+	}
+
+	public void setDescuentoReceta(String descuentoReceta) {
+		this.descuentoReceta = descuentoReceta;
 	}
 }
