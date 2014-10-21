@@ -69,6 +69,8 @@
 													style="vertical-align: 8px; margin-right: 5px; width:100%"
 													value="#{ventaBean.codigoBusqueda}"
 													placeholder="Codigo Articulo...">
+													<p:ajax listener="#{ventaBean.buscarArticuloLector()}"
+																update="@form" process="@this" />
 												</p:inputText>
 											</div>
 
@@ -88,7 +90,7 @@
 																update="GridVentas2 :form1:subTotal" process="@this" />
 														</p:inputText>
 													
-													<!---------------- CON SELECTOR  ----------------------->
+													
 														<p:outputPanel visible="#{venta2.isRecetaBlanca}"
 															style=" padding: 0; margin: 0;">
 																<p:outputLabel for="receta" value="Desc. receta:" style="width:100%" />
@@ -97,27 +99,11 @@
 																	<f:selectItem itemLabel="seleccionar" itemValue="" />
 																	<f:selectItem itemLabel="40% descuento" itemValue="40" />
 																	<f:selectItem itemLabel="25% descuento" itemValue="25" />
+																	<p:ajax listener="#{ventaBean.strTotal()}"
+																update="GridVentas2 :form1:total" process="@this" />
 																</p:selectOneMenu>
 														</p:outputPanel>
-														
-													<!------------------ CON CHECK
-														<p:outputPanel visible="#{venta2.isRecetaBlanca}"
-															style="padding: 0; margin: 0;">
-															<h:panelGrid columns="2" >
-																<h:outputText value=" %25 " />
-																<p:selectBooleanCheckbox
-																	value="#{ventaBean.descuentoReceta1}">
-																</p:selectBooleanCheckbox>
-																<h:outputText value=" %30 " />
-																<p:selectBooleanCheckbox
-																	value="#{ventaBean.descuentoReceta2}">
-																</p:selectBooleanCheckbox>
-															</h:panelGrid>
-															<p:commandButton value="Agregar desc." style="width:100% !important"
-																	id="ajax5" actionlistener="#{ventaBean.strTotal()}"
-																	update="GridVentas2 :form1:total" process="@this" />
-														</p:outputPanel> 
-													------------------------------------------------->
+
 													</h:panelGrid>
 												</p:panel>
 											</p:dataGrid>

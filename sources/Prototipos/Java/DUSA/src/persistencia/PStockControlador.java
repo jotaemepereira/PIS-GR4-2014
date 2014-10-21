@@ -200,21 +200,26 @@ public class PStockControlador implements IStockPersistencia {
 		// TODO Auto-generated method stub
 		
 		Date ret = null;
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		String query = "SELECT order_date FROM orders_dusa" +
 				" GROUP BY order_date" +
 				" ORDER BY order_date DESC" +
 				" LIMIT 1;";
 		try {
 			Connection c = Conexion.getConnection();
-			c.setAutoCommit(false);
-			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
-			ret = rs.getDate("order_date");
+//			c.setAutoCommit(false);
+			stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				
+				ret = rs.getDate("order_date");
+			}
 			rs.close();
 			stmt.close();
 			c.close();
 		} catch ( Exception e ) {
+			
+			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 		return ret;

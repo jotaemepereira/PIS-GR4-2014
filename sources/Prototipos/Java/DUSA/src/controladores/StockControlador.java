@@ -15,6 +15,7 @@ import model.Pedido;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,11 @@ public class StockControlador implements IStock {
 		
 		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
 		Date ultimoPedido = sp.obtenerFechaUltimoPedido();
+		
+		if (ultimoPedido == null){
+			//Caso base para el pedido: Se toma las ventas realizadas en el dia de hoy.
+			ultimoPedido = new Date(Calendar.getInstance().getTimeInMillis());
+		}
 		SeleccionarArticulosDesde seleccionarDesde = new SeleccionarArticulosDesde(ultimoPedido);
 		PredecirCantidadDesde predecirDesde = new PredecirCantidadDesde(ultimoPedido);
 		
@@ -159,6 +165,7 @@ public class StockControlador implements IStock {
 	/**
 	 * 
 	 * @author Santiago
+	 * @author Guille
 	 */
 	@Override
 	public void realizarPedido(Pedido p) throws Excepciones{

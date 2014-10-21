@@ -243,19 +243,19 @@ public class StockBean implements Serializable{
 		hideElement = "visible";
 		pedidos.clear();
 		
-//		try {
-//			
-//			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAPedidoAnterior();
-//		} catch (Exception e) {
-//			
-//			FacesContext context = FacesContext.getCurrentInstance();
-//			context.addMessage(
-//					null,
-//					new FacesMessage(
-//							FacesMessage.SEVERITY_ERROR,
-//							e.getMessage(),
-//							""));
-//		}
+		try {
+			
+			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAPedidoAnterior();
+		} catch (Exception e) {
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							e.getMessage(),
+							""));
+		}
 		
 		
 		DTLineaPedido dt = new DTLineaPedido();
@@ -382,11 +382,18 @@ public class StockBean implements Serializable{
 					Excepciones.MENSAJE_PEDIDO_VACIO, ""));
 			return;
 		}
-		/*
+		
 		Pedido p = new Pedido();
 		
 		p.setFecha(new Date(Calendar.getInstance().getTimeInMillis()));
-		p.setFormaDePago(TipoFormaDePago.CONTADO);
+		
+		if (this.formaDePago.equalsIgnoreCase("contado")){
+			
+			p.setFormaDePago(TipoFormaDePago.CONTADO);
+		} else {
+			
+			p.setFormaDePago(TipoFormaDePago.CREDITO);
+		}
 		
 		for (Iterator<DTLineaPedido> iterator = pedidos.iterator(); iterator.hasNext();) {
 			
@@ -395,7 +402,7 @@ public class StockBean implements Serializable{
 			LineaPedido lPedido = new LineaPedido(dtLineaPedido.getIdArticulo(), dtLineaPedido.getNumeroArticulo(), dtLineaPedido.getCantidad());
 			p.getLineas().add(lPedido);
 		}
-		*/
+		
 		pedidos.clear();
 		disableDesdeUltimoPedido = false;
 		disablePrediccionDePedido = false;
