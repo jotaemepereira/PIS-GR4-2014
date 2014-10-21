@@ -305,7 +305,7 @@ public class PStockControlador implements IStockPersistencia {
 			ResultSet rs = stmt.executeQuery();
 			//Obtengo la cantidad de proveedores con ese rut
 			while (rs.next()){
-				articulo.setTipoDeArticulo(model.Enumerados.descripcionTipoArticulo(rs.getString("PRODUCT_TYPE")));
+				articulo.setTipoDeArticulo(model.Enumerados.descripcionTipoArticuloAbreviado(rs.getString("PRODUCT_TYPE")));
 				articulo.setControlDeVenta(model.Enumerados.descripcionTipoVenta(rs.getString("SALE_CODE")));
 				articulo.setPrecioDeVenta(rs.getBigDecimal("UNIT_PRICE"));
 				articulo.setPrecioPublico(rs.getBigDecimal("SALE_PRICE"));

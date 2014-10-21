@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:view contentType="text/html">
+	<h:head>
+		<link href="../CSS/General.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
+		<link href="../CSS/font-awesome.min.css" rel="stylesheet" />
+		<script src="../JS/bootstrap.min.js"></script>	
+		<f:facet name="first">
+			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+			<title>DUSA</title>
+		</f:facet>
+	</h:head>
+	<h:body>
+		<h:form id="form1">
+			<!-- <p:hotkey bind="Ctrl+return" update="panel msgs" actionListener=""/> -->
+			<ui:include src="../cabezal.xhtml" />
+			<ui:include src="../menuVertical/stock.xhtml" />
+			<p:focus></p:focus>
+			<div class="vpanel_right">
+				<div class="wrapper">				
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Alta de proveedor</h3>
+						</div>
+						<p:messages id="msgs" />
+						
+						<!-- <p:remoteCommand name="altaProveedor" update="panel msgs" actionListener=""/> -->
+						<div class="panel-body">
+							<h:panelGroup layout="block" id="panel">
+							<div class="container-fluid">
+								
+							</div>
+							</h:panelGroup>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</h:body>
+
+</f:view>
+</html>

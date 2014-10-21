@@ -75,6 +75,19 @@ public class Enumerados {
 		}
 	}
 	
+	public static String descripcionTipoArticuloAbreviado(String tipo){
+		switch (tipo.charAt(0)) {
+			case tipoArticulo.MEDICAMENTO:
+				return "Medic.";
+			case tipoArticulo.PERFUMERIA:
+				return "Perfum.";
+			case tipoArticulo.OTROS:
+				return "Otros";
+			default:
+				return "";
+		}
+	}
+	
 	public static String descripcionTipoVenta(String tipo){
 		switch (tipo.charAt(0)) {
 		case formasVenta.bajoReceta:
