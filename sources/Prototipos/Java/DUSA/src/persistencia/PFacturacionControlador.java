@@ -292,33 +292,32 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		try {
 			
 			con = Conexion.getConnection();
-			String sql = "SELECT distinct product_id " + 
+			String sql = "SELECT distinct p.product_id " + 
 							"FROM sale_details sd " +
 								"INNER JOIN products_suppliers ps ON sd.product_id = ps.product_id " +
 								"INNER JOIN products p ON p.product_id = sd.product_id " +
 								  "WHERE ps.supplier_id = ? AND " +
 								  		"p.status = ? AND " +
-								  		"sd.sale_id in " + "(SELECT sale_id FROM sales s" 
+								  		"sd.sale_id in " + "(SELECT sale_id FROM sales s " 
 															+ "WHERE s.sale_status = ? "
 																+ "AND s.sale_date BETWEEN ? AND ?);";
 			stmt = con.prepareStatement(sql);
 			stmt.setInt		(1, 1); //Hay que ver cual es el bien el identificador para hardcodearlo
 			stmt.setBoolean	(2, true);
 			stmt.setString	(3, "'" + Enumerados.EstadoVenta.FACTURADA + "'");
-			stmt.setString	(4, desde.toString());
-			stmt.setString	(5, hasta.toString());
+			stmt.setDate(4, desde);
+			stmt.setDate(5, hasta);
 			ResultSet rs = stmt.executeQuery();
-			
-			stmt.close();
-			con.close();
 			
 			while (rs.next()) {
 				articulos.add(new Long(rs.getLong("product_id"))); 
 			}
+			
+			stmt.close();
+			con.close();
 		} catch (Exception e) {
 			
-			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-			System.exit(0);
+			e.printStackTrace();
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		return articulos;

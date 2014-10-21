@@ -120,20 +120,20 @@
 											</p:dataTable>
 										</div>
 									</div>
-								</h:panelGroup>
-								<div class="row" style="margin-bottom: 1%;">
-									<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-										<div class="btn-group pull-right">
-										<p:commandButton value="Pedido" update="btn1 btn2 msgs show-hide"
-											styleClass="btn btn-success" actionListener="#{stockBean.enviarPedido}" />
-										<p:commandButton value="Cancelar" update="btn1 btn2 msgs show-hide"
-											styleClass="btn btn-default" actionListener="#{stockBean.cancelarPedido}" >
-											<p:confirm header="Confirmación" message="¿Está seguro que desea cancelar el pedido?" icon="ui-icon-alert" />
-										</p:commandButton>
+									<div class="row" style="margin-bottom: 1%;">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<div class="btn-group pull-right">
+												<p:commandButton value="Pedido" update="btn1 btn2 msgs show-hide"
+													styleClass="btn btn-success" actionListener="#{stockBean.enviarPedido}" />
+												<p:commandButton value="Cancelar" update="btn1 btn2 msgs show-hide"
+													styleClass="btn btn-default" actionListener="#{stockBean.cancelarPedido}" >
+													<p:confirm header="Confirmación" message="¿Está seguro que desea cancelar el pedido?" icon="ui-icon-alert" />
+												</p:commandButton>
+											</div>
 										</div>
-									</div>
 										
-								</div>
+									</div>
+								</h:panelGroup>
 							</div>
 							</h:panelGroup>
 					</div>

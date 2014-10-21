@@ -12,6 +12,18 @@ public class DTLineaPedido {
 	private Long stockMinimo;
 	private BigDecimal subtotal;
 	
+	public DTLineaPedido() {
+		
+		this.numeroArticulo = new Long(0);
+		this.idArticulo = new Long(0);
+		this.cantidad = 0;
+		this.descripcionArticulo = "";
+		this.precioUnitario = new BigDecimal(0);
+		this.precioPonderado = new BigDecimal(0);
+		this.stockMinimo = new Long(0);
+		this.subtotal = new BigDecimal(0);
+	}
+	
 	public Long getNumeroArticulo() {
 		return numeroArticulo;
 	}
