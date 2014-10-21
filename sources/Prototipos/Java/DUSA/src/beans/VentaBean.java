@@ -131,8 +131,8 @@ public class VentaBean implements Serializable {
 					}
 				}
 					
-				
 				**/
+				
 	}
 	
 	//para calcular el precio con el descuento a poner cuando lista los articulos en la busqueda, falta terminar
@@ -183,7 +183,7 @@ public class VentaBean implements Serializable {
 				n = (v.getPrecioVenta().multiply(new BigDecimal(25))).divide(new BigDecimal(100));
 			}
 			//calculo descuento por receta blanca 2 
-			if (v.getDescuentoReceta().equals("30")){
+			if (v.getDescuentoReceta().equals("40")){
 				n = (v.getPrecioVenta().multiply(new BigDecimal(30))).divide(new BigDecimal(100));
 			}
 			
