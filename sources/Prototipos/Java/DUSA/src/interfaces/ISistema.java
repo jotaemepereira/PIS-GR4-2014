@@ -18,7 +18,9 @@ import model.Presentacion;
 import model.Proveedor;
 
 public interface ISistema {
-
+	
+	public void actualizarStock() throws Exception;
+	
 	public void altaProveedor(Proveedor proveedor) throws Excepciones;
 
 	public void altaArticulo(Articulo articulo) throws Excepciones;

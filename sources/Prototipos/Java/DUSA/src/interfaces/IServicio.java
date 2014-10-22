@@ -1,6 +1,10 @@
 package interfaces;
+
+import java.sql.Date;
+import java.util.List;
+
 import controladores.Excepciones;
-import model.Pedido;
+import model.*;
 
 /**  
 * @author Santiago
@@ -13,4 +17,6 @@ public interface IServicio {
 	 * @param p Pedido 
 	 */
 	public void realizarPedido (Pedido p) throws Excepciones;
+	public List<Articulo> obtenerArticulos() throws Excepciones;
+	public List<Articulo> obtenerActualizacionDeStock(java.util.Date fecha);
 }

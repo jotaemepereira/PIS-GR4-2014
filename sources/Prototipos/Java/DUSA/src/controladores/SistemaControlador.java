@@ -48,6 +48,15 @@ public class SistemaControlador implements ISistema {
 		
 	}
 	
+	public void actualizarStock() {
+		try {
+			FabricaLogica.getIStock().actualizarStock();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones {
 		// TODO chequeo permisos del usuario

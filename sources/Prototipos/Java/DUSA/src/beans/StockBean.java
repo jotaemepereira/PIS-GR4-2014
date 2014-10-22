@@ -17,8 +17,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
-import com.sun.org.apache.xpath.internal.functions.Function;
-
 import controladores.Excepciones;
 import controladores.FabricaSistema;
 import model.AccionTer;
@@ -41,6 +39,7 @@ public class StockBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	private Articulo articulo = new Articulo();
+	private boolean noEsMedicamento;
 	
 	//Proveedores
 	private int proveedor;
@@ -89,6 +88,12 @@ public class StockBean implements Serializable{
 	}
 	public void setArticulo(Articulo articulo) {
 		this.articulo = articulo;
+	}
+	public boolean isNoEsMedicamento() {
+		return noEsMedicamento;
+	}
+	public void setNoEsMedicamento(boolean noEsMedicamento) {
+		this.noEsMedicamento = noEsMedicamento;
 	}
 	public int getProveedor() {
 		return proveedor;
@@ -247,7 +252,7 @@ public class StockBean implements Serializable{
 			
 			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAPedidoAnterior();
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(
 					null,
@@ -424,21 +429,33 @@ public class StockBean implements Serializable{
 	
 	public void agregarProveedor(){
 		FacesContext context = FacesContext.getCurrentInstance();
-		if (codigoIdentificador != 0 && proveedor != 0){
-			if (!existeProveedor(proveedor)){
-				DTProveedor p = new DTProveedor();
-				p.setIdProveedor(proveedor);
-				p.setNombreComercial(proveedores.get(proveedor).getNombreComercial());
-				p.setCodigoIdentificador(codigoIdentificador);
-				this.proveedoresSeleccionados.add(p);
+		if (proveedor != 0){
+			if (codigoIdentificador != 0){
+				if (!existeProveedor(proveedor)){
+					DTProveedor p = new DTProveedor();
+					p.setIdProveedor(proveedor);
+					p.setNombreComercial(proveedores.get(proveedor).getNombreComercial());
+					p.setCodigoIdentificador(codigoIdentificador);
+					this.proveedoresSeleccionados.add(p);
+					this.proveedor = 0;
+					this.codigoIdentificador = 0;
+				}
+				else{
+					context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_WARN,
+							"Ya seleccionó el proveedor.",
+							""));
+				}
 			}
 			else{
 				context.addMessage(
-				null,
-				new FacesMessage(
-						FacesMessage.SEVERITY_WARN,
-						"Ya seleccionó el proveedor.",
-						""));
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_WARN,
+								"Debe ingresar el código que lo identifica.",
+								""));
 			}
 		}
 		else{
@@ -446,7 +463,7 @@ public class StockBean implements Serializable{
 					null,
 					new FacesMessage(
 							FacesMessage.SEVERITY_WARN,
-							"Debe seleccionar un proveedor e ingresar su código que lo identifica.",
+							"Debe seleccionar un proveedor.",
 							""));
 		}
 	}
@@ -525,6 +542,7 @@ public class StockBean implements Serializable{
 		}
 	
 	public StockBean(){
+		this.noEsMedicamento = true;
 		
 		//Cargo las marcas de la base de datos
 		cargarMarcas();
@@ -595,6 +613,14 @@ public class StockBean implements Serializable{
 		ta.setTipoArticulo(model.Enumerados.tipoArticulo.OTROS);
 		ta.setDescripcion("Otros");
 		tiposArticulo.add(ta);
+	}
+	
+	public void tipoArticuloChange(){
+		if (articulo.getTipoArticulo() == model.Enumerados.tipoArticulo.MEDICAMENTO){
+			this.noEsMedicamento = false;
+		}else{
+			this.noEsMedicamento = true;
+		}
 	}
 	
 	public void cargarFormasVenta(){

@@ -72,7 +72,11 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.setBoolean(8, articulo.isEsPsicofarmaco());//Not Null
 				stmt.setBoolean(9, articulo.isEsEstupefaciente());//Not Null
 				stmt.setBoolean(10, articulo.isEsHeladera());//Not Null
-				stmt.setString(11, String.valueOf(articulo.getCodigoVenta()));//Null
+				if (articulo.getCodigoVenta() != 0x00){
+					stmt.setString(11, String.valueOf(articulo.getCodigoVenta()));//Null
+				}else{
+					stmt.setNull(11, java.sql.Types.CHAR);
+				}				
 				stmt.setString(12, String.valueOf(Enumerados.habilitado.HABILITADO));//Not Null
 				stmt.setBigDecimal(13, articulo.getPrecioUnitario());//Not Null
 				stmt.setBigDecimal(14, articulo.getPrecioVenta());//Not Null
@@ -113,27 +117,31 @@ public class PStockControlador implements IStockPersistencia {
 				}
 				
 				//Para cada droga seleccionada inserto una fila en product_drugs
-				for(long idDroga : articulo.getDrogas()){
-					query = "INSERT INTO PRODUCT_DRUGS " +
-							"(PRODUCT_ID, DRUG_ID) " +
-							"VALUES " +
-							"(?, ?)";
-					stmt = c.prepareStatement(query);
-					stmt.setLong(1, key);
-					stmt.setLong(2, idDroga);
-					stmt.executeUpdate();
+				if (articulo.getDrogas() != null){
+					for(long idDroga : articulo.getDrogas()){
+						query = "INSERT INTO PRODUCT_DRUGS " +
+								"(PRODUCT_ID, DRUG_ID) " +
+								"VALUES " +
+								"(?, ?)";
+						stmt = c.prepareStatement(query);
+						stmt.setLong(1, key);
+						stmt.setLong(2, idDroga);
+						stmt.executeUpdate();
+					}
 				}
 				
 				//Para cada acción terapéutica seleccionada inserto una fila en product_therap_actions
-				for(long idAccTer : articulo.getAccionesTer()){
-					query = "INSERT INTO PRODUCT_THERAP_ACTIONS " +
-							"(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " +
-							"VALUES " +
-							"(?, ?)";
-					stmt = c.prepareStatement(query);
-					stmt.setLong(1, key);
-					stmt.setLong(2, idAccTer);
-					stmt.executeUpdate();
+				if (articulo.getAccionesTer() != null){
+					for(long idAccTer : articulo.getAccionesTer()){
+						query = "INSERT INTO PRODUCT_THERAP_ACTIONS " +
+								"(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " +
+								"VALUES " +
+								"(?, ?)";
+						stmt = c.prepareStatement(query);
+						stmt.setLong(1, key);
+						stmt.setLong(2, idAccTer);
+						stmt.executeUpdate();
+					}
 				}
 				
 				//Commiteo todo y cierro conexion
@@ -663,8 +671,11 @@ public class PStockControlador implements IStockPersistencia {
 					
 					articulo = new Articulo();
 					
-					articulo.setIdArticulo(rs.getLong(""));
-					articulo.setTipoArticulo(rs.getString("product_type").charAt(0));
+					articulo.setIdArticulo(rs.getLong("product_id"));
+					String aux = rs.getString("product_type");
+					if (aux != null){
+						articulo.setTipoArticulo(aux.charAt(0));
+					}
 					articulo.setDescripcion(rs.getString("description"));
 					articulo.setClave1(rs.getString("key1"));
 					articulo.setClave2(rs.getString("key2"));
@@ -672,8 +683,14 @@ public class PStockControlador implements IStockPersistencia {
 					articulo.setEsPsicofarmaco(rs.getBoolean("is_psychotropic"));
 					articulo.setEsEstupefaciente(rs.getBoolean("is_narcotic"));
 					articulo.setEsHeladera(rs.getBoolean("is_refrigerator"));
-					articulo.setCodigoVenta(rs.getString("sale_code").charAt(0));
-					articulo.setTipoAutorizacion(rs.getString("authorization_type").charAt(0));
+					aux = rs.getString("sale_code");
+					if (aux != null) {
+						articulo.setCodigoVenta(aux.charAt(0));
+					}
+					aux = rs.getString("authorization_type");
+					if (aux != null) {
+						articulo.setTipoAutorizacion(aux.charAt(0));
+					}
 					articulo.setPrecioUnitario(rs.getBigDecimal("unit_price"));
 					articulo.setPrecioVenta(rs.getBigDecimal("sale_price"));
 					articulo.setPorcentajePrecioVenta(rs.getBigDecimal("sale_price_porcentage"));
@@ -681,7 +698,10 @@ public class PStockControlador implements IStockPersistencia {
 					articulo.setCostoOferta(rs.getBigDecimal("offer_cost"));
 					articulo.setUltimoCosto(rs.getBigDecimal("last_cost"));
 					articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
-					articulo.setTipoIva(rs.getBigDecimal("tax_type").intValue());
+					BigDecimal auxDecimal = rs.getBigDecimal("tax_type");
+					if (auxDecimal != null) {
+						articulo.setTipoIva(auxDecimal.intValue());
+					}
 					articulo.setCodigoBarras(rs.getString("barcode"));
 					Timestamp timestamp = rs.getTimestamp("nearest_due_date");
 					if (timestamp != null) {

@@ -76,7 +76,14 @@ public class StockControlador implements IStock {
 		
 		if (ultimoPedido == null){
 			//Caso base para el pedido: Se toma las ventas realizadas en el dia de hoy.
-			ultimoPedido = new Date(Calendar.getInstance().getTimeInMillis());
+			Calendar cal = Calendar.getInstance();
+			//Trunc la fecha de hoy.
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			
+			ultimoPedido = new Date(cal.getTimeInMillis());
 		}
 		SeleccionarArticulosDesde seleccionarDesde = new SeleccionarArticulosDesde(ultimoPedido);
 		PredecirCantidadDesde predecirDesde = new PredecirCantidadDesde(ultimoPedido);
@@ -101,10 +108,13 @@ public class StockControlador implements IStock {
 				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				 dtlPedido.setCantidad(lPedido.getCantidad());
 				// TODO: hardcodear id de DUSA
-				 DTProveedor dtProveedor = articulo.getProveedores().get(0);
-				 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
+				 DTProveedor dtProveedor = articulo.getProveedores().get(1);
 				 
-				 lPedidos.add(dtlPedido);
+				 if (dtProveedor != null){
+					 //Preventivo control si no es de DUSA no se ingresa
+					 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
+					 lPedidos.add(dtlPedido);
+				 }
 			}
 		}
 		
@@ -211,6 +221,23 @@ public class StockControlador implements IStock {
 		
 		return articulos;
 	}
+	
+	public void actualizarStock() throws Excepciones {
+		Calendar calendario = Calendar.getInstance();
+		calendario.add(Calendar.DAY_OF_MONTH, -36);
+		java.util.Date fecha = calendario.getTime();
+		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
+		
+		//Se tendrian que recorrer todos los articulos y checkear si el articulo ya existe o no
+		//En caso de que exista, se actualiza el precio y el estado del artículo
+		//Caso contrario, el artículo es nuevo y se almacena en la base de datos.
+		
+		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
+		for (Articulo a:articulos) {
+			sp.persistirArticulo(a);
+		}
+	}
+
 	
 	
 }
