@@ -72,7 +72,11 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.setBoolean(8, articulo.isEsPsicofarmaco());//Not Null
 				stmt.setBoolean(9, articulo.isEsEstupefaciente());//Not Null
 				stmt.setBoolean(10, articulo.isEsHeladera());//Not Null
-				stmt.setString(11, String.valueOf(articulo.getCodigoVenta()));//Null
+				if (articulo.getCodigoVenta() != 0x00){
+					stmt.setString(11, String.valueOf(articulo.getCodigoVenta()));//Null
+				}else{
+					stmt.setNull(11, java.sql.Types.CHAR);
+				}				
 				stmt.setString(12, String.valueOf(Enumerados.habilitado.HABILITADO));//Not Null
 				stmt.setBigDecimal(13, articulo.getPrecioUnitario());//Not Null
 				stmt.setBigDecimal(14, articulo.getPrecioVenta());//Not Null
@@ -113,27 +117,31 @@ public class PStockControlador implements IStockPersistencia {
 				}
 				
 				//Para cada droga seleccionada inserto una fila en product_drugs
-				for(long idDroga : articulo.getDrogas()){
-					query = "INSERT INTO PRODUCT_DRUGS " +
-							"(PRODUCT_ID, DRUG_ID) " +
-							"VALUES " +
-							"(?, ?)";
-					stmt = c.prepareStatement(query);
-					stmt.setLong(1, key);
-					stmt.setLong(2, idDroga);
-					stmt.executeUpdate();
+				if (articulo.getDrogas() != null){
+					for(long idDroga : articulo.getDrogas()){
+						query = "INSERT INTO PRODUCT_DRUGS " +
+								"(PRODUCT_ID, DRUG_ID) " +
+								"VALUES " +
+								"(?, ?)";
+						stmt = c.prepareStatement(query);
+						stmt.setLong(1, key);
+						stmt.setLong(2, idDroga);
+						stmt.executeUpdate();
+					}
 				}
 				
 				//Para cada acción terapéutica seleccionada inserto una fila en product_therap_actions
-				for(long idAccTer : articulo.getAccionesTer()){
-					query = "INSERT INTO PRODUCT_THERAP_ACTIONS " +
-							"(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " +
-							"VALUES " +
-							"(?, ?)";
-					stmt = c.prepareStatement(query);
-					stmt.setLong(1, key);
-					stmt.setLong(2, idAccTer);
-					stmt.executeUpdate();
+				if (articulo.getAccionesTer() != null){
+					for(long idAccTer : articulo.getAccionesTer()){
+						query = "INSERT INTO PRODUCT_THERAP_ACTIONS " +
+								"(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " +
+								"VALUES " +
+								"(?, ?)";
+						stmt = c.prepareStatement(query);
+						stmt.setLong(1, key);
+						stmt.setLong(2, idAccTer);
+						stmt.executeUpdate();
+					}
 				}
 				
 				//Commiteo todo y cierro conexion
