@@ -152,6 +152,11 @@ public class ProveedoresBean implements Serializable {
 		// Verifico que el documento sea correcto en caso de rut y ci
 		if(!RUT.equals("")){
 			if (tipoDocumento.equals("C")) { // en caso de ci
+				if((RUT.length() != 7) && (RUT.length() != 8) ){
+					context.addMessage(null, new FacesMessage(
+							FacesMessage.SEVERITY_ERROR, Excepciones.MENSAJE_RUT_ERRONEO, ""));
+					return;
+				}
 				System.out.println("SELECCIONO CI");
 				// Inicializo los coefcientes en el orden correcto
 				int[] arrCoefs = { 2, 9, 8, 7, 6, 3, 4, 1 };

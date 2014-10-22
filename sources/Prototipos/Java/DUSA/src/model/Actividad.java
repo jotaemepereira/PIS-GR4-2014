@@ -7,7 +7,7 @@ package model;
  *
  */
 public class Actividad {
-	
+	 
 	/**
 	 * user_activityUsr y log_date se generan en la base de datos 
 	 */

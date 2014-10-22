@@ -72,7 +72,11 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.setBoolean(8, articulo.isEsPsicofarmaco());//Not Null
 				stmt.setBoolean(9, articulo.isEsEstupefaciente());//Not Null
 				stmt.setBoolean(10, articulo.isEsHeladera());//Not Null
-				stmt.setString(11, String.valueOf(articulo.getCodigoVenta()));//Null
+				if (articulo.getCodigoVenta() != 0x00){
+					stmt.setString(11, String.valueOf(articulo.getCodigoVenta()));//Null
+				}else{
+					stmt.setNull(11, java.sql.Types.CHAR);
+				}				
 				stmt.setString(12, String.valueOf(Enumerados.habilitado.HABILITADO));//Not Null
 				stmt.setBigDecimal(13, articulo.getPrecioUnitario());//Not Null
 				stmt.setBigDecimal(14, articulo.getPrecioVenta());//Not Null
@@ -113,27 +117,31 @@ public class PStockControlador implements IStockPersistencia {
 				}
 				
 				//Para cada droga seleccionada inserto una fila en product_drugs
-				for(long idDroga : articulo.getDrogas()){
-					query = "INSERT INTO PRODUCT_DRUGS " +
-							"(PRODUCT_ID, DRUG_ID) " +
-							"VALUES " +
-							"(?, ?)";
-					stmt = c.prepareStatement(query);
-					stmt.setLong(1, key);
-					stmt.setLong(2, idDroga);
-					stmt.executeUpdate();
+				if (articulo.getDrogas() != null){
+					for(long idDroga : articulo.getDrogas()){
+						query = "INSERT INTO PRODUCT_DRUGS " +
+								"(PRODUCT_ID, DRUG_ID) " +
+								"VALUES " +
+								"(?, ?)";
+						stmt = c.prepareStatement(query);
+						stmt.setLong(1, key);
+						stmt.setLong(2, idDroga);
+						stmt.executeUpdate();
+					}
 				}
 				
 				//Para cada acción terapéutica seleccionada inserto una fila en product_therap_actions
-				for(long idAccTer : articulo.getAccionesTer()){
-					query = "INSERT INTO PRODUCT_THERAP_ACTIONS " +
-							"(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " +
-							"VALUES " +
-							"(?, ?)";
-					stmt = c.prepareStatement(query);
-					stmt.setLong(1, key);
-					stmt.setLong(2, idAccTer);
-					stmt.executeUpdate();
+				if (articulo.getAccionesTer() != null){
+					for(long idAccTer : articulo.getAccionesTer()){
+						query = "INSERT INTO PRODUCT_THERAP_ACTIONS " +
+								"(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " +
+								"VALUES " +
+								"(?, ?)";
+						stmt = c.prepareStatement(query);
+						stmt.setLong(1, key);
+						stmt.setLong(2, idAccTer);
+						stmt.executeUpdate();
+					}
 				}
 				
 				//Commiteo todo y cierro conexion
@@ -195,26 +203,27 @@ public class PStockControlador implements IStockPersistencia {
 
 	@Override
 	public Date obtenerFechaUltimoPedido() throws Excepciones {
-		// TODO Auto-generated method stub
-		//Codigo en la base para obtener el ultimo pedido
-		// TODO Auto-generated method stub
 		
 		Date ret = null;
-		Statement stmt = null;
+		PreparedStatement stmt = null;
 		String query = "SELECT order_date FROM orders_dusa" +
 				" GROUP BY order_date" +
 				" ORDER BY order_date DESC" +
 				" LIMIT 1;";
 		try {
 			Connection c = Conexion.getConnection();
-			c.setAutoCommit(false);
-			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery(query);
-			ret = rs.getDate("order_date");
+			stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				
+				ret = rs.getDate("order_date");
+			}
 			rs.close();
 			stmt.close();
 			c.close();
 		} catch ( Exception e ) {
+			
+			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 		return ret;
@@ -300,7 +309,7 @@ public class PStockControlador implements IStockPersistencia {
 			ResultSet rs = stmt.executeQuery();
 			//Obtengo la cantidad de proveedores con ese rut
 			while (rs.next()){
-				articulo.setTipoDeArticulo(model.Enumerados.descripcionTipoArticulo(rs.getString("PRODUCT_TYPE")));
+				articulo.setTipoDeArticulo(model.Enumerados.descripcionTipoArticuloAbreviado(rs.getString("PRODUCT_TYPE")));
 				articulo.setControlDeVenta(model.Enumerados.descripcionTipoVenta(rs.getString("SALE_CODE")));
 				articulo.setPrecioDeVenta(rs.getBigDecimal("UNIT_PRICE"));
 				articulo.setPrecioPublico(rs.getBigDecimal("SALE_PRICE"));
@@ -323,7 +332,7 @@ public class PStockControlador implements IStockPersistencia {
 	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones{
 		DTVenta articulo = new DTVenta();
 		PreparedStatement stmt = null;
-		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, AUTHORIZATION_TYPE, STOCK "
+		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK "
 				+ "FROM PRODUCTS "
 				+ "WHERE PRODUCT_ID = ?";
 		try {
@@ -473,7 +482,7 @@ public class PStockControlador implements IStockPersistencia {
 					
 					query = "INSERT INTO ORDER_DUSA_DETAILS "
 							+ "(ORDER_DUSA_ID, PRODUCT_ID, QUANTITY) VALUES "
-							+ " (?, ?);";
+							+ " (?, ?, ?);";
 					stmt = c.prepareStatement(query);
 					stmt.setLong(1, pedidoID);
 					stmt.setLong(2, lPedido.getIdArticulo().longValue());
@@ -491,7 +500,7 @@ public class PStockControlador implements IStockPersistencia {
 				
 				c.rollback();
 				e.printStackTrace();
-				throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+				throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 			}
 		} catch (Excepciones e){
 			//Paso las excepciones personalizadas. 
@@ -519,7 +528,7 @@ public class PStockControlador implements IStockPersistencia {
 			
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
-			stmt.setInt		(1, 1); //Hay que ver cual es el bien el identificador para hardcodearlo
+			stmt.setInt		(1, Enumerados.infoDUSA.proveedorID);
 			stmt.setBoolean	(2, true);
 			
 			ResultSet rs = stmt.executeQuery();
@@ -557,7 +566,7 @@ public class PStockControlador implements IStockPersistencia {
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			stmt.setLong(1, idArticulo);
-			stmt.setInt(2, 0); //Hay que ver cual es para hardcodearlo en un lugar solo.
+			stmt.setInt(2, Enumerados.infoDUSA.proveedorID); //Hay que ver cual es para hardcodearlo en un lugar solo.
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()){
@@ -658,8 +667,11 @@ public class PStockControlador implements IStockPersistencia {
 					
 					articulo = new Articulo();
 					
-					articulo.setIdArticulo(rs.getLong(""));
-					articulo.setTipoArticulo(rs.getString("product_type").charAt(0));
+					articulo.setIdArticulo(rs.getLong("product_id"));
+					String aux = rs.getString("product_type");
+					if (aux != null){
+						articulo.setTipoArticulo(aux.charAt(0));
+					}
 					articulo.setDescripcion(rs.getString("description"));
 					articulo.setClave1(rs.getString("key1"));
 					articulo.setClave2(rs.getString("key2"));
@@ -667,8 +679,14 @@ public class PStockControlador implements IStockPersistencia {
 					articulo.setEsPsicofarmaco(rs.getBoolean("is_psychotropic"));
 					articulo.setEsEstupefaciente(rs.getBoolean("is_narcotic"));
 					articulo.setEsHeladera(rs.getBoolean("is_refrigerator"));
-					articulo.setCodigoVenta(rs.getString("sale_code").charAt(0));
-					articulo.setTipoAutorizacion(rs.getString("authorization_type").charAt(0));
+					aux = rs.getString("sale_code");
+					if (aux != null) {
+						articulo.setCodigoVenta(aux.charAt(0));
+					}
+					aux = rs.getString("authorization_type");
+					if (aux != null) {
+						articulo.setTipoAutorizacion(aux.charAt(0));
+					}
 					articulo.setPrecioUnitario(rs.getBigDecimal("unit_price"));
 					articulo.setPrecioVenta(rs.getBigDecimal("sale_price"));
 					articulo.setPorcentajePrecioVenta(rs.getBigDecimal("sale_price_porcentage"));
@@ -676,7 +694,10 @@ public class PStockControlador implements IStockPersistencia {
 					articulo.setCostoOferta(rs.getBigDecimal("offer_cost"));
 					articulo.setUltimoCosto(rs.getBigDecimal("last_cost"));
 					articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
-					articulo.setTipoIva(rs.getBigDecimal("tax_type").intValue());
+					BigDecimal auxDecimal = rs.getBigDecimal("tax_type");
+					if (auxDecimal != null) {
+						articulo.setTipoIva(auxDecimal.intValue());
+					}
 					articulo.setCodigoBarras(rs.getString("barcode"));
 					Timestamp timestamp = rs.getTimestamp("nearest_due_date");
 					if (timestamp != null) {

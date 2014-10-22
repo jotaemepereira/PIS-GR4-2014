@@ -38,7 +38,9 @@
 									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 										<p:outputLabel for="descripcion" value="Descripción:" />
 										<p:inputText id="descripcion" styleClass="form-control" value="#{stockBean.articulo.descripcion}" size="60" requiredMessage="Dato Requerido." style="height: 100%"
-										required="true" />
+										required="true" validatorMessage="El largo máximo permitido es de 25 caracteres." >
+											<f:validateLength minimum="1" maximum="25" />
+										</p:inputText>
 										<p:message for="descripcion" display="text" />
 									</div>									
 									<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -49,7 +51,10 @@
 										</div>
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<p:inputText id="codigoBarras" value="#{stockBean.articulo.codigoBarras}" styleClass="form-control"/>
+												<p:inputText id="codigoBarras" value="#{stockBean.articulo.codigoBarras}" styleClass="form-control" validatorMessage="El largo máximo permitido es de 25 caracteres." >
+													<f:validateLength minimum="0" maximum="25" />
+												</p:inputText>
+												<p:message for="codigoBarras" display="text" />
 											</div>
 										</div>		
 									</div>
@@ -59,13 +64,16 @@
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<p:outputLabel for="clave1" value="Clave de búsqueda 1:" />
-												<span data-toggle="tooltip" title="Clave que se usa para optimizar las búsquedas" 
+												<span data-toggle="tooltip" title="Clave de largo 5 que se usa para optimizar las búsquedas" 
 														class="glyphicon glyphicon-question-sign"></span>												
 											</div>
 										</div>
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<p:inputText id="clave1" value="#{stockBean.articulo.clave1}" size="5" styleClass="form-control"/>												
+												<p:inputText id="clave1" value="#{stockBean.articulo.clave1}" styleClass="form-control" validatorMessage="El largo máximo permitido es de 5 caracteres." >
+													<f:validateLength minimum="0" maximum="5" />
+												</p:inputText>			
+												<p:message for="clave1" display="text" />									
 											</div>
 										</div>		
 									</div>
@@ -73,13 +81,16 @@
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<p:outputLabel for="clave2" value="Clave de búsqueda 2:" />
-												<span data-toggle="tooltip" title="Clave que se usa para optimizar las búsquedas" 
+												<span data-toggle="tooltip" title="Clave de largo 2 que se usa para optimizar las búsquedas" 
 														class="glyphicon glyphicon-question-sign"></span>
 											</div>
 										</div>
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<p:inputText id="clave2" value="#{stockBean.articulo.clave2}" size="2" styleClass="form-control"/>
+												<p:inputText id="clave2" value="#{stockBean.articulo.clave2}" styleClass="form-control" validatorMessage="El largo máximo permitido es de 2 caracteres." >
+													<f:validateLength minimum="0" maximum="2" />
+												</p:inputText>
+												<p:message for="clave2" display="text" />
 											</div>
 										</div>		
 									</div>
@@ -87,13 +98,16 @@
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<p:outputLabel for="clave3" value="Clave de búsqueda 3:" />
-												<span data-toggle="tooltip" title="Clave que se usa para optimizar las búsquedas" 
+												<span data-toggle="tooltip" title="Clave de largo 2 que se usa para optimizar las búsquedas" 
 														class="glyphicon glyphicon-question-sign"></span>
 											</div>
 										</div>
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<p:inputText id="clave3" value="#{stockBean.articulo.clave3}" size="2" styleClass="form-control"/>
+												<p:inputText id="clave3" value="#{stockBean.articulo.clave3}" styleClass="form-control" validatorMessage="El largo máximo permitido es de 2 caracteres." >
+													<f:validateLength minimum="0" maximum="2" />
+												</p:inputText>
+												<p:message for="clave3" display="text" />
 											</div>
 										</div>		
 									</div>
@@ -108,6 +122,7 @@
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<p:selectOneMenu id="tipoArticulo" value="#{stockBean.articulo.tipoArticulo}" required="true" requiredMessage="Dato Requerido." >
+										            <p:ajax listener="#{stockBean.tipoArticuloChange}" update="drogas accionesTer psicofarmaco estupefaciente formaVenta" />
 										            <f:selectItem itemLabel="Seleccione tipo de artículo" itemValue="#{null}" noSelectionOption="true" />
 										            <f:selectItems value="#{stockBean.tiposArticulo}" var="ta" itemLabel="#{ta.descripcion}" itemValue="#{ta.tipoArticulo}"/>
 										        </p:selectOneMenu>
@@ -132,7 +147,7 @@
 								        </div>
 									</div>
 								</div>
-								<div class="panel panel-default" id="panel">
+								<div class="panel panel-default">
 									<div class="panel-heading">
 										<h3 class="panel-title">Proveedores: *</h3>
 									</div>
@@ -159,17 +174,20 @@
 												<div class="row">
 													<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 														<p:outputLabel for="codigoIdentificador" value="Código identificador:" />
-														<span data-toggle="tooltip" title="Código único del artículo para el proveedor seleccionado." 
+														<span data-toggle="tooltip" title="Código único del artículo para el proveedor seleccionado. Entre 1 y 2147483647." 
 														class="glyphicon glyphicon-question-sign"></span>
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
 														<p:inputText id="codigoIdentificador" styleClass="form-control" value="#{stockBean.codigoIdentificador}" style="height: 100%"
-														required="false" />
+														required="false" validatorMessage="Dato inválido." converterMessage="Dato inválido." >
+															<f:validateDoubleRange minimum="1" maximum="2147483647" />
+														</p:inputText>
+														<p:message for="codigoIdentificador" display="text" />
 													</div>
 													<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-														<p:commandButton value="Agregar" update="msgs tablaProveedores" actionListener="#{stockBean.agregarProveedor}" 
+														<p:commandButton value="Agregar" update="panel msgs tablaProveedores" validateClient="true" actionListener="#{stockBean.agregarProveedor}" 
 														styleClass="btn btn-info pull-right" process="@this,codigoIdentificador"/>
 													</div>
 												</div>
@@ -198,14 +216,14 @@
 									</div>
 									<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 					       				<p:outputLabel for="drogas" value="Drogas:" />
-					       				<p:selectManyMenu id="drogas" value="#{stockBean.articulo.drogas}" required="false"
+					       				<p:selectManyMenu id="drogas" value="#{stockBean.articulo.drogas}" required="false" disabled="#{stockBean.noEsMedicamento}"
 					                          filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
 								            <f:selectItems value="#{stockBean.listaDrogas}" var="droga" itemLabel="#{droga.descripcion}" itemValue="#{droga.idDroga}" />
 							        	</p:selectManyMenu>
 									</div>
 									<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 						       			<p:outputLabel for="accionesTer" value="Acciones Terapéuticas:" />
-						       			<p:selectManyMenu id="accionesTer" value="#{stockBean.articulo.accionesTer}" required="false"
+						       			<p:selectManyMenu id="accionesTer" value="#{stockBean.articulo.accionesTer}" required="false" disabled="#{stockBean.noEsMedicamento}"
 						                          filter="true" filterMatchMode="contains" showCheckbox="true" style="height: 100%; width: 100%">
 								            <f:selectItems value="#{stockBean.listaAccionesTer}" var="accionTer" itemLabel="#{accionTer.descripcion}" itemValue="#{accionTer.idAccionTer}" />
 								        </p:selectManyMenu>
@@ -221,7 +239,7 @@
 										</div>
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<p:selectBooleanCheckbox id="psicofarmaco" value="#{stockBean.articulo.esPsicofarmaco}" />
+												<p:selectBooleanCheckbox id="psicofarmaco" value="#{stockBean.articulo.esPsicofarmaco}" disabled="#{stockBean.noEsMedicamento}" />
 											</div>
 										</div>							
 									</div>
@@ -233,7 +251,7 @@
 										</div>
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<p:selectBooleanCheckbox id="estupefaciente" value="#{stockBean.articulo.esEstupefaciente}" />
+												<p:selectBooleanCheckbox id="estupefaciente" value="#{stockBean.articulo.esEstupefaciente}" disabled="#{stockBean.noEsMedicamento}" />
 											</div>
 										</div>
 									</div>
@@ -302,7 +320,7 @@
 										</div>
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<p:selectOneMenu id="formaVenta" value="#{stockBean.articulo.codigoVenta}" required="false" >
+												<p:selectOneMenu id="formaVenta" value="#{stockBean.articulo.codigoVenta}" required="false" disabled="#{stockBean.noEsMedicamento}" >
 										            <f:selectItem itemLabel="Seleccione forma de venta" itemValue="0" />
 										            <f:selectItems value="#{stockBean.formasVenta}" var="f" itemLabel="#{f.descripcion}" itemValue="#{f.formaVenta}"/>
 										        </p:selectOneMenu>
