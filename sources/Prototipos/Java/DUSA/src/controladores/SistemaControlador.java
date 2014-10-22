@@ -11,6 +11,7 @@ import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Pedido;
 import model.Enumerados.casoDeUso;
 import model.Usuario;
 import model.Proveedor;
@@ -75,6 +76,12 @@ public class SistemaControlador implements ISistema {
 		//else
 		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		
+	}
+	
+	@Override
+	public void realizarPedido(Pedido pedido) throws Excepciones {
+		// TODO Auto-generated method stub
+		FabricaLogica.getIStock().realizarPedido(pedido);
 	}
 	
 	@Override

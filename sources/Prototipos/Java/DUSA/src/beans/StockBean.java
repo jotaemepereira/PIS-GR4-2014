@@ -262,7 +262,7 @@ public class StockBean implements Serializable{
 							""));
 		}
 		
-		
+		/*
 		DTLineaPedido dt = new DTLineaPedido();
 		dt.setCantidad(5);
 		dt.setIdArticulo(5);
@@ -298,7 +298,7 @@ public class StockBean implements Serializable{
 		dt.setStockMinimo(4);
 		dt.setSubtotal(360);
 		pedidos.add(dt);
-		
+		*/
 		
 	}
 	
@@ -419,13 +419,35 @@ public class StockBean implements Serializable{
 			p.getLineas().add(lPedido);
 		}
 		
-		pedidos.clear();
-		disableDesdeUltimoPedido = false;
-		disablePrediccionDePedido = false;
-		hideElement = "hidden";
-		
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-				Excepciones.MENSAJE_OK_PEDIDO, ""));
+		try {
+			
+			FabricaSistema.getISistema().realizarPedido(p);
+			
+			pedidos.clear();
+			disableDesdeUltimoPedido = false;
+			disablePrediccionDePedido = false;
+			hideElement = "hidden";
+			
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+					Excepciones.MENSAJE_OK_PEDIDO, ""));
+		} catch (Excepciones ex){
+			
+			ex.printStackTrace();
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							ex.getMessage(),
+							""));
+		} catch (Exception e) {
+			e.printStackTrace();
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							e.getMessage(),
+							""));
+		}
 	}
 	
 	public void cancelarPedido(){
