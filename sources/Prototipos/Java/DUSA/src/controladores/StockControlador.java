@@ -107,7 +107,9 @@ public class StockControlador implements IStock {
 				 dtlPedido.setStockMinimo(articulo.getStockMinimo());
 				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				 dtlPedido.setCantidad(lPedido.getCantidad());
-				// TODO: hardcodear id de DUSA
+				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().longValue());
+				 // TODO: hardcodear id de DUSA
+				 // TODO: Calcular costo ponderado promedio
 				 DTProveedor dtProveedor = articulo.getProveedores().get(1);
 				 
 				 if (dtProveedor != null){
@@ -228,9 +230,9 @@ public class StockControlador implements IStock {
 		java.util.Date fecha = calendario.getTime();
 		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
 		
-		//Se tendrian que recorrer todos los articulos y checkear si el articulo ya existe o no
-		//En caso de que exista, se actualiza el precio y el estado del artÌculo
-		//Caso contrario, el artÌculo es nuevo y se almacena en la base de datos.
+		//Se tendrian que recorrer todos los articulos y checkear si el art√≠culo ya existe o no
+		//En caso de que exista, se actualiza el precio y el estado del art√≠culo
+		//Caso contrario, el art√≠culo es nuevo y se almacena en la base de datos.
 		
 		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
 		for (Articulo a:articulos) {

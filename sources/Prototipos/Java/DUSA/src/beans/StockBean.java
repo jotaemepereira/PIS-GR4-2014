@@ -374,6 +374,19 @@ public class StockBean implements Serializable{
 		pedidos.add(dt);
 	}
 	
+	/**
+	 * Recalcula el subtotal de la linea pedido
+	 * @param item a recalcular
+	 */
+	public void nuevoSubtotal(DTLineaPedido item){
+		
+		item.setSubtotal(item.getCantidad() * item.getPrecioUnitario().longValue());
+	}
+	
+	/**
+	 * Elimina la linea pedido de la tabla
+	 * @param item a eliminar
+	 */
 	public void removeItem(DTLineaPedido item) {
 		pedidos.remove(item);
 	}
@@ -400,9 +413,7 @@ public class StockBean implements Serializable{
 			p.setFormaDePago(TipoFormaDePago.CREDITO);
 		}
 		
-		for (Iterator<DTLineaPedido> iterator = pedidos.iterator(); iterator.hasNext();) {
-			
-			DTLineaPedido dtLineaPedido = iterator.next();
+		for (DTLineaPedido dtLineaPedido : pedidos) {
 			
 			LineaPedido lPedido = new LineaPedido(dtLineaPedido.getIdArticulo(), dtLineaPedido.getNumeroArticulo(), dtLineaPedido.getCantidad());
 			p.getLineas().add(lPedido);
