@@ -212,5 +212,22 @@ public class StockControlador implements IStock {
 		return articulos;
 	}
 	
+	public void actualizarStock() throws Excepciones {
+		Calendar calendario = Calendar.getInstance();
+		calendario.add(Calendar.DAY_OF_MONTH, -36);
+		java.util.Date fecha = calendario.getTime();
+		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
+		
+		//Se tendrian que recorrer todos los articulos y checkear si el articulo ya existe o no
+		//En caso de que exista, se actualiza el precio y el estado del artículo
+		//Caso contrario, el artículo es nuevo y se almacena en la base de datos.
+		
+		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
+		for (Articulo a:articulos) {
+			sp.persistirArticulo(a);
+		}
+	}
+
+	
 	
 }
