@@ -404,6 +404,7 @@ public class StockBean implements Serializable{
 		Pedido p = new Pedido();
 		
 		p.setFecha(new Date(Calendar.getInstance().getTimeInMillis()));
+		p.setIdUsuario(1);
 		
 		if (this.formaDePago.equalsIgnoreCase("contado")){
 			

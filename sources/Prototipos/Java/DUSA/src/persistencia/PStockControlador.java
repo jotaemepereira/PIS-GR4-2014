@@ -203,9 +203,6 @@ public class PStockControlador implements IStockPersistencia {
 
 	@Override
 	public Date obtenerFechaUltimoPedido() throws Excepciones {
-		// TODO Auto-generated method stub
-		//Codigo en la base para obtener el ultimo pedido
-		// TODO Auto-generated method stub
 		
 		Date ret = null;
 		PreparedStatement stmt = null;
@@ -215,7 +212,6 @@ public class PStockControlador implements IStockPersistencia {
 				" LIMIT 1;";
 		try {
 			Connection c = Conexion.getConnection();
-//			c.setAutoCommit(false);
 			stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -486,7 +482,7 @@ public class PStockControlador implements IStockPersistencia {
 					
 					query = "INSERT INTO ORDER_DUSA_DETAILS "
 							+ "(ORDER_DUSA_ID, PRODUCT_ID, QUANTITY) VALUES "
-							+ " (?, ?);";
+							+ " (?, ?, ?);";
 					stmt = c.prepareStatement(query);
 					stmt.setLong(1, pedidoID);
 					stmt.setLong(2, lPedido.getIdArticulo().longValue());
@@ -504,7 +500,7 @@ public class PStockControlador implements IStockPersistencia {
 				
 				c.rollback();
 				e.printStackTrace();
-				throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+				throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 			}
 		} catch (Excepciones e){
 			//Paso las excepciones personalizadas. 
@@ -532,7 +528,7 @@ public class PStockControlador implements IStockPersistencia {
 			
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
-			stmt.setInt		(1, 1); //Hay que ver cual es el bien el identificador para hardcodearlo
+			stmt.setInt		(1, Enumerados.infoDUSA.proveedorID);
 			stmt.setBoolean	(2, true);
 			
 			ResultSet rs = stmt.executeQuery();
@@ -570,7 +566,7 @@ public class PStockControlador implements IStockPersistencia {
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			stmt.setLong(1, idArticulo);
-			stmt.setInt(2, 0); //Hay que ver cual es para hardcodearlo en un lugar solo.
+			stmt.setInt(2, Enumerados.infoDUSA.proveedorID); //Hay que ver cual es para hardcodearlo en un lugar solo.
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()){
