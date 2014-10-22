@@ -13,176 +13,210 @@
 		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
 		<link href="../CSS/font-awesome.min.css" rel="stylesheet" />
 		<script src="../JS/bootstrap.min.js"></script>
+		<script src="../JS/nuevaVenta.js"></script>
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
 		</f:facet>
+
+		<style>
+			.tablaBusqueda td {
+				padding-right: 1%;
+				width: 18%;
+			}
+			.tablaBusqueda td:first-child {
+				width: 40%;
+			}
+			
+			.listaLineaVentas td {
+				padding-right: 1%;
+				width: 30%;
+			}
+			.listaLineaVentas td:first-child {
+				width: 40%;
+			}
+			.ui-icon-triangle-1-s {
+			    background-position: -68px -16px !important;
+			}
+		</style>
 	</h:head>
 	<h:body>
 		<h:form id="form1">
-			<p:growl id="messages" showDetail="true" />
+			<p:hotkey bind="Ctrl+return" update="panel msgs" actionListener="#{ventaBean.facturarVenta}"/>
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/ventas.xhtml" />
-
+			<p:focus></p:focus>
+			
 			<div class="vpanel_right">
 				<div class="wrapper">
 					<div class="panel panel-default" id="panel">
 						<div class="panel-heading">
 							<h3 class="panel-title">Nueva Venta</h3>
 						</div>
+						<p:messages id="msgs" />
+						
+						<p:remoteCommand name="buscarArticulo" update="GridVentas" actionListener="#{ventaBean.buscarArticulos}"/>
+						<p:remoteCommand name="buscarArticuloLector" update="GridVentas2" actionListener="#{ventaBean.buscarArticuloLector}"/>
 						<div class="panel-body">
 							<div class="container-fluid">
 								<h:panelGroup layout="block" id="panel">
+									<div class="row">
+										<!-- <div style="float: left; width: 25%; min-width: 300px;">  -->
+										<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="margin-bottom:10px">
 
-									<div style="float: left; width: 25%; min-width: 300px;">
+											<div style="margin-bottom: 2px">
+												<p:inputText id="codigoLector"
+													style="vertical-align: 8px; margin-right: 5px; width:100%"
+													value="#{ventaBean.codigoBusqueda}"
+													placeholder="Codigo Articulo...">
+													<p:ajax listener="#{ventaBean.buscarArticuloLector()}"
+																update="@form" process="@this" />
+												</p:inputText>
+											</div>
 
-										<p:dataGrid var="venta2" value="#{ventaBean.lineasVenta2}"
-											columns="1" layout="grid" rows="20" id="GridVentas2">
-											<p:panel style="text-align:center">
-												<h:panelGrid columns="3" style="width:100%">
-													<h:outputText value=" #{venta2.nombre}" />
-													<h:outputText value="$ #{venta2.precioVenta}" />
-													<h:outputText value=" " />
+											<p:dataGrid var="venta2" value="#{ventaBean.lineasVenta2}"
+												columns="1" layout="grid" rows="20" id="GridVentas2">
+												<p:panel style="text-align:center">
+													<h:panelGrid columns="3" style="width:100%" class="listaLineaVentas">
+														<h:outputText value=" #{venta2.descripcion}" />
+														<h:outputText value="$ #{venta2.precioVenta}" />
+														<h:outputText value=" " />
+
+														<h:outputText value=" #{venta2.presentacion}" />
+														<p:inputText id="cantidad" value="#{venta2.cantidad}" style="width:40px;">
+															<p:ajax listener="#{ventaBean.strTotal()}"
+																update="GridVentas2 :form1:total" process="@this" />
+															<p:ajax listener="#{ventaBean.strSubTotal()}"
+																update="GridVentas2 :form1:subTotal" process="@this" />
+														</p:inputText>
 													
-													<h:outputText value=" #{venta2.presentacion}" />
-													<p:inputText id="cantidad" value="#{venta2.cantidad}"
-														style="width: 75px;">
-														<p:ajax listener="#{ventaBean.strTotal()}" update="GridVentas2 :form1:total"
-															process="@this" />
-														<p:ajax listener="#{ventaBean.strSubTotal()}" update="GridVentas2 :form1:subTotal"
-															process="@this" />
-													</p:inputText>
 													
-													<p:outputPanel
-														visible="#{venta2.isRecetaBlanca}"
-														style="width: 100px; padding: 0; margin: 0;">
-															<h:panelGrid columns="2" cellpadding="5">
-															<h:outputText value=" %25 " />
-															<p:selectBooleanCheckbox
-																value="#{ventaBen.descuentoReceta1}">
+														<p:outputPanel visible="#{venta2.isRecetaBlanca}"
+															style=" padding: 0; margin: 0;">
+																<p:outputLabel for="receta" value="Desc. receta:" style="width:100%" />
+																<p:selectOneMenu id="receta"
+																	value="#{venta2.descuentoReceta}" style="width:110%">
+																	<f:selectItem itemLabel="seleccionar" itemValue="" />
+																	<f:selectItem itemLabel="40% descuento" itemValue="40" />
+																	<f:selectItem itemLabel="25% descuento" itemValue="25" />
+																	<p:ajax listener="#{ventaBean.strTotal()}"
+																update="GridVentas2 :form1:total" process="@this" />
+																</p:selectOneMenu>
+														</p:outputPanel>
+
+													</h:panelGrid>
+												</p:panel>
+											</p:dataGrid>
+											<div>
+												<table
+													style="float: right; text-align: right; width: 250px;">
+													<tr>
+														<td style="font-weight: bold;">SubTotal</td>
+														<td><h:outputText id="subTotal"
+																value=" #{ventaBean.strSubTotal()}"></h:outputText></td>
+													</tr>
+												</table>
+												<div class="clearBoth"></div>
+											</div>
+											<div>
+												<table
+													style="float: right; text-align: right; width: 250px;">
+													<tr>
+														<td style="font-weight: bold;">Total</td>
+														<td><h:outputText id="total"
+																value=" #{ventaBean.strTotal()}">
+															</h:outputText></td>
+													</tr>
+												</table>
+												<div class="clearBoth"></div>
+											</div>
+											<div style="margin-top: 20px; text-align: right;">
+
+												<p:commandButton value="Enviar a facturar" id="ajax2"
+													update="@form"
+													actionListener="#{ventaBean.facturarVenta()}"
+													process="@this" styleClass="ui-priority-primary" />
+											</div>
+										</div>
+										<!-- 		<div
+											style="float: left; width: 70%; margin-left: 25px; min-width: 500px;"> -->
+										<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+
+											<div class="row" style="padding-left:15px; margin-bottom:5px">
+												<p:inputText id="descripcion2"
+													style="vertical-align: 8px; margin-right: 5px;"
+													value="#{ventaBean.descripcionBusqueda}"
+													placeholder="Buscar Articulo..." 
+													styleClass="col-xs-9 col-sm-10 col-md-11 col-lg-11"
+													/>
+												<p:commandButton value="" id="ajax3" update="GridVentas"
+													icon="ui-icon-search" style="width: 35px; height: 31px;"
+													actionListener="#{ventaBean.buscarArticulos}"
+													styleClass="ui-priority-primary col-xs-3 col-sm-2 col-md-1 col-lg-1 " />
+											</div>
+											<p:dataGrid var="venta" value="#{ventaBean.lineasVenta}"
+												columns="1" layout="grid" rows="12" paginator="true"
+												id="GridVentas">
+												<p:panel style="text-align:center">
+													<h:panelGrid columns="4" style="width:100%"
+														styleClass="tablaBusqueda">
+
+														<h:outputText value="#{venta.descripcion}" />
+														<h:outputText value="$ #{venta.precioVenta}" />
+														<p:outputPanel visible="#{venta.isRecetaVerde}"
+															style="padding: 0; margin: 0;">
+															<p:selectBooleanCheckbox value="#{venta.recetaVerde}">
+																<f:ajax event="change" execute="@this" />
 															</p:selectBooleanCheckbox>
-															<h:outputText value=" %30 " />
-															<p:selectBooleanCheckbox
-																value="#{ventaBen.descuentoReceta2}">
+															<img src="../Images/receta_verde.png" />
+														</p:outputPanel>
+														<p:commandButton value="Articulo Perdido" id="ajax4"
+															update="@form"
+															actionListener="#{ventaBean.agregarLineaVentaPerdida(venta)}"
+															process="@this" styleClass="ui-priority-primary" />
+
+
+														<h:outputText value=" #{venta.presentacion}" />
+														<p:inputText id="descuento" value="#{venta.descuento}"
+															style="width:50%">
+															<p:ajax listener="#{ventaBean.strDescuentoPrecio()}"
+																update="@form" process="@this" />
+														</p:inputText>
+														<p:outputPanel visible="#{venta.isRecetaBlanca}"
+															style="padding: 0; margin: 0;">
+															<p:selectBooleanCheckbox value="#{venta.recetaBlanca}">
+																<f:ajax event="change" execute="@this" />
 															</p:selectBooleanCheckbox>
-															<p:commandButton value="Agregar Descuento Receta" id="ajax5"
-															actionlistener="#{ventaBean.strTotal()}" update="GridVentas2 :form1:total"
-															process="@this"/>
-															</h:panelGrid>
-														
-													</p:outputPanel>
-												</h:panelGrid>
-											</p:panel>
-										</p:dataGrid>
-										<div>
-											<table style="float: right; text-align: right; width: 250px;">
-												<tr>
-													<td style="font-weight: bold;">SubTotal</td>
-													<td><h:outputText id="subTotal"
-															value=" #{ventaBean.strSubTotal()}"></h:outputText></td>
-												</tr>
-											</table>
-											<div class="clearBoth"></div>
-										</div>
-										<div>
-											<table style="float: right; text-align: right; width: 250px;">
-												<tr>
-													<td style="font-weight: bold;">Total</td>
-													<td><h:outputText id="total"
-															value=" #{ventaBean.strTotal()}">
-														</h:outputText></td>
-												</tr>
-											</table>
-											<div class="clearBoth"></div>
-										</div>
-										<div style="margin-top: 20px; text-align: right;">
+															<img src="../Images/receta_blanca.png" />
+														</p:outputPanel>
+														<h:outputText value="stock:#{venta.stock}" />
 
-											<p:commandButton value="Enviar a facturar" id="ajax2"
-												update="@form" actionListener="#{ventaBean.facturarVenta()}"
-												process="@this" styleClass="ui-priority-primary" />
-										</div>
-									</div>
-									<div
-										style="float: left; width: 70%; margin-left: 25px; min-width: 500px;">
 
-										<div>
-											<p:inputText id="descripcion2"
-												style="vertical-align: 8px; margin-right: 5px;"
-												value="#{ventaBean.descripcionBusqueda}"
-												placeholder="Buscar Articulo...">
-											</p:inputText>
-											<p:commandButton value="" id="ajax3" update="GridVentas"
-												icon="ui-icon-search" style="width: 35px; height: 29px;"
-												actionListener="#{ventaBean.buscarArticulos}"
-												styleClass="ui-priority-primary" />
-										</div>
-										<p:dataGrid var="venta" value="#{ventaBean.lineasVenta}"
-											columns="1" layout="grid" rows="12" paginator="true"
-											id="GridVentas">
-											<p:panel style="text-align:center">
-												<h:panelGrid columns="4" style="width:100%">
-													
-													<h:outputText value=" #{venta.descripcion}" />
-													<h:outputText value="$ #{venta.precioVenta}" />
-													<p:outputPanel
-														visible="#{venta.isRecetaVerde}"
-														style="width: 100px; padding: 0; margin: 0;">
-														<p:selectBooleanCheckbox
-															value="#{venta.recetaVerde}">
-															<f:ajax event="change" execute="@this" />
-														</p:selectBooleanCheckbox>
-														<img src="../Images/receta_verde.png" />
-													</p:outputPanel>
-													<p:commandButton value="Articulo Perdido" id="ajax4"
-														update="@form"
-														actionListener="#{ventaBean.agregarLineaVentaPerdida(venta)}"
-														process="@this" styleClass="ui-priority-primary" />
-														
-														
-													<h:outputText value=" #{venta.presentacion}" />
-													<p:inputText id="descuento" value="#{venta.descuento}"
-														style="width: 75px;">
-														<p:ajax listener="#{ventaBean.strDescuentoPrecio()}" update="@form"
-															process="@this" />
-													</p:inputText>
-													<p:outputPanel
-														visible="#{venta.isRecetaBlanca}"
-														style="width: 100px; padding: 0; margin: 0;">
-														<p:selectBooleanCheckbox
-															value="#{venta.recetaBlanca}">
-															<f:ajax event="change" execute="@this" />
-														</p:selectBooleanCheckbox>
-														<img src="../Images/receta_blanca.png" />
-													</p:outputPanel>
-													<h:outputText value="stock:#{venta.stock}" />
-													
-													
-													<h:outputText value=" #{venta.principioActivo}" />
-													<h:outputText id="descuentoPrecio"
+														<h:outputText value=" #{venta.principioActivo}" />
+														<h:outputText id="descuentoPrecio"
 															value=" #{venta.descuentoPrecio}">
-													</h:outputText>
-													<p:outputPanel
-														visible="#{venta.isRecetaNaranja}"
-														style="width: 100px; padding: 0; margin: 0;">
-														<p:selectBooleanCheckbox
-															value="#{venta.recetaNaranja}">
-															<f:ajax event="change" execute="@this" />
-														</p:selectBooleanCheckbox>
-														<img src="../Images/receta_naranja.png" />
-													</p:outputPanel>
-													<p:commandButton value="Agregar" id="ajax2" update="@form"
-														actionListener="#{ventaBean.agregarLineaVenta(venta)}"
-														process="@this" styleClass="ui-priority-primary" />
-														
-														
-													<h:outputText value=" #{venta.laboratorio}" />
+														</h:outputText>
+														<p:outputPanel visible="#{venta.isRecetaNaranja}"
+															style="padding: 0; margin: 0;">
+															<p:selectBooleanCheckbox value="#{venta.recetaNaranja}">
+																<f:ajax event="change" execute="@this" />
+															</p:selectBooleanCheckbox>
+															<img src="../Images/receta_naranja.png" />
+														</p:outputPanel>
+														<p:commandButton value="Agregar" id="ajax2" update="@form"
+															actionListener="#{ventaBean.agregarLineaVenta(venta)}"
+															process="@this" styleClass="ui-priority-primary" />
 
-												</h:panelGrid>
-											</p:panel>
-										</p:dataGrid>
 
+														<h:outputText value=" #{venta.laboratorio}" />
+
+													</h:panelGrid>
+												</p:panel>
+											</p:dataGrid>
+
+										</div>
+										<div style="clear: both;"></div>
 									</div>
-									<div style="clear: both;"></div>
 								</h:panelGroup>
 							</div>
 						</div>

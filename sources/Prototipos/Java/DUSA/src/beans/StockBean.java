@@ -17,8 +17,6 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
-import com.sun.org.apache.xpath.internal.functions.Function;
-
 import controladores.Excepciones;
 import controladores.FabricaSistema;
 import model.AccionTer;
@@ -41,6 +39,7 @@ public class StockBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	private Articulo articulo = new Articulo();
+	private boolean noEsMedicamento;
 	
 	//Proveedores
 	private int proveedor;
@@ -70,6 +69,8 @@ public class StockBean implements Serializable{
 	private String messageClass;
 	private Boolean disableDesdeUltimoPedido = false;
 	private Boolean disablePrediccionDePedido = false;
+	private String hideElement = "hidden";
+	private String formaDePago = "contado";  
 	
 	//Busqueda de artículos
 	private String busqueda = "";
@@ -87,6 +88,12 @@ public class StockBean implements Serializable{
 	}
 	public void setArticulo(Articulo articulo) {
 		this.articulo = articulo;
+	}
+	public boolean isNoEsMedicamento() {
+		return noEsMedicamento;
+	}
+	public void setNoEsMedicamento(boolean noEsMedicamento) {
+		this.noEsMedicamento = noEsMedicamento;
 	}
 	public int getProveedor() {
 		return proveedor;
@@ -181,6 +188,12 @@ public class StockBean implements Serializable{
 	public void setCodigoIdentificador(long codigoIdentificador) {
 		this.codigoIdentificador = codigoIdentificador;
 	}
+	public String getFormaDePago() {
+		return formaDePago;
+	}
+	public void setFormaDePago(String formaDePago) {
+		this.formaDePago = formaDePago;
+	}
 	public Boolean getDisableDesdeUltimoPedido() {
 		return disableDesdeUltimoPedido;
 	}
@@ -232,13 +245,14 @@ public class StockBean implements Serializable{
 	public void desdeUltimoPedido(){
 		disablePrediccionDePedido = true;
 		disableDesdeUltimoPedido = true;
+		hideElement = "visible";
 		pedidos.clear();
 		
 		try {
 			
 			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAPedidoAnterior();
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(
 					null,
@@ -284,8 +298,8 @@ public class StockBean implements Serializable{
 		dt.setStockMinimo(4);
 		dt.setSubtotal(360);
 		pedidos.add(dt);
-		
 		*/
+		
 	}
 	
 	/**
@@ -294,22 +308,23 @@ public class StockBean implements Serializable{
 	public void prediccionDePedido(){
 		disablePrediccionDePedido = true;
 		disableDesdeUltimoPedido = true;
+		hideElement = "visible";
 		pedidos.clear();
 		
-		try {
-			
-			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAHistorico(5);
-		} catch (Exception e) {
-			
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(
-					null,
-					new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							e.getMessage(),
-							""));
-		}
-		/*
+//		try {
+//			
+//			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAHistorico(5);
+//		} catch (Exception e) {
+//			
+//			FacesContext context = FacesContext.getCurrentInstance();
+//			context.addMessage(
+//					null,
+//					new FacesMessage(
+//							FacesMessage.SEVERITY_ERROR,
+//							e.getMessage(),
+//							""));
+//		}
+		
 		DTLineaPedido dt = new DTLineaPedido();
 		dt.setCantidad(3);
 		dt.setIdArticulo(1);
@@ -357,9 +372,21 @@ public class StockBean implements Serializable{
 		dt.setStockMinimo(10);
 		dt.setSubtotal(60);
 		pedidos.add(dt);
-		*/
 	}
 	
+	/**
+	 * Recalcula el subtotal de la linea pedido
+	 * @param item a recalcular
+	 */
+	public void nuevoSubtotal(DTLineaPedido item){
+		
+		item.setSubtotal(item.getCantidad() * item.getPrecioUnitario().longValue());
+	}
+	
+	/**
+	 * Elimina la linea pedido de la tabla
+	 * @param item a eliminar
+	 */
 	public void removeItem(DTLineaPedido item) {
 		pedidos.remove(item);
 	}
@@ -377,22 +404,51 @@ public class StockBean implements Serializable{
 		Pedido p = new Pedido();
 		
 		p.setFecha(new Date(Calendar.getInstance().getTimeInMillis()));
-		p.setFormaDePago(TipoFormaDePago.CONTADO);
+		p.setIdUsuario(1);
 		
-		for (Iterator<DTLineaPedido> iterator = pedidos.iterator(); iterator.hasNext();) {
+		if (this.formaDePago.equalsIgnoreCase("contado")){
 			
-			DTLineaPedido dtLineaPedido = iterator.next();
+			p.setFormaDePago(TipoFormaDePago.CONTADO);
+		} else {
+			
+			p.setFormaDePago(TipoFormaDePago.CREDITO);
+		}
+		
+		for (DTLineaPedido dtLineaPedido : pedidos) {
 			
 			LineaPedido lPedido = new LineaPedido(dtLineaPedido.getIdArticulo(), dtLineaPedido.getNumeroArticulo(), dtLineaPedido.getCantidad());
 			p.getLineas().add(lPedido);
 		}
 		
-		pedidos.clear();
-		disableDesdeUltimoPedido = false;
-		disablePrediccionDePedido = false;
-		
-		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-				Excepciones.MENSAJE_OK_PEDIDO, ""));
+		try {
+			
+			FabricaSistema.getISistema().realizarPedido(p);
+			
+			pedidos.clear();
+			disableDesdeUltimoPedido = false;
+			disablePrediccionDePedido = false;
+			hideElement = "hidden";
+			
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+					Excepciones.MENSAJE_OK_PEDIDO, ""));
+		} catch (Excepciones ex){
+			
+			ex.printStackTrace();
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							ex.getMessage(),
+							""));
+		} catch (Exception e) {
+			e.printStackTrace();
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							e.getMessage(),
+							""));
+		}
 	}
 	
 	public void cancelarPedido(){
@@ -400,27 +456,40 @@ public class StockBean implements Serializable{
 		pedidos.clear();
 		disableDesdeUltimoPedido = false;
 		disablePrediccionDePedido = false;
+		hideElement = "hidden";
 	}
 	
 
 	
 	public void agregarProveedor(){
 		FacesContext context = FacesContext.getCurrentInstance();
-		if (codigoIdentificador != 0 && proveedor != 0){
-			if (!existeProveedor(proveedor)){
-				DTProveedor p = new DTProveedor();
-				p.setIdProveedor(proveedor);
-				p.setNombreComercial(proveedores.get(proveedor).getNombreComercial());
-				p.setCodigoIdentificador(codigoIdentificador);
-				this.proveedoresSeleccionados.add(p);
+		if (proveedor != 0){
+			if (codigoIdentificador != 0){
+				if (!existeProveedor(proveedor)){
+					DTProveedor p = new DTProveedor();
+					p.setIdProveedor(proveedor);
+					p.setNombreComercial(proveedores.get(proveedor).getNombreComercial());
+					p.setCodigoIdentificador(codigoIdentificador);
+					this.proveedoresSeleccionados.add(p);
+					this.proveedor = 0;
+					this.codigoIdentificador = 0;
+				}
+				else{
+					context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_WARN,
+							"Ya seleccionó el proveedor.",
+							""));
+				}
 			}
 			else{
 				context.addMessage(
-				null,
-				new FacesMessage(
-						FacesMessage.SEVERITY_WARN,
-						"Ya seleccionó el proveedor.",
-						""));
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_WARN,
+								"Debe ingresar el código que lo identifica.",
+								""));
 			}
 		}
 		else{
@@ -428,7 +497,7 @@ public class StockBean implements Serializable{
 					null,
 					new FacesMessage(
 							FacesMessage.SEVERITY_WARN,
-							"Debe seleccionar un proveedor e ingresar su código que lo identifica.",
+							"Debe seleccionar un proveedor.",
 							""));
 		}
 	}
@@ -507,6 +576,7 @@ public class StockBean implements Serializable{
 		}
 	
 	public StockBean(){
+		this.noEsMedicamento = true;
 		
 		//Cargo las marcas de la base de datos
 		cargarMarcas();
@@ -579,6 +649,14 @@ public class StockBean implements Serializable{
 		tiposArticulo.add(ta);
 	}
 	
+	public void tipoArticuloChange(){
+		if (articulo.getTipoArticulo() == model.Enumerados.tipoArticulo.MEDICAMENTO){
+			this.noEsMedicamento = false;
+		}else{
+			this.noEsMedicamento = true;
+		}
+	}
+	
 	public void cargarFormasVenta(){
 		DTFormasVenta fv = new DTFormasVenta();
 		fv.setFormaVenta(model.Enumerados.formasVenta.ventaLibre);
@@ -600,6 +678,11 @@ public class StockBean implements Serializable{
 	
 	public void buscarArticulos(){
 		resBusqueda = new ArrayList<DTBusquedaArticulo>();
+		
+		if(busqueda.equals("")){
+			return;
+		}
+		
 		try {
 			resBusqueda = FabricaSistema.getISistema().buscarArticulos(busqueda);
 			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
@@ -607,6 +690,12 @@ public class StockBean implements Serializable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public String getHideElement() {
+		return hideElement;
+	}
+	public void setHideElement(String hideElement) {
+		this.hideElement = hideElement;
 	}
 
 }

@@ -1,7 +1,9 @@
 package model;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
+
 import model.Enumerados.TipoFormaDePago;
 
 //@autor Guille
@@ -12,6 +14,15 @@ public class Pedido {
 	TipoFormaDePago 	formaDePago;
 	int					idUsuario; 
 	List<LineaPedido>	lineas;
+	
+	public Pedido() {
+		
+		this.idPedido = new Long(0);
+		this.fecha = null;
+		this.idUsuario = 0;
+		this.lineas = new ArrayList<LineaPedido>();
+		
+	}
 	
 	//Getters y Setters
 	public Long getIdPedido() {

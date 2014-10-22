@@ -79,6 +79,9 @@ public interface IStock {
 	 * @throws Excepciones
 	 * @author Victoria Diaz
 	 */
+	
+	public void actualizarStock() throws Excepciones;
+
 	public List<DTVenta> buscarArticulosVenta(String busqueda)
 			throws Excepciones;
 

@@ -11,6 +11,7 @@ import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Pedido;
 import model.Enumerados.casoDeUso;
 import model.Usuario;
 import model.Proveedor;
@@ -27,11 +28,6 @@ public class SistemaControlador implements ISistema {
 			FabricaLogica.getInstanciaProveedores().altaProveedor(proveedor);
 		//else
 		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
-	}
-	
-	public List<DTLineaPedido> pedidoAutomaticoVentas() {
-		
-		return null;//FabricaLogica.getIStock().pedidoPorVentas(); Deprecated por ahora
 	}
 
 	@Override
@@ -53,6 +49,15 @@ public class SistemaControlador implements ISistema {
 		
 	}
 	
+	public void actualizarStock() {
+		try {
+			FabricaLogica.getIStock().actualizarStock();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones {
 		// TODO chequeo permisos del usuario
@@ -71,6 +76,12 @@ public class SistemaControlador implements ISistema {
 		//else
 		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		
+	}
+	
+	@Override
+	public void realizarPedido(Pedido pedido) throws Excepciones {
+		// TODO Auto-generated method stub
+		FabricaLogica.getIStock().realizarPedido(pedido);
 	}
 	
 	@Override
@@ -103,6 +114,7 @@ public class SistemaControlador implements ISistema {
 	}
 	@Override
 	public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones {
+		System.out.println("********* BUSCAR ************** " + busqueda);
 		//if (user.tienePermiso(casoDeUso.buscarArticulo))
 			return FabricaLogica.getIStock().buscarArticulosVenta(busqueda);
 		//else

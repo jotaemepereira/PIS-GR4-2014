@@ -8,12 +8,15 @@ import interfaces.IStockPersistencia;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Enumerados;
 import model.GeneradorPedido;
 import model.LineaPedido;
 import model.Pedido;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -62,10 +65,6 @@ public class StockControlador implements IStock {
 		return articulo;
 	}
 	
-	public void generarPedido(Pedido p){
-		
-	}
-	
 	/**
 	 * 
 	 * @author Guille
@@ -75,6 +74,18 @@ public class StockControlador implements IStock {
 		
 		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
 		Date ultimoPedido = sp.obtenerFechaUltimoPedido();
+		
+		if (ultimoPedido == null){
+			//Caso base para el pedido: Se toma las ventas realizadas en el dia de hoy.
+			Calendar cal = Calendar.getInstance();
+			//Trunc la fecha de hoy.
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			
+			ultimoPedido = new Date(cal.getTimeInMillis());
+		}
 		SeleccionarArticulosDesde seleccionarDesde = new SeleccionarArticulosDesde(ultimoPedido);
 		PredecirCantidadDesde predecirDesde = new PredecirCantidadDesde(ultimoPedido);
 		
@@ -97,11 +108,16 @@ public class StockControlador implements IStock {
 				 dtlPedido.setStockMinimo(articulo.getStockMinimo());
 				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				 dtlPedido.setCantidad(lPedido.getCantidad());
-				// TODO: hardcodear id de DUSA
-				 DTProveedor dtProveedor = articulo.getProveedores().get(0);
-				 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
+				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().longValue());
+				 // TODO: hardcodear id de DUSA
+				 // TODO: Calcular costo ponderado promedio
+				 DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
 				 
-				 lPedidos.add(dtlPedido);
+				 if (dtProveedor != null){
+					 //Preventivo control si no es de DUSA no se ingresa
+					 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
+					 lPedidos.add(dtlPedido);
+				 }
 			}
 		}
 		
@@ -149,10 +165,13 @@ public class StockControlador implements IStock {
 				dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				dtlPedido.setCantidad(lPedido.getCantidad());
 				// TODO: hardcodear id de DUSA
-				DTProveedor dtProveedor = articulo.getProveedores().get(0);
-				dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
-				
-				lPedidos.add(dtlPedido);
+				// TODO: Calcular costo ponderado promedio
+				DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
+				if (dtProveedor != null){
+					 //Preventivo control si no es de DUSA no se ingresa
+					 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
+					 lPedidos.add(dtlPedido);
+				 }
 			}
 		}
 		
@@ -162,6 +181,7 @@ public class StockControlador implements IStock {
 	/**
 	 * 
 	 * @author Santiago
+	 * @author Guille
 	 */
 	@Override
 	public void realizarPedido(Pedido p) throws Excepciones{
@@ -200,11 +220,30 @@ public class StockControlador implements IStock {
 			articuloV.setPresentacion(articuloB.getPresentacion());
 			articuloV.setPrincipioActivo(articuloB.getDroga());
 			articuloV.setLaboratorio(articuloB.getMarca());
+			articuloV.setDescuento1(new BigDecimal(25));
+			articuloV.setDescuento2(new BigDecimal(40));
 			articulos.add(articuloV);
 		}
 		
 		return articulos;
 	}
+	
+	public void actualizarStock() throws Excepciones {
+		Calendar calendario = Calendar.getInstance();
+		calendario.add(Calendar.DAY_OF_MONTH, -36);
+		java.util.Date fecha = calendario.getTime();
+		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
+		
+		//Se tendrian que recorrer todos los articulos y checkear si el artículo ya existe o no
+		//En caso de que exista, se actualiza el precio y el estado del artículo
+		//Caso contrario, el artículo es nuevo y se almacena en la base de datos.
+		
+		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
+		for (Articulo a:articulos) {
+			sp.persistirArticulo(a);
+		}
+	}
+
 	
 	
 }

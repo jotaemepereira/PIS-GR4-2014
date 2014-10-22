@@ -36,6 +36,16 @@ public class Enumerados {
 	    iniciarSesion,
 	    cerrarSesion,
 	}
+	/**
+	 * Informacion básica del proveedor DUSA para uso de distintos casos de uso. 
+	 * @author Guille
+	 */
+	public final class infoDUSA {
+		
+		public static final int proveedorID = 1;//Supongo que será el primer proveedor a ingresar en el sistema final.
+		public static final String nombreComercial = "DUSA";
+	}
+	
 	public final class formasVenta {
 	    public static final char ventaLibre = '1';
 	    public static final char controlado = '2';
@@ -75,8 +85,20 @@ public class Enumerados {
 		}
 	}
 	
+	public static String descripcionTipoArticuloAbreviado(String tipo){
+		switch (tipo.charAt(0)) {
+			case tipoArticulo.MEDICAMENTO:
+				return "Medic.";
+			case tipoArticulo.PERFUMERIA:
+				return "Perfum.";
+			case tipoArticulo.OTROS:
+				return "Otros";
+			default:
+				return "";
+		}
+	}
+	
 	public static String descripcionTipoVenta(String tipo){
-		System.out.println("*** TIPO DE VENTA " + tipo + " num " + Character.getNumericValue(tipo.charAt(0)));
 		switch (tipo.charAt(0)) {
 		case formasVenta.bajoReceta:
 			return "Bajo receta";
