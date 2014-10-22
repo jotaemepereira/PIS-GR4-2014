@@ -21,6 +21,7 @@ import uy.com.dusa.ws.WSConsultaStockService;
 import uy.com.dusa.ws.WSPedidos;
 import uy.com.dusa.ws.WSPedidosService;
 import model.Articulo;
+import model.Enumerados;
 import model.Enumerados.TipoFormaDePago;
 import model.LineaPedido;
 import model.Pedido;
@@ -36,10 +37,8 @@ public class ServicioDusaControlador implements IServicio {
 	/**
 	 * @author Guille
 	 */
-	private static String dusaStockURL 			= "http://dev.dusa.com.uy/ws_consulta_stock?wsdl";
-	private static String dusaComprobantesURL 	= "http://dev.dusa.com.uy/ws_consulta_comprobantes?wsdl";
-	private static String dusaPedidosURL	 	= "http://dev.dusa.com.uy/ws_pedidos?wsdl";
-	private static int dusaId = 2;
+
+//	private static int dusaId = 2; Ahora esta en enum infoDUSA
 	private static String userTest			 	= "PIS2014";
 	private static String passTest			 	= "uvM4-N39C-Jt01-mc9E-e95b";
 	
@@ -84,7 +83,7 @@ public class ServicioDusaControlador implements IServicio {
 	
 		//Proveedores
 		DTProveedor proveedor = new DTProveedor();
-		proveedor.setIdProveedor(dusaId);
+		proveedor.setIdProveedor(Enumerados.infoDUSA.proveedorID);
 		proveedor.setCodigoIdentificador(productoDT.getNumeroArticulo());
 		articulo.agregarProveedor(proveedor);
 		

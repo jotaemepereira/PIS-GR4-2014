@@ -8,6 +8,7 @@ import interfaces.IStockPersistencia;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Enumerados;
 import model.GeneradorPedido;
 import model.LineaPedido;
 import model.Pedido;
@@ -110,7 +111,7 @@ public class StockControlador implements IStock {
 				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().longValue());
 				 // TODO: hardcodear id de DUSA
 				 // TODO: Calcular costo ponderado promedio
-				 DTProveedor dtProveedor = articulo.getProveedores().get(1);
+				 DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
 				 
 				 if (dtProveedor != null){
 					 //Preventivo control si no es de DUSA no se ingresa
@@ -164,10 +165,13 @@ public class StockControlador implements IStock {
 				dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				dtlPedido.setCantidad(lPedido.getCantidad());
 				// TODO: hardcodear id de DUSA
-				DTProveedor dtProveedor = articulo.getProveedores().get(0);
-				dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
-				
-				lPedidos.add(dtlPedido);
+				// TODO: Calcular costo ponderado promedio
+				DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
+				if (dtProveedor != null){
+					 //Preventivo control si no es de DUSA no se ingresa
+					 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
+					 lPedidos.add(dtlPedido);
+				 }
 			}
 		}
 		
