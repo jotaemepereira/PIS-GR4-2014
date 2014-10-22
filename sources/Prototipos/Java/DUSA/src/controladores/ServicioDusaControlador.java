@@ -44,10 +44,7 @@ public class ServicioDusaControlador implements IServicio {
 	private static String passTest			 	= "uvM4-N39C-Jt01-mc9E-e95b";
 	
 	private WSConsultaStock getServicioStock() {
-		new WSConsultaStockService().
 		return new WSConsultaStockService().getWSConsultaStockPort();
-		
-		
 	}
 	
 	private Articulo transformarArticulo(DataInfoProducto productoDT) {
