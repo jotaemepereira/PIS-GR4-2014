@@ -17,13 +17,14 @@
 			<title>DUSA</title>
 		</f:facet>
 		<style>
-			.hidden{
-				display:none;
-			}
-			.visible{
-				display:block;
-			}
-		</style>
+.hidden {
+	display: none;
+}
+
+.visible {
+	display: block;
+}
+</style>
 	</h:head>
 	<h:body>
 		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
@@ -67,9 +68,18 @@
 										<div class="row"
 											style="margin-bottom: 1%; text-align: center;">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-											
+												
+												<p:selectOneMenu id="marcaOLab"
+													value="#{comprasBean.ordenDeCompraDUSA}" filter="true"
+													filterMatchMode="contains" required="false" styleClass="${comprasBean.selectFacturaDUSA}">
+													<f:selectItem itemLabel="Seleccione una factura"
+														itemValue="#{null}" />
+													<f:selectItems value="#{comprasBean.facturasDUSA}" var="m"
+														itemLabel="#{m.fechaComprobante} #{m.ordenDeCompra}"
+														itemValue="#{m.ordenDeCompra}" />
+												</p:selectOneMenu>
+												
 												<div>TABLA</div>
-											
 											</div>
 										</div>
 										<div class="row" style="margin-bottom: 1%;">
@@ -89,7 +99,7 @@
 													</p:commandButton>
 												</div>
 											</div>
-										
+
 										</div>
 									</h:panelGroup>
 								</div>
@@ -99,11 +109,15 @@
 				</div>
 			</div>
 		</h:form>
-		
-		<p:confirmDialog id="confirmDialog" global="true" showEffect="fade" hideEffect="fade" widgetVar="confirmDialog">
 
-			<h:commandButton value="Cancelar" styleClass="btn btn-danger ui-confirmdialog-no pull-right" />
-			<h:commandButton value="Continuar" styleClass="btn btn-success ui-confirmdialog-yes pull-right" style="margin-right:2%" />
+		<p:confirmDialog id="confirmDialog" global="true" showEffect="fade"
+			hideEffect="fade" widgetVar="confirmDialog">
+
+			<h:commandButton value="Cancelar"
+				styleClass="btn btn-danger ui-confirmdialog-no pull-right" />
+			<h:commandButton value="Continuar"
+				styleClass="btn btn-success ui-confirmdialog-yes pull-right"
+				style="margin-right:2%" />
 		</p:confirmDialog>
 	</h:body>
 
