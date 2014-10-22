@@ -247,7 +247,7 @@ public class StockBean implements Serializable{
 			
 			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAPedidoAnterior();
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(
 					null,

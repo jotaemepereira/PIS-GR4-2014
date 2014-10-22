@@ -76,7 +76,14 @@ public class StockControlador implements IStock {
 		
 		if (ultimoPedido == null){
 			//Caso base para el pedido: Se toma las ventas realizadas en el dia de hoy.
-			ultimoPedido = new Date(Calendar.getInstance().getTimeInMillis());
+			Calendar cal = Calendar.getInstance();
+			//Trunc la fecha de hoy.
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			
+			ultimoPedido = new Date(cal.getTimeInMillis());
 		}
 		SeleccionarArticulosDesde seleccionarDesde = new SeleccionarArticulosDesde(ultimoPedido);
 		PredecirCantidadDesde predecirDesde = new PredecirCantidadDesde(ultimoPedido);
@@ -101,10 +108,13 @@ public class StockControlador implements IStock {
 				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				 dtlPedido.setCantidad(lPedido.getCantidad());
 				// TODO: hardcodear id de DUSA
-				 DTProveedor dtProveedor = articulo.getProveedores().get(0);
-				 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
+				 DTProveedor dtProveedor = articulo.getProveedores().get(1);
 				 
-				 lPedidos.add(dtlPedido);
+				 if (dtProveedor != null){
+					 //Preventivo control si no es de DUSA no se ingresa
+					 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
+					 lPedidos.add(dtlPedido);
+				 }
 			}
 		}
 		

@@ -5,7 +5,9 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import controladores.Excepciones;
@@ -304,9 +306,14 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			stmt = con.prepareStatement(sql);
 			stmt.setInt		(1, 1); //Hay que ver cual es el bien el identificador para hardcodearlo
 			stmt.setBoolean	(2, true);
-			stmt.setString	(3, "'" + Enumerados.EstadoVenta.FACTURADA + "'");
-			stmt.setDate(4, desde);
-			stmt.setDate(5, hasta);
+			stmt.setString	(3, String.valueOf(Enumerados.EstadoVenta.FACTURADA));
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(desde);
+			stmt.setTimestamp(4, new Timestamp(cal.getTimeInMillis()));
+			cal.setTime(hasta);
+			stmt.setTimestamp(5, new Timestamp(cal.getTimeInMillis()));
+//			stmt.setDate(4, desde);
+//			stmt.setDate(5, hasta);
 			ResultSet rs = stmt.executeQuery();
 			
 			while (rs.next()) {
@@ -334,28 +341,31 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			
 			Connection con = Conexion.getConnection();
 			
-			String sql = "SELECT sum(quantity) as total" + 
+			String sql = "SELECT sum(quantity) as total " + 
 							"FROM sales s INNER JOIN sale_details sd " + 
-									"ON s.sale_id = sd.sale_id" +
-							"WHERE sd.product_id = ? and s.sale_status = ? and s.sale_date BETWEEN ? and ?" +
-							"GROUP BY product_id";
+									"ON s.sale_id = sd.sale_id " +
+							"WHERE sd.product_id = ? and s.sale_status = ? and s.sale_date BETWEEN ? and ? " +
+							"GROUP BY product_id;";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, idArticulo.longValue());
-			stmt.setString(2, "'" + Enumerados.EstadoVenta.FACTURADA + "'");
-			stmt.setString(3, desde.toString());
-			stmt.setString(4, hasta.toString());
+			stmt.setString(2, String.valueOf(Enumerados.EstadoVenta.FACTURADA));
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(desde);
+			stmt.setTimestamp(3, new Timestamp(cal.getTimeInMillis()));
+			cal.setTime(hasta);
+			stmt.setTimestamp(4, new Timestamp(cal.getTimeInMillis()));
 			ResultSet rs = stmt.executeQuery();
 			
-			stmt.close();
-			con.close();
 			//Obtengo la cantidad total
 			while (rs.next()) {
 				cantidadVendida = rs.getInt("total"); 
 			}
+			
+			stmt.close();
+			con.close();
 		} catch (Exception e) {
 			
-			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-			System.exit(0);
+			e.printStackTrace();
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		

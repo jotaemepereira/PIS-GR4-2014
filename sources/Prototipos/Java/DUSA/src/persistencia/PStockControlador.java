@@ -663,8 +663,11 @@ public class PStockControlador implements IStockPersistencia {
 					
 					articulo = new Articulo();
 					
-					articulo.setIdArticulo(rs.getLong(""));
-					articulo.setTipoArticulo(rs.getString("product_type").charAt(0));
+					articulo.setIdArticulo(rs.getLong("product_id"));
+					String aux = rs.getString("product_type");
+					if (aux != null){
+						articulo.setTipoArticulo(aux.charAt(0));
+					}
 					articulo.setDescripcion(rs.getString("description"));
 					articulo.setClave1(rs.getString("key1"));
 					articulo.setClave2(rs.getString("key2"));
@@ -672,8 +675,14 @@ public class PStockControlador implements IStockPersistencia {
 					articulo.setEsPsicofarmaco(rs.getBoolean("is_psychotropic"));
 					articulo.setEsEstupefaciente(rs.getBoolean("is_narcotic"));
 					articulo.setEsHeladera(rs.getBoolean("is_refrigerator"));
-					articulo.setCodigoVenta(rs.getString("sale_code").charAt(0));
-					articulo.setTipoAutorizacion(rs.getString("authorization_type").charAt(0));
+					aux = rs.getString("sale_code");
+					if (aux != null) {
+						articulo.setCodigoVenta(aux.charAt(0));
+					}
+					aux = rs.getString("authorization_type");
+					if (aux != null) {
+						articulo.setTipoAutorizacion(aux.charAt(0));
+					}
 					articulo.setPrecioUnitario(rs.getBigDecimal("unit_price"));
 					articulo.setPrecioVenta(rs.getBigDecimal("sale_price"));
 					articulo.setPorcentajePrecioVenta(rs.getBigDecimal("sale_price_porcentage"));
@@ -681,7 +690,10 @@ public class PStockControlador implements IStockPersistencia {
 					articulo.setCostoOferta(rs.getBigDecimal("offer_cost"));
 					articulo.setUltimoCosto(rs.getBigDecimal("last_cost"));
 					articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
-					articulo.setTipoIva(rs.getBigDecimal("tax_type").intValue());
+					BigDecimal auxDecimal = rs.getBigDecimal("tax_type");
+					if (auxDecimal != null) {
+						articulo.setTipoIva(auxDecimal.intValue());
+					}
 					articulo.setCodigoBarras(rs.getString("barcode"));
 					Timestamp timestamp = rs.getTimestamp("nearest_due_date");
 					if (timestamp != null) {
