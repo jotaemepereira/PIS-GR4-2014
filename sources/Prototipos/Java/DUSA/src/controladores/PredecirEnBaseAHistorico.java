@@ -38,7 +38,7 @@ public class PredecirEnBaseAHistorico implements IPredictor{
 		this.diasApredecir = diasAPredecir;
 	
 	}
-	
+	 
 	public int predecir(Long idArticulo) throws Excepciones{
 		
 		IFacturacionPersistencia fp = FabricaPersistencia.getInstanciaFacturacionPersistencia();
