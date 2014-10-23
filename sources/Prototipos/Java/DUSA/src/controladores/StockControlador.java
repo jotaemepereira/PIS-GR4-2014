@@ -228,6 +228,7 @@ public class StockControlador implements IStock {
 	}
 	
 	public void actualizarStock() throws Excepciones {
+		System.out.println("actualizarStock controlador");
 		Calendar calendario = Calendar.getInstance();
 		calendario.add(Calendar.DAY_OF_MONTH, -36);
 		calendario.add(Calendar.DAY_OF_WEEK, -2);

@@ -627,6 +627,7 @@ public class StockBean implements Serializable{
 		
 		//Cargo formas de venta para el combo
 		cargarFormasVenta();
+		
 	}
 	
 	public void cargarMarcas(){
