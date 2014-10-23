@@ -241,7 +241,7 @@ public class ProveedoresBean implements Serializable {
 			return;
 		}
 
-		/*
+		/* 
 		 * Llamo a la lógica para que se de de alta el proveedor en el sistema y
 		 * en caso de error lo muestro
 		 */

@@ -103,11 +103,15 @@
 													</p:column>
 													
 													<p:column headerText="Cantidad" styleClass="col-xs-4 col-sm-3 col-md-2 col-lg-2">
-														<h:inputText value="#{pedido.cantidad}" styleClass="form-control" />
+													
+														<p:inputText id="cantidad" value="#{pedido.cantidad}" styleClass="form-control">
+															<p:ajax listener="#{stockBean.nuevoSubtotal(pedido)}"
+																update="subtotal" process="@this" />
+														</p:inputText>
 													</p:column>
 													
 													<p:column headerText="Subtotal" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-2">
-														<h:outputText value="#{pedido.subtotal}" />
+														<h:outputText value="#{pedido.subtotal}" id="subtotal"/>
 													</p:column>
 													
 													<p:column headerText="Eliminar" styleClass="col-xs-2 col-sm-2 col-md-1 col-lg-1">

@@ -304,7 +304,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 															+ "WHERE s.sale_status = ? "
 																+ "AND s.sale_date BETWEEN ? AND ?);";
 			stmt = con.prepareStatement(sql);
-			stmt.setInt		(1, 1); //Hay que ver cual es el bien el identificador para hardcodearlo
+			stmt.setInt		(1, Enumerados.infoDUSA.proveedorID);
 			stmt.setBoolean	(2, true);
 			stmt.setString	(3, String.valueOf(Enumerados.EstadoVenta.FACTURADA));
 			Calendar cal = Calendar.getInstance();

@@ -67,8 +67,7 @@ public interface ISistema {
 	 *         su cantidad
 	 * @throws Excepciones
 	 */
-	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior()
-			throws Excepciones;
+	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior() throws Excepciones;
 
 	/**
 	 * Genera un pedido de artículos de D.U.S.A. Donde la cantidad de cada
@@ -76,20 +75,30 @@ public interface ISistema {
 	 * de años anteriores y estimando los próximos días por medio de mínimos
 	 * cuadrados.
 	 * 
-	 * @author Santiago, Guille
+	 * @author Santiago
+	 * @author Guille
 	 * @param diasAPredecir
 	 *            cantidad de días a predecir.
 	 * @return Lista de dataType LineaPedido con la información del articulo y
 	 *         su cantidad
 	 * @throws Excepciones
 	 */
-	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir)
-			throws Excepciones;
-
+	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir) throws Excepciones;
+	
+	/**
+	 * Se conecta con D.U.S.A. para realizar el pedido, se persiste el pedido si el envío es realizado con éxito.
+	 * @author Guille 
+	 * @param pedido
+	 * @throws Excepciones
+	 * 			ERROR_SIN_CONEXION si hay error al realizar la conexión.
+	 * 			ERROR_SISTEMA si hay error con la base de datos.
+	 */
+	public void realizarPedido(Pedido pedido) throws Excepciones;
 	/**
 	 * @author santiago
+	 * @throws Excepciones 
 	 */
-	 public void iniciarSesion(String nombreUsuario, String contrasenia );
+	 public void iniciarSesion(String nombreUsuario, String contrasenia ) throws Excepciones;
 	 public void cerrarSesion(String nombreUsuario, String contrasenia);
 
 	/**

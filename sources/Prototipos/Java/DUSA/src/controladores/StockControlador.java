@@ -8,6 +8,7 @@ import interfaces.IStockPersistencia;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Enumerados;
 import model.GeneradorPedido;
 import model.LineaPedido;
 import model.Pedido;
@@ -107,8 +108,9 @@ public class StockControlador implements IStock {
 				 dtlPedido.setStockMinimo(articulo.getStockMinimo());
 				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				 dtlPedido.setCantidad(lPedido.getCantidad());
-				// TODO: hardcodear id de DUSA
-				 DTProveedor dtProveedor = articulo.getProveedores().get(1);
+				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().longValue());
+				 dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
+				 DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
 				 
 				 if (dtProveedor != null){
 					 //Preventivo control si no es de DUSA no se ingresa
@@ -139,7 +141,8 @@ public class StockControlador implements IStock {
 		
 		return articulos;
 	}
-
+	
+	@Override
 	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir) throws Excepciones {
 		
 		ISeleccionador st = new SeleccionarTodos();
@@ -161,11 +164,13 @@ public class StockControlador implements IStock {
 				dtlPedido.setStockMinimo(articulo.getStockMinimo());
 				dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				dtlPedido.setCantidad(lPedido.getCantidad());
-				// TODO: hardcodear id de DUSA
-				DTProveedor dtProveedor = articulo.getProveedores().get(0);
-				dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
-				
-				lPedidos.add(dtlPedido);
+				dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
+				DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
+				if (dtProveedor != null){
+					 //Preventivo control si no es de DUSA no se ingresa
+					 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
+					 lPedidos.add(dtlPedido);
+				}
 			}
 		}
 		
@@ -225,12 +230,16 @@ public class StockControlador implements IStock {
 	public void actualizarStock() throws Excepciones {
 		Calendar calendario = Calendar.getInstance();
 		calendario.add(Calendar.DAY_OF_MONTH, -36);
+		calendario.add(Calendar.DAY_OF_WEEK, -2);
+		calendario.add(Calendar.HOUR_OF_DAY, -7);
+		
 		java.util.Date fecha = calendario.getTime();
 		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
 		
-		//Se tendrian que recorrer todos los articulos y checkear si el articulo ya existe o no
-		//En caso de que exista, se actualiza el precio y el estado del artÌculo
-		//Caso contrario, el artÌculo es nuevo y se almacena en la base de datos.
+		//Se tendrian que recorrer todos los articulos y checkear si el art√≠culo ya existe o no
+		//En caso de que exista, se actualiza el precio y el estado del art√≠culo
+		//Caso contrario, el art√≠culo es nuevo y se almacena en la base de datos.
+		System.out.println(articulos.size());
 		
 		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
 		for (Articulo a:articulos) {

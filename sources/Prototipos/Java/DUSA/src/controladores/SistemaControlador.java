@@ -11,6 +11,7 @@ import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Pedido;
 import model.Enumerados.casoDeUso;
 import model.Usuario;
 import model.Proveedor;
@@ -78,6 +79,12 @@ public class SistemaControlador implements ISistema {
 	}
 	
 	@Override
+	public void realizarPedido(Pedido pedido) throws Excepciones {
+		// TODO Auto-generated method stub
+		FabricaLogica.getIStock().realizarPedido(pedido);
+	}
+	
+	@Override
 	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir) throws Excepciones {
 		//if (user.tienePermiso(casoDeUso.genPedEnBaseAHist))
 			return FabricaLogica.getIStock().generarPedidoEnBaseAHistorico(diasAPredecir);
@@ -88,18 +95,18 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public List<Droga> obtenerDrogas() throws Excepciones {
-		// ESTE NO ESTA EN EL ACTA 
+		// NO ESTA EN EL ACTA 
 			return FabricaLogica.getIStock().obtenerDrogas();
 	}
 
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
-		// TAMPOCO ESTA EN ELACTA
+		// NO ESTA EN ELACTA
 			return FabricaLogica.getIStock().obtenerAccionesTerapeuticas();
-	}
+	}   
 	@Override
-	public void iniciarSesion(String nombreUsuario, String contrasenia){
-		
+	public void iniciarSesion(String nombreUsuario, String contrasenia) throws Excepciones{
+		 this.user = FabricaPersistencia.getInstanciaUsuaruiPersistencia().getUsuario(nombreUsuario, contrasenia);
 	}
 	@Override
 	public void cerrarSesion(String nombreUsuario, String contrasenia){
@@ -117,7 +124,7 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public List<DTProveedor> obtenerMarcas() throws Excepciones {
-		// TAMPOCO ESTA EN EL ACTA 
+		// NO ESTA EN EL ACTA 
 		return FabricaLogica.getInstanciaProveedores().obtenerMarcas();
 	}
 }

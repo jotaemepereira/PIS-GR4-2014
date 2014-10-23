@@ -36,6 +36,16 @@ public class Enumerados {
 	    iniciarSesion,
 	    cerrarSesion,
 	}
+	/**
+	 * Informacion básica del proveedor DUSA para uso de distintos casos de uso. 
+	 * @author Guille
+	 */
+	public final class infoDUSA {
+		
+		public static final int proveedorID = 1;//Supongo que será el primer proveedor a ingresar en el sistema final.
+		public static final String nombreComercial = "DUSA";
+	}
+	
 	public final class formasVenta {
 	    public static final char ventaLibre = '1';
 	    public static final char controlado = '2';
