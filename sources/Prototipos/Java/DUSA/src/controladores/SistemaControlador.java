@@ -95,18 +95,18 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public List<Droga> obtenerDrogas() throws Excepciones {
-		// ESTE NO ESTA EN EL ACTA 
+		// NO ESTA EN EL ACTA 
 			return FabricaLogica.getIStock().obtenerDrogas();
 	}
 
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
-		// TAMPOCO ESTA EN ELACTA
+		// NO ESTA EN ELACTA
 			return FabricaLogica.getIStock().obtenerAccionesTerapeuticas();
-	}
+	}   
 	@Override
-	public void iniciarSesion(String nombreUsuario, String contrasenia){
-		
+	public void iniciarSesion(String nombreUsuario, String contrasenia) throws Excepciones{
+		 this.user = FabricaPersistencia.getInstanciaUsuaruiPersistencia().getUsuario(nombreUsuario, contrasenia);
 	}
 	@Override
 	public void cerrarSesion(String nombreUsuario, String contrasenia){
@@ -124,7 +124,7 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public List<DTProveedor> obtenerMarcas() throws Excepciones {
-		// TAMPOCO ESTA EN EL ACTA 
+		// NO ESTA EN EL ACTA 
 		return FabricaLogica.getInstanciaProveedores().obtenerMarcas();
 	}
 }

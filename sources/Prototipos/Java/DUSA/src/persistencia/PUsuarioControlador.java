@@ -24,11 +24,40 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 	/**
 	 * obtengo al usuario
 	 */
-	public Usuario getUsuario(long idUsuario, String contrasenia) throws Excepciones{
-		Usuario usr = null;
+	public Usuario getUsuario(String nombre, String contrasenia) throws Excepciones{
+		Usuario usr = new Usuario();
 		PreparedStatement stmt = null;
+		/**
+		 * obtengo el ID a partir del nombre
+		 */
+		
+
+		String query = "SELECT u.user_id, u.username " + 
+				"FROM USERS u " +
+				"WHERE status <> FALSE AND username=" + "'" + nombre +"'" + ";";
+
+		
+		
+		try {
+			Connection c = Conexion.getConnection();			
+			stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){ 
+				usr.setUsuarioId(rs.getInt("user_id"));
+			}
+			stmt.close();
+			c.close();
+
+			
+		} catch (Exception e){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+
+		
+		long idUsuario =  usr.getUsuarioId();
+		
 		contrasenia = "\'" + contrasenia + "\'";
-		String query = "SELECT u.user_id, u.username, u.pwd_hash, u.status " + 
+		query = "SELECT u.user_id, u.username, u.pwd_hash, u.status " + 
 						"FROM USERS u " +
 						"WHERE status <> FALSE AND user_id=" + idUsuario +" AND pwd_hash ="+ contrasenia + ";";
 		
@@ -37,8 +66,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 			stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while(rs.next()){ 
-			    usr = new Usuario();
-				usr.setUsuarioId(rs.getInt("user_id"));
+				usr.setUsuarioId(rs.getInt("user_id")); 
 				usr.setNombre(rs.getString("username"));
 				usr.setPwd_hash(rs.getString("pwd_hash"));
 				usr.setEstado(rs.getBoolean("status"));

@@ -11,7 +11,7 @@ import model.Usuario;
  */
 public interface IUsuarioPersistencia {
 	
-	public Usuario getUsuario(long idUsuario, String contrasenia) throws Excepciones;
+	public Usuario getUsuario( String nombre, String contrasenia) throws Excepciones;
 	public void registrarActividad(Actividad actividad) throws Excepciones;
 
 }

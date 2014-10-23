@@ -95,8 +95,9 @@ public interface ISistema {
 	public void realizarPedido(Pedido pedido) throws Excepciones;
 	/**
 	 * @author santiago
+	 * @throws Excepciones 
 	 */
-	 public void iniciarSesion(String nombreUsuario, String contrasenia );
+	 public void iniciarSesion(String nombreUsuario, String contrasenia ) throws Excepciones;
 	 public void cerrarSesion(String nombreUsuario, String contrasenia);
 
 	/**
