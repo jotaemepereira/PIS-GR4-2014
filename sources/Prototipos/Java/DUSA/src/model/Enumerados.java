@@ -76,6 +76,9 @@ public class Enumerados {
 	}
 	
 	public static String descripcionTipoArticuloAbreviado(String tipo){
+		if(tipo == null){
+			return "";
+		}
 		switch (tipo.charAt(0)) {
 			case tipoArticulo.MEDICAMENTO:
 				return "Medic.";
@@ -89,6 +92,9 @@ public class Enumerados {
 	}
 	
 	public static String descripcionTipoVenta(String tipo){
+		if(tipo == null){
+			return "";
+		}
 		switch (tipo.charAt(0)) {
 		case formasVenta.bajoReceta:
 			return "Bajo receta";
