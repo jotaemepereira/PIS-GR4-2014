@@ -1,5 +1,4 @@
 package controladores;
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,7 +59,6 @@ public class ServicioDusaControlador implements IServicio {
 		articulo.setClave2(productoDT.getClave2());
 		articulo.setClave3(productoDT.getClave3());
 		articulo.setCodigoBarras(productoDT.getCodigoBarra());
-		articulo.setPorcentajePrecioVenta(new BigDecimal(0));
 		//articulo.setCodigoVenta();
 		//articulo.setCostoOferta();
 		//articulo.setCostoPromedio();
