@@ -75,7 +75,8 @@ public interface ISistema {
 	 * de años anteriores y estimando los próximos días por medio de mínimos
 	 * cuadrados.
 	 * 
-	 * @author Santiago, Guille
+	 * @author Santiago
+	 * @author Guille
 	 * @param diasAPredecir
 	 *            cantidad de días a predecir.
 	 * @return Lista de dataType LineaPedido con la información del articulo y

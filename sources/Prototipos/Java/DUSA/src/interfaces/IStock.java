@@ -30,6 +30,17 @@ public interface IStock {
 	 */
 	public void altaArticulo(Articulo articulo) throws Excepciones;
 
+	/**
+	 * Genera un pedido de artículos de D.U.S.A. Donde la cantidad de cada
+	 * articulo se obtiene de forma predictiva estimando los próximos días 
+	 * por medio de mínimos cuadrados.
+	 * 
+	 * @author Guille
+	 * @author Santiago
+	 * @return Una lista de dataType listaPedido con la informacion de articulos
+	 *         y cantidades del pedido generado.
+	 * @throws Excepciones
+	 */
 	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir)
 			throws Excepciones;
 

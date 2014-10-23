@@ -109,8 +109,7 @@ public class StockControlador implements IStock {
 				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				 dtlPedido.setCantidad(lPedido.getCantidad());
 				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().longValue());
-				 // TODO: hardcodear id de DUSA
-				 // TODO: Calcular costo ponderado promedio
+				 dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
 				 DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
 				 
 				 if (dtProveedor != null){
@@ -142,7 +141,8 @@ public class StockControlador implements IStock {
 		
 		return articulos;
 	}
-
+	
+	@Override
 	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir) throws Excepciones {
 		
 		ISeleccionador st = new SeleccionarTodos();
@@ -164,14 +164,13 @@ public class StockControlador implements IStock {
 				dtlPedido.setStockMinimo(articulo.getStockMinimo());
 				dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				dtlPedido.setCantidad(lPedido.getCantidad());
-				// TODO: hardcodear id de DUSA
-				// TODO: Calcular costo ponderado promedio
+				dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
 				DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
 				if (dtProveedor != null){
 					 //Preventivo control si no es de DUSA no se ingresa
 					 dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
 					 lPedidos.add(dtlPedido);
-				 }
+				}
 			}
 		}
 		

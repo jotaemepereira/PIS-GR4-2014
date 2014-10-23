@@ -413,6 +413,36 @@ public class PStockControlador implements IStockPersistencia {
 		}
 	}
 	
+	/**
+	 * @author Guille
+	 */
+	@Override
+	public long getStockMinimo(long idArticulo) throws Excepciones {
+		
+		long sMinimo = 0;
+		
+		String query = "SELECT minimum_stock FROM products WHERE product_id=" +idArticulo + ";";
+		try {
+			
+			Connection c = Conexion.getConnection();
+			PreparedStatement stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			
+			while (rs.next()) {		
+				sMinimo = rs.getLong(1);
+			}
+			
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			//Excepcion personalizada
+			e.printStackTrace();
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+		}
+		
+		return sMinimo;
+	}
 	
 	/**
 	 * @author santiago 
