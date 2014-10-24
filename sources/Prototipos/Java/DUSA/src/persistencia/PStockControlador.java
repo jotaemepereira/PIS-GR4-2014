@@ -251,11 +251,17 @@ public class PStockControlador implements IStockPersistencia {
 							" MARCA: " + regexpBusqueda);
 		parameters.set("wt", "json");
 		parameters.set("fl", "DESCRIPTION id BARCODE DROGAS PRESENTATION ACCIONES_TERAPEUTICAS MARCA");
-
+		parameters.set("start", 0);
+		parameters.set("rows", 100);
+		parameters.set("sort", "DESCRIPTION DESC");
+		
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
 			System.out.println(response);
 			Long cant = response.getNumFound();
+			if(cant > 100){
+				cant = (long) 100;
+			}
 			for(int i = 0; i < cant; i++){
 				System.out.println(response.get(i));
 				

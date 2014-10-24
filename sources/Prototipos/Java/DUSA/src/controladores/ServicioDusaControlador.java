@@ -1,4 +1,5 @@
 package controladores;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -70,7 +71,7 @@ public class ServicioDusaControlador implements IServicio {
 		//articulo.setFechaUltimaModificacion(productoDT.getFechaUltimaActualizacion().toGregorianCalendar().getTime());
 		//articulo.setIdMarca();
 		articulo.setNumero(productoDT.getNumeroArticulo());
-		//articulo.setPorcentajePrecioVenta();
+		articulo.setPorcentajePrecioVenta(new BigDecimal(0));
 		articulo.setPrecioVenta(productoDT.getPrecioVenta());
 		//articulo.setPresentacion();
 		//articulo.setStatus();
