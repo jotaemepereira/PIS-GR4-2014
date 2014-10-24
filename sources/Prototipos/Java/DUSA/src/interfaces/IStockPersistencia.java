@@ -45,6 +45,14 @@ public interface IStockPersistencia {
 	public void deltaImportSolr() throws Excepciones;
 	
 	/**
+	 * @author Guille
+	 * @param idArticulo
+	 * @return Stock minimo del articulo con id idArticulo, caso de nulo retorna cero.
+	 * @throws Excepciones
+	 */
+	public long getStockMinimo(long idArticulo) throws Excepciones;
+	
+	/**
 	 * @author Santiago
 	 * @param idArticulo
 	 * @return cantidad de Stock del articulo con id articulo

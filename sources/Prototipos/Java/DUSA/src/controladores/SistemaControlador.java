@@ -50,6 +50,7 @@ public class SistemaControlador implements ISistema {
 	}
 	
 	public void actualizarStock() {
+		System.out.println("actualizarStock");
 		try {
 			FabricaLogica.getIStock().actualizarStock();
 		}
@@ -126,5 +127,11 @@ public class SistemaControlador implements ISistema {
 	public List<DTProveedor> obtenerMarcas() throws Excepciones {
 		// NO ESTA EN EL ACTA 
 		return FabricaLogica.getInstanciaProveedores().obtenerMarcas();
+	}
+
+	@Override
+	public boolean existeCodigoParaProveedor(long idProveedor,
+			long codigoIdentificador) throws Excepciones {
+		return FabricaLogica.getInstanciaProveedores().existeCodigoParaProveedor(idProveedor,codigoIdentificador);
 	}
 }

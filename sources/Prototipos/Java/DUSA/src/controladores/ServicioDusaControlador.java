@@ -1,4 +1,5 @@
 package controladores;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -70,7 +71,7 @@ public class ServicioDusaControlador implements IServicio {
 		//articulo.setFechaUltimaModificacion(productoDT.getFechaUltimaActualizacion().toGregorianCalendar().getTime());
 		//articulo.setIdMarca();
 		articulo.setNumero(productoDT.getNumeroArticulo());
-		//articulo.setPorcentajePrecioVenta();
+		articulo.setPorcentajePrecioVenta(new BigDecimal(0));
 		articulo.setPrecioVenta(productoDT.getPrecioVenta());
 		//articulo.setPresentacion();
 		//articulo.setStatus();
@@ -128,6 +129,7 @@ public class ServicioDusaControlador implements IServicio {
 	
 	@Override
 	public List<Articulo> obtenerActualizacionDeStock(java.util.Date fecha) {
+		System.out.println("obtenerActualizacionDeStock");
 		List<Articulo> articulos = new ArrayList<Articulo>();
 		WSConsultaStock servicio = getServicioStock();
 		GregorianCalendar gCalendar = new GregorianCalendar();
@@ -141,6 +143,7 @@ public class ServicioDusaControlador implements IServicio {
 			for (DataInfoProducto dp: dataArticulos) {
 				articulos.add(transformarArticulo(dp));
 			}
+			
 		}
 		catch (Exception e) {
 			e.printStackTrace();

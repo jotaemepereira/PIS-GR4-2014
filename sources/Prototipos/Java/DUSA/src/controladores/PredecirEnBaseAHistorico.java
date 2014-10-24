@@ -7,7 +7,6 @@ import interfaces.IStockPersistencia;
 
 import java.sql.Date;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
@@ -74,7 +73,9 @@ public class PredecirEnBaseAHistorico implements IPredictor{
 		
 		cantPromVendidaAniosAnt /= CANT_ANIOS_ANTEIORES;
 		double cantidaPredecida = P1 * cantPredecidaMinimosCuadrados + P2 * cantPromVendidaAniosAnt;
-		int cantAPedir = (int) Math.ceil(cantidaPredecida - st.getStock(idArticulo));
+		
+		long minStock = st.getStockMinimo(idArticulo);
+		int cantAPedir = (int) Math.ceil(Math.max(cantidaPredecida, minStock) - st.getStock(idArticulo));
 		if (cantAPedir < 0)
 			return 0;
 		else

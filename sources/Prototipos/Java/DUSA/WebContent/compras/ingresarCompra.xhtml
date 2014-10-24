@@ -17,14 +17,14 @@
 			<title>DUSA</title>
 		</f:facet>
 		<style>
-.hidden {
-	display: none;
-}
-
-.visible {
-	display: block;
-}
-</style>
+			.hidden {
+				display: none;
+			}
+			
+			.visible {
+				display: block;
+			}
+		</style>
 	</h:head>
 	<h:body>
 		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
@@ -57,7 +57,7 @@
 											<h:commandButton id="btn2"
 												value="Cargar factura automática D.U.S.A."
 												update="btn1 btn2 show-hide"
-												actionListener="${comprasBean.facturaAutomáticaDUSA}"
+												actionListener="${comprasBean.facturaAutomaticaDUSA}"
 												styleClass="btn btn-default" style="margin:0 0 10px 0;"
 												disabled="${comprasBean.disableBotones}" />
 										</div>
@@ -69,7 +69,7 @@
 											style="margin-bottom: 1%; text-align: center;">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												
-												<p:selectOneMenu id="marcaOLab"
+												<p:selectOneMenu id="facturar"
 													value="#{comprasBean.ordenDeCompraDUSA}" filter="true"
 													filterMatchMode="contains" required="false" styleClass="${comprasBean.selectFacturaDUSA}">
 													<f:selectItem itemLabel="Seleccione una factura"

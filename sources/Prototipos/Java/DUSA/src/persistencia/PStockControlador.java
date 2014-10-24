@@ -251,11 +251,17 @@ public class PStockControlador implements IStockPersistencia {
 							" MARCA: " + regexpBusqueda);
 		parameters.set("wt", "json");
 		parameters.set("fl", "DESCRIPTION id BARCODE DROGAS PRESENTATION ACCIONES_TERAPEUTICAS MARCA");
-
+		parameters.set("start", 0);
+		parameters.set("rows", 100);
+		parameters.set("sort", "DESCRIPTION DESC");
+		
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
 			System.out.println(response);
 			Long cant = response.getNumFound();
+			if(cant > 100){
+				cant = (long) 100;
+			}
 			for(int i = 0; i < cant; i++){
 				System.out.println(response.get(i));
 				
@@ -413,6 +419,36 @@ public class PStockControlador implements IStockPersistencia {
 		}
 	}
 	
+	/**
+	 * @author Guille
+	 */
+	@Override
+	public long getStockMinimo(long idArticulo) throws Excepciones {
+		
+		long sMinimo = 0;
+		
+		String query = "SELECT minimum_stock FROM products WHERE product_id=" +idArticulo + ";";
+		try {
+			
+			Connection c = Conexion.getConnection();
+			PreparedStatement stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			
+			while (rs.next()) {		
+				sMinimo = rs.getLong(1);
+			}
+			
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			//Excepcion personalizada
+			e.printStackTrace();
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+		}
+		
+		return sMinimo;
+	}
 	
 	/**
 	 * @author santiago 

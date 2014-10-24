@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.math.*;
 
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
@@ -466,13 +467,32 @@ public class StockBean implements Serializable{
 		if (proveedor != 0){
 			if (codigoIdentificador != 0){
 				if (!existeProveedor(proveedor)){
-					DTProveedor p = new DTProveedor();
-					p.setIdProveedor(proveedor);
-					p.setNombreComercial(proveedores.get(proveedor).getNombreComercial());
-					p.setCodigoIdentificador(codigoIdentificador);
-					this.proveedoresSeleccionados.add(p);
-					this.proveedor = 0;
-					this.codigoIdentificador = 0;
+					try {
+						if (!existeCodigoParaProveedor(proveedor, codigoIdentificador)){
+							DTProveedor p = new DTProveedor();
+							p.setIdProveedor(proveedor);
+							p.setNombreComercial(proveedores.get(proveedor).getNombreComercial());
+							p.setCodigoIdentificador(codigoIdentificador);
+							this.proveedoresSeleccionados.add(p);
+							this.proveedor = 0;
+							this.codigoIdentificador = 0;
+						}
+						else{
+							context.addMessage(
+									null,
+									new FacesMessage(
+											FacesMessage.SEVERITY_WARN,
+											"Ya existe un artículo con ese código para el proveedor seleccionado.",
+											""));
+						}
+					} catch (Excepciones e) {
+						context.addMessage(
+						null, 
+						new FacesMessage(
+								FacesMessage.SEVERITY_ERROR,
+								e.getMessage(),
+								""));
+					}
 				}
 				else{
 					context.addMessage(
@@ -502,6 +522,9 @@ public class StockBean implements Serializable{
 		}
 	}
 	
+	private boolean existeCodigoParaProveedor(long idProveedor, long codigoIdentificador) throws Excepciones {
+		return FabricaSistema.getISistema().existeCodigoParaProveedor(idProveedor,codigoIdentificador);
+	}
 	private boolean existeProveedor(int proveedor) {
 		boolean ret = false;
 		Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
@@ -513,43 +536,74 @@ public class StockBean implements Serializable{
 	public void altaArticulo(){		
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (!proveedoresSeleccionados.isEmpty()){
-			try {
-				/* Cargo los proveedores seleccionados en el articulo */
-				Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
-				while (i.hasNext()){
-					DTProveedor next = i.next();
-					DTProveedor p = new DTProveedor();
-					p.setIdProveedor(next.getIdProveedor());
-					p.setNombreComercial(proveedores.get(next.getIdProveedor()).getNombreComercial());
-					p.setCodigoIdentificador(next.getCodigoIdentificador());
-					this.articulo.agregarProveedor(p);
-				}
-				/* Llamo a la logica para que se de de alta el articulo en el sistema y
-				 en caso de error lo muestro */
-				FabricaSistema.getISistema().altaArticulo(articulo);
-				// si todo bien aviso y vacio el formulario
-				context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,Excepciones.MENSAJE_OK_ALTA, ""));
-				this.articulo = new Articulo();
-				this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
-				this.proveedor = 0;
-				this.codigoIdentificador = 0;
-			} catch (Excepciones e) {
-				if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
-					context.addMessage(
-							null,
-							new FacesMessage(
-									FacesMessage.SEVERITY_WARN,
-									e.getMessage(),
-									""));
-				} else {
-					context.addMessage(
-							null,
-							new FacesMessage(
-									FacesMessage.SEVERITY_ERROR,
-									e.getMessage(),
-									""));
-				}
-			}	
+			if ((articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0 && articulo.getPorcentajePrecioVenta().compareTo(BigDecimal.ZERO) == 0) ||
+				(articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) != 0 && articulo.getPorcentajePrecioVenta().compareTo(BigDecimal.ZERO) == 0) ||
+				(articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0 && articulo.getPorcentajePrecioVenta().compareTo(BigDecimal.ZERO) != 0)){
+				try {
+					/* Cargo los proveedores seleccionados en el articulo */
+					Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
+					while (i.hasNext()){
+						DTProveedor next = i.next();
+						DTProveedor p = new DTProveedor();
+						p.setIdProveedor(next.getIdProveedor());
+						p.setNombreComercial(proveedores.get(next.getIdProveedor()).getNombreComercial());
+						p.setCodigoIdentificador(next.getCodigoIdentificador());
+						this.articulo.agregarProveedor(p);
+					}
+					
+					/* Cargo el precio de venta según corresponda */
+					/* Si no se carga nada, se asume el mismo que el precio público */
+					if (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0 && articulo.getPorcentajePrecioVenta().compareTo(BigDecimal.ZERO) == 0){
+						articulo.setPrecioVenta(articulo.getPrecioUnitario());
+						articulo.setPorcentajePrecioVenta(BigDecimal.ONE);
+					}
+					/* Si se carga precio de venta, se calcula el porcentaje */
+					if (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) != 0 && articulo.getPorcentajePrecioVenta().compareTo(BigDecimal.ZERO) == 0){
+						BigDecimal porcentaje = articulo.getPrecioVenta().subtract(articulo.getPrecioUnitario());
+						porcentaje.multiply(new BigDecimal(100));
+						porcentaje.divide(articulo.getPrecioUnitario(), 5, RoundingMode.DOWN);
+						articulo.setPorcentajePrecioVenta(porcentaje);
+					}
+					/* Si se carga un porcentaje sobre el precio público, se calcula */
+					if (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0 && articulo.getPorcentajePrecioVenta().compareTo(BigDecimal.ZERO) != 0){
+						articulo.setPrecioVenta(articulo.getPrecioUnitario().multiply(articulo.getPorcentajePrecioVenta().add(new BigDecimal(1))));
+					}
+					
+					/* Llamo a la logica para que se de de alta el articulo en el sistema y
+					 en caso de error lo muestro */
+					FabricaSistema.getISistema().altaArticulo(articulo);
+					// si todo bien aviso y vacio el formulario
+					context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,Excepciones.MENSAJE_OK_ALTA, ""));
+					this.articulo = new Articulo();
+					this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
+					this.proveedor = 0;
+					this.codigoIdentificador = 0;
+				} catch (Excepciones e) {
+					if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
+						context.addMessage(
+								null,
+								new FacesMessage(
+										FacesMessage.SEVERITY_WARN,
+										e.getMessage(),
+										""));
+					} else {
+						context.addMessage(
+								null,
+								new FacesMessage(
+										FacesMessage.SEVERITY_ERROR,
+										e.getMessage(),
+										""));
+					}
+				}	
+			}
+			else{
+				context.addMessage(
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_ERROR,
+								"No puede cargar Precio de venta y Porcentaje de venta al mismo tiempo.",
+								""));
+			}
 		}
 		else{
 			context.addMessage(
@@ -595,6 +649,7 @@ public class StockBean implements Serializable{
 		
 		//Cargo formas de venta para el combo
 		cargarFormasVenta();
+		
 	}
 	
 	public void cargarMarcas(){

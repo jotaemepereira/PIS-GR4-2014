@@ -75,7 +75,8 @@ public interface ISistema {
 	 * de años anteriores y estimando los próximos días por medio de mínimos
 	 * cuadrados.
 	 * 
-	 * @author Santiago, Guille
+	 * @author Santiago
+	 * @author Guille
 	 * @param diasAPredecir
 	 *            cantidad de días a predecir.
 	 * @return Lista de dataType LineaPedido con la información del articulo y
@@ -139,5 +140,19 @@ public interface ISistema {
 	 */
 	public List<DTBusquedaArticulo> buscarArticulos(
 			String busqueda) throws Excepciones;
+
+	/**
+	 * Chequea la existencia del codigoIdentificador para el proveedor.
+	 * 
+	 * @return True si existe un articulo con ese codigo para el proveedor.
+	 * 
+	 * @throws Excepciones
+	 *             - ERROR_SISTEMA (en caso que suceda algún error a la hora de
+	 *             conectarse o comunicarse con la base)
+	 * @author José Aguerre
+	 * @param idProveedor
+	 * @param codigoIdentificador 
+	 */
+	public boolean existeCodigoParaProveedor(long idProveedor, long codigoIdentificador) throws Excepciones;
 
 }
