@@ -71,4 +71,19 @@ public interface IProveedoresPersistencia {
 	 * @author José Aguerre
 	 */
 	public List<DTProveedor> obtenerMarcas() throws Excepciones;
+
+	/**
+	 * Chequea la existencia del codigoIdentificador para el proveedor.
+	 * 
+	 * @return True si existe un articulo con ese codigo para el proveedor.
+	 * 
+	 * @throws Excepciones
+	 *             - ERROR_SISTEMA (en caso que suceda algún error a la hora de
+	 *             conectarse o comunicarse con la base)
+	 * @author José Aguerre
+	 * @param idProveedor
+	 * @param codigoIdentificador
+	 */
+	public boolean existeCodigoParaProveedor(long idProveedor,
+			long codigoIdentificador) throws Excepciones;
 }

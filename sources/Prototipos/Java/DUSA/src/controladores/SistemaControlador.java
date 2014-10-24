@@ -128,4 +128,10 @@ public class SistemaControlador implements ISistema {
 		// NO ESTA EN EL ACTA 
 		return FabricaLogica.getInstanciaProveedores().obtenerMarcas();
 	}
+
+	@Override
+	public boolean existeCodigoParaProveedor(long idProveedor,
+			long codigoIdentificador) throws Excepciones {
+		return FabricaLogica.getInstanciaProveedores().existeCodigoParaProveedor(idProveedor,codigoIdentificador);
+	}
 }
