@@ -149,13 +149,6 @@ public class ProveedoresBean implements Serializable {
 		Proveedor proveedor;
 		FacesContext context = FacesContext.getCurrentInstance();
 		
-		try {
-			FabricaSistema.getISistema().actualizarStock();
-		} catch (Exception e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-
 		// Verifico que el documento sea correcto en caso de rut y ci
 		if(!RUT.equals("")){
 			if (tipoDocumento.equals("C")) { // en caso de ci
