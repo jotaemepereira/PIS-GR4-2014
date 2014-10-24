@@ -109,7 +109,8 @@ public class StockControlador implements IStock {
 				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				 dtlPedido.setCantidad(lPedido.getCantidad());
 				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().longValue());
-				 dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
+				 // TODO: hardcodear id de DUSA
+				 // TODO: Calcular costo ponderado promedio
 				 DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
 				 
 				 if (dtProveedor != null){
@@ -228,6 +229,7 @@ public class StockControlador implements IStock {
 	}
 	
 	public void actualizarStock() throws Excepciones {
+		System.out.println("actualizarStock controlador");
 		Calendar calendario = Calendar.getInstance();
 		calendario.add(Calendar.DAY_OF_MONTH, -36);
 		java.util.Date fecha = calendario.getTime();

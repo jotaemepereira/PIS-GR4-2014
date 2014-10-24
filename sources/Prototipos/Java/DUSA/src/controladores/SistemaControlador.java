@@ -50,6 +50,7 @@ public class SistemaControlador implements ISistema {
 	}
 	
 	public void actualizarStock() {
+		System.out.println("actualizarStock");
 		try {
 			FabricaLogica.getIStock().actualizarStock();
 		}
