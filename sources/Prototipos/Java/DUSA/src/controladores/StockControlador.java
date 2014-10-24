@@ -232,6 +232,7 @@ public class StockControlador implements IStock {
 		System.out.println("actualizarStock controlador");
 		Calendar calendario = Calendar.getInstance();
 		calendario.add(Calendar.DAY_OF_MONTH, -36);
+		calendario.add(Calendar.DAY_OF_WEEK, -2);
 		java.util.Date fecha = calendario.getTime();
 		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
 		
