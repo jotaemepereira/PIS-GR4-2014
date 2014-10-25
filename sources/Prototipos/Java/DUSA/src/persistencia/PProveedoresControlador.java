@@ -153,5 +153,33 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 		}
 		return ret;		
 	}
+
+	@Override
+	public boolean existeCodigoParaProveedor(long idProveedor,
+			long codigoIdentificador) throws Excepciones {
+		int cant = 0;
+		PreparedStatement stmt = null;
+		String query = "SELECT COUNT(*) AS cant FROM products_suppliers " +
+						"WHERE supplier_id = ? AND " +
+						"product_number = ?";
+		try {
+			Connection c = Conexion.getConnection();
+			
+			stmt = c.prepareStatement(query);
+			stmt.setLong(1, idProveedor);
+			stmt.setLong(2, codigoIdentificador);
+			ResultSet rs = stmt.executeQuery();
+			//Obtengo la cantidad de articulos con ese codigo para ese proveedor
+			while(rs.next()){
+				cant = rs.getInt("cant");
+			}
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch ( Exception e ) {
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		return (cant > 0);
+	}
 	
 }

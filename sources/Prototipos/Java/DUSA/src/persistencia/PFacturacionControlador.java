@@ -1,5 +1,6 @@
 package persistencia;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -64,8 +65,8 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 					u.setNombre(rs.getString("username"));
 					u.setPwd_hash(rs.getString("pwd_hash"));
 
-					v.setFechaVenta(rs.getDate("sale_date"));
-					v.setEstadoVenta((char) rs.getByte("sale_status"));
+					v.setFechaVenta(rs.getTimestamp("sale_date"));
+					v.setEstadoVenta(rs.getString("sale_status"));
 					v.setTipoDgi(rs.getInt("sale_dgi_type"));
 					v.setSerial(rs.getString("serial"));
 					v.setFormaDePago(rs.getString("payment_type"));
@@ -108,10 +109,19 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				lv.setArticulo(a);
 
 				lv.setPrecio(rs.getBigDecimal("sale_price"));
+				if (lv.getPrecio() == null){
+					lv.setPrecio(new BigDecimal(0));
+				}
 				lv.setCantidad(rs.getInt("quantity"));
 				lv.setDescuento(rs.getBigDecimal("discount"));
-
+				lv.setRecetaBlanca(rs.getBoolean("white_recipe"));
+				lv.setRecetaNaranja(rs.getBoolean("orange_recipe"));
+				lv.setRecetaVerde(rs.getBoolean("green_recipe"));
+				if (lv.getDescuento() == null){
+					lv.setDescuento(new BigDecimal(0));
+				}
 				v.getLineas().add(lv);
+				
 				v.setCantidadLineas(v.getCantidadLineas() + 1);
 			}
 			return ret;
@@ -156,8 +166,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 					+ "INNER JOIN products p ON p.product_id = sd.product_id "
 					+ "INNER JOIN users u ON s.user_id = u.user_id "
 					+ "LEFT JOIN clients c ON s.client_id = c.client_id "
-					+ "WHERE s.sale_status = '"
-					+ Enumerados.EstadoVenta.PENDIENTE + "'";
+					+ "WHERE s.sale_id = " + ventaId;
 			ResultSet rs = st.executeQuery(sqlQuery);
 
 			Venta v = null;
@@ -166,7 +175,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			LineaVenta lv = null;
 			Articulo a = null;
 			boolean first = true;
-			if (rs.next()) {
+			while (rs.next()) {
 				if (first) {
 					first = false;
 					v = new Venta();
@@ -190,7 +199,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 					u.setPwd_hash(rs.getString("pwd_hash"));
 
 					v.setFechaVenta(rs.getDate("sale_date"));
-					v.setEstadoVenta((char) rs.getByte("sale_status"));
+					v.setEstadoVenta(rs.getString("sale_status"));
 					v.setTipoDgi(rs.getInt("sale_dgi_type"));
 					v.setSerial(rs.getString("serial"));
 					v.setFormaDePago(rs.getString("payment_type"));
@@ -234,7 +243,9 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				lv.setPrecio(rs.getBigDecimal("sale_price"));
 				lv.setCantidad(rs.getInt("quantity"));
 				lv.setDescuento(rs.getBigDecimal("discount"));
-
+				lv.setRecetaBlanca(rs.getBoolean("white_recipe"));
+				lv.setRecetaNaranja(rs.getBoolean("orange_recipe"));
+				lv.setRecetaVerde(rs.getBoolean("green_recipe"));
 				v.getLineas().add(lv);
 				v.setCantidadLineas(v.getCantidadLineas() + 1);
 			}
@@ -285,7 +296,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	 * @author Guille
 	 */
 	@Override
-	public List<Long> getIdArticulosEnPeriodo(Date desde, Date hasta) throws Excepciones{
+	public List<Long> getIdArticulosEnPeriodo(java.util.Date desde, java.util.Date hasta) throws Excepciones{
 		
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -334,7 +345,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	 * @author Guille
 	 */
 	@Override
-	public int cantidadVendidaEnPeriodo(Long idArticulo, Date desde, Date hasta) throws Excepciones {
+	public int cantidadVendidaEnPeriodo(Long idArticulo, java.util.Date desde, java.util.Date hasta) throws Excepciones {
 		
 		int cantidadVendida = 0;
 		try {

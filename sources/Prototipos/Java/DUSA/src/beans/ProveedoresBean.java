@@ -148,7 +148,7 @@ public class ProveedoresBean implements Serializable {
 	public void altaProveedor() {
 		Proveedor proveedor;
 		FacesContext context = FacesContext.getCurrentInstance();
-
+		
 		// Verifico que el documento sea correcto en caso de rut y ci
 		if(!RUT.equals("")){
 			if (tipoDocumento.equals("C")) { // en caso de ci

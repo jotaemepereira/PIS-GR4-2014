@@ -79,7 +79,7 @@
 									<div class="row" style="margin-bottom: 1%;text-align:center;">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<p:dataTable var="pedido" id="tablePedido" 
-												value="#{stockBean.pedidos}">
+												value="#{stockBean.pedidos}" emptyMessage="No se encontraron registros.">
 												<!-- rendered="${stockBean.disablePrediccionDePedido || stockBean.disableDesdeUltimoPedido}" -->
 												<div class="row">
 													<p:column headerText="Numero artículo" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">

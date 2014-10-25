@@ -1,6 +1,7 @@
 package beans;
 
 import interfaces.IFacturacion;
+import interfaces.ISistema;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -16,6 +17,8 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import controladores.FabricaLogica;
+import controladores.FabricaServicios;
+import controladores.FabricaSistema;
 import model.LineaVenta;
 import model.Venta;
 
@@ -38,24 +41,16 @@ public class FacturacionBean implements Serializable {
 		}
 	}
 
-	public void facturar(Venta v) {
+	public void facturar() {
 		try {
-			// List<String> messages = chequearRecetas();
-			// if (messages.size() <= 0) {
 			IFacturacion ifact = FabricaLogica.getIFacturacion();
-			ifact.facturarVenta(v.getVentaId());
+			ifact.facturarVenta(ventaSeleccionada.getVentaId());
 
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO,
 							"Se facturó correctamente.", ""));
 			ventas = ifact.listarVentasPendientes();
-			// } else {
-			// for (String s : messages) {
-			// FacesContext.getCurrentInstance().addMessage(null,new
-			// FacesMessage(FacesMessage.SEVERITY_ERROR, s, ""));
-			// }
-			// }
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
@@ -64,10 +59,10 @@ public class FacturacionBean implements Serializable {
 		}
 	}
 	
-	public void cancelar(Venta v) {
+	public void cancelar() {
 		try {
 			IFacturacion ifact = FabricaLogica.getIFacturacion();
-			ifact.cancelarVenta(v.getVentaId());
+			ifact.cancelarVenta(ventaSeleccionada.getVentaId());
 
 			FacesContext.getCurrentInstance().addMessage(
 					null,
@@ -82,33 +77,23 @@ public class FacturacionBean implements Serializable {
 		}
 	}
 
-	// private List<String> chequearRecetas() {
-	// List<String> errores = new ArrayList<String>();
-	// for (LineaVenta lv : ventaSeleccionada.getLineas()) {
-	// if (lv.getArticulo().isEsEstupefaciente() && !lv.isRecetaNaranja()) {
-	// errores.add(lv.getArticulo().getDescripcion()
-	// + " requiere receta naranja.");
-	// }
-	// if (lv.getArticulo().isEsPsicofarmaco() && lv.isRecetaVerde()) {
-	// errores.add(lv.getArticulo().getDescripcion()
-	// + " requiere receta verde.");
-	// }
-	// }
-	// return errores;
-	// }
 
 	public void cargarFactura(Venta v) {
 		ventaSeleccionada = v;
 	}
 
-	public String parseFechaVenta(Date d) {
-		long diff = (new Date()).getTime() - d.getTime();
+	public String parseFechaVenta(Venta v) {
+		long diff = (new Date()).getTime() - v.getFechaVenta().getTime();
 		return "Hace " + (diff / (60 * 1000)) + " minutos";
 	}
 
 	public BigDecimal calculcarSubtotal(LineaVenta lv) {
+		if (lv.getDescuento().compareTo(new BigDecimal(0))== 0){
+			return  (lv.getPrecio().multiply(new BigDecimal(lv.getCantidad())));
+		}
+		
 		return (lv.getPrecio().multiply(new BigDecimal(lv.getCantidad())))
-				.multiply(lv.getDescuento());
+				.multiply(((new BigDecimal(100)).subtract(lv.getDescuento())).divide(new BigDecimal(100)));
 	}
 
 	public List<Venta> getVentas() {

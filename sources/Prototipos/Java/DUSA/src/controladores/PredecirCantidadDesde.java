@@ -1,7 +1,7 @@
 package controladores;
 
-import java.sql.Date;
 import java.util.Calendar;
+import java.util.Date;
 
 import interfaces.IFacturacionPersistencia;
 import interfaces.IPredictor;

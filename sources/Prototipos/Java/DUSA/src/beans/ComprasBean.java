@@ -103,7 +103,7 @@ public class ComprasBean implements Serializable {
 		selectFacturaDUSA = "hidden";
 	}
 	
-	public void facturaAutomáticaDUSA(){
+	public void facturaAutomaticaDUSA(){
 		disableBotones = true;
 		hideTable = "visible";
 		selectFacturaDUSA = "visible";

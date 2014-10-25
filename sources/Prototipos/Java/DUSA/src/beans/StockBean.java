@@ -467,13 +467,32 @@ public class StockBean implements Serializable{
 		if (proveedor != 0){
 			if (codigoIdentificador != 0){
 				if (!existeProveedor(proveedor)){
-					DTProveedor p = new DTProveedor();
-					p.setIdProveedor(proveedor);
-					p.setNombreComercial(proveedores.get(proveedor).getNombreComercial());
-					p.setCodigoIdentificador(codigoIdentificador);
-					this.proveedoresSeleccionados.add(p);
-					this.proveedor = 0;
-					this.codigoIdentificador = 0;
+					try {
+						if (!existeCodigoParaProveedor(proveedor, codigoIdentificador)){
+							DTProveedor p = new DTProveedor();
+							p.setIdProveedor(proveedor);
+							p.setNombreComercial(proveedores.get(proveedor).getNombreComercial());
+							p.setCodigoIdentificador(codigoIdentificador);
+							this.proveedoresSeleccionados.add(p);
+							this.proveedor = 0;
+							this.codigoIdentificador = 0;
+						}
+						else{
+							context.addMessage(
+									null,
+									new FacesMessage(
+											FacesMessage.SEVERITY_WARN,
+											"Ya existe un artículo con ese código para el proveedor seleccionado.",
+											""));
+						}
+					} catch (Excepciones e) {
+						context.addMessage(
+						null, 
+						new FacesMessage(
+								FacesMessage.SEVERITY_ERROR,
+								e.getMessage(),
+								""));
+					}
 				}
 				else{
 					context.addMessage(
@@ -503,6 +522,9 @@ public class StockBean implements Serializable{
 		}
 	}
 	
+	private boolean existeCodigoParaProveedor(long idProveedor, long codigoIdentificador) throws Excepciones {
+		return FabricaSistema.getISistema().existeCodigoParaProveedor(idProveedor,codigoIdentificador);
+	}
 	private boolean existeProveedor(int proveedor) {
 		boolean ret = false;
 		Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();

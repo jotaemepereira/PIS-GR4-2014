@@ -32,7 +32,7 @@ public class Venta {
 	BigDecimal montoTotalAPagar;
 	int cantidadLineas;
 	List<LineaVenta> lineas;
-	char estadoVenta;
+	String estadoVenta;
 
 	public long getVentaId() {
 		return ventaId;
@@ -228,11 +228,11 @@ public class Venta {
 		this.lineas = lineas;
 	}
 
-	public char getEstadoVenta() {
+	public String getEstadoVenta() {
 		return estadoVenta;
 	}
 
-	public void setEstadoVenta(char estadoVenta) {
+	public void setEstadoVenta(String estadoVenta) {
 		this.estadoVenta = estadoVenta;
 	}
 }

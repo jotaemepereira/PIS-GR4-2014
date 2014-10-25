@@ -28,7 +28,7 @@ public class FacturacionControlador implements IFacturacion {
 
 			// Obtengo venta pendiente y la marco como facturada
 			Venta venta = ifp.facturarVenta(ventaId);
-
+			
 			// Creo factura
 			XMLUtil.jaxbObjectToXML(venta);
 		} catch (Exception e) {
