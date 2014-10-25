@@ -296,7 +296,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	 * @author Guille
 	 */
 	@Override
-	public List<Long> getIdArticulosEnPeriodo(Date desde, Date hasta) throws Excepciones{
+	public List<Long> getIdArticulosEnPeriodo(java.util.Date desde, java.util.Date hasta) throws Excepciones{
 		
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -345,7 +345,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	 * @author Guille
 	 */
 	@Override
-	public int cantidadVendidaEnPeriodo(Long idArticulo, Date desde, Date hasta) throws Excepciones {
+	public int cantidadVendidaEnPeriodo(Long idArticulo, java.util.Date desde, java.util.Date hasta) throws Excepciones {
 		
 		int cantidadVendida = 0;
 		try {
