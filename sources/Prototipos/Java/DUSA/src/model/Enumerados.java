@@ -9,7 +9,7 @@ public class Enumerados {
 	}
 	
 	public enum casoDeUso{
-	    ventaLibre, 
+	     
 	    
 	    registrarNuevaVenta, 
 	    registrarVentaPerdida,

@@ -100,14 +100,15 @@
 													
 													<p:column headerText="Stock mínimo por día" styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 														<h:outputText value="#{pedido.stockMinimo}" />
+														
 													</p:column>
 													
 													<p:column headerText="Cantidad" styleClass="col-xs-4 col-sm-3 col-md-2 col-lg-2">
-													
-														<p:inputText id="cantidad" value="#{pedido.cantidad}" styleClass="form-control">
-															<p:ajax listener="#{stockBean.nuevoSubtotal(pedido)}"
+													        <p:inputMask id="cantidad" mask="?9999" styleClass="form-control" style="text-align: center" readonly="false" value="#{pedido.cantidad}">
+													    	<p:ajax listener="#{stockBean.nuevoSubtotal(pedido)}"
 																update="subtotal" process="@this" />
-														</p:inputText>
+																</p:inputMask>
+															
 													</p:column>
 													
 													<p:column headerText="Subtotal" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-2">
