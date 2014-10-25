@@ -112,7 +112,9 @@
 													</p:column>
 													
 													<p:column headerText="Subtotal" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-2">
-														<h:outputText value="#{pedido.subtotal}" id="subtotal"/>
+														<h:outputText value="#{pedido.subtotal}" id="subtotal">
+															<f:convertNumber pattern="#0.00" />
+														</h:outputText>
 													</p:column>
 													
 													<p:column headerText="Eliminar" styleClass="col-xs-2 col-sm-2 col-md-1 col-lg-1">

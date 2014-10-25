@@ -461,14 +461,17 @@ public class PStockControlador implements IStockPersistencia {
 		
 		PreparedStatement stmt = null;
 		
-		String query = "SELECT stock  FROM products WHERE product_id=" +idArticulo +";";
-		int ret;
+		String query = "SELECT stock  FROM products WHERE product_id = " +idArticulo +";";
+		int ret = 0;
 		try {
 			
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
-			ret = (int) rs.getLong(1);
+			while (rs.next()) {
+				
+				ret = (int) rs.getLong(1);
+			}
 			rs.close();
 			stmt.close();
 			c.close();
@@ -477,8 +480,6 @@ public class PStockControlador implements IStockPersistencia {
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 		return ret ;
-
-
 	}
 	/**
 	 * @author Guille
@@ -556,7 +557,7 @@ public class PStockControlador implements IStockPersistencia {
 	public List<Long> obtenerIdTodosLosArticulos() throws Excepciones{
 		List<Long> idArts = new ArrayList<Long>();
 		PreparedStatement stmt = null;
-		String query = "SELECT product_id "
+		String query = "SELECT p.product_id "
 						+ "FROM products p "
 						+ "INNER JOIN products_suppliers ps ON p.product_id = ps.product_id "
 						+ "WHERE ps.supplier_id = ? AND p.status = ?;";
