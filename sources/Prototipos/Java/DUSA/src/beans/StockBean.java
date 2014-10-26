@@ -384,8 +384,8 @@ public class StockBean implements Serializable {
 
 
 		try {
-			// FabricaSistema.getISistema().actualizarStock();
-			pedidos = FabricaSistema.getISistema()
+			// instanciaSistema.actualizarStock();
+			pedidos = instanciaSistema
 					.generarPedidoEnBaseAPedidoAnterior();
 
 		} catch (Exception e) {
@@ -428,7 +428,7 @@ public class StockBean implements Serializable {
 
 		try {
 
-			pedidos = FabricaSistema.getISistema()
+			pedidos = instanciaSistema
 					.generarPedidoEnBaseAHistorico(5);
 		} catch (Exception e) {
 
@@ -521,7 +521,7 @@ public class StockBean implements Serializable {
 
 		try {
 
-			FabricaSistema.getISistema().realizarPedido(p);
+			instanciaSistema.realizarPedido(p);
 
 			pedidos.clear();
 			disableDesdeUltimoPedido = false;
@@ -600,7 +600,7 @@ public class StockBean implements Serializable {
 
 	private boolean existeCodigoParaProveedor(long idProveedor,
 			long codigoIdentificador) throws Excepciones {
-		return FabricaSistema.getISistema().existeCodigoParaProveedor(
+		return instanciaSistema.existeCodigoParaProveedor(
 				idProveedor, codigoIdentificador);
 	}
 
@@ -683,7 +683,7 @@ public class StockBean implements Serializable {
 					 * Llamo a la logica para que se de de alta el articulo en
 					 * el sistema y en caso de error lo muestro
 					 */
-					FabricaSistema.getISistema().altaArticulo(articulo);
+					instanciaSistema.altaArticulo(articulo);
 					// si todo bien aviso y vacio el formulario
 					context.addMessage(null, new FacesMessage(
 							FacesMessage.SEVERITY_INFO,
@@ -761,7 +761,7 @@ public class StockBean implements Serializable {
 
 	public void cargarMarcas() {
 		try {
-			this.listaMarcas = FabricaSistema.getISistema().obtenerMarcas();
+			this.listaMarcas = instanciaSistema.obtenerMarcas();
 		} catch (Excepciones e) {
 			this.message = e.getMessage();
 			this.messageClass = "alert alert-danger";
@@ -770,7 +770,7 @@ public class StockBean implements Serializable {
 
 	public void cargarProveedores() {
 		try {
-			this.proveedores = FabricaSistema.getISistema()
+			this.proveedores = instanciaSistema
 					.obtenerProveedores();
 			this.listaProveedores = new ArrayList<DTProveedor>(
 					this.proveedores.values());
@@ -782,7 +782,7 @@ public class StockBean implements Serializable {
 
 	public void cargarDrogas() {
 		try {
-			this.listaDrogas = FabricaSistema.getISistema().obtenerDrogas();
+			this.listaDrogas = instanciaSistema.obtenerDrogas();
 		} catch (Excepciones e) {
 			this.message = e.getMessage();
 			this.messageClass = "alert alert-danger";
@@ -791,7 +791,7 @@ public class StockBean implements Serializable {
 
 	public void cargarAccionesTerapeuticas() {
 		try {
-			this.listaAccionesTer = FabricaSistema.getISistema()
+			this.listaAccionesTer = instanciaSistema
 					.obtenerAccionesTerapeuticas();
 		} catch (Excepciones e) {
 			this.message = e.getMessage();
@@ -843,7 +843,7 @@ public class StockBean implements Serializable {
 
 	public void cargarTiposIva() {
 		try {
-			this.tiposIVA = FabricaSistema.getISistema().obtenerTiposIva();
+			this.tiposIVA = instanciaSistema.obtenerTiposIva();
 		} catch (Excepciones e) {
 			this.message = e.getMessage();
 			this.messageClass = "alert alert-danger";
@@ -858,7 +858,7 @@ public class StockBean implements Serializable {
 		}
 
 		try {
-			resBusqueda = FabricaSistema.getISistema()
+			resBusqueda = instanciaSistema
 					.buscarArticulos(busqueda);
 			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
 		} catch (Excepciones e) {
@@ -887,7 +887,7 @@ public class StockBean implements Serializable {
 		}
 
 		try {
-			resBusquedaDesarme = FabricaSistema.getISistema().buscarArticulos(
+			resBusquedaDesarme = instanciaSistema.buscarArticulos(
 					busquedaDesarme);
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
