@@ -78,11 +78,11 @@
 												columns="1" layout="grid" rows="20" id="GridVentas2">
 												<p:panel style="text-align:center">
 													<h:panelGrid columns="3" style="width:100%" class="listaLineaVentas">
-														<h:outputText value=" #{venta2.descripcion}" />
-														<h:outputText value="$ #{venta2.precioVenta}" />
+														<h:outputText value=" #{venta2.articulo.descripcion}" />
+														<h:outputText value="$ #{venta2.articulo.precioVenta}" />
 														<h:outputText value=" " />
 
-														<h:outputText value=" #{venta2.presentacion}" />
+														<h:outputText value=" #{venta2.articulo.presentacion}" />
 														<p:inputText id="cantidad" value="#{venta2.cantidad}" style="width:40px;">
 															<p:ajax listener="#{ventaBean.strTotal()}"
 																update="GridVentas2 :form1:total" process="@this" />
@@ -96,7 +96,7 @@
 																<p:outputLabel for="receta" value="Desc. receta:" style="width:100%" />
 																<p:selectOneMenu id="receta"
 																	value="#{venta2.descuentoReceta}" style="width:110%">
-																	<f:selectItem itemLabel="seleccionar" itemValue="" />
+																	<f:selectItem itemLabel="sin descuento" itemValue="" />
 																	<f:selectItem itemLabel="40% descuento" itemValue="40" />
 																	<f:selectItem itemLabel="25% descuento" itemValue="25" />
 																	<p:ajax listener="#{ventaBean.strTotal()}"
