@@ -81,7 +81,14 @@
 			modal="true" resizable="false">
 			<h:form id="formFacturar" style="width: 750px;">
 				<p:dataTable id="tablaVentas" var="lineaVenta"
-					value="#{facturacionBean.ventaSeleccionada.lineas}">
+					value="#{facturacionBean.ventaSeleccionada.lineas}" rowIndexVar="index">
+
+					<p:column headerText="" style="text-align: center;">
+						<p:selectBooleanCheckbox>
+						<p:ajax event="change" listener="#{v.toggleCheck(index)}" process="@this" />
+						</p:selectBooleanCheckbox>
+						<h:outputText value="#{lineaVenta.articulo.descripcion}" />
+					</p:column>
 
 					<p:column headerText="Nombre" style="text-align: center;">
 						<h:outputText value="#{lineaVenta.articulo.descripcion}" />

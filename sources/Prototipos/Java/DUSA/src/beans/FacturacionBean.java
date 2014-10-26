@@ -1,26 +1,20 @@
 package beans;
 
 import interfaces.IFacturacion;
-import interfaces.ISistema;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import controladores.FabricaLogica;
-import controladores.FabricaServicios;
-import controladores.FabricaSistema;
 import model.LineaVenta;
 import model.Venta;
+import controladores.FabricaLogica;
 
 @ManagedBean
 @ViewScoped
@@ -28,6 +22,7 @@ public class FacturacionBean implements Serializable {
 
 	private List<Venta> ventas;
 	private Venta ventaSeleccionada;
+	private boolean[] lineasCheck;
 
 	public FacturacionBean() {
 		try {
@@ -43,14 +38,31 @@ public class FacturacionBean implements Serializable {
 
 	public void facturar() {
 		try {
-			IFacturacion ifact = FabricaLogica.getIFacturacion();
-			ifact.facturarVenta(ventaSeleccionada.getVentaId());
+			boolean allCheck = true;
+			if (true) {
+				for (int i = 0; i < ventaSeleccionada.getCantidadLineas(); i++) {
+					if (!lineasCheck[i]) {
+						allCheck = false;
+					}
+				}
+			}
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Se facturó correctamente.", ""));
-			ventas = ifact.listarVentasPendientes();
+			if (allCheck) {
+
+				IFacturacion ifact = FabricaLogica.getIFacturacion();
+				ifact.facturarVenta(ventaSeleccionada.getVentaId());
+
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Se facturó correctamente.", ""));
+				ventas = ifact.listarVentasPendientes();
+			} else {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								"Debe corroborar todos los items.", ""));
+			}
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
@@ -58,7 +70,7 @@ public class FacturacionBean implements Serializable {
 							"Error al facturar.", ""));
 		}
 	}
-	
+
 	public void cancelar() {
 		try {
 			IFacturacion ifact = FabricaLogica.getIFacturacion();
@@ -77,9 +89,9 @@ public class FacturacionBean implements Serializable {
 		}
 	}
 
-
 	public void cargarFactura(Venta v) {
 		ventaSeleccionada = v;
+		lineasCheck = new boolean[v.getCantidadLineas()];
 	}
 
 	public String parseFechaVenta(Venta v) {
@@ -88,12 +100,17 @@ public class FacturacionBean implements Serializable {
 	}
 
 	public BigDecimal calculcarSubtotal(LineaVenta lv) {
-		if (lv.getDescuento().compareTo(new BigDecimal(0))== 0){
-			return  (lv.getPrecio().multiply(new BigDecimal(lv.getCantidad())));
+		if (lv.getDescuento().compareTo(new BigDecimal(0)) == 0) {
+			return (lv.getPrecio().multiply(new BigDecimal(lv.getCantidad())));
 		}
-		
+
 		return (lv.getPrecio().multiply(new BigDecimal(lv.getCantidad())))
-				.multiply(((new BigDecimal(100)).subtract(lv.getDescuento())).divide(new BigDecimal(100)));
+				.multiply(((new BigDecimal(100)).subtract(lv.getDescuento()))
+						.divide(new BigDecimal(100)));
+	}
+
+	public void toggleCheck(int index) {
+		lineasCheck[index] = !lineasCheck[index];
 	}
 
 	public List<Venta> getVentas() {
