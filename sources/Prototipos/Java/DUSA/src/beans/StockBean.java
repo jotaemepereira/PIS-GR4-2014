@@ -1,5 +1,7 @@
 package beans;
 
+import interfaces.ISistema;
+
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -42,6 +44,7 @@ import datatypes.DTTipoArticulo;
 @ViewScoped
 public class StockBean implements Serializable {
 
+	private ISistema instanciaSistema;
 	private static final long serialVersionUID = 1L;
 	private Articulo articulo = new Articulo();
 	private boolean noEsMedicamento;
@@ -726,6 +729,7 @@ public class StockBean implements Serializable {
 	}
 
 	public StockBean() {
+						
 		this.noEsMedicamento = true;
 
 		// Cargo las marcas de la base de datos
@@ -885,6 +889,10 @@ public class StockBean implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void setISistema(ISistema s) {
+		this.instanciaSistema = s;
 	}
 
 }

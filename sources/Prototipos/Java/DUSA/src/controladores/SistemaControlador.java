@@ -153,4 +153,10 @@ public class SistemaControlador implements ISistema {
 	public List<TipoIva> obtenerTiposIva() throws Excepciones {
 		return FabricaLogica.getIStock().obtenerTiposIva();
 	}
+
+	@Override
+	public Usuario obtenerUsuarioLogueado() {
+		// TODO Auto-generated method stub
+		return user;
+	}
 }
