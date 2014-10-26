@@ -1,9 +1,11 @@
 package interfaces;
 
-import java.sql.Date;
+
+import java.util.Date;
 import java.util.List;
 
 import controladores.Excepciones;
+import datatypes.DTVenta;
 import model.Venta;
 
 public interface IFacturacionPersistencia {
@@ -34,4 +36,15 @@ public interface IFacturacionPersistencia {
 	 * @throws Excepciones
 	 */
 	public int cantidadVendidaEnPeriodo(Long idArticulo, Date desde, Date hasta) throws Excepciones;
+	
+	public void persistirVenta(Venta v)
+			throws Excepciones;
+	/**
+	 * Registra en el sistema la venta v
+	 * @param v 
+	 * 			- lista de DTVenta que componen la venta a registrar
+	 * 
+	 * @throws Excepciones
+	 * @author Ignacio Rodriguez
+	 */
 }

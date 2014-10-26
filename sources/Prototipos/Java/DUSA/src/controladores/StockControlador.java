@@ -14,9 +14,10 @@ import model.LineaPedido;
 import model.Pedido;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +109,7 @@ public class StockControlador implements IStock {
 				 dtlPedido.setStockMinimo(articulo.getStockMinimo());
 				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				 dtlPedido.setCantidad(lPedido.getCantidad());
-				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().longValue());
+				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().setScale(2, RoundingMode.HALF_EVEN).floatValue());
 				 // TODO: hardcodear id de DUSA
 				 // TODO: Calcular costo ponderado promedio
 				 DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);

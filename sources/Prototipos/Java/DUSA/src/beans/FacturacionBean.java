@@ -1,26 +1,22 @@
 package beans;
 
 import interfaces.IFacturacion;
-import interfaces.ISistema;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import controladores.FabricaLogica;
-import controladores.FabricaServicios;
-import controladores.FabricaSistema;
+import model.Enumerados;
 import model.LineaVenta;
 import model.Venta;
+import controladores.Excepciones;
+import controladores.FabricaLogica;
 
 @ManagedBean
 @ViewScoped
@@ -28,37 +24,59 @@ public class FacturacionBean implements Serializable {
 
 	private List<Venta> ventas;
 	private Venta ventaSeleccionada;
-
+	private boolean[] lineasCheck;
+	private boolean facturacionControlada = false;
+	
 	public FacturacionBean() {
 		try {
+			facturacionControlada = (Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext()
+					.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.controlada);
+			
 			IFacturacion ifact = FabricaLogica.getIFacturacion();
 			ventas = ifact.listarVentasPendientes();
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"Error al cargar la p√°gina.", ""));
+							Excepciones.MENSAJE_ERROR_SISTEMA, ""));
 		}
 	}
 
 	public void facturar() {
 		try {
-			IFacturacion ifact = FabricaLogica.getIFacturacion();
-			ifact.facturarVenta(ventaSeleccionada.getVentaId());
+			boolean allCheck = true;
+			if (facturacionControlada) { 
+				for (int i = 0; i < ventaSeleccionada.getCantidadLineas(); i++) {
+					if (!lineasCheck[i]) {
+						allCheck = false;
+					}
+				}
+			}
 
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Se facturÛ correctamente.", ""));
-			ventas = ifact.listarVentasPendientes();
+			if (allCheck) {
+
+				IFacturacion ifact = FabricaLogica.getIFacturacion();
+				ifact.facturarVenta(ventaSeleccionada.getVentaId());
+
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								Excepciones.MENSAJE_FACTURADA_OK, ""));
+				ventas = ifact.listarVentasPendientes();
+			} else {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								Excepciones.MENSAJE_NO_CORROBORADO_OK, ""));
+			}
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"Error al facturar.", ""));
+							Excepciones.MENSAJE_ERROR_SISTEMA, ""));
 		}
 	}
-	
+
 	public void cancelar() {
 		try {
 			IFacturacion ifact = FabricaLogica.getIFacturacion();
@@ -67,19 +85,22 @@ public class FacturacionBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Se cancelada correctamente.", ""));
+							Excepciones.MENSAJE_CANCELADA_OK, ""));
 			ventas = ifact.listarVentasPendientes();
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"Error al facturar.", ""));
+							Excepciones.MENSAJE_ERROR_SISTEMA, ""));
 		}
 	}
 
-
 	public void cargarFactura(Venta v) {
 		ventaSeleccionada = v;
+		lineasCheck = new boolean[v.getCantidadLineas()];
+		for (int i = 0; i < v.getCantidadLineas(); i++){
+			lineasCheck[i] = false;
+		}
 	}
 
 	public String parseFechaVenta(Venta v) {
@@ -88,12 +109,17 @@ public class FacturacionBean implements Serializable {
 	}
 
 	public BigDecimal calculcarSubtotal(LineaVenta lv) {
-		if (lv.getDescuento().compareTo(new BigDecimal(0))== 0){
-			return  (lv.getPrecio().multiply(new BigDecimal(lv.getCantidad())));
+		if (lv.getDescuento().compareTo(new BigDecimal(0)) == 0) {
+			return (lv.getPrecio().multiply(new BigDecimal(lv.getCantidad())));
 		}
-		
+
 		return (lv.getPrecio().multiply(new BigDecimal(lv.getCantidad())))
-				.multiply(((new BigDecimal(100)).subtract(lv.getDescuento())).divide(new BigDecimal(100)));
+				.multiply(((new BigDecimal(100)).subtract(lv.getDescuento()))
+						.divide(new BigDecimal(100)));
+	}
+
+	public void toggleCheck(int index) {
+		lineasCheck[index] = !lineasCheck[index];
 	}
 
 	public List<Venta> getVentas() {
@@ -110,6 +136,22 @@ public class FacturacionBean implements Serializable {
 
 	public void setVentaSeleccionada(Venta ventaSeleccionada) {
 		this.ventaSeleccionada = ventaSeleccionada;
+	}
+
+	public boolean isFacturacionControlada() {
+		return facturacionControlada;
+	}
+
+	public void setFacturacionControlada(boolean facturacionControlada) {
+		this.facturacionControlada = facturacionControlada;
+	}
+
+	public boolean[] getLineasCheck() {
+		return lineasCheck;
+	}
+
+	public void setLineasCheck(boolean[] lineasCheck) {
+		this.lineasCheck = lineasCheck;
 	}
 
 }

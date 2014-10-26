@@ -250,7 +250,7 @@ public class StockBean implements Serializable{
 		pedidos.clear();
 		
 		try {
-			
+//			FabricaSistema.getISistema().actualizarStock();
 			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAPedidoAnterior();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -312,20 +312,20 @@ public class StockBean implements Serializable{
 		hideElement = "visible";
 		pedidos.clear();
 		
-//		try {
-//			
-//			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAHistorico(5);
-//		} catch (Exception e) {
-//			
-//			FacesContext context = FacesContext.getCurrentInstance();
-//			context.addMessage(
-//					null,
-//					new FacesMessage(
-//							FacesMessage.SEVERITY_ERROR,
-//							e.getMessage(),
-//							""));
-//		}
-		
+		try {
+			
+			pedidos = FabricaSistema.getISistema().generarPedidoEnBaseAHistorico(5);
+		} catch (Exception e) {
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							e.getMessage(),
+							""));
+		}
+		/*
 		DTLineaPedido dt = new DTLineaPedido();
 		dt.setCantidad(3);
 		dt.setIdArticulo(1);
@@ -373,6 +373,7 @@ public class StockBean implements Serializable{
 		dt.setStockMinimo(10);
 		dt.setSubtotal(60);
 		pedidos.add(dt);
+		*/
 	}
 	
 	/**
@@ -381,7 +382,7 @@ public class StockBean implements Serializable{
 	 */
 	public void nuevoSubtotal(DTLineaPedido item){
 		
-		item.setSubtotal(item.getCantidad() * item.getPrecioUnitario().longValue());
+		item.setSubtotal(item.getCantidad() * item.getPrecioUnitario().floatValue());
 	}
 	
 	/**

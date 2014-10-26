@@ -9,9 +9,10 @@ public class Enumerados {
 	}
 	
 	public enum casoDeUso{
-	    ventaLibre, 
-	    registrarVentaPerdida,
+	     
+	    
 	    registrarNuevaVenta, 
+	    registrarVentaPerdida,
 	    facturarVentaPendiente,
 	    cancelarVentaPendiente,
 	    listarVentasPendientes,
@@ -53,6 +54,11 @@ public class Enumerados {
 	    public static final char controlMedico = '4';
 	}
 	
+	public final class modoFacturacion{
+	    public static final int basica = 1;
+	    public static final int interrumpida = 2;
+	    public static final int controlada = 3;
+	}
 	public class EstadoVenta {
 		public static final char PENDIENTE = 'P';
 		public static final char FACTURADA = 'F';
