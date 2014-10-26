@@ -30,14 +30,13 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 		/**
 		 * obtengo el ID a partir del nombre
 		 */
-		
+
 
 		String query = "SELECT u.user_id, u.username " + 
 				"FROM USERS u " +
 				"WHERE status <> FALSE AND username=" + "'" + nombre +"'" + ";";
 
-		
-		
+
 		try {
 			Connection c = Conexion.getConnection();			
 			stmt = c.prepareStatement(query);
@@ -48,19 +47,19 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 			stmt.close();
 			c.close();
 
-			
+
 		} catch (Exception e){
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 
-		
+
 		long idUsuario =  usr.getUsuarioId();
-		
+
 		contrasenia = "\'" + contrasenia + "\'";
 		query = "SELECT u.user_id, u.username, u.pwd_hash, u.status " + 
-						"FROM USERS u " +
-						"WHERE status <> FALSE AND user_id=" + idUsuario +" AND pwd_hash ="+ contrasenia + ";";
-		
+				"FROM USERS u " +
+				"WHERE status <> FALSE AND user_id=" + idUsuario +" AND pwd_hash ="+ contrasenia + ";";
+
 		try {
 			Connection c = Conexion.getConnection();			
 			stmt = c.prepareStatement(query);
@@ -74,7 +73,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 			stmt.close();
 			c.close();
 
-			
+
 		} catch (Exception e){
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
@@ -93,7 +92,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 			ResultSet rs = stmt.executeQuery();
 			ArrayList <Rol> roles = new ArrayList<Rol>();
 			while(rs.next()){ 
-			    Rol rol = new Rol();
+				Rol rol = new Rol();
 				rol.setId(rs.getInt("role_id"));
 				roles.add(rol);
 			}
@@ -104,11 +103,11 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 		} catch (Exception e){
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
-		
+
 		/**
 		 * obtengo las operaciones permitidas por cada rol que tiene el usuario
 		 */
-		
+
 		Iterator<Rol> it = usr.getRoles().iterator();
 		while (it.hasNext()){
 			Rol rol = (Rol)it.next();
@@ -123,7 +122,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 				ResultSet rs = stmt.executeQuery();
 				ArrayList <Operacion> ops = new ArrayList<Operacion>();
 				while(rs.next()){ 
-				    Operacion op = new Operacion();
+					Operacion op = new Operacion();
 					op.setId(rs.getInt("operation_id"));
 					op.setNombre(rs.getString("operation_name"));
 					ops.add(op);
@@ -153,7 +152,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 				stmt = c.prepareStatement(query);
 				ResultSet rs = stmt.executeQuery();
 				while(rs.next()){ 
-				    rol.setNombre(rs.getString("rolename"));
+					rol.setNombre(rs.getString("rolename"));
 				}
 				stmt.close();
 				c.close();
@@ -163,13 +162,13 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 			}
 		}
 		return usr;
-}
+	}
 	public void registrarActividad(Actividad act)throws Excepciones{
 		PreparedStatement stmt = null;
 		String query = "INSERT INTO USER_ACTIVITY "+ 
-						"(USER_ID, OPERATION_ID, OPERATION_NAME, LOG_DATE) " +
-						"VALUES (  " + act.getUserId() + " , "+ act.getOpId() +" , '"+ act.getOpName() +"' , " + "LOCALTIMESTAMP );" ;
-		
+				"(USER_ID, OPERATION_ID, OPERATION_NAME, LOG_DATE) " +
+				"VALUES (  " + act.getUserId() + " , "+ act.getOpId() +" , '"+ act.getOpName() +"' , " + "LOCALTIMESTAMP );" ;
+
 		try {
 			Connection c = Conexion.getConnection();			
 			stmt = c.prepareStatement(query);
@@ -181,7 +180,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 			e.printStackTrace();
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
-		
+
 	}
 
 
