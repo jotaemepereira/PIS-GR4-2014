@@ -3,6 +3,8 @@ package datatypes;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import model.Articulo;
+
 public class DTVenta implements Serializable {
 	private int productId;
 	private String presentacion;
@@ -26,6 +28,7 @@ public class DTVenta implements Serializable {
 	private int stock;
 	private String descuentoPrecio;
 	private String descuentoReceta;
+	private Articulo articulo;
 
 	public int getProductId() {
 		return productId;
@@ -201,5 +204,13 @@ public class DTVenta implements Serializable {
 
 	public void setDescuentoReceta(String descuentoReceta) {
 		this.descuentoReceta = descuentoReceta;
+	}
+
+	public Articulo getArticulo() {
+		return articulo;
+	}
+
+	public void setArticulo(Articulo articulo) {
+		this.articulo = articulo;
 	}
 }
