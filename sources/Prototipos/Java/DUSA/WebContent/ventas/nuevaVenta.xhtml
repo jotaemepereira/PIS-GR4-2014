@@ -131,10 +131,15 @@
 												<div class="clearBoth"></div>
 											</div>
 											<div style="margin-top: 20px; text-align: right;">
-
 												<p:commandButton value="Enviar a facturar" id="ajax2"
 													update="@form"
 													actionListener="#{ventaBean.facturarVenta()}"
+													process="@this" styleClass="ui-priority-primary" />
+											</div>
+											<div style="margin-top: 30px; text-align: right;">
+												<p:commandButton value="Enviar Venta Perdida" id="ajax4"
+													update="@form"
+													actionListener="#{ventaBean.agregarLineaVentaPerdida(venta)}"
 													process="@this" styleClass="ui-priority-primary" />
 											</div>
 										</div>
@@ -170,10 +175,7 @@
 															</p:selectBooleanCheckbox>
 															<img src="../Images/receta_verde.png" />
 														</p:outputPanel>
-														<p:commandButton value="Articulo Perdido" id="ajax4"
-															update="@form"
-															actionListener="#{ventaBean.agregarLineaVentaPerdida(venta)}"
-															process="@this" styleClass="ui-priority-primary" />
+														<h:outputText value="stock:#{venta.stock}" />
 
 
 														<h:outputText value=" #{venta.presentacion}" />
@@ -189,7 +191,7 @@
 															</p:selectBooleanCheckbox>
 															<img src="../Images/receta_blanca.png" />
 														</p:outputPanel>
-														<h:outputText value="stock:#{venta.stock}" />
+														<h:outputText value="" />
 
 
 														<h:outputText value=" #{venta.principioActivo}" />

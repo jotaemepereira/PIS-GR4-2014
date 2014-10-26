@@ -2,7 +2,6 @@ package persistencia;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +37,7 @@ import model.Droga;
 import model.Enumerados;
 import model.LineaPedido;
 import model.Pedido;
+import model.TipoIva;
 import interfaces.IStockPersistencia;
 
 public class PStockControlador implements IStockPersistencia {
@@ -48,9 +49,9 @@ public class PStockControlador implements IStockPersistencia {
 		String query = "INSERT INTO PRODUCTS " +
 						"(BRAND_ID, PRODUCT_TYPE, DESCRIPTION, PRESENTATION, KEY1, KEY2, KEY3, IS_PSYCHOTROPIC, IS_NARCOTIC, IS_REFRIGERATOR, SALE_CODE, AUTHORIZATION_TYPE,"
 						+ " UNIT_PRICE, SALE_PRICE, SALE_PRICE_PORCENTAGE,LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE, BARCODE, LAST_PRICE_DATE"
-						+ ", NEAREST_DUE_DATE, STOCK, MINIMUM_STOCK, LAST_MODIFIED, STATUS) " +
+						+ ", NEAREST_DUE_DATE, STOCK, MINIMUM_STOCK, USERNAME, LAST_MODIFIED, STATUS) " +
 						" VALUES " +
-						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, LOCALTIMESTAMP, ?) RETURNING PRODUCT_ID;";
+						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, ?, LOCALTIMESTAMP, ?) RETURNING PRODUCT_ID;";
 		Connection c;
 		try {
 			c = Conexion.getConnection();
@@ -85,12 +86,13 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.setBigDecimal(17, articulo.getCostoOferta());//Null
 				stmt.setBigDecimal(18, articulo.getUltimoCosto());//Null
 				stmt.setBigDecimal(19, articulo.getCostoPromedio());//Null
-				stmt.setInt(20, articulo.getTipoIva());//Null
+				stmt.setInt(20, articulo.getTipoIva().getTipoIVA());//Null
 				stmt.setString(21, articulo.getCodigoBarras());//Null
 				stmt.setNull(22, java.sql.Types.TIMESTAMP);//Null Vencimiento Más Cercano
 				stmt.setLong(23, articulo.getStock());//Not Null
 				stmt.setLong(24, articulo.getStockMinimo());//Null
-				stmt.setBoolean(25, true);//Not Null
+				stmt.setString(25, articulo.getUsuario().getNombre());//Not Null
+				stmt.setBoolean(26, true);//Not Null
 				
 				ResultSet rs = stmt.executeQuery();
 				//Obtengo la clave del nuevo artículo creado
@@ -216,7 +218,8 @@ public class PStockControlador implements IStockPersistencia {
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				
-				ret = rs.getDate("order_date");
+				Timestamp time = rs.getTimestamp("order_date");
+				ret = new Date(time.getTime());
 			}
 			rs.close();
 			stmt.close();
@@ -460,14 +463,17 @@ public class PStockControlador implements IStockPersistencia {
 		
 		PreparedStatement stmt = null;
 		
-		String query = "SELECT stock  FROM products WHERE product_id=" +idArticulo +";";
-		int ret;
+		String query = "SELECT stock  FROM products WHERE product_id = " +idArticulo +";";
+		int ret = 0;
 		try {
 			
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
-			ret = (int) rs.getLong(1);
+			while (rs.next()) {
+				
+				ret = (int) rs.getLong(1);
+			}
 			rs.close();
 			stmt.close();
 			c.close();
@@ -476,8 +482,6 @@ public class PStockControlador implements IStockPersistencia {
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 		return ret ;
-
-
 	}
 	/**
 	 * @author Guille
@@ -555,7 +559,7 @@ public class PStockControlador implements IStockPersistencia {
 	public List<Long> obtenerIdTodosLosArticulos() throws Excepciones{
 		List<Long> idArts = new ArrayList<Long>();
 		PreparedStatement stmt = null;
-		String query = "SELECT product_id "
+		String query = "SELECT p.product_id "
 						+ "FROM products p "
 						+ "INNER JOIN products_suppliers ps ON p.product_id = ps.product_id "
 						+ "WHERE ps.supplier_id = ? AND p.status = ?;";
@@ -732,7 +736,7 @@ public class PStockControlador implements IStockPersistencia {
 					articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
 					BigDecimal auxDecimal = rs.getBigDecimal("tax_type");
 					if (auxDecimal != null) {
-						articulo.setTipoIva(auxDecimal.intValue());
+						articulo.getTipoIva().setTipoIVA(auxDecimal.intValue());
 					}
 					articulo.setCodigoBarras(rs.getString("barcode"));
 					Timestamp timestamp = rs.getTimestamp("nearest_due_date");
@@ -765,6 +769,63 @@ public class PStockControlador implements IStockPersistencia {
 		}
 		
 		return articulo;
+	}
+
+
+	@Override
+	public List<TipoIva> obtenerTiposIva() throws Excepciones {
+		List<TipoIva> ret = null;
+		PreparedStatement stmt = null;
+		String query = "SELECT t.tax_type_id, t.description " +
+						"FROM TAX_TYPES t ";
+		
+		try {
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			ret = new ArrayList<TipoIva>();
+			while(rs.next()){
+				TipoIva nuevo = new TipoIva();
+				nuevo.setTipoIVA(rs.getInt("tax_type_id"));
+				nuevo.setDescripcion(rs.getString("description"));
+				ret.add(nuevo);
+			}
+			rs.close();
+			stmt.close();
+		} catch (Exception e){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		return ret;
+	}
+
+
+	@Override
+	public void persistirTiposIva(List<TipoIva> lista) throws Excepciones {
+		PreparedStatement stmt = null;		
+		try{
+			Connection c = Conexion.getConnection();
+			
+			for (TipoIva t: lista){
+				String query = "INSERT INTO TAX_TYPES "
+						+ "(TAX_TYPE_ID, DESCRIPTION, RATE_TYPE, BILLING_INDICATOR, "
+						+ "IVA_VALUE, TAX_VALUE, IVA_VOUCHER, IRAE_VOUCHER, STATUS) VALUES "
+						+ " (?, ?, ?, ?, ?, ?, ?, ?, TRUE);";
+				stmt = c.prepareStatement(query);
+				stmt.setInt(1, t.getTipoIVA());
+				stmt.setString(2, t.getDescripcion());
+				stmt.setInt(3, t.getTipoTasa());
+				stmt.setInt(4, t.getIndicadorFacturacion());
+				stmt.setBigDecimal(5, t.getValorIVA());
+				stmt.setBigDecimal(6, t.getValorTributo());
+				stmt.setBigDecimal(7, t.getResguardoIVA());
+				stmt.setBigDecimal(8, t.getResguardoIRAE());
+				stmt.executeUpdate();				
+			}
+			stmt.close();
+			c.close();
+		}catch(Exception e){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
 	}
 }
 

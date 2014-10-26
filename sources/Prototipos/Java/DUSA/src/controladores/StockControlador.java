@@ -12,11 +12,13 @@ import model.Enumerados;
 import model.GeneradorPedido;
 import model.LineaPedido;
 import model.Pedido;
+import model.TipoIva;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,6 @@ import datatypes.DTLineaPedido;
 import datatypes.DTProduct;
 import datatypes.DTProveedor;
 import datatypes.DTVenta;
-import model.Articulo;
 import controladores.FabricaPersistencia;
 
 public class StockControlador implements IStock {
@@ -108,7 +109,7 @@ public class StockControlador implements IStock {
 				 dtlPedido.setStockMinimo(articulo.getStockMinimo());
 				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				 dtlPedido.setCantidad(lPedido.getCantidad());
-				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().longValue());
+				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().setScale(2, RoundingMode.HALF_EVEN).floatValue());
 				 // TODO: hardcodear id de DUSA
 				 // TODO: Calcular costo ponderado promedio
 				 DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
@@ -200,7 +201,18 @@ public class StockControlador implements IStock {
 
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
+		//grabarTiposIVA();
 		return FabricaPersistencia.getStockPersistencia().obtenerAccionesTerapeuticas();
+	}
+
+	private void grabarTiposIVA() {
+		try {
+			List<TipoIva> lista = FabricaServicios.getIServicios().obtenerTiposIva();
+			FabricaPersistencia.getStockPersistencia().persistirTiposIva(lista);
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -244,6 +256,11 @@ public class StockControlador implements IStock {
 		for (Articulo a:articulos) {
 			sp.persistirArticulo(a);
 		}
+	}
+
+	@Override
+	public List<TipoIva> obtenerTiposIva() throws Excepciones {
+		return FabricaPersistencia.getStockPersistencia().obtenerTiposIva();
 	}
 
 	

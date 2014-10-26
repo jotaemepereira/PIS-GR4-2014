@@ -50,5 +50,11 @@ public class ProveedoresControlador implements IProveedores {
 	public List<DTProveedor> obtenerMarcas() throws Excepciones {
 		return FabricaPersistencia.getInstanciaProveedoresPersistencia().obtenerMarcas(); 
 	}
+
+	@Override
+	public boolean existeCodigoParaProveedor(long idProveedor,
+			long codigoIdentificador) throws Excepciones {
+		return FabricaPersistencia.getInstanciaProveedoresPersistencia().existeCodigoParaProveedor(idProveedor,codigoIdentificador);
+	}
 	
 }

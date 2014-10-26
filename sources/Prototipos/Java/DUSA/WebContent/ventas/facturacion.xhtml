@@ -40,7 +40,7 @@
 
 												<p:column headerText="Tiempo" style="text-align: center;">
 													<h:outputText
-														value="#{facturacionBean.parseFechaVenta(venta.fechaVenta)}" />
+														value="#{facturacionBean.parseFechaVenta(venta)}" />
 												</p:column>
 
 												<p:column headerText="Usuario" style="text-align: center;">
@@ -79,9 +79,17 @@
 
 		<p:dialog widgetVar="dlg2" showEffect="fade" hideEffect="fade"
 			modal="true" resizable="false">
-			<h:form id="formFacturar" style="width: 500px;">
+			<h:form id="formFacturar" style="width: 750px;">
 				<p:dataTable id="tablaVentas" var="lineaVenta"
-					value="#{facturacionBean.ventaSeleccionada.lineas}">
+					value="#{facturacionBean.ventaSeleccionada.lineas}"
+					rowIndexVar="index">
+
+					<p:column rendered="#{facturacionBean.facturacionControlada}"
+						headerText="" style="text-align: center; width: 50px;">
+						<p:selectBooleanCheckbox value="#{facturacionBean.lineasCheck[index]}">
+							<f:ajax event="change" execute="@this" />
+						</p:selectBooleanCheckbox>
+					</p:column>
 
 					<p:column headerText="Nombre" style="text-align: center;">
 						<h:outputText value="#{lineaVenta.articulo.descripcion}" />
@@ -93,17 +101,17 @@
 
 					<p:column headerText="Receta"
 						style="text-align: center; width: 100px;">
-						<p:outputPanel visible="#{lineaVenta.articulo.recetaNaranja}"
+						<p:outputPanel rendered="#{lineaVenta.recetaNaranja}"
 							style="width: 98px; padding: 0; margin: 0;">
 							<img src="../Images/receta_naranja.png" />
 						</p:outputPanel>
 
-						<p:outputPanel visible="#{lineaVenta.articulo.recetaVerde}"
+						<p:outputPanel rendered="#{lineaVenta.recetaVerde}"
 							style="width: 100px; padding: 0; margin: 0;">
 							<img src="../Images/receta_verde.png" />
 						</p:outputPanel>
 
-						<p:outputPanel visible="recetaBlanca"
+						<p:outputPanel rendered="#{lineaVenta.recetaBlanca}"
 							style="width: 100px; padding: 0; margin: 0;">
 							<img src="../Images/receta_blanca.png" />
 						</p:outputPanel>
@@ -135,17 +143,14 @@
 				</div>
 				<div style="margin-top: 15px;">
 					<p:commandButton style="margin-right: 45px;"
-						actionListener="#{facturacionBean.facturar(ventaSeleccionada)}"
+						actionListener="#{facturacionBean.facturar()}"
 						styleClass="btn btn-default pull-right"
-						oncomplete="PF('dlg2').hide()"
-						update="tablaVentas :form1:messages" value="Facturar"
+						oncomplete="PF('dlg2').hide()" update=":form1" value="Facturar"
 						title="Facturar">
 					</p:commandButton>
-					<p:commandButton
-						actionListener="#{facturacionBean.cancelar(ventaSeleccionada)}"
+					<p:commandButton actionListener="#{facturacionBean.cancelar()}"
 						styleClass="btn btn-default pull-right"
-						oncomplete="PF('dlg2').hide()"
-						update="tablaVentas :form1:messages" value="Cancelar"
+						oncomplete="PF('dlg2').hide()" update=":form1" value="Cancelar"
 						title="Facturar">
 					</p:commandButton>
 				</div>

@@ -5,13 +5,14 @@ import java.io.OutputStream;
 
 import model.Venta;
 
+import javax.faces.context.FacesContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 public class XMLUtil {
 
-	public static File jaxbObjectToXML(Venta v) {
+	public static File jaxbObjectToXML(Venta v) throws Exception {
 
 		try {
 			JAXBContext context = JAXBContext.newInstance(Venta.class);
@@ -23,8 +24,10 @@ public class XMLUtil {
 			// m.marshal(v, System.out);
 
 			// Write to File
-
-			File f = new File("/facturas/" + v.getVentaId() + ".xml");
+			String path = FacesContext.getCurrentInstance()
+            .getExternalContext().getInitParameter("PathFacturacion");
+			File f = new File(path + v.getVentaId() + ".xml");
+			f.createNewFile();
 			m.marshal(v, f);
 			return f;
 		} catch (JAXBException e) {

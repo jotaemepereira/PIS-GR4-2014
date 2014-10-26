@@ -79,7 +79,7 @@
 									<div class="row" style="margin-bottom: 1%;text-align:center;">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<p:dataTable var="pedido" id="tablePedido" 
-												value="#{stockBean.pedidos}">
+												value="#{stockBean.pedidos}" emptyMessage="No se encontraron registros.">
 												<!-- rendered="${stockBean.disablePrediccionDePedido || stockBean.disableDesdeUltimoPedido}" -->
 												<div class="row">
 													<p:column headerText="Numero artículo" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
@@ -100,18 +100,21 @@
 													
 													<p:column headerText="Stock mínimo por día" styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 														<h:outputText value="#{pedido.stockMinimo}" />
+														
 													</p:column>
 													
 													<p:column headerText="Cantidad" styleClass="col-xs-4 col-sm-3 col-md-2 col-lg-2">
-													
-														<p:inputText id="cantidad" value="#{pedido.cantidad}" styleClass="form-control">
-															<p:ajax listener="#{stockBean.nuevoSubtotal(pedido)}"
+													        <p:inputMask id="cantidad" mask="?9999" styleClass="form-control" style="text-align: center" readonly="false" value="#{pedido.cantidad}">
+													    	<p:ajax listener="#{stockBean.nuevoSubtotal(pedido)}"
 																update="subtotal" process="@this" />
-														</p:inputText>
+																</p:inputMask>
+															
 													</p:column>
 													
 													<p:column headerText="Subtotal" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-2">
-														<h:outputText value="#{pedido.subtotal}" id="subtotal"/>
+														<h:outputText value="#{pedido.subtotal}" id="subtotal">
+															<f:convertNumber pattern="#0.00" />
+														</h:outputText>
 													</p:column>
 													
 													<p:column headerText="Eliminar" styleClass="col-xs-2 col-sm-2 col-md-1 col-lg-1">
