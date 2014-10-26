@@ -39,10 +39,10 @@ public class FacturacionBean implements Serializable {
 	public void facturar() {
 		try {
 			boolean allCheck = true;
-			if (true) {
-				for (int i = 0; i < ventaSeleccionada.getCantidadLineas(); i++) {
-					if (!lineasCheck[i]) {
-						allCheck = false;
+			if (true){
+			for (int i = 0; i < ventaSeleccionada.getCantidadLineas(); i++) {
+				if (!lineasCheck[i]) {
+					allCheck = false;
 					}
 				}
 			}
