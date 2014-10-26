@@ -21,11 +21,8 @@
 		<div class="container">
 
 			<h:form class="form-signin" role="form" id="form1">
-<<<<<<< HEAD
-=======
 			#{loginBean.redirectIfLoggedIn()}
 			<p:messages id="msgs" showIcon="false" globalOnly="true" />
->>>>>>> FETCH_HEAD
 				<div class="text-center">
 					<img src="Images/Drcurita.png" style="height: 150px; width: 120px"></img>
 				</div>
@@ -37,26 +34,18 @@
 					<f:ajax event="change" execute="@this" />
 				</p:inputText>
 				<p:message for="nomUsuario" display="text" />
-<<<<<<< HEAD
-				<p:inputText id="contrasenia" value="#{loginBean.contrasenia}" type="password"
-					styleClass="form-control" placeholder="Contraseña" required="true"
-					requiredMessage="Dato Requerido.">
-
 				<p:inputText id="contrasenia" value="#{loginBean.contrasenia}"
 					type="password" styleClass="form-control" placeholder="Contraseña"
-					required="true" requiredMessage="Dato Requerido.">
+					required="true" requiredMessage="Dato Requerido." >
 
 					<f:ajax event="change" execute="@this" />
 				</p:inputText>
 				<p:message for="contrasenia" display="text" />
 				<p:commandButton value="Entrar"
 					actionListener="#{loginBean.iniciarSesion}"
-
-					styleClass="btn btn-lg btn-primary btn-block"/>
-
 					styleClass="btn btn-lg btn-primary btn-block"
 					update="msgs" />
-
+		
 			</h:form>
 
 		</div>
