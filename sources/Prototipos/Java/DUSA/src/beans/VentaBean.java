@@ -13,6 +13,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import model.Venta;
 import controladores.Excepciones;
 import controladores.FabricaSistema;
 import persistencia.Database;
@@ -50,10 +51,6 @@ public class VentaBean implements Serializable {
 	}
 
 	public void buscarArticulos(ActionEvent event) {
-		System.out.println("buscar articulos");
-		// aca hay q buscar las ventas con el buscarArticulo y
-		// agregar todos los que coinciden con la descripcion buscados
-
 		
 		/**
 		// Probando con el Database.java para buscar simulando la busqueda :
@@ -70,8 +67,7 @@ public class VentaBean implements Serializable {
 			}
 		}
 		
-		
-		*/
+*/
 		
 		
 		// Busqueda con solr
@@ -95,7 +91,7 @@ public class VentaBean implements Serializable {
 	
 	
 	public void buscarArticuloLector(){
-		//busco articulo con el codigo ingresado por el lector de codigo de barras y lo agrego a la venta.
+		//busca articulo cpor el codigo ingresado por el lector de codigo de barras y lo agrega a la venta.
 		
 				if(codigoBusqueda.equals("")){
 					return;
@@ -135,7 +131,7 @@ public class VentaBean implements Serializable {
 				
 	}
 	
-	//para calcular el precio con el descuento a poner cuando lista los articulos en la busqueda, falta terminar
+	//para calcular el precio con el descuento a poner cuando lista los articulos en la busqueda:
 	public void strDescuentoPrecio(){
 		
 		Iterator<DTVenta> it = lineasVenta.iterator();
@@ -150,16 +146,31 @@ public class VentaBean implements Serializable {
 		
 	}
 	
-	public void agregarLineaVentaPerdida(DTVenta vp){
-		vp.setCantidad(1);
-		lineasVenta.remove(vp);
-		lineasVentaPerdidas.add(vp);
+	public void agregarLineaVentaPerdida(){
+		
+		try {
+			Iterator<DTVenta> it = lineasVenta2.iterator();
+			Venta v = new Venta();
+			while (it.hasNext()) {
+				DTVenta dtv = it.next();
+				// pasar del dt a una venta los datos.
+				v.setEstadoVenta("f"); // estado f seria la venta perdida
+			}
+			FabricaSistema.getISistema().registrarNuevaVenta(v);
+
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		lineasVenta2 = new ArrayList<DTVenta>();
+		lineasVenta = new ArrayList<DTVenta>();
+		
 		FacesContext.getCurrentInstance().addMessage(
 				null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Venta perdida ingresada con éxito", ""));
 	}
-	
 
 	public void agregarLineaVenta(DTVenta v){
 		
@@ -178,15 +189,14 @@ public class VentaBean implements Serializable {
 			BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento())).divide(new BigDecimal(100));
 			
 			BigDecimal n = new BigDecimal(0);
-			//calculo descuento por receta blanca 1 
+			//calculo descuento por receta blanca 1 del 25%
 			if (v.getDescuentoReceta().equals("25")){
 				n = (v.getPrecioVenta().multiply(new BigDecimal(25))).divide(new BigDecimal(100));
 			}
-			//calculo descuento por receta blanca 2 
+			//calculo descuento por receta blanca 2 del 40%
 			if (v.getDescuentoReceta().equals("40")){
 				n = (v.getPrecioVenta().multiply(new BigDecimal(30))).divide(new BigDecimal(100));
 			}
-			
 			
 			//sumo los totales restandole los descuentos correspondientes a cada uno y los multiplico por las cantidades
 			total = total.add(((v.getPrecioVenta().subtract(x)).subtract(n)).multiply(

@@ -5,6 +5,7 @@ import interfaces.IFacturacionPersistencia;
 
 import java.util.List;
 
+import datatypes.DTVenta;
 import model.Venta;
 import Util.XMLUtil;
 
@@ -46,5 +47,13 @@ public class FacturacionControlador implements IFacturacion {
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	@Override
+	public void registrarNuevaVenta(Venta v) throws Excepciones {
+		// TODO Auto-generated method stub
+		IFacturacionPersistencia pf = FabricaPersistencia.getInstanciaFacturacionPersistencia();
+		pf.persistirVenta(v);
+		
 	}
 }

@@ -15,6 +15,7 @@ import model.Pedido;
 import model.Enumerados.casoDeUso;
 import model.Usuario;
 import model.Proveedor;
+import model.Venta;
 import interfaces.ISistema;
 
 public class SistemaControlador implements ISistema {
@@ -133,5 +134,15 @@ public class SistemaControlador implements ISistema {
 	public boolean existeCodigoParaProveedor(long idProveedor,
 			long codigoIdentificador) throws Excepciones {
 		return FabricaLogica.getInstanciaProveedores().existeCodigoParaProveedor(idProveedor,codigoIdentificador);
+	}
+
+	@Override
+	public void registrarNuevaVenta(Venta v) throws Excepciones {
+		//if (user.tienePermiso(casoDeUso.buscarArticulo))
+		FabricaLogica.getIFacturacion().registrarNuevaVenta(v);
+		
+	//else
+	//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		
 	}
 }

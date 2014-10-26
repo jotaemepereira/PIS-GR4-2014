@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import controladores.Excepciones;
+import datatypes.DTVenta;
 import model.Articulo;
 import model.Cliente;
 import model.Enumerados;
@@ -381,6 +382,12 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		}
 		
 		return cantidadVendida;
+	}
+
+	@Override
+	public void persistirVenta(Venta v) throws Excepciones {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

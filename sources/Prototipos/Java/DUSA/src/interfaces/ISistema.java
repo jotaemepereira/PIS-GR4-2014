@@ -16,6 +16,7 @@ import model.Droga;
 import model.Pedido;
 import model.Presentacion;
 import model.Proveedor;
+import model.Venta;
 
 public interface ISistema {
 	
@@ -125,6 +126,20 @@ public interface ISistema {
 	 *             - ERROR_SISTEMA (en caso que suceda algún error a la hora de
 	 *             conectarse o comunicarse con la base)
 	 * @author José Aguerre
+	 */
+	public void registrarNuevaVenta(Venta v)
+			throws Excepciones;
+
+	/**
+	 * Registra en el sistema la venta v
+	 * 
+	 * @param v 
+	 * 			- lista de DTVenta que componen la venta a registrar
+	 * 
+	 * @throws Excepciones
+	 *             - ERROR_SISTEMA (en caso que suceda algún error a la hora de
+	 *             conectarse o comunicarse con la base)
+	 * @author Ignacio Rodriguez
 	 */
 	public List<DTProveedor> obtenerMarcas() throws Excepciones;
 
