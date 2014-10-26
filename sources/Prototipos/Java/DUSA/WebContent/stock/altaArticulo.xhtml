@@ -23,7 +23,8 @@
 		<h:form id="form1">
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
-
+			#{loginBean.redirectIfNotLoggedIn()}
+        	#{stockBean.setISistema(loginBean.instanciaSistema)}
 			<div class="vpanel_right">
 				<div class="wrapper">				
 					<div class="panel panel-default" id="panel">
@@ -345,7 +346,7 @@
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<p:selectOneMenu id="tipoIVA" value="#{stockBean.articulo.tipoIva}" style="height: 100%" required="false" >
 										            <f:selectItem itemLabel="Seleccione tipo de IVA" itemValue="#{null}" />
-										            <f:selectItems value="#{stockBean.tiposIVA}" />
+										            <f:selectItems value="#{stockBean.tiposIVA}" var="t" itemLabel="#{t.descripcion}" itemValue="#{t.tipoIVA}" />
 										        </p:selectOneMenu>
 										    </div>
 										</div>

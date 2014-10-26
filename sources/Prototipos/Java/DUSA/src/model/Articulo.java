@@ -31,12 +31,13 @@ public class Articulo {
 	private BigDecimal costoOferta;
 	private BigDecimal ultimoCosto;
 	private BigDecimal costoPromedio;
-	private int tipoIva;
+	private TipoIva tipoIva;
 	private String codigoBarras;
 	private Date fechaUltimoPrecio;
 	private Date vencimientoMasCercano;
 	private long stock;
 	private long stockMinimo;
+	private Usuario usuario;
 	private Date fechaUltimaModificacion;
 	private boolean status;
 	private Map<Integer,DTProveedor> proveedores = new HashMap<Integer,DTProveedor>();
@@ -164,10 +165,10 @@ public class Articulo {
 	public void setCostoPromedio(BigDecimal costoPromedio) {
 		this.costoPromedio = costoPromedio;
 	}
-	public int getTipoIva() {
+	public TipoIva getTipoIva() {
 		return tipoIva;
 	}
-	public void setTipoIva(int tipoIva) {
+	public void setTipoIva(TipoIva tipoIva) {
 		this.tipoIva = tipoIva;
 	}
 	public String getCodigoBarras() {
@@ -205,6 +206,12 @@ public class Articulo {
 	}
 	public void setStockMinimo(long stockMinimo) {
 		this.stockMinimo = new Long(stockMinimo);
+	}
+	public Usuario getUsuario() {
+		return usuario;
+	}
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 	public Date getFechaUltimaModificacion() {
 		return fechaUltimaModificacion;

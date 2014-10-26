@@ -28,7 +28,7 @@
 				<ul class="nav navbar-nav navbar-right">
 					<li class="login"><h:outputLabel id="logged_user">
 							<a href="#" id="logged_user_a"><i class="fa fa-user fa-2x"></i>
-								Sebastian Caballero</a>
+								#{loginBean.getInstanciaSistema().obtenerUsuarioLogueado().getNombre()}</a>
 						</h:outputLabel></li>
 					<p:overlayPanel id="logged_user_panel" for="logged_user"
 						hideEffect="fade">
@@ -36,7 +36,7 @@
 							<a href="#">Mis datos</a>
 						</div>
 						<div>
-							<p:commandLink actionListener="#{sesionBean.logOut}" ajax="true">
+							<p:commandLink actionListener="#{loginBean.cerrarSesion}" process="@this" ajax="true">
 								<h:outputText value="Salir" />
 							</p:commandLink>
 						</div>
