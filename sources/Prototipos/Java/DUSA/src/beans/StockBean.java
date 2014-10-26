@@ -1,5 +1,7 @@
 package beans;
 
+import interfaces.ISistema;
+
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -41,6 +43,9 @@ import datatypes.DTTipoArticulo;
 @ManagedBean
 @ViewScoped
 public class StockBean implements Serializable {
+
+
+	private ISistema instanciaSistema;
 
 	private static final long serialVersionUID = 1L;
 	private Articulo articulo = new Articulo();
@@ -377,10 +382,12 @@ public class StockBean implements Serializable {
 		hideElement = "visible";
 		pedidos.clear();
 
+
 		try {
 			// FabricaSistema.getISistema().actualizarStock();
 			pedidos = FabricaSistema.getISistema()
 					.generarPedidoEnBaseAPedidoAnterior();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -726,6 +733,7 @@ public class StockBean implements Serializable {
 	}
 
 	public StockBean() {
+
 		this.noEsMedicamento = true;
 
 		// Cargo las marcas de la base de datos
@@ -886,5 +894,10 @@ public class StockBean implements Serializable {
 			e.printStackTrace();
 		}
 	}
+	
+	public void setISistema(ISistema s) {
+		this.instanciaSistema = s;
+	}
+
 
 }

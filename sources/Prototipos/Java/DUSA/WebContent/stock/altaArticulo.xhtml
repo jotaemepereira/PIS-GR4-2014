@@ -23,7 +23,8 @@
 		<h:form id="form1">
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
-
+			#{loginBean.redirectIfNotLoggedIn()}
+        	#{stockBean.setISistema(loginBean.instanciaSistema)}
 			<div class="vpanel_right">
 				<div class="wrapper">				
 					<div class="panel panel-default" id="panel">
