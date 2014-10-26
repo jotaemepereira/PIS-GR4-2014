@@ -17,6 +17,8 @@ import model.Pedido;
 import model.Presentacion;
 import model.Proveedor;
 import model.TipoIva;
+import model.Usuario;
+
 import model.Venta;
 
 public interface ISistema {
@@ -191,4 +193,7 @@ public interface ISistema {
 	 */
 	public List<TipoIva> obtenerTiposIva() throws Excepciones;
 	
+
+	public Usuario obtenerUsuarioLogueado();
+
 }
