@@ -12,6 +12,7 @@ import model.Enumerados;
 import model.GeneradorPedido;
 import model.LineaPedido;
 import model.Pedido;
+import model.TipoIva;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -29,7 +30,6 @@ import datatypes.DTLineaPedido;
 import datatypes.DTProduct;
 import datatypes.DTProveedor;
 import datatypes.DTVenta;
-import model.Articulo;
 import controladores.FabricaPersistencia;
 
 public class StockControlador implements IStock {
@@ -203,7 +203,18 @@ public class StockControlador implements IStock {
 
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
+		//grabarTiposIVA();
 		return FabricaPersistencia.getStockPersistencia().obtenerAccionesTerapeuticas();
+	}
+
+	private void grabarTiposIVA() {
+		try {
+			List<TipoIva> lista = FabricaServicios.getIServicios().obtenerTiposIva();
+			FabricaPersistencia.getStockPersistencia().persistirTiposIva(lista);
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -247,6 +258,11 @@ public class StockControlador implements IStock {
 		for (Articulo a:articulos) {
 			sp.persistirArticulo(a);
 		}
+	}
+
+	@Override
+	public List<TipoIva> obtenerTiposIva() throws Excepciones {
+		return FabricaPersistencia.getStockPersistencia().obtenerTiposIva();
 	}
 
 	

@@ -4,8 +4,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -13,10 +16,13 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import model.Articulo;
+import model.LineaVenta;
+import model.Venta;
 import controladores.Excepciones;
 import controladores.FabricaSistema;
-import persistencia.Database;
 import datatypes.DTBusquedaArticuloSolr;
+import datatypes.DTProveedor;
 import datatypes.DTVenta;
 
 @ManagedBean
@@ -27,20 +33,14 @@ public class VentaBean implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String descripcion = "probandooooooooooo";
-	private String presentacion = "presentacionprueba";
-	private String principioActivo = "pinc. Act prueba";
-	private String laboratorio = "Laboratorio prueba";
 	private BigDecimal precioVenta = new BigDecimal(0);
 	private String descripcionBusqueda;
 	private String codigoBusqueda;
-	private String nombre = "nombre";
 	
-	private DTVenta venta = new DTVenta();
+	private Venta venta = new Venta();
 	private List<DTVenta> lineasVenta = new ArrayList<DTVenta>();
-	private List<DTVenta> lineasVenta2 = new ArrayList<DTVenta>();
-	private List<DTVenta> lineasVentaPerdidas = new ArrayList<DTVenta>();
-	private List<DTVenta> ventasSeleccionadas = new ArrayList<DTVenta>();
+	private List<LineaVenta> lineasVenta2 = new ArrayList<LineaVenta>();
+	private List<LineaVenta> lineasVentaPerdidas = new ArrayList<LineaVenta>();
 	private String strDescuento = "";
 	private boolean descuentoReceta1 = false;
 	private boolean descuentoReceta2 = false;
@@ -50,10 +50,6 @@ public class VentaBean implements Serializable {
 	}
 
 	public void buscarArticulos(ActionEvent event) {
-		System.out.println("buscar articulos");
-		// aca hay q buscar las ventas con el buscarArticulo y
-		// agregar todos los que coinciden con la descripcion buscados
-
 		
 		/**
 		// Probando con el Database.java para buscar simulando la busqueda :
@@ -69,8 +65,7 @@ public class VentaBean implements Serializable {
 				lineasVenta.add(v);
 			}
 		}
-		
-		
+				
 		*/
 		
 		
@@ -82,20 +77,20 @@ public class VentaBean implements Serializable {
 			Iterator<DTVenta> it = lineasVenta.iterator();
 			while (it.hasNext()) {
 				DTVenta dtVenta = (DTVenta) it.next();
+				System.out.println("precio " + dtVenta.getPrecioVenta());
 				dtVenta.setDescuentoPrecio("$"+dtVenta.getPrecioVenta().toString()+"(%0)");	
 			}
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 		
 	}
 	
 	
 	public void buscarArticuloLector(){
-		//busco articulo con el codigo ingresado por el lector de codigo de barras y lo agrego a la venta.
+		//busca articulo cpor el codigo ingresado por el lector de codigo de barras y lo agrega a la venta.
 		
 				if(codigoBusqueda.equals("")){
 					return;
@@ -116,7 +111,6 @@ public class VentaBean implements Serializable {
 					e.printStackTrace();
 				}
 				
-				
 				/**
 				
 				// Probando con el Database.java para agregar a mano un codigo, simulando el lector de codigo de barras :
@@ -135,7 +129,7 @@ public class VentaBean implements Serializable {
 				
 	}
 	
-	//para calcular el precio con el descuento a poner cuando lista los articulos en la busqueda, falta terminar
+	//para calcular el precio con el descuento a poner cuando lista los articulos en la busqueda:
 	public void strDescuentoPrecio(){
 		
 		Iterator<DTVenta> it = lineasVenta.iterator();
@@ -150,71 +144,123 @@ public class VentaBean implements Serializable {
 		
 	}
 	
-	public void agregarLineaVentaPerdida(DTVenta vp){
-		vp.setCantidad(1);
-		lineasVenta.remove(vp);
-		lineasVentaPerdidas.add(vp);
+	public void agregarLineaVentaPerdida(){
+		
+		try {
+			
+			Venta v = new Venta();
+			v.setLineas(lineasVenta2);
+			v.setEstadoVenta("f"); // estado f seria la venta perdida
+			FabricaSistema.getISistema().registrarNuevaVenta(v);
+
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		lineasVenta2 = new ArrayList<LineaVenta>();
+		lineasVenta = new ArrayList<DTVenta>();
+		
 		FacesContext.getCurrentInstance().addMessage(
 				null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Venta perdida ingresada con éxito", ""));
 	}
 	
+	public void facturarVenta() {
+		
+		try {
+			FabricaSistema.getISistema().actualizarStock();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		try {
+			
+			Venta v = new Venta();
+			v.setLineas(lineasVenta2);
+			v.setEstadoVenta("p"); // estado p seria la venta pendiente
+			FabricaSistema.getISistema().registrarNuevaVenta(v);
+
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		lineasVenta2 = new ArrayList<LineaVenta>();
+		lineasVenta = new ArrayList<DTVenta>();
+		
+		FacesContext.getCurrentInstance().addMessage(
+				null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Factura ingresada con éxito", ""));
+	}
 
 	public void agregarLineaVenta(DTVenta v){
-		
+		// pasa del DTVenta a una LineaVenta los datos.
 		v.setCantidad(1);
-		lineasVenta2.add(v);
+		LineaVenta e = new LineaVenta();
+		
+		e.setDescuentoReceta(v.getDescuentoReceta());
+		e.setPrecio(v.getPrecioVenta());
+		e.setCantidad(v.getCantidad());
+		e.setDescuento(v.getDescuento());
+		e.setRecetaBlanca(v.isRecetaBlanca());
+		e.setRecetaNaranja(v.isRecetaNaranja());
+		e.setRecetaVerde(v.isRecetaVerde());
+		e.setProductoId(v.getProductId());
+
+		Articulo a = new Articulo();
+		a.setPrecioVenta(v.getPrecioVenta());
+		a.setDescripcion(v.getDescripcion());
+		a.setCodigoBarras(v.getCodigoBarras());
+		a.setStock(v.getStock());
+		a.setPresentacion(v.getPresentacion());
+		a.setIdArticulo(v.getProductId());
+		e.setArticulo(a);
+		
+		lineasVenta2.add(e);
 		lineasVenta.remove(v);
 	}
-	
 
 	public String strTotal() {
 		BigDecimal total = new BigDecimal(0);
-		Iterator<DTVenta> it = lineasVenta2.iterator();
+		Iterator<LineaVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
-			DTVenta v = it.next();
+			LineaVenta v = it.next();
 			//calculo lo que tengo que restarle al precio segun el descuento seleccionado:
-			BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento())).divide(new BigDecimal(100));
+			BigDecimal x = (v.getArticulo().getPrecioVenta().multiply(v.getDescuento())).divide(new BigDecimal(100));
 			
 			BigDecimal n = new BigDecimal(0);
-			//calculo descuento por receta blanca 1 
+			//calculo descuento por receta blanca 1 del 25%
 			if (v.getDescuentoReceta().equals("25")){
-				n = (v.getPrecioVenta().multiply(new BigDecimal(25))).divide(new BigDecimal(100));
+				n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(25))).divide(new BigDecimal(100));
 			}
-			//calculo descuento por receta blanca 2 
+			//calculo descuento por receta blanca 2 del 40%
 			if (v.getDescuentoReceta().equals("40")){
-				n = (v.getPrecioVenta().multiply(new BigDecimal(30))).divide(new BigDecimal(100));
+				n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(30))).divide(new BigDecimal(100));
 			}
-			
 			
 			//sumo los totales restandole los descuentos correspondientes a cada uno y los multiplico por las cantidades
-			total = total.add(((v.getPrecioVenta().subtract(x)).subtract(n)).multiply(
+			total = total.add(((v.getArticulo().getPrecioVenta().subtract(x)).subtract(n)).multiply(
 					new BigDecimal(v.getCantidad())));
 			
 		}
+		venta.setMontoTotalAPagar(total);
 		return total.toString();
 	}
 	
 	public String strSubTotal() {
 		BigDecimal total = new BigDecimal(0);
-		Iterator<DTVenta> it = lineasVenta2.iterator();
+		Iterator<LineaVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
-			DTVenta v = it.next();
-			total = total.add(v.getPrecioVenta().multiply(
+			LineaVenta v = it.next();
+			total = total.add((v.getArticulo()).getPrecioVenta().multiply(
 					new BigDecimal(v.getCantidad())));
 		}
+		venta.setMontoTotal(total);
 		return total.toString();
-	}
-
-	public void facturarVenta() {
-		ventasSeleccionadas = new ArrayList<DTVenta>();
-		lineasVenta2 = new ArrayList<DTVenta>();
-		lineasVenta = new ArrayList<DTVenta>();
-		FacesContext.getCurrentInstance().addMessage(
-				null,
-				new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Factura ingresada con éxito", ""));
 	}
 
 	public List<DTVenta> getLineasVenta() {
@@ -225,30 +271,13 @@ public class VentaBean implements Serializable {
 		this.lineasVenta = lineasVenta;
 	}
 
-	public List<DTVenta> getLineasVenta2() {
+	public List<LineaVenta> getLineasVenta2() {
 		return lineasVenta2;
 	}
 
-	public void setLineasVenta2(List<DTVenta> lineasVenta2) {
+	public void setLineasVenta2(List<LineaVenta> lineasVenta2) {
 		this.lineasVenta2 = lineasVenta2;
 	}
-
-	public DTVenta getVenta() {
-		return venta;
-	}
-
-	public void setVenta(DTVenta venta) {
-		this.venta = venta;
-	}
-
-	public List<DTVenta> getVentasSeleccionadas() {
-		return ventasSeleccionadas;
-	}
-
-	public void setVentasSeleccionadas(List<DTVenta> ventasSeleccionadas) {
-		this.ventasSeleccionadas = ventasSeleccionadas;
-	}
-	
 
 	public String getDescripcionBusqueda() {
 		return descripcionBusqueda;
@@ -256,30 +285,6 @@ public class VentaBean implements Serializable {
 
 	public void setDescripcionBusqueda(String descripcionBusqueda) {
 		this.descripcionBusqueda = descripcionBusqueda;
-	}
-
-	public String getPresentacion() {
-		return presentacion;
-	}
-
-	public void setPresentacion(String presentacion) {
-		this.presentacion = presentacion;
-	}
-
-	public String getPrincipioActivo() {
-		return principioActivo;
-	}
-
-	public void setPrincipioActivo(String principioActivo) {
-		this.principioActivo = principioActivo;
-	}
-
-	public String getLaboratorio() {
-		return laboratorio;
-	}
-
-	public void setLaboratorio(String laboratorio) {
-		this.laboratorio = laboratorio;
 	}
 
 	public BigDecimal getPrecioVenta() {
@@ -290,27 +295,12 @@ public class VentaBean implements Serializable {
 		this.precioVenta = precioVenta;
 	}
 
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-	public List<DTVenta> getLineasVentaPerdidas() {
+	public List<LineaVenta> getLineasVentaPerdidas() {
 		return lineasVentaPerdidas;
 	}
 
-	public void setLineasVentaPerdidas(List<DTVenta> lineasVentaPerdidas) {
+	public void setLineasVentaPerdidas(List<LineaVenta> lineasVentaPerdidas) {
 		this.lineasVentaPerdidas = lineasVentaPerdidas;
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
 	}
 
 	public String getStrDescuento() {
@@ -343,6 +333,14 @@ public class VentaBean implements Serializable {
 
 	public void setCodigoBusqueda(String codigoBusqueda) {
 		this.codigoBusqueda = codigoBusqueda;
+	}
+
+	public Venta getVenta() {
+		return venta;
+	}
+
+	public void setVenta(Venta venta) {
+		this.venta = venta;
 	}
 
 

@@ -2,9 +2,11 @@ package controladores;
 
 import interfaces.IFacturacion;
 import interfaces.IFacturacionPersistencia;
+import interfaces.ISistema;
 
 import java.util.List;
 
+import datatypes.DTVenta;
 import model.Venta;
 import Util.XMLUtil;
 
@@ -13,8 +15,9 @@ public class FacturacionControlador implements IFacturacion {
 	@Override
 	public List<Venta> listarVentasPendientes() throws Exception {
 		try {
-			 IFacturacionPersistencia ifp = FabricaPersistencia.getInstanciaFacturacionPersistencia();
-			 return ifp.listarVentasPendientes();
+			IFacturacionPersistencia ifp = FabricaPersistencia
+					.getInstanciaFacturacionPersistencia();
+			return ifp.listarVentasPendientes();
 		} catch (Exception e) {
 			throw e;
 		}
@@ -28,16 +31,16 @@ public class FacturacionControlador implements IFacturacion {
 
 			// Obtengo venta pendiente y la marco como facturada
 			Venta venta = ifp.facturarVenta(ventaId);
-			
+
 			// Creo factura
 			XMLUtil.jaxbObjectToXML(venta);
 		} catch (Exception e) {
 			throw e;
 		}
 	}
-	
+
 	@Override
-	public void cancelarVenta(long ventaId) throws Exception{
+	public void cancelarVenta(long ventaId) throws Exception {
 		try {
 			IFacturacionPersistencia ifp = FabricaPersistencia
 					.getInstanciaFacturacionPersistencia();
@@ -46,5 +49,14 @@ public class FacturacionControlador implements IFacturacion {
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	@Override
+	public void registrarNuevaVenta(Venta v) throws Excepciones {
+		// TODO Auto-generated method stub
+		IFacturacionPersistencia pf = FabricaPersistencia
+				.getInstanciaFacturacionPersistencia();
+		pf.persistirVenta(v);
+
 	}
 }

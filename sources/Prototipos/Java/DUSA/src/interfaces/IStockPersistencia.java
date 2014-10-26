@@ -14,6 +14,7 @@ import model.Articulo;
 import model.Droga;
 import model.LineaPedido;
 import model.Pedido;
+import model.TipoIva;
 
 /**  
 * @author Santiago
@@ -107,4 +108,20 @@ public interface IStockPersistencia {
 	 * @throws Excepciones 
 	 */
 	void buscarArticulosId(DTBusquedaArticulo articulo) throws Excepciones;
+
+	/**
+	 * Retorna los distintos tipos de iva existentes en el sistema.
+	 * 
+	 * @return List<TipoIva> lista de los distintos tipos de iva existentes en el sistema.
+	 * @throws Excepciones
+	 * @author José Aguerre
+	 */
+	public List<TipoIva> obtenerTiposIva() throws Excepciones;
+
+	/**
+	 * Persiste los tipos de iva en el sistema.
+	 * @param lista
+	 * @author Jose Aguerre
+	 */
+	public void persistirTiposIva(List<TipoIva> lista) throws Excepciones;
 }

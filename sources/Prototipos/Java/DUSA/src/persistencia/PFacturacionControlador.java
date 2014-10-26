@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import controladores.Excepciones;
+import datatypes.DTVenta;
 import model.Articulo;
 import model.Cliente;
 import model.Enumerados;
@@ -153,6 +154,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	@Override
 	public Venta facturarVenta(long ventaId) throws Exception {
 		Connection con = Conexion.getConnection();
+		con.setAutoCommit(false);
 		Statement st = con.createStatement();
 		try {
 
@@ -249,8 +251,15 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				v.getLineas().add(lv);
 				v.setCantidadLineas(v.getCantidadLineas() + 1);
 			}
+			for (LineaVenta linea : v.getLineas()){
+				sqlUpdate = "UPDATE products SET stock = stock - " + linea.getCantidad();
+				sqlUpdate += " WHERE product_id = " + linea.getProductoId();
+				st.executeUpdate(sqlUpdate);
+			}
+			con.commit();
 			return v;
 		} catch (Exception e) {
+			con.rollback();
 			throw e;
 		} finally {
 			st.close();
@@ -381,6 +390,12 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		}
 		
 		return cantidadVendida;
+	}
+
+	@Override
+	public void persistirVenta(Venta v) throws Excepciones {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

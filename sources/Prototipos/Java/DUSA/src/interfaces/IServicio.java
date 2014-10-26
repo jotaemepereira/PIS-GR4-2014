@@ -19,4 +19,12 @@ public interface IServicio {
 	public void realizarPedido (Pedido p) throws Excepciones;
 	public List<Articulo> obtenerArticulos() throws Excepciones;
 	public List<Articulo> obtenerActualizacionDeStock(java.util.Date fecha);
+	
+	/**
+	 * Obtiene los tipos de IVA desde el Web Service
+	 * @return List<TipoIva> Lista con los tipos de IVA que devuelve el Web Service
+	 * @throws Excepciones
+	 * @author Jose Aguerre
+	 */
+	public List<TipoIva> obtenerTiposIva() throws Excepciones;
 }

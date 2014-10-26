@@ -16,6 +16,10 @@ import model.Droga;
 import model.Pedido;
 import model.Presentacion;
 import model.Proveedor;
+import model.TipoIva;
+import model.Usuario;
+
+import model.Venta;
 
 public interface ISistema {
 	
@@ -23,6 +27,17 @@ public interface ISistema {
 	
 	public void altaProveedor(Proveedor proveedor) throws Excepciones;
 
+	/**
+	 * Se encarga de dar de alta un nuevo artículo en el sistema.
+	 * 
+	 * @param articulo
+	 * 			Artículo a persistir.
+	 * 
+	 * @throws Excepciones
+	 *             - ERROR_SISTEMA (en caso que suceda algún error a la hora de
+	 *             conectarse o comunicarse con la base)
+	 * @author José Aguerre
+	 */
 	public void altaArticulo(Articulo articulo) throws Excepciones;
 
 	/**
@@ -126,6 +141,20 @@ public interface ISistema {
 	 *             conectarse o comunicarse con la base)
 	 * @author José Aguerre
 	 */
+	public void registrarNuevaVenta(Venta v)
+			throws Excepciones;
+
+	/**
+	 * Registra en el sistema la venta v
+	 * 
+	 * @param v 
+	 * 			- lista de DTVenta que componen la venta a registrar
+	 * 
+	 * @throws Excepciones
+	 *             - ERROR_SISTEMA (en caso que suceda algún error a la hora de
+	 *             conectarse o comunicarse con la base)
+	 * @author Ignacio Rodriguez
+	 */
 	public List<DTProveedor> obtenerMarcas() throws Excepciones;
 
 	/**
@@ -154,5 +183,17 @@ public interface ISistema {
 	 * @param codigoIdentificador 
 	 */
 	public boolean existeCodigoParaProveedor(long idProveedor, long codigoIdentificador) throws Excepciones;
+
+	/**
+	 * Retorna los distintos tipos de iva existentes en el sistema.
+	 * 
+	 * @return List<TipoIva> lista de los distintos tipos de iva existentes en el sistema.
+	 * @throws Excepciones
+	 * @author José Aguerre
+	 */
+	public List<TipoIva> obtenerTiposIva() throws Excepciones;
+	
+
+	public Usuario obtenerUsuarioLogueado();
 
 }
