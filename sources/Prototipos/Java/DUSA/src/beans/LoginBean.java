@@ -64,7 +64,7 @@ public class LoginBean implements Serializable {
 							FacesMessage.SEVERITY_ERROR,
 							e.getMessage(),
 							""));
-
+			this.instanciaSistema = null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
