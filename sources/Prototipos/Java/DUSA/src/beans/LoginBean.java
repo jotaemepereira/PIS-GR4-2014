@@ -1,7 +1,6 @@
 package beans;
 
 import interfaces.ISistema;
-
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -56,6 +55,7 @@ public class LoginBean implements Serializable {
 			
 			instanciaSistema.iniciarSesion(nomUsuario, contrasenia);
 			FacesContext.getCurrentInstance().getExternalContext().redirect("stock/altaArticulo.jsf");
+
 		} catch (Excepciones e) {			
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(
@@ -64,9 +64,11 @@ public class LoginBean implements Serializable {
 							FacesMessage.SEVERITY_ERROR,
 							e.getMessage(),
 							""));
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+
 		}
 	}
 
@@ -109,6 +111,7 @@ public class LoginBean implements Serializable {
     }
 
 	public LoginBean() {
+
 
 	}
 
