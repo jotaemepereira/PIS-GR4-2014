@@ -73,3 +73,6 @@ local.properties
 # PDT-specific
 .buildpath
 
+# SolR
+Prototipos/Java/DUSA/solr/home/articulos/conf/dataimport.properties
+
