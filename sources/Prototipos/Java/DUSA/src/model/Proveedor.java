@@ -10,6 +10,7 @@ public class Proveedor {
 	private String nombreComercial = "";
 	private String tipoDocumento = "";
 	private Boolean marcaOlab = false;
+	private Usuario usuario;
 	
 	public Proveedor(String nombreComercial) throws Excepciones{
 		if((nombreComercial == null) || (nombreComercial.trim().isEmpty())){
@@ -84,5 +85,13 @@ public class Proveedor {
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		this.marcaOlab = marcaOlab;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 }
