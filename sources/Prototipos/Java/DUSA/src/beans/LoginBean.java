@@ -78,6 +78,8 @@ public class LoginBean implements Serializable {
 	}
 	public void cerrarSesion(){
 		this.instanciaSistema = null;
+		this.nomUsuario = "";
+		this.contrasenia = "";
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("../login.jsf");
 		} catch (IOException e) {
