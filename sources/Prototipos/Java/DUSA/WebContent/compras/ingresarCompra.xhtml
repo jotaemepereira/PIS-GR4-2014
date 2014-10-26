@@ -96,10 +96,10 @@
 															itemValue="#{m.RUT}" />
 													</p:selectOneMenu>
 													
-													<h:commandButton id="btn1" value="Crear nuevo proveedor"
-														update="btn1 btn2 show-hide"
-														actionListener="${comprasBean.ingresoManual}"
-														styleClass="btn btn-default" style="margin:0 2% 10px 0;" />
+													<p:commandLink ajax="true"
+														actionListener="#{navBean.navAPagina('/stock/listado.xhtml')}" target="_blank">
+														Crear nuevo proveedor
+													</p:commandLink>
 													
 													<h:commandButton id="btn1" value=""
 														update="btn1 btn2 show-hide"
