@@ -189,7 +189,7 @@
 														<p:message for="codigoIdentificador" display="text" />
 													</div>
 													<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-														<p:commandButton value="Agregar" update="panel msgs tablaProveedores" validateClient="true" actionListener="#{stockBean.agregarProveedor}" 
+														<p:commandButton value="Agregar" update="msgs codigoIdentificador proveedor tablaProveedores" validateClient="true" actionListener="#{stockBean.agregarProveedor}" 
 														styleClass="btn btn-info pull-right" process="@this,codigoIdentificador"/>
 													</div>
 												</div>
