@@ -16,7 +16,6 @@ import javax.faces.event.ActionEvent;
 import model.Venta;
 import controladores.Excepciones;
 import controladores.FabricaSistema;
-import persistencia.Database;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTVenta;
 
