@@ -18,6 +18,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.event.FlowEvent;
+
 import controladores.Excepciones;
 import controladores.FabricaSistema;
 import model.AccionTer;
@@ -78,8 +80,82 @@ public class StockBean implements Serializable{
 	//Busqueda de artículos
 	private String busqueda = "";
 	private List<DTBusquedaArticulo> resBusqueda = new ArrayList<DTBusquedaArticulo>();
-	
-	
+
+	//
+	private Articulo articuloSeleccionado;
+	private int tipoMotivo;
+	private String motivo;
+	private String busquedaDesarme;
+	private List<DTBusquedaArticulo> resBusquedaDesarme = new ArrayList<DTBusquedaArticulo>();
+	private Articulo articuloParaDesarme;
+	private int nuevoStockSeleccionado;
+	private int nuevoStockDesarme;
+
+	public Articulo getArticuloSeleccionado() {
+		return articuloSeleccionado;
+	}
+
+	public void setArticuloSeleccionado(Articulo articuloSeleccionado) {
+		this.articuloSeleccionado = articuloSeleccionado;
+	}
+
+	public int getTipoMotivo() {
+		return tipoMotivo;
+	}
+
+	public void setTipoMotivo(int tipoMotivo) {
+		this.tipoMotivo = tipoMotivo;
+	}
+
+	public String getMotivo() {
+		return motivo;
+	}
+
+	public void setMotivo(String motivo) {
+		this.motivo = motivo;
+	}
+
+	public String getBusquedaDesarme() {
+		return busquedaDesarme;
+	}
+
+	public void setBusquedaDesarme(String busquedaDesarme) {
+		this.busquedaDesarme = busquedaDesarme;
+	}
+
+	public List<DTBusquedaArticulo> getResBusquedaDesarme() {
+		return resBusquedaDesarme;
+	}
+
+	public void setResBusquedaDesarme(
+			List<DTBusquedaArticulo> resBusquedaDesarme) {
+		this.resBusquedaDesarme = resBusquedaDesarme;
+	}
+
+	public Articulo getArticuloParaDesarme() {
+		return articuloParaDesarme;
+	}
+
+	public void setArticuloParaDesarme(Articulo articuloParaDesarme) {
+		this.articuloParaDesarme = articuloParaDesarme;
+	}
+
+	public int getNuevoStockSeleccionado() {
+		return nuevoStockSeleccionado;
+	}
+
+	public void setNuevoStockSeleccionado(int nuevoStockSeleccionado) {
+		this.nuevoStockSeleccionado = nuevoStockSeleccionado;
+	}
+
+	public int getNuevoStockDesarme() {
+		return nuevoStockDesarme;
+	}
+
+	public void setNuevoStockDesarme(int nuevoStockDesarme) {
+		this.nuevoStockDesarme = nuevoStockDesarme;
+	}
+
 	public List<DTLineaPedido> getPedidos() {
 		return pedidos;
 	}

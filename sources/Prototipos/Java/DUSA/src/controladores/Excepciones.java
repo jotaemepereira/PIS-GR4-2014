@@ -30,14 +30,18 @@ public class Excepciones extends Exception {
 	public static String MENSAJE_ART_DUPLICADO					= "Ya existe un artículo en el sistema con esa descripción";
 	
     // Mensajes para el Login
-	public static String USUARIO_INVALIDO						= "No existe un usuario con ese nombre";
-	public static String CONSTRASENIA_INVALIDA					= "Contrasenia incorrecta";
+	public static String USUARIO_INVALIDO						= "El nombre de usuario y/o la contraseña no son válidos";
 	
 	//Mensaje de no tiene permisos para realizar dicha operacion 
 	public static String MENSAJE_USUARIO_NO_TIENE_PERMISOS 				= "El usuario logueado no tiene permisos para realizar la operacion";
 	
 	//Mensajes de conexion con webServices
 	public static String MENSAJE_ERROR_CONEXION_WS						= "No se ha establecido conexión. Por favor, intentelo más tarde o verifique su conexión a internet.";
+	
+	//Mensajes de facturacion
+	public static String MENSAJE_FACTURADA_OK					= "Se facturó la venta correctamente.";
+	public static String MENSAJE_CANCELADA_OK					= "Se venta ha sido cancelada correctamente.";
+	public static String MENSAJE_NO_CORROBORADO_OK				= "Debe corroborar todos los items de la venta.";
 	
 	public Excepciones(String message, int errorCode){
         super(message);
