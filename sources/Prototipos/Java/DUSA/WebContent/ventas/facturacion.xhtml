@@ -81,13 +81,14 @@
 			modal="true" resizable="false">
 			<h:form id="formFacturar" style="width: 750px;">
 				<p:dataTable id="tablaVentas" var="lineaVenta"
-					value="#{facturacionBean.ventaSeleccionada.lineas}" rowIndexVar="index">
+					value="#{facturacionBean.ventaSeleccionada.lineas}"
+					rowIndexVar="index">
 
-					<p:column headerText="" style="text-align: center;">
-						<p:selectBooleanCheckbox>
-						<p:ajax event="change" listener="#{v.toggleCheck(index)}" process="@this" />
+					<p:column rendered="#{facturacionBean.facturacionControlada}"
+						headerText="" style="text-align: center; width: 50px;">
+						<p:selectBooleanCheckbox value="#{facturacionBean.lineasCheck[index]}">
+							<f:ajax event="change" execute="@this" />
 						</p:selectBooleanCheckbox>
-						<h:outputText value="#{lineaVenta.articulo.descripcion}" />
 					</p:column>
 
 					<p:column headerText="Nombre" style="text-align: center;">
@@ -144,15 +145,12 @@
 					<p:commandButton style="margin-right: 45px;"
 						actionListener="#{facturacionBean.facturar()}"
 						styleClass="btn btn-default pull-right"
-						oncomplete="PF('dlg2').hide()"
-						update=":form1" value="Facturar"
+						oncomplete="PF('dlg2').hide()" update=":form1" value="Facturar"
 						title="Facturar">
 					</p:commandButton>
-					<p:commandButton
-						actionListener="#{facturacionBean.cancelar()}"
+					<p:commandButton actionListener="#{facturacionBean.cancelar()}"
 						styleClass="btn btn-default pull-right"
-						oncomplete="PF('dlg2').hide()"
-						update=":form1" value="Cancelar"
+						oncomplete="PF('dlg2').hide()" update=":form1" value="Cancelar"
 						title="Facturar">
 					</p:commandButton>
 				</div>

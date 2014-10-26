@@ -39,6 +39,11 @@ public class Excepciones extends Exception {
 	//Mensajes de conexion con webServices
 	public static String MENSAJE_ERROR_CONEXION_WS						= "No se ha establecido conexión. Por favor, intentelo más tarde o verifique su conexión a internet.";
 	
+	//Mensajes de facturacion
+	public static String MENSAJE_FACTURADA_OK					= "Se facturó la venta correctamente.";
+	public static String MENSAJE_CANCELADA_OK					= "Se venta ha sido cancelada correctamente.";
+	public static String MENSAJE_NO_CORROBORADO_OK				= "Debe corroborar todos los items de la venta.";
+	
 	public Excepciones(String message, int errorCode){
         super(message);
         this.errorCode = errorCode;
