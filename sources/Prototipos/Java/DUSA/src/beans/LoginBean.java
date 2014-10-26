@@ -1,9 +1,8 @@
 package beans;
 
-import java.io.Console;
-import java.io.IOException;
 import java.io.Serializable;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -49,8 +48,14 @@ public class LoginBean implements Serializable {
 	public void iniciarSesion() {
 		try {
 			FabricaSistema.getISistema().iniciarSesion(nomUsuario, contrasenia);
-		} catch (Exception e) {			
-			System.out.println(e);
+		} catch (Excepciones e) {			
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							e.getMessage(),
+							""));
 		}
 	}
 	
@@ -61,6 +66,5 @@ public class LoginBean implements Serializable {
 	public LoginBean() {
 		
 	}
-
 
 }

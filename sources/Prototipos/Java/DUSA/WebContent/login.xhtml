@@ -20,7 +20,7 @@
 
 		<div class="container">
 
-			<h:form class="form-signin" role="form">
+			<h:form class="form-signin" role="form" id="form1">
 				<div class="text-center">
 					<img src="Images/Drcurita.png" style="height: 150px; width: 120px"></img>
 				</div>
@@ -28,15 +28,19 @@
 				<p:inputText id="nomUsuario" value="#{loginBean.nomUsuario}"
 					type="text" styleClass="form-control"
 					placeholder="Nombre de usuario" required="true"
-					requiredMessage="Dato Requerido." />
+					requiredMessage="Dato Requerido.">
+					<f:ajax event="change" execute="@this" />
+				</p:inputText>
 				<p:message for="nomUsuario" display="text" />
 				<p:inputText id="contrasenia" value="#{loginBean.contrasenia}" type="password"
 					styleClass="form-control" placeholder="Contraseña" required="true"
-					requiredMessage="Dato Requerido." />
+					requiredMessage="Dato Requerido.">
+					<f:ajax event="change" execute="@this" />
+				</p:inputText>
 				<p:message for="contrasenia" display="text" />
-				<h:commandButton value="Entrar"
+				<p:commandButton value="Entrar"
 					actionListener="#{loginBean.iniciarSesion}"
-					styleClass="btn btn-lg btn-primary btn-block" type="submit" />
+					styleClass="btn btn-lg btn-primary btn-block"/>
 			</h:form>
 
 		</div>

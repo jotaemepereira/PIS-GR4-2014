@@ -8,6 +8,7 @@ import interfaces.IStockPersistencia;
 import java.util.Calendar;
 import java.util.Date;
 
+
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 /**

@@ -4,7 +4,7 @@
 target/
 # Solr
 data/
-conf/dataimport.properties
+dataimport.properties
 
 # OS Files #
 .DS_Store
@@ -72,4 +72,7 @@ local.properties
  
 # PDT-specific
 .buildpath
+
+# SolR
+Prototipos/Java/DUSA/solr/home/articulos/conf/dataimport.properties
 

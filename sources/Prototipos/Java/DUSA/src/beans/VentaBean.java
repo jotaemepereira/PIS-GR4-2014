@@ -16,7 +16,6 @@ import javax.faces.event.ActionEvent;
 import model.Venta;
 import controladores.Excepciones;
 import controladores.FabricaSistema;
-import persistencia.Database;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTVenta;
 
@@ -78,6 +77,7 @@ public class VentaBean implements Serializable {
 			Iterator<DTVenta> it = lineasVenta.iterator();
 			while (it.hasNext()) {
 				DTVenta dtVenta = (DTVenta) it.next();
+				System.out.println("precio " + dtVenta.getPrecioVenta());
 				dtVenta.setDescuentoPrecio("$"+dtVenta.getPrecioVenta().toString()+"(%0)");	
 			}
 		} catch (Excepciones e) {
