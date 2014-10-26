@@ -5,8 +5,8 @@ import interfaces.IFacturacionPersistencia;
 import interfaces.IPredictor;
 import interfaces.IStockPersistencia;
 
-import java.sql.Date;
 import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
@@ -49,10 +49,11 @@ public class PredecirEnBaseAHistorico implements IPredictor{
 		Calendar hasta = Calendar.getInstance();
 		long j= CANT_MILISEC_EN_UN_DIA;
 		
-		for (int i=CANT_DIAS_HABILES; i!=0; j++){
+		for (int i=CANT_DIAS_HABILES; i!=0; j += CANT_MILISEC_EN_UN_DIA){
 			desde.setTimeInMillis(hoy.getTimeInMillis()-j);
 			if (desde.DAY_OF_WEEK!=1 ){
-				int cantidad = fp.cantidadVendidaEnPeriodo(idArticulo, new Date(desde.getTimeInMillis()), new Date(desde.getTimeInMillis()));
+				
+				int cantidad = fp.cantidadVendidaEnPeriodo(idArticulo, new java.sql.Date(desde.getTimeInMillis()), new java.sql.Date(desde.getTimeInMillis() + CANT_MILISEC_EN_UN_DIA));
 				recta.addData(i,cantidad);
 				i--;
 			}
@@ -76,6 +77,7 @@ public class PredecirEnBaseAHistorico implements IPredictor{
 		
 		long minStock = st.getStockMinimo(idArticulo);
 		int cantAPedir = (int) Math.ceil(Math.max(cantidaPredecida, minStock) - st.getStock(idArticulo));
+		
 		if (cantAPedir < 0)
 			return 0;
 		else
