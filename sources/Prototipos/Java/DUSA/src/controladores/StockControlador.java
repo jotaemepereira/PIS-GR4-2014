@@ -109,9 +109,9 @@ public class StockControlador implements IStock {
 				 dtlPedido.setStockMinimo(articulo.getStockMinimo());
 				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				 dtlPedido.setCantidad(lPedido.getCantidad());
-				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().setScale(2, RoundingMode.HALF_EVEN).floatValue());
-				 // TODO: hardcodear id de DUSA
-				 // TODO: Calcular costo ponderado promedio
+				 dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
+				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().floatValue());
+				 
 				 DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
 				 
 				 if (dtProveedor != null){
@@ -167,6 +167,8 @@ public class StockControlador implements IStock {
 				dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				dtlPedido.setCantidad(lPedido.getCantidad());
 				dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
+				dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().floatValue());
+				
 				DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
 				if (dtProveedor != null){
 					 //Preventivo control si no es de DUSA no se ingresa
