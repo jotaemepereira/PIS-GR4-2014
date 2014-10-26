@@ -24,6 +24,14 @@
 .visible {
 	display: block;
 }
+
+.ui-icon-triangle-1-s {
+    background-position: -68px -16px !important;
+}
+
+.ui-selectonemenu-label{
+	width: 100%;
+}
 </style>
 	</h:head>
 	<h:body>
@@ -46,7 +54,7 @@
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
 								<div class="container-fluid">
-								<!------------------- BOTONES PARA SELECCIONAR FORMA DE FACTURA --------------->
+								<!--          BOTONES PARA SELECCIONAR FORMA DE FACTURA -->
 									<div class="row">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
 											style="text-align: center;">
@@ -64,14 +72,13 @@
 										</div>
 									</div>
 
-								<!--------------------- PANEL DE LA FACTURA ---------------------->
+								<!--      PANEL DE LA FACTURA       -->
 									<h:panelGroup id="show-hide" layout="block"
 										class="${comprasBean.hideTable}">
 										<div class="row"
 											style="margin-bottom: 1%; text-align: center;">
+											<!--      SELECT DE ORDENES DE COMPRA EN EL CASO DE FACTURA AUTOMATICA DUSA -->
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-
-											<!------------ SELECT DE ORDENES DE COMPRA EN EL CASO DE FACTURA AUTOMATICA DUSA ----->
 												<p:selectOneMenu id="facturar"
 													value="#{comprasBean.ordenDeCompraDUSA}" filter="true"
 													filterMatchMode="contains" required="false"
@@ -82,11 +89,13 @@
 														itemLabel="#{m.fechaComprobante} #{m.ordenDeCompra}"
 														itemValue="#{m.ordenDeCompra}" />
 												</p:selectOneMenu>
-												
-											<!------------- SELECT DE PROVEEDORES PARA INGRESO MANUAL  --------------------->
-												<h:panelGroup styleClass="${comprasBean.selectProveedor}">
+											</div>	
+											
+											<!--       SELECT DE PROVEEDORES PARA INGRESO MANUAL  -->
+											<h:panelGroup styleClass="${comprasBean.selectProveedores}">
+												<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
 													<p:selectOneMenu id="proveedores"
-														value="#{comprasBean.selectedProveedores}" filter="true"
+														value="#{comprasBean.selectedProveedor}" filter="true"
 														filterMatchMode="contains" required="false"
 														style="width:100%">
 														<f:selectItem itemLabel="Seleccione un proveedor"
@@ -95,28 +104,95 @@
 															itemLabel="#{m.RUT} #{m.nombreComercial}"
 															itemValue="#{m.RUT}" />
 													</p:selectOneMenu>
-													
-													<p:commandLink ajax="true"
-														actionListener="#{navBean.navAPagina('/stock/listado.xhtml')}" target="_blank">
-														Crear nuevo proveedor
-													</p:commandLink>
-													
-													<h:commandButton id="btn1" value=""
-														update="btn1 btn2 show-hide"
+												</div>
+												<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">		
+													<p:commandButton icon="ui-icon-refresh"
+														update="proveedores" title="actualizar lista"
 														actionListener="${comprasBean.actualizarProveedores}"
-														styleClass="btn btn-default" style="margin:0 2% 10px 0;" />
-												</h:panelGroup>
+														styleClass="btn-default" style="margin:0 2% 10px 0;" />
+												</div>
+												<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">		
+													<a href="../proveedores/altaProveedor.jsf" target="_blank" class="btn btn-default">Crear nuevo proveedor</a>
+												</div>
+												
+											</h:panelGroup>
+											
+										</div>
+										
+									<!--       TABLA DE LA COMPRA     -->
+										<div class="row" style="margin-bottom: 1%;">
+											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+												<p:dataTable var="pedido" id="tablePedido" 
+												value="#{stockBean.pedidos}" emptyMessage="No se encontraron registros.">
+												<!-- rendered="${stockBean.disablePrediccionDePedido || stockBean.disableDesdeUltimoPedido}" -->
+												<div class="row">
+													<p:column headerText="Artículo" styleClass="col-xs-3 col-sm-2 col-md-2 col-lg-2">
+														<h:outputText value="" />
+													</p:column>
+													<p:column headerText="Descripción" styleClass="col-xs-3 col-sm-2 col-md-3 col-lg-3">
+														<h:outputText value="" />
+													</p:column>
+													<p:column headerText="$ última compra" styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+														<h:outputText value="" />
+													</p:column>
+													<p:column headerText="$ unitario" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:inputText value="" />
+													</p:column>
+													<p:column headerText="Descuento" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:inputText value="" />
+													</p:column>
+													<p:column headerText="Dsc. descuento" styleClass="hidden-xs hidden-sm col-md-2 col-lg-2">
+														<h:inputText value="" />
+													</p:column>
+													<p:column headerText="Cantidad" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:inputText value="" />
+													</p:column>
+													<p:column headerText="$ total" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:outputText value="" />
+													</p:column>
+												</div>
+												</p:dataTable>
+											
 											</div>
 										</div>
 										
-										<div class="row" style="margin-bottom: 1%;">
-											<h:panelGroup>
-													
-												
-												
-											</h:panelGroup>
+										<div class="row">
+											<span class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Tributo</span>
+											<span class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Monto neto</span>
+											<span class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Total IVA</span>
+											<span class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Retenciones</span>
 										</div>
 										
+										<div class="row">
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+												<span>IVA min</span>
+												<h:inputText value=""></h:inputText>
+											</div>
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+												<span>Gravado IVA min.</span>
+											</div>
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Total IVA</div>
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Retenciones</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Tributo</div>
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Monto neto</div>
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Total IVA</div>
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Retenciones</div>
+										</div>
+										<div class="row">
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Tributo</div>
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Monto neto</div>
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Total IVA</div>
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">Retenciones</div>
+										</div>
+										<div class="row">
+										
+										</div>
+										<div class="row">
+										
+										</div>
+									<!--    BOTONES DE CONFIRMAR Y CANCELAR      -->
 										<div class="row" style="margin-bottom: 1%;">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<div class="btn-group pull-right">
