@@ -30,7 +30,7 @@ public class Excepciones extends Exception {
 	public static String MENSAJE_ART_DUPLICADO					= "Ya existe un artículo en el sistema con esa descripción";
 	
     // Mensajes para el Login
-	public static String USUARIO_INVALIDO						= "El nombre y/o la contraseña no son válidos";
+	public static String USUARIO_INVALIDO						= "El nombre de usuario y/o la contraseña no son válidos";
 	
 	//Mensaje de no tiene permisos para realizar dicha operacion 
 	public static String MENSAJE_USUARIO_NO_TIENE_PERMISOS 				= "El usuario logueado no tiene permisos para realizar la operacion";
