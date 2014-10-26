@@ -82,6 +82,7 @@ public class VentaBean implements Serializable {
 			Iterator<DTVenta> it = lineasVenta.iterator();
 			while (it.hasNext()) {
 				DTVenta dtVenta = (DTVenta) it.next();
+				System.out.println("precio " + dtVenta.getPrecioVenta());
 				dtVenta.setDescuentoPrecio("$"+dtVenta.getPrecioVenta().toString()+"(%0)");	
 			}
 		} catch (Excepciones e) {
