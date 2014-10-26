@@ -23,6 +23,8 @@ import controladores.FabricaSistema;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.TipoIva;
+import model.Usuario;
 import model.Enumerados.TipoFormaDePago;
 import model.LineaPedido;
 import model.Pedido;
@@ -64,7 +66,7 @@ public class StockBean implements Serializable{
 	
 	private List<DTFormasVenta> formasVenta = new ArrayList<DTFormasVenta>();
 	private List<DTTipoArticulo> tiposArticulo = new ArrayList<DTTipoArticulo>();
-	private int[] tiposIVA;
+	private List<TipoIva> tiposIVA;
 	private List<DTLineaPedido> pedidos = new ArrayList<DTLineaPedido>();
 	private String message;
 	private String messageClass;
@@ -174,10 +176,10 @@ public class StockBean implements Serializable{
 	public void setProveedoresSeleccionados(List<DTProveedor> proveedoresSeleccionados) {
 		this.proveedoresSeleccionados = proveedoresSeleccionados;
 	}
-	public int[] getTiposIVA() {
+	public List<TipoIva> getTiposIVA() {
 		return tiposIVA;
 	}
-	public void setTiposIVA(int[] tiposIVA) {
+	public void setTiposIVA(List<TipoIva> tiposIVA) {
 		this.tiposIVA = tiposIVA;
 	}
 	public static long getSerialversionuid() {
@@ -570,6 +572,12 @@ public class StockBean implements Serializable{
 						articulo.setPrecioVenta(articulo.getPrecioUnitario().multiply(articulo.getPorcentajePrecioVenta().add(new BigDecimal(1))));
 					}
 					
+					/* Cargo el usuario que realiza el alta */
+					// TODO traer el usuario logueado del bean de sesión
+					Usuario usr = new Usuario();
+					usr.setNombre("Admin");
+					articulo.setUsuario(usr);
+					
 					/* Llamo a la logica para que se de de alta el articulo en el sistema y
 					 en caso de error lo muestro */
 					FabricaSistema.getISistema().altaArticulo(articulo);
@@ -651,6 +659,9 @@ public class StockBean implements Serializable{
 		//Cargo formas de venta para el combo
 		cargarFormasVenta();
 		
+		//Cargo tipos de iva para el combo
+		cargarTiposIva();
+		
 	}
 	
 	public void cargarMarcas(){
@@ -730,6 +741,15 @@ public class StockBean implements Serializable{
 		fv.setFormaVenta(model.Enumerados.formasVenta.controlMedico);
 		fv.setDescripcion("Control médico");
 		formasVenta.add(fv);
+	}
+	
+	public void cargarTiposIva(){
+		try{
+			this.tiposIVA = FabricaSistema.getISistema().obtenerTiposIva();
+		} catch (Excepciones e){
+			this.message = e.getMessage();
+			this.messageClass = "alert alert-danger";
+		}
 	}
 	
 	public void buscarArticulos(){

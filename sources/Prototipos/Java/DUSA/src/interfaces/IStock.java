@@ -8,6 +8,7 @@ import model.AccionTer;
 import model.Articulo;
 import model.Droga;
 import model.Pedido;
+import model.TipoIva;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
@@ -108,4 +109,13 @@ public interface IStock {
 	 */
 	public List<DTBusquedaArticulo> buscarArticulos(
 			String busqueda) throws Excepciones;
+
+	/**
+	 * Retorna los distintos tipos de iva existentes en el sistema.
+	 * 
+	 * @return List<TipoIva> lista de los distintos tipos de iva existentes en el sistema.
+	 * @throws Excepciones
+	 * @author José Aguerre
+	 */
+	public List<TipoIva> obtenerTiposIva() throws Excepciones;
 }
