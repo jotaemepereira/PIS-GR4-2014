@@ -28,6 +28,7 @@ import model.Enumerados.TipoFormaDePago;
 import model.LineaPedido;
 import model.Pedido;
 import model.TipoIva;
+import model.Usuario;
 import interfaces.IServicio;
 
 
@@ -81,6 +82,9 @@ public class ServicioDusaControlador implements IServicio {
 		//articulo.setStockMinimo();
 		//articulo.setTipoAutorizacion();
 		//articulo.setTipoIva();
+		Usuario usr = new Usuario();
+		usr.setNombre("Admin");
+		articulo.setUsuario(usr);
 		//articulo.setUltimoCosto();
 		//articulo.setVencimientoMasCercano();
 	

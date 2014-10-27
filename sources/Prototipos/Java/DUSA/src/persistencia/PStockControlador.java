@@ -86,7 +86,11 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.setBigDecimal(17, articulo.getCostoOferta());//Null
 				stmt.setBigDecimal(18, articulo.getUltimoCosto());//Null
 				stmt.setBigDecimal(19, articulo.getCostoPromedio());//Null
-				stmt.setInt(20, articulo.getTipoIva().getTipoIVA());//Null
+				if (articulo.getTipoIva() != null){
+					stmt.setInt(20, articulo.getTipoIva().getTipoIVA());//Null
+				}else{
+					stmt.setNull(20, java.sql.Types.INTEGER);
+				}				
 				stmt.setString(21, articulo.getCodigoBarras());//Null
 				stmt.setNull(22, java.sql.Types.TIMESTAMP);//Null Vencimiento Más Cercano
 				stmt.setLong(23, articulo.getStock());//Not Null

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.math.*;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ViewHandler;
@@ -43,7 +44,6 @@ import datatypes.DTTipoArticulo;
 @ManagedBean
 @ViewScoped
 public class StockBean implements Serializable {
-
 
 	private ISistema instanciaSistema;
 
@@ -382,10 +382,9 @@ public class StockBean implements Serializable {
 		hideElement = "visible";
 		pedidos.clear();
 
-
 		try {
-			// instanciaSistema.actualizarStock();
-			pedidos = instanciaSistema
+			// this.instanciSistema.actualizarStock();
+			pedidos = this.instanciaSistema
 					.generarPedidoEnBaseAPedidoAnterior();
 
 		} catch (Exception e) {
@@ -428,7 +427,7 @@ public class StockBean implements Serializable {
 
 		try {
 
-			pedidos = instanciaSistema
+			pedidos = this.instanciaSistema
 					.generarPedidoEnBaseAHistorico(5);
 		} catch (Exception e) {
 
@@ -521,7 +520,7 @@ public class StockBean implements Serializable {
 
 		try {
 
-			instanciaSistema.realizarPedido(p);
+			this.instanciaSistema.realizarPedido(p);
 
 			pedidos.clear();
 			disableDesdeUltimoPedido = false;
@@ -600,7 +599,7 @@ public class StockBean implements Serializable {
 
 	private boolean existeCodigoParaProveedor(long idProveedor,
 			long codigoIdentificador) throws Excepciones {
-		return instanciaSistema.existeCodigoParaProveedor(
+		return this.instanciaSistema.existeCodigoParaProveedor(
 				idProveedor, codigoIdentificador);
 	}
 
@@ -674,16 +673,13 @@ public class StockBean implements Serializable {
 					}
 
 					/* Cargo el usuario que realiza el alta */
-					// TODO traer el usuario logueado del bean de sesión
-					Usuario usr = new Usuario();
-					usr.setNombre("Admin");
-					articulo.setUsuario(usr);
+					articulo.setUsuario(this.instanciaSistema.obtenerUsuarioLogueado());
 
 					/*
 					 * Llamo a la logica para que se de de alta el articulo en
 					 * el sistema y en caso de error lo muestro
 					 */
-					instanciaSistema.altaArticulo(articulo);
+					this.instanciaSistema.altaArticulo(articulo);
 					// si todo bien aviso y vacio el formulario
 					context.addMessage(null, new FacesMessage(
 							FacesMessage.SEVERITY_INFO,
@@ -736,32 +732,11 @@ public class StockBean implements Serializable {
 
 		this.noEsMedicamento = true;
 
-		// Cargo las marcas de la base de datos
-		cargarMarcas();
-
-		// Cargo los proveedores de la base de datos
-		cargarProveedores();
-
-		// Cargo las drogas de la base de datos
-		cargarDrogas();
-
-		// Cargo las acciones terapéuticas de la base de datos
-		cargarAccionesTerapeuticas();
-
-		// Cargo tipos de articulo para el combo
-		cargarTiposArticulo();
-
-		// Cargo formas de venta para el combo
-		cargarFormasVenta();
-
-		// Cargo tipos de iva para el combo
-		cargarTiposIva();
-
 	}
 
 	public void cargarMarcas() {
 		try {
-			this.listaMarcas = instanciaSistema.obtenerMarcas();
+			this.listaMarcas = this.instanciaSistema.obtenerMarcas();
 		} catch (Excepciones e) {
 			this.message = e.getMessage();
 			this.messageClass = "alert alert-danger";
@@ -770,7 +745,7 @@ public class StockBean implements Serializable {
 
 	public void cargarProveedores() {
 		try {
-			this.proveedores = instanciaSistema
+			this.proveedores = this.instanciaSistema
 					.obtenerProveedores();
 			this.listaProveedores = new ArrayList<DTProveedor>(
 					this.proveedores.values());
@@ -782,7 +757,7 @@ public class StockBean implements Serializable {
 
 	public void cargarDrogas() {
 		try {
-			this.listaDrogas = instanciaSistema.obtenerDrogas();
+			this.listaDrogas = this.instanciaSistema.obtenerDrogas();
 		} catch (Excepciones e) {
 			this.message = e.getMessage();
 			this.messageClass = "alert alert-danger";
@@ -791,7 +766,7 @@ public class StockBean implements Serializable {
 
 	public void cargarAccionesTerapeuticas() {
 		try {
-			this.listaAccionesTer = instanciaSistema
+			this.listaAccionesTer = this.instanciaSistema
 					.obtenerAccionesTerapeuticas();
 		} catch (Excepciones e) {
 			this.message = e.getMessage();
@@ -843,7 +818,7 @@ public class StockBean implements Serializable {
 
 	public void cargarTiposIva() {
 		try {
-			this.tiposIVA = instanciaSistema.obtenerTiposIva();
+			this.tiposIVA = this.instanciaSistema.obtenerTiposIva();
 		} catch (Excepciones e) {
 			this.message = e.getMessage();
 			this.messageClass = "alert alert-danger";
@@ -858,7 +833,7 @@ public class StockBean implements Serializable {
 		}
 
 		try {
-			resBusqueda = instanciaSistema
+			resBusqueda = this.instanciaSistema
 					.buscarArticulos(busqueda);
 			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
 		} catch (Excepciones e) {
@@ -887,17 +862,39 @@ public class StockBean implements Serializable {
 		}
 
 		try {
-			resBusquedaDesarme = instanciaSistema.buscarArticulos(
+			resBusquedaDesarme = this.instanciaSistema.buscarArticulos(
 					busquedaDesarme);
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void setISistema(ISistema s) {
 		this.instanciaSistema = s;
-	}
 
+		if (this.instanciaSistema != null) {
+			// Cargo las marcas de la base de datos
+			cargarMarcas();
+
+			// Cargo los proveedores de la base de datos
+			cargarProveedores();
+
+			// Cargo las drogas de la base de datos
+			cargarDrogas();
+
+			// Cargo las acciones terapéuticas de la base de datos
+			cargarAccionesTerapeuticas();
+
+			// Cargo tipos de articulo para el combo
+			cargarTiposArticulo();
+
+			// Cargo formas de venta para el combo
+			cargarFormasVenta();
+
+			// Cargo tipos de iva para el combo
+			cargarTiposIva();
+		}
+	}
 
 }

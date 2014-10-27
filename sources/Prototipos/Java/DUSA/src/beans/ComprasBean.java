@@ -23,8 +23,10 @@ public class ComprasBean implements Serializable {
 	private Boolean disableBotones = false;
 	private String hideTable = "hidden";
 	private String selectFacturaDUSA = "hidden";
+	private String selectProveedores = "hidden";
 	
-	private List<DTProveedor> busquedaProveedores;
+	private List<DTProveedor> proveedores;
+	private String selectedProveedor;
 	private List<DTBusquedaArticulo> busquedaArticulos;
 	private List<DTComprobanteFactura> facturasDUSA = new ArrayList<DTComprobanteFactura>();
 	private long ordenDeCompraDUSA;
@@ -47,12 +49,12 @@ public class ComprasBean implements Serializable {
 		this.hideTable = hideTable;
 	}
 
-	public List<DTProveedor> getBusquedaProveedores() {
-		return busquedaProveedores;
+	public List<DTProveedor> getProveedores() {
+		return proveedores;
 	}
 
-	public void setBusquedaProveedores(List<DTProveedor> busquedaProveedores) {
-		this.busquedaProveedores = busquedaProveedores;
+	public void setProveedores(List<DTProveedor> proveedores) {
+		this.proveedores = proveedores;
 	}
 
 	public List<DTBusquedaArticulo> getBusquedaArticulos() {
@@ -95,34 +97,61 @@ public class ComprasBean implements Serializable {
 		this.selectFacturaDUSA = selectFacturaDUSA;
 	}
 	
+	public String getSelectProveedores() {
+		return selectProveedores;
+	}
+
+	public void setSelectProveedores(String selectProveedores) {
+		this.selectProveedores = selectProveedores;
+	}
+
+	public String getSelectedProveedor() {
+		return selectedProveedor;
+	}
+
+	public void setSelectedProveedor(String selectedProveedor) {
+		this.selectedProveedor = selectedProveedor;
+	}
+	
 	// funciones ingresar compra
 	
 	public void ingresoManual(){
 		disableBotones = true;
 		hideTable = "visible";
 		selectFacturaDUSA = "hidden";
+		selectProveedores = "visible";
 	}
 	
 	public void facturaAutomaticaDUSA(){
 		disableBotones = true;
 		hideTable = "visible";
 		selectFacturaDUSA = "visible";
+		selectProveedores = "hidden";
 	}
 	
 	public void cancelarIngresarCompra(){
 		disableBotones = false;
 		hideTable = "hidden";
 		selectFacturaDUSA = "hidden";
+		selectProveedores = "hidden";
 	}
 
 	public void ingresarCompra(){
-		
+		// TODO guardar la compra
 		
 		// Reseteo los valores por defecto
 		disableBotones = false;
 		hideTable = "hidden";
 		selectFacturaDUSA = "hidden";
+		selectProveedores = "hidden";
+	}
+	
+	public void actualizarProveedores(){
+		// TODO traer proveedores
 	}
 
+	public void agregarArticulo(){
+		// TODO  agregar articulo a la lista
+	}
 
 }
