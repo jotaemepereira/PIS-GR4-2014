@@ -59,6 +59,11 @@ public class Enumerados {
 	    public static final int interrumpida = 2;
 	    public static final int controlada = 3;
 	}
+	public final class indicadoresFacturacion{
+	    public static final int EXENTO = 1;
+	    public static final int MINIMO = 2;
+	    public static final int BASICO = 3;
+	}
 	public class EstadoVenta {
 		public static final char PENDIENTE = 'P';
 		public static final char FACTURADA = 'F';

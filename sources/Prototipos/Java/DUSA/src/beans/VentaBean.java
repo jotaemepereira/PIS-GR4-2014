@@ -17,6 +17,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import model.Articulo;
+import model.Enumerados;
 import model.LineaVenta;
 import model.Venta;
 import controladores.Excepciones;
@@ -50,24 +51,6 @@ public class VentaBean implements Serializable {
 	}
 
 	public void buscarArticulos(ActionEvent event) {
-		
-		/**
-		// Probando con el Database.java para buscar simulando la busqueda :
-		Database DB = Database.getInstance();
-		List<DTVenta> list = DB.getVentas();
-		Iterator<DTVenta> it = list.iterator();
-		lineasVenta = new ArrayList<DTVenta>();
-		while (it.hasNext()) {
-			DTVenta v = it.next();
-			if (!(descripcionBusqueda.isEmpty())
-					&& v.getDescripcion().contains(descripcionBusqueda)) {
-				v.setDescuentoPrecio("$"+v.getPrecioVenta().toString()+"(%0)");
-				lineasVenta.add(v);
-			}
-		}
-				
-		*/
-		
 		
 		// Busqueda con solr
 		lineasVenta = new ArrayList<DTVenta>();
@@ -169,18 +152,38 @@ public class VentaBean implements Serializable {
 	
 	public void facturarVenta() {
 		
+		//esto no va es solo para cargar articulos para prueba //
 		try {
 			FabricaSistema.getISistema().actualizarStock();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		//////////////////////////////////////////////////////////
 		
 		try {
 			
 			Venta v = new Venta();
 			v.setLineas(lineasVenta2);
+			v.setTotalIvaBasico(new BigDecimal(0));
+			v.setTotalIvaMinimo(new BigDecimal(0));
+			
+			v.setCantidadLineas(lineasVenta2.size());
+			
+			
+			Iterator<LineaVenta> it = lineasVenta2.iterator();
+			while(it.hasNext()){
+				LineaVenta lv = it.next();
+				if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.BASICO){
+					v.setTotalIvaBasico(v.getTotalIvaBasico().add(lv.getIva()));					
+				} else if(lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.MINIMO) {
+					v.setTotalIvaMinimo(v.getTotalIvaMinimo().add(lv.getIva()));
+				}
+				
+			}
+			
 			v.setEstadoVenta("p"); // estado p seria la venta pendiente
+			
 			FabricaSistema.getISistema().registrarNuevaVenta(v);
 
 		} catch (Excepciones e) {

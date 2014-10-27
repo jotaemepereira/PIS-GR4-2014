@@ -16,6 +16,10 @@ public class LineaVenta implements Serializable {
 	private boolean recetaVerde;
 	private String descuentoPrecio;
 	private String descuentoReceta;
+	
+	private BigDecimal irae;
+	private BigDecimal iva;
+	private int indicadorFacturacion;
 
 	public long getVentaId() {
 		return ventaId;
@@ -111,6 +115,30 @@ public class LineaVenta implements Serializable {
 
 	public void setDescuentoReceta(String descuentoReceta) {
 		this.descuentoReceta = descuentoReceta;
+	}
+
+	public BigDecimal getIrae() {
+		return irae;
+	}
+
+	public void setIrae(BigDecimal irae) {
+		this.irae = irae;
+	}
+
+	public BigDecimal getIva() {
+		return iva;
+	}
+
+	public void setIva(BigDecimal iva) {
+		this.iva = iva;
+	}
+
+	public int getIndicadorFacturacion() {
+		return indicadorFacturacion;
+	}
+
+	public void setIndicadorFacturacion(int indicadorFacturacion) {
+		this.indicadorFacturacion = indicadorFacturacion;
 	}
 
 }
