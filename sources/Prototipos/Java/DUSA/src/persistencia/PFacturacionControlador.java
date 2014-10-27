@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			String sqlQuery = "SELECT * FROM sales s "
 					+ "INNER JOIN sale_details sd ON s.sale_id = sd.sale_id "
 					+ "INNER JOIN products p ON p.product_id = sd.product_id "
-					+ "INNER JOIN users u ON s.user_id = u.user_id "
+					+ "INNER JOIN users u ON s.username = u.username "
 					+ "LEFT JOIN clients c ON s.client_id = c.client_id "
 					+ "WHERE s.sale_status = '"
 					+ Enumerados.EstadoVenta.PENDIENTE + "'";
@@ -395,41 +396,86 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 
 	@Override
 	public void persistirVenta(Venta v) throws Excepciones {
-		// TODO Auto-generated method stub
+		PreparedStatement stmt = null;
 		
-		Connection con = null;
-		Statement st = null;
-
-		Iterator<LineaVenta> it = v.getLineas().iterator();
+		String query = "INSERT INTO SALES " +
+						"(CLIENT_ID, USERNAME, SALE_DATE, SALE_STATUS, SALE_DGI_TYPE, SERIAL, PAYMENT_TYPE, NOT_TAXED_AMOUNT, TAXED_MINIMUM_NET_AMOUNT, TAXED_BASIC_NET_AMOUNT, MINIMUM_TAX_TOTAL, BASIC_TAX_TOTAL,"
+						+ " TOTAL_AMOUNT, IVA_WITHHELD_AMOUNT, IRAE_WITHHELD_AMOUNT, NOT_BILLABLE_AMOUNT, TAXED_MINIMUM_AMOUNT, TAXED_BASIC_AMOUNT, TOTAL, DETAIL_QUANTITY)" +
+						" VALUES " +
+						" (?, ?, LOCALTIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING SALE_ID;";
+		Connection c;
 		
 		try {
+			c = Conexion.getConnection();
+			c.setAutoCommit(false);
+			try{
+			stmt = c.prepareStatement(query);
+			if (v.getClienteId() != 0){
+				stmt.setInt(1, v.getClienteId());//Null
+			}else{
+				stmt.setNull(1, java.sql.Types.INTEGER);
+			}				
+			stmt.setString(2, v.getUsuario().getNombre());//Not Null
+			stmt.setString(3, v.getEstadoVenta());//Not Null
+			stmt.setInt(4, v.getTipoDgi());//Null
+			stmt.setString(5, v.getSerial());//Null
+			stmt.setString(6, v.getFormaDePago());//Not Null
+			stmt.setBigDecimal(7, v.getMontoNoGravado());//Null
+			stmt.setBigDecimal(8, v.getMontoNetoGravadoIvaMinimo());//Null
+			stmt.setBigDecimal(9, v.getMontoNetoGravadoIvaBasico());//Null
+			stmt.setBigDecimal(10, v.getTotalIvaMinimo());//Null
+			stmt.setBigDecimal(11, v.getTotalIvaBasico());//Null
+			stmt.setBigDecimal(12, v.getMontoTotal());//Null
+			stmt.setBigDecimal(13, v.getMontoRetenidoIVA());//Null
+			stmt.setBigDecimal(14, v.getMontoRetenidoIRAE());//Null
+			stmt.setBigDecimal(15, v.getMontoNoFacturable());//Null
+			stmt.setBigDecimal(16, v.getMontoTributoIvaMinimo());//Null
+			stmt.setBigDecimal(17, v.getMontoTributoIvaBasico());//Null
+			stmt.setBigDecimal(18, v.getMontoTotalAPagar());//Not Null
+			stmt.setInt(19, v.getCantidadLineas());//Not Null
 			
-			con = Conexion.getConnection();
-			st = con.createStatement();
-			
-			while (it.hasNext()){
-				
-				LineaVenta lv = it.next();
-				
-				String sqlQuery = "SELECT * FROM products p "
-						+ "WHERE p.product_id = " + lv.getProductoId() ;
-				ResultSet rs = st.executeQuery(sqlQuery);
-				
-				
-				String sqlUpdate = "UPDATE sales SET sale_status = '"
-						+ Enumerados.EstadoVenta.FACTURADA + "'  WHERE sale_id = " ;
-				st.executeUpdate(sqlUpdate);
-			
-				
+			ResultSet rs = stmt.executeQuery();
+			//Obtengo la clave de la nueva venta creada
+			long key = 0;
+			while (rs.next()){
+				key = rs.getLong(1);
 			}
 			
+			//Agrego las lineas de la venta
+			for (LineaVenta lv : v.getLineas()){
+				query = "INSERT INTO SALE_DETAILS " +
+						"(SALE_ID, SALE_DGI_TYPE, LINE, PRODUCT_ID, SALE_PRICE, QUANTITY, DISCOUNT, OFFER_DESCRIPTION, WHITE_RECIPE, GREEN_RECIPE, ORANGE_RECIPE) " +
+						"VALUES " +
+						"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				stmt = c.prepareStatement(query);
+				stmt.setLong(1, key);//Not Null
+				stmt.setInt(2, v.getTipoDgi());//Null
+				stmt.setInt(3, lv.getLinea());//Not Null
+				stmt.setLong(4, lv.getProductoId());//Not Null
+				stmt.setBigDecimal(5, lv.getPrecio());//Not Null
+				stmt.setInt(6, lv.getCantidad());//Not Null
+				stmt.setBigDecimal(7, lv.getDescuento());//Null
+				stmt.setString(8, lv.getDescripcionOferta());//Null
+				stmt.setBoolean(9, lv.isRecetaBlanca());//Null
+				stmt.setBoolean(10, lv.isRecetaVerde());//Null
+				stmt.setBoolean(11, lv.isRecetaNaranja());//Null
+				stmt.executeUpdate();
+			}
 			
-			st.close();
-			con.close();	
+			//Commiteo todo y cierro conexion
+			c.commit();
+			stmt.close();
+			c.close();
+			}catch (Exception e){
+				//Hago rollback de las cosas y lanzo excepcion
+				c.rollback();
+				e.printStackTrace();				
+				throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 		
 	}
