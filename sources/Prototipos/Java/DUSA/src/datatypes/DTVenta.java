@@ -21,14 +21,15 @@ public class DTVenta implements Serializable {
 	private boolean recetaNaranja;
 	private boolean refrigerado;
 	private BigDecimal descuento = new BigDecimal(0);
-	private BigDecimal descuento1 = new BigDecimal(0);
-	private BigDecimal descuento2 = new BigDecimal(0);
-	private BigDecimal descuento3 = new BigDecimal(0);
 	private String CodigoBarras;
 	private int stock;
 	private String descuentoPrecio;
 	private String descuentoReceta;
-	private Articulo articulo;
+	
+	private BigDecimal irae;
+	private BigDecimal iva;
+	private int indicadorFacturacion;
+	
 
 	public int getProductId() {
 		return productId;
@@ -142,30 +143,6 @@ public class DTVenta implements Serializable {
 		this.nombre = nombre;
 	}
 
-	public BigDecimal getDescuento2() {
-		return descuento2;
-	}
-
-	public void setDescuento2(BigDecimal descuento2) {
-		this.descuento2 = descuento2;
-	}
-
-	public BigDecimal getDescuento1() {
-		return descuento1;
-	}
-
-	public void setDescuento1(BigDecimal descuento1) {
-		this.descuento1 = descuento1;
-	}
-
-	public BigDecimal getDescuento3() {
-		return descuento3;
-	}
-
-	public void setDescuento3(BigDecimal descuento3) {
-		this.descuento3 = descuento3;
-	}
-
 	public String getConcentracion() {
 		return concentracion;
 	}
@@ -206,11 +183,28 @@ public class DTVenta implements Serializable {
 		this.descuentoReceta = descuentoReceta;
 	}
 
-	public Articulo getArticulo() {
-		return articulo;
+	public BigDecimal getIrae() {
+		return irae;
 	}
 
-	public void setArticulo(Articulo articulo) {
-		this.articulo = articulo;
+	public void setIrae(BigDecimal irae) {
+		this.irae = irae;
 	}
+
+	public BigDecimal getIva() {
+		return iva;
+	}
+
+	public void setIva(BigDecimal iva) {
+		this.iva = iva;
+	}
+
+	public int getIndicadorFacturacion() {
+		return indicadorFacturacion;
+	}
+
+	public void setIndicadorFacturacion(int indicadorFacturacion) {
+		this.indicadorFacturacion = indicadorFacturacion;
+	}
+	
 }

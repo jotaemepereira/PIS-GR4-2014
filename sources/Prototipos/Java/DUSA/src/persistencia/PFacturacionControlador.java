@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 import controladores.Excepciones;
@@ -396,6 +397,42 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	public void persistirVenta(Venta v) throws Excepciones {
 		// TODO Auto-generated method stub
 		
+		Connection con = null;
+		Statement st = null;
+
+		Iterator<LineaVenta> it = v.getLineas().iterator();
+		
+		try {
+			
+			con = Conexion.getConnection();
+			st = con.createStatement();
+			
+			while (it.hasNext()){
+				
+				LineaVenta lv = it.next();
+				
+				String sqlQuery = "SELECT * FROM products p "
+						+ "WHERE p.product_id = " + lv.getProductoId() ;
+				ResultSet rs = st.executeQuery(sqlQuery);
+				
+				
+				String sqlUpdate = "UPDATE sales SET sale_status = '"
+						+ Enumerados.EstadoVenta.FACTURADA + "'  WHERE sale_id = " ;
+				st.executeUpdate(sqlUpdate);
+			
+				
+			}
+			
+			
+			st.close();
+			con.close();	
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		
 	}
+		
 
 }
