@@ -151,7 +151,6 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public List<TipoIva> obtenerTiposIva() throws Excepciones {
-		actualizarStock();
 		return FabricaLogica.getIStock().obtenerTiposIva();
 
 	}

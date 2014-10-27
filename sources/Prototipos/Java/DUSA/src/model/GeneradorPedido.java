@@ -5,10 +5,8 @@ package model;
 import java.util.List;
 
 import controladores.Excepciones;
-import controladores.FabricaPersistencia;
 import interfaces.IPredictor;
 import interfaces.ISeleccionador;
-import interfaces.IStockPersistencia;
 
 /**  
 * @author Santiago
@@ -40,8 +38,9 @@ public class GeneradorPedido {
 		Pedido pedido = new Pedido();
 		List<Long> articulos = this.seleccionador.getIDArticulos();
 		
+//		System.out.println("Empieza " + new Date(Calendar.getInstance().getTimeInMillis()));
 		for (Long idArticulo : articulos) {
-
+			
 			int cantidad = this.predictor.predecir(idArticulo);
 			if (cantidad > 0){		
 
@@ -53,6 +52,7 @@ public class GeneradorPedido {
 			}
 		}
 		
+//		System.out.println("Termina " + new Date(Calendar.getInstance().getTimeInMillis()));
 		return pedido;
 	}
 	
