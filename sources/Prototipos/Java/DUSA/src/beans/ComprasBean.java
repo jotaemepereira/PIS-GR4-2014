@@ -150,5 +150,8 @@ public class ComprasBean implements Serializable {
 		// TODO traer proveedores
 	}
 
+	public void agregarArticulo(){
+		// TODO  agregar articulo a la lista
+	}
 
 }
