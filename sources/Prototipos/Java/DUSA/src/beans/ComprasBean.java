@@ -7,6 +7,7 @@ package beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -20,17 +21,19 @@ import datatypes.DTProveedor;
 @ManagedBean
 @SessionScoped
 public class ComprasBean implements Serializable {
-	private static final long serialVersionUID = 3L;
-
+	private static final long serialVersionUID = 1L;
+	
 	private Boolean disableBotones = false;
 	private String hideTable = "hidden";
 	private String selectFacturaDUSA = "hidden";
 	private String selectProveedores = "hidden";
 
 	private List<DTProveedor> proveedores;
-	private String selectedProveedor;
+	private int selectedProveedor;
+	
 	private List<DTBusquedaArticulo> busquedaArticulos;
 	private String busqueda;
+	
 	private List<DTComprobanteFactura> facturasDUSA = new ArrayList<DTComprobanteFactura>();
 	private long ordenDeCompraDUSA;
 	private DTComprobanteFactura factura = new DTComprobanteFactura();
@@ -108,11 +111,11 @@ public class ComprasBean implements Serializable {
 		this.selectProveedores = selectProveedores;
 	}
 
-	public String getSelectedProveedor() {
+	public int getSelectedProveedor() {
 		return selectedProveedor;
 	}
 
-	public void setSelectedProveedor(String selectedProveedor) {
+	public void setSelectedProveedor(int selectedProveedor) {
 		this.selectedProveedor = selectedProveedor;
 	}
 	
@@ -125,6 +128,10 @@ public class ComprasBean implements Serializable {
 	}
 
 	// funciones ingresar compra
+	
+	public ComprasBean(){
+		actualizarProveedores() ;
+	}
 
 	public void ingresoManual() {
 		disableBotones = true;
@@ -158,7 +165,15 @@ public class ComprasBean implements Serializable {
 	}
 
 	public void actualizarProveedores() {
-		// TODO traer proveedores
+		Map<Integer, DTProveedor> proveedoresLista;
+		try {
+			proveedoresLista = FabricaSistema.getISistema().obtenerProveedores();
+			this.proveedores = new ArrayList<DTProveedor>(
+					proveedoresLista.values());
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void agregarArticulo() {
@@ -166,6 +181,7 @@ public class ComprasBean implements Serializable {
 	}
 
 	public void buscarArticulos() {
+		System.out.println("buscar");
 		busquedaArticulos = new ArrayList<DTBusquedaArticulo>();
 
 		if (busqueda.equals("")) {
@@ -180,5 +196,5 @@ public class ComprasBean implements Serializable {
 			e.printStackTrace();
 		}
 	}
-
+	
 }
