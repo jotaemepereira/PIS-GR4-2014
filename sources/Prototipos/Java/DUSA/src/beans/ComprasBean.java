@@ -11,6 +11,8 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import controladores.Excepciones;
+import controladores.FabricaSistema;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTComprobanteFactura;
 import datatypes.DTProveedor;
@@ -24,14 +26,15 @@ public class ComprasBean implements Serializable {
 	private String hideTable = "hidden";
 	private String selectFacturaDUSA = "hidden";
 	private String selectProveedores = "hidden";
-	
+
 	private List<DTProveedor> proveedores;
 	private String selectedProveedor;
 	private List<DTBusquedaArticulo> busquedaArticulos;
+	private String busqueda;
 	private List<DTComprobanteFactura> facturasDUSA = new ArrayList<DTComprobanteFactura>();
 	private long ordenDeCompraDUSA;
 	private DTComprobanteFactura factura = new DTComprobanteFactura();
-	
+
 	// getters y setters
 	public Boolean getDisableBotones() {
 		return disableBotones;
@@ -64,7 +67,7 @@ public class ComprasBean implements Serializable {
 	public void setBusquedaArticulos(List<DTBusquedaArticulo> busquedaArticulos) {
 		this.busquedaArticulos = busquedaArticulos;
 	}
-	
+
 	public List<DTComprobanteFactura> getFacturasDUSA() {
 		return facturasDUSA;
 	}
@@ -80,7 +83,7 @@ public class ComprasBean implements Serializable {
 	public void setFactura(DTComprobanteFactura factura) {
 		this.factura = factura;
 	}
-	
+
 	public long getOrdenDeCompraDUSA() {
 		return ordenDeCompraDUSA;
 	}
@@ -88,7 +91,7 @@ public class ComprasBean implements Serializable {
 	public void setOrdenDeCompraDUSA(long ordenDeCompraDUSA) {
 		this.ordenDeCompraDUSA = ordenDeCompraDUSA;
 	}
-	
+
 	public String getSelectFacturaDUSA() {
 		return selectFacturaDUSA;
 	}
@@ -96,7 +99,7 @@ public class ComprasBean implements Serializable {
 	public void setSelectFacturaDUSA(String selectFacturaDUSA) {
 		this.selectFacturaDUSA = selectFacturaDUSA;
 	}
-	
+
 	public String getSelectProveedores() {
 		return selectProveedores;
 	}
@@ -113,45 +116,69 @@ public class ComprasBean implements Serializable {
 		this.selectedProveedor = selectedProveedor;
 	}
 	
-	// funciones ingresar compra
+	public String getBusqueda(){
+		return busqueda;
+	}
 	
-	public void ingresoManual(){
+	public void setBusqueda(String busqueda){
+		this.busqueda = busqueda;
+	}
+
+	// funciones ingresar compra
+
+	public void ingresoManual() {
 		disableBotones = true;
 		hideTable = "visible";
 		selectFacturaDUSA = "hidden";
 		selectProveedores = "visible";
 	}
-	
-	public void facturaAutomaticaDUSA(){
+
+	public void facturaAutomaticaDUSA() {
 		disableBotones = true;
 		hideTable = "visible";
 		selectFacturaDUSA = "visible";
 		selectProveedores = "hidden";
 	}
-	
-	public void cancelarIngresarCompra(){
+
+	public void cancelarIngresarCompra() {
 		disableBotones = false;
 		hideTable = "hidden";
 		selectFacturaDUSA = "hidden";
 		selectProveedores = "hidden";
 	}
 
-	public void ingresarCompra(){
+	public void ingresarCompra() {
 		// TODO guardar la compra
-		
+
 		// Reseteo los valores por defecto
 		disableBotones = false;
 		hideTable = "hidden";
 		selectFacturaDUSA = "hidden";
 		selectProveedores = "hidden";
 	}
-	
-	public void actualizarProveedores(){
+
+	public void actualizarProveedores() {
 		// TODO traer proveedores
 	}
 
-	public void agregarArticulo(){
-		// TODO  agregar articulo a la lista
+	public void agregarArticulo() {
+		// TODO agregar articulo a la lista
+	}
+
+	public void buscarArticulos() {
+		busquedaArticulos = new ArrayList<DTBusquedaArticulo>();
+
+		if (busqueda.equals("")) {
+			return;
+		}
+
+		try {
+			busquedaArticulos = FabricaSistema.getISistema().buscarArticulos(busqueda);
+			System.out.println("CANTIDAD ENCONTRADA: " + busquedaArticulos.size());
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -731,7 +731,7 @@ public class StockBean implements Serializable {
 	public StockBean() {
 
 		this.noEsMedicamento = true;
-
+		
 	}
 
 	public void cargarMarcas() {
