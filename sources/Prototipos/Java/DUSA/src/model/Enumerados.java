@@ -68,6 +68,7 @@ public class Enumerados {
 		public static final char PENDIENTE = 'P';
 		public static final char FACTURADA = 'F';
 		public static final char CANCELADA = 'C';
+		public static final char PERDIDA = 'X';
 	}
 	
 	public final class habilitado {	    

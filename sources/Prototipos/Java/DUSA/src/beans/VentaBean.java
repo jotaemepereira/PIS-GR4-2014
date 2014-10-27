@@ -157,7 +157,7 @@ public class VentaBean implements Serializable {
 			}
 
 			venta.setEstadoVenta(String
-					.valueOf(Enumerados.EstadoVenta.CANCELADA)); // estado C
+					.valueOf(Enumerados.EstadoVenta.PERDIDA)); // estado X
 																	// seria la
 																	// venta
 																	// perdida

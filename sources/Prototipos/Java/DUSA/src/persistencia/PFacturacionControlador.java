@@ -168,7 +168,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			String sqlQuery = "SELECT * FROM sales s "
 					+ "INNER JOIN sale_details sd ON s.sale_id = sd.sale_id "
 					+ "INNER JOIN products p ON p.product_id = sd.product_id "
-					+ "INNER JOIN users u ON s.user_id = u.user_id "
+					+ "INNER JOIN users u ON s.username = u.username "
 					+ "LEFT JOIN clients c ON s.client_id = c.client_id "
 					+ "WHERE s.sale_id = " + ventaId;
 			ResultSet rs = st.executeQuery(sqlQuery);
