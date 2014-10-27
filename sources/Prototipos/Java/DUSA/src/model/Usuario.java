@@ -6,11 +6,13 @@ import java.util.Iterator;
 import model.Enumerados.casoDeUso;
 
 public class Usuario {
+	
 	long usuarioId;
 	String nombre;
 	String pwd_hash;
 	boolean estado;
     private ArrayList<Rol> roles;
+    
 	public long getUsuarioId() { 
 		return usuarioId;
 	}
