@@ -357,7 +357,7 @@ public class PStockControlador implements IStockPersistencia {
 			ResultSet rs = stmt.executeQuery();
 			//Obtengo la cantidad de proveedores con ese rut
 			while (rs.next()){
-				articulo.setPrecioVenta(new BigDecimal(100)); //rs.getBigDecimal("SALE_PRICE"));
+				articulo.setPrecioVenta(rs.getBigDecimal("SALE_PRICE"));
 				articulo.setRecetaVerde(rs.getBoolean("IS_PSYCHOTROPIC"));
 				articulo.setRecetaNaranja(rs.getBoolean("IS_NARCOTIC"));
 				articulo.setStock(rs.getInt("STOCK"));
