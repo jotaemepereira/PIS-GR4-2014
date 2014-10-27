@@ -50,6 +50,7 @@ public class StockBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Articulo articulo = new Articulo();
 	private boolean noEsMedicamento;
+	private int tipoIvaSeleccionado;
 
 	// Proveedores
 	private int proveedor;
@@ -183,6 +184,14 @@ public class StockBean implements Serializable {
 
 	public void setNoEsMedicamento(boolean noEsMedicamento) {
 		this.noEsMedicamento = noEsMedicamento;
+	}
+
+	public int getTipoIvaSeleccionado() {
+		return tipoIvaSeleccionado;
+	}
+
+	public void setTipoIvaSeleccionado(int tipoIvaSeleccionado) {
+		this.tipoIvaSeleccionado = tipoIvaSeleccionado;
 	}
 
 	public int getProveedor() {
@@ -638,6 +647,11 @@ public class StockBean implements Serializable {
 						this.articulo.agregarProveedor(p);
 					}
 
+					/* Cargo el tipo de iva seleccionado */
+					TipoIva ti = new TipoIva();
+					ti.setTipoIVA(tipoIvaSeleccionado);
+					articulo.setTipoIva(ti);
+					
 					/* Cargo el precio de venta según corresponda */
 					/*
 					 * Si no se carga nada, se asume el mismo que el precio
@@ -689,6 +703,7 @@ public class StockBean implements Serializable {
 					this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
 					this.proveedor = 0;
 					this.codigoIdentificador = 0;
+					this.tipoIvaSeleccionado = 0;
 				} catch (Excepciones e) {
 					if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
 						context.addMessage(null, new FacesMessage(
