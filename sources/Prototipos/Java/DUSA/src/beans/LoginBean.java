@@ -311,7 +311,7 @@ public class LoginBean implements Serializable {
 		try {
 
 			instanciaSistema.iniciarSesion(nomUsuario, contrasenia);
-			FacesContext.getCurrentInstance().getExternalContext().redirect("stock/altaArticulo.jsf");
+			FacesContext.getCurrentInstance().getExternalContext().redirect("stock/busquedaArticulo.jsf");
 
 		} catch (Excepciones e) {			
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -350,7 +350,7 @@ public class LoginBean implements Serializable {
 	public void redirectIfLoggedIn() {
 		try {
 			if (instanciaSistema != null) {
-				FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/DUSA/stock/altaArticulo.jsf");
+				FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/DUSA/stock/busquedaArticulo.jsf");
 			}
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error al cargar la página.", ""));
