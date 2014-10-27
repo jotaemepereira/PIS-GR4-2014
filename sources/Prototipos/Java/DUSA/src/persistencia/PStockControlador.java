@@ -346,7 +346,7 @@ public class PStockControlador implements IStockPersistencia {
 		DTVenta articulo = new DTVenta();
 		PreparedStatement stmt = null;
 		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR "
-				+ "FROM PRODUCTS p"
+				+ "FROM PRODUCTS p "
 				+ "INNER JOIN tax_types tt ON p.tax_type_id = tt.tax_type_id "
 				
 				+ "WHERE PRODUCT_ID = ?";
@@ -504,7 +504,7 @@ public class PStockControlador implements IStockPersistencia {
 		PreparedStatement stmt = null;
 		
 		String query = "INSERT INTO ORDERS_DUSA "
-						+ "(USER_ID, PAYMENT_TYPE, ORDER_DATE) VALUES "
+						+ "(USERNAME, PAYMENT_TYPE, ORDER_DATE) VALUES "
 						+ " (?, ?, LOCALTIMESTAMP) RETURNING ORDER_DUSA_ID;";
 		try {
 			
@@ -513,7 +513,8 @@ public class PStockControlador implements IStockPersistencia {
 			try {
 				
 				stmt = c.prepareStatement(query);
-				stmt.setInt(1, p.getIdUsuario());
+//				stmt.setInt(1, p.getIdUsuario());
+				stmt.setString(1, p.getUsuario().getNombre());
 				stmt.setString(2, "" + p.getFormaDePago() + "");
 				
 				ResultSet rs = stmt.executeQuery();
@@ -744,10 +745,10 @@ public class PStockControlador implements IStockPersistencia {
 					articulo.setCostoOferta(rs.getBigDecimal("offer_cost"));
 					articulo.setUltimoCosto(rs.getBigDecimal("last_cost"));
 					articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
-					BigDecimal auxDecimal = rs.getBigDecimal("tax_type");
-					if (auxDecimal != null) {
-						articulo.getTipoIva().setTipoIVA(auxDecimal.intValue());
-					}
+//					BigDecimal auxDecimal = rs.getBigDecimal("TAX_TYPE_ID");
+//					if (auxDecimal != null) {
+//						articulo.getTipoIva().setTipoIVA(auxDecimal.intValue());
+//					}
 					articulo.setCodigoBarras(rs.getString("barcode"));
 					Timestamp timestamp = rs.getTimestamp("nearest_due_date");
 					if (timestamp != null) {

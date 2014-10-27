@@ -383,7 +383,7 @@ public class StockBean implements Serializable {
 		pedidos.clear();
 
 		try {
-			// this.instanciSistema.actualizarStock();
+//			this.instanciaSistema.actualizarStock();
 			pedidos = this.instanciaSistema
 					.generarPedidoEnBaseAPedidoAnterior();
 
@@ -499,7 +499,8 @@ public class StockBean implements Serializable {
 		Pedido p = new Pedido();
 
 		p.setFecha(new Date(Calendar.getInstance().getTimeInMillis()));
-		p.setIdUsuario(1);
+		/* Cargo el usuario que realiza el pedido */
+		p.setUsuario(this.instanciaSistema.obtenerUsuarioLogueado());
 
 		if (this.formaDePago.equalsIgnoreCase("contado")) {
 

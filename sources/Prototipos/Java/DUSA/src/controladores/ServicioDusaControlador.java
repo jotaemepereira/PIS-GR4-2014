@@ -82,6 +82,11 @@ public class ServicioDusaControlador implements IServicio {
 		//articulo.setStockMinimo();
 		//articulo.setTipoAutorizacion();
 		//articulo.setTipoIva();
+		
+		//TODO ver que pasa con esto Jaguerre
+		TipoIva tipoIva = new TipoIva();
+		tipoIva.setTipoIVA(52);
+		articulo.setTipoIva(tipoIva);
 		Usuario usr = new Usuario();
 		usr.setNombre("Admin");
 		articulo.setUsuario(usr);

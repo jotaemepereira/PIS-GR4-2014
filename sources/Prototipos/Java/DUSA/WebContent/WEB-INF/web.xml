@@ -31,6 +31,10 @@
     <param-name>CONNSTRING</param-name>
     <param-value>${postgres.url}</param-value>
   </context-param>
+  <context-param>
+    <param-name>MODO_FACTURACION</param-name>
+    <param-value>3</param-value>
+  </context-param>
     <context-param>
     <param-name>PathFacturacion</param-name>
     <param-value></param-value>
