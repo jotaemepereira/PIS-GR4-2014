@@ -29,200 +29,260 @@ public class LoginBean implements Serializable {
 	private ISistema instanciaSistema;
 
 	public String getStockPermiso() {
-		if ((instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaArticulo))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarArticulo))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarStock))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.generPeEnBaseAPedAnt))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.genPedEnBaseAHist))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.bajaArticulo))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarArticulo))) {
-			return ""; }
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if ((instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaArticulo))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarArticulo))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarStock))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.generPeEnBaseAPedAnt))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.genPedEnBaseAHist))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.bajaArticulo))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarArticulo))) {
+				return ""; }
+			else return "display : none";}
+		return "";
 	}
 
 	public String getVentasPermiso() {
-		if ((instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.registrarNuevaVenta))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.registrarVentaPerdida))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.facturarVentaPendiente))){
-			return "";
-		}
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if ((instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.registrarNuevaVenta))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.registrarVentaPerdida))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.facturarVentaPendiente))){
+				return "";
+			}
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getClientesPermiso() {
-		if ((instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarCliente))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaCliente))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarCliente))) {
-			return ""; 
-		}
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if ((instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarCliente))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaCliente))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarCliente))) {
+				return ""; 
+			}
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getProveedoresPermiso() {
-		if ((instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarProveedor))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaProveedor))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarProveedor))) {
-			return ""; 
-		}
-		else return "display : none";
+		if (instanciaSistema != null) { 
+			if ((instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarProveedor))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaProveedor))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarProveedor))) {
+				return ""; 
+			}
+			else return "display : none"; }
+		return "";
 	}
-	
+
 	public String getPedidoPermiso() {
-		if ((instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.generPeEnBaseAPedAnt))
-				|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.genPedEnBaseAHist))) {
-			return ""; 
-		}
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if ((instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.generPeEnBaseAPedAnt))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.genPedEnBaseAHist))) {
+				return ""; 
+			}
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getRegistrarNuevaVentaRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.registrarNuevaVenta))
-			return ""; 
-		else return "display : none"; 
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.registrarNuevaVenta))
+				return ""; 
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getRegistrarVentaPerdidaRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.registrarVentaPerdida))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.registrarVentaPerdida))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getFacturarVentaPendienteRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.facturarVentaPendiente))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.facturarVentaPendiente))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getCancelarVentaPendienteRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.cancelarVentaPendiente))
-			return "";
-		else return "display : none";	
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.cancelarVentaPendiente))
+				return "";
+			else return "display : none"; }
+		return null;
 	}
 
 	public String getListarVentasPendientesRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.listarVentasPendientes))
-			return "";
-		else return "display : none";	
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.listarVentasPendientes))
+				return "";
+			else return "display : none";	}
+		return "";
 	}
 
 	public String getNuevaCompraRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.nuevaCompra))
-			return "";
-		else return "display : none";		
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.nuevaCompra))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getListarComprasDusaRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.listarComprasDusa))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.listarComprasDusa))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getAltaArticuloRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaArticulo))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaArticulo))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getBajaArticuloRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.registrarVentaPerdida))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.registrarVentaPerdida))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getObtenerArticuloRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.obtenerArticulo))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.obtenerArticulo))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getModificarArticuloRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarArticulo))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarArticulo))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getModificarStockRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarStock))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarStock))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getBuscarArticuloRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarArticulo))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarArticulo))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getGenerPeEnBaseAPedAntRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.generPeEnBaseAPedAnt))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.generPeEnBaseAPedAnt))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getGenPedEnBaseAHistRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.genPedEnBaseAHist))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.genPedEnBaseAHist))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getRealizarPedidoRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.realizarPedido))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.realizarPedido))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getAltaClienteRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaCliente))
-			return "";
-		else return "display : none";	
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaCliente))
+				return "";
+			else return "display : none";}
+		return "";
 	}
 
 	public String getModificarClienteRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarCliente))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarCliente))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getBuscarClienteRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarCliente))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarCliente))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getAltaProveedorRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaProveedor))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaProveedor))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getModificarProveedorRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarProveedor))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarProveedor))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getBuscarProveedorRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarProveedor))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarProveedor))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getGenerarEstadisticaRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.generarEstadistica))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.generarEstadistica))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getIniciarSesionRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.iniciarSesion))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.iniciarSesion))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public String getCerrarSesionRet() {
-		if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.cerrarSesion))
-			return "";
-		else return "display : none";
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.cerrarSesion))
+				return "";
+			else return "display : none"; }
+		return "";
 	}
 
 	public long getIdUsuario() {
