@@ -16,13 +16,33 @@ import model.LineaPedido;
 import model.Pedido;
 import model.TipoIva;
 
-/**  
-* @author Santiago
-*
-*/
 public interface IStockPersistencia {
 	
+	/**
+	 * Da de alta un articulo en el sistema
+	 * 
+	 * @param articulo
+	 *            - Articulo
+	 * @throws Excepciones
+	 *             ERROR_SISTEMA (en caso de error a la hora de
+	 *             persistir en la base de datos)
+	 * @author Jmaguerre
+	 * 
+	 */
 	public void persistirArticulo(Articulo articulo)throws Excepciones;
+	
+	/**
+	 * Modifica un articulo del sistema
+	 * 
+	 * @param articulo
+	 *            - Articulo
+	 * @throws Excepciones
+	 *             ERROR_SISTEMA (en caso de error a la hora de
+	 *             persistir en la base de datos)
+	 * @author Jmaguerre
+	 * 
+	 */
+	public void modificarArticulo(Articulo articulo) throws Excepciones;
 	
 	/**
 	 * Retorna la fecha del ultimo pedido realizado a D.U.S.A.
