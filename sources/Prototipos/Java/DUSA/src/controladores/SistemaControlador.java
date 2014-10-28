@@ -166,6 +166,6 @@ public class SistemaControlador implements ISistema {
 	@Override
 	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones {
 		
-		
+		FabricaLogica.getIStock().modificarStock(idArticulo, nuevoValor);
 	}
 }

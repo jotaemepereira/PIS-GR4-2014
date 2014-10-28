@@ -269,7 +269,7 @@ public class StockControlador implements IStock {
 	@Override
 	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones {
 		
-		
+		FabricaPersistencia.getStockPersistencia().modificarStock(idArticulo, nuevoValor);
 	}
 	
 }
