@@ -1103,7 +1103,7 @@ public class PStockControlador implements IStockPersistencia {
 						}
 					}
 					*/	
-				}				
+				}
 				
 				//Commiteo todo y cierro conexion
 				c.commit();
