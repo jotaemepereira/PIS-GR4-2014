@@ -118,4 +118,15 @@ public interface IStock {
 	 * @author José Aguerre
 	 */
 	public List<TipoIva> obtenerTiposIva() throws Excepciones;
+	
+	/**
+	 * Modifica el stock del articulo con id idArticulo al valor nuevoValor
+	 * 
+	 * @author Guille
+	 * @param idArticulo
+	 * @param nuevoValor stock nuevo para el articulo. 
+	 * @throws Excepciones
+	 */
+	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
+	
 }

@@ -838,5 +838,31 @@ public class PStockControlador implements IStockPersistencia {
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 	}
+	
+	/**
+	 * @author Guille
+	 */
+	@Override
+	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones {
+		
+		PreparedStatement stmt = null;		
+		try{
+			Connection c = Conexion.getConnection();
+			
+			String query = "UPDATE PRODUCTS SET STOCK = ? "
+					+ "WHERE PRODUCT_ID = ?;";
+			
+			stmt = c.prepareStatement(query);
+			stmt.setLong(1, nuevoValor);
+			stmt.setLong(2, idArticulo);
+			
+			stmt.executeUpdate();
+			
+			stmt.close();
+			c.close();
+		}catch(Exception e){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+	}
 }
 

@@ -124,4 +124,14 @@ public interface IStockPersistencia {
 	 * @author Jose Aguerre
 	 */
 	public void persistirTiposIva(List<TipoIva> lista) throws Excepciones;
+	
+	/**
+	 * Modifica el stock del articulo con id idArticulo al valor nuevoValor
+	 * 
+	 * @author Guille
+	 * @param idArticulo
+	 * @param nuevoValor stock nuevo para el articulo. 
+	 * @throws Excepciones
+	 */
+	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
 }
