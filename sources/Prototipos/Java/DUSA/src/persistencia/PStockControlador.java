@@ -26,6 +26,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.primefaces.json.JSONObject;
 
+import Util.NamedParameterStatement;
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
@@ -863,6 +864,270 @@ public class PStockControlador implements IStockPersistencia {
 		}catch(Exception e){
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
+	}
+
+	@Override
+	public void modificarArticulo(Articulo articulo) throws Excepciones {
+		NamedParameterStatement stmt = null;
+		
+		String query = "UPDATE PRODUCTS SET ";
+
+		if (articulo.isIdMarcaModificado()){
+			query += "BRAND_ID = :brand_id, ";
+		}
+		if (articulo.isTipoArticuloModificado()){
+			query += "PRODUCT_TYPE = :product_type, ";
+		}
+		if (articulo.isDescripcionModificado()){
+			query += "DESCRIPTION = :description, ";
+		}
+		if (articulo.isPresentacionModificado()){
+			query += "PRESENTATION = :presentation, ";
+		}
+		if (articulo.isClave1Modificado()){
+			query += "KEY1 = :key1, ";
+		}
+		if (articulo.isClave2Modificado()){
+			query += "KEY2 = :key2, ";
+		}
+		if (articulo.isClave3Modificado()){
+			query += "KEY3 = :key3, ";
+		}
+		if (articulo.isEsPsicofarmacoModificado()){
+			query += "IS_PSYCHOTROPIC = :isPsychotropic, ";
+		}
+		if (articulo.isEsEstupefacienteModificado()){
+			query += "IS_NARCOTIC = :isNarcotic, ";
+		}
+		if (articulo.isEsHeladeraModificado()){
+			query += "IS_REFRIGERATOR = :isRefrigerator, ";
+		}
+		if (articulo.isCodigoVentaModificado()){
+			query += "SALE_CODE = :sale_code, ";
+		}
+		if (articulo.isTipoAutorizacionModificado()){
+			query += "AUTHORIZATION_TYPE = :authorization_type, ";
+		}
+		if (articulo.isPrecioUnitarioModificado()){
+			query += "UNIT_PRICE = :unit_price, ";
+			//Si se modifica el precio unitario tiene que cambiar el valor en fechaUltimoPrecio
+			query += "LAST_PRICE_DATE = LOCALTIMESTAMP, ";
+		}
+		if (articulo.isPrecioVentaModificado()){
+			query += "SALE_PRICE = :sale_price, ";
+		}
+		if (articulo.isPorcentajePrecioVentaModificado()){
+			query += "SALE_PRICE_PORCENTAGE = :sale_price_porcentage, ";
+		}
+		if (articulo.isCostoListaModificado()){
+			query += "LIST_COST = :list_cost, ";
+		}
+		if (articulo.isCostoOfertaModificado()){
+			query += "OFFER_COST = :offer_cost, ";
+		}
+		if (articulo.isUltimoCostoModificado()){
+			query += "LAST_COST = :last_cost, ";
+		}
+		if (articulo.isCostoPromedioModificado()){
+			query += "AVG_COST = :avg_cost, ";
+		}
+		if (articulo.isTipoIvaModificado()){
+			query += "TAX_TYPE_ID = :tax_type_id, ";
+		}
+		if (articulo.isCodigoBarrasModificado()){
+			query += "BARCODE = :barcode, ";
+		}
+		if (articulo.isVencimientoMasCercanoModificado()){
+			query += "NEAREST_DUE_DATE = :nearest_due_date, ";
+		}
+		if (articulo.isStockMinimoModificado()){
+			query += "MINIMUM_STOCK = :minimum_stock, ";
+		}
+		if (articulo.isUsuarioModificado()){
+			query += "USERNAME = :username, ";
+		}
+		
+		//Seteo fecha de última modificación a la actual
+		query += "LAST_MODIFIED = LOCALTIMESTAMP) ";
+		query += "WHERE PRODUCT_ID = :product_id;";
+		
+		Connection c;
+		try {
+			c = Conexion.getConnection();
+			c.setAutoCommit(false);
+			try {
+				// Seteo los datos a modificar en la bd
+				stmt = new NamedParameterStatement(c, query);
+				
+				if (articulo.isIdMarcaModificado()){
+					if (articulo.getIdMarca() != 0){
+						stmt.setInt("brand_id", articulo.getIdMarca());
+					}else{
+						stmt.setNull("brand_id", java.sql.Types.INTEGER);
+					}			
+				}
+				if (articulo.isTipoArticuloModificado()){
+					stmt.setChar("product_type", articulo.getTipoArticulo());
+				}
+				if (articulo.isDescripcionModificado()){
+					stmt.setString("description", articulo.getDescripcion());
+				}
+				if (articulo.isPresentacionModificado()){
+					stmt.setString("presentation", articulo.getPresentacion());
+				}
+				if (articulo.isClave1Modificado()){
+					stmt.setString("key1", articulo.getClave1());
+				}
+				if (articulo.isClave2Modificado()){
+					stmt.setString("key2", articulo.getClave2());
+				}
+				if (articulo.isClave3Modificado()){
+					stmt.setString("key3", articulo.getClave3());
+				}
+				if (articulo.isEsPsicofarmacoModificado()){
+					stmt.setBoolean("isPsychotropic", articulo.isEsPsicofarmaco());
+				}
+				if (articulo.isEsEstupefacienteModificado()){
+					stmt.setBoolean("isNarcotic", articulo.isEsEstupefaciente());
+				}
+				if (articulo.isEsHeladeraModificado()){
+					stmt.setBoolean("isRefrigerator", articulo.isEsHeladera());
+				}
+				if (articulo.isCodigoVentaModificado()){
+					if (articulo.getCodigoVenta() != 0x00){
+						stmt.setChar("sale_code", articulo.getCodigoVenta());
+					}else{
+						stmt.setNull("sale_code", java.sql.Types.CHAR);
+					}
+				}
+				if (articulo.isTipoAutorizacionModificado()){
+					stmt.setChar("authorization_type", articulo.getTipoAutorizacion());
+				}
+				if (articulo.isPrecioUnitarioModificado()){
+					stmt.setBigDecimal("unit_price", articulo.getPrecioUnitario());
+				}
+				if (articulo.isPrecioVentaModificado()){
+					stmt.setBigDecimal("sale_price", articulo.getPrecioVenta());
+				}
+				if (articulo.isPorcentajePrecioVentaModificado()){
+					stmt.setBigDecimal("sale_price_porcentage", articulo.getPorcentajePrecioVenta());
+				}
+				if (articulo.isCostoListaModificado()){
+					stmt.setBigDecimal("list_cost", articulo.getCostoLista());
+				}
+				if (articulo.isCostoOfertaModificado()){
+					stmt.setBigDecimal("offer_cost", articulo.getCostoOferta());
+				}
+				if (articulo.isUltimoCostoModificado()){
+					stmt.setBigDecimal("last_cost", articulo.getUltimoCosto());
+				}
+				if (articulo.isCostoPromedioModificado()){
+					stmt.setBigDecimal("avg_cost", articulo.getCostoPromedio());
+				}
+				if (articulo.isTipoIvaModificado()){
+					if (articulo.getTipoIva() != null){
+						stmt.setInt("tax_type_id", articulo.getTipoIva().getTipoIVA());
+					}else{
+						stmt.setNull("tax_type_id", java.sql.Types.INTEGER);
+					}
+				}
+				if (articulo.isCodigoBarrasModificado()){
+					stmt.setString("barcode", articulo.getCodigoBarras());
+				}
+				if (articulo.isVencimientoMasCercanoModificado()){
+					stmt.setTimestamp("nearest_due_date", new java.sql.Timestamp(articulo.getVencimientoMasCercano().getTime()));
+				}
+				if (articulo.isStockMinimoModificado()){
+					stmt.setLong("minimum_stock", articulo.getStockMinimo());
+				}
+				if (articulo.isUsuarioModificado()){
+					stmt.setString("username", articulo.getUsuario().getNombre());
+				}
+				
+				stmt.setLong("product_id", articulo.getIdArticulo());
+				
+				stmt.executeUpdate();
+				
+				//TODO Guardar cambios de proveedores, drogas y acciones terapeuticas				
+				if (articulo.isProveedoresModificado()){
+					/*
+					//Para cada proveedor asociado inserto una fila en products_suppliers
+					List<DTProveedor> proveedores = new ArrayList<DTProveedor>(articulo.getProveedores().values()); 
+					Iterator<DTProveedor> i = proveedores.iterator();
+					while (i.hasNext()){
+						DTProveedor next = i.next();
+						query = "INSERT INTO PRODUCTS_SUPPLIERS " +
+								"(SUPPLIER_ID, PRODUCT_ID, PRODUCT_NUMBER, LINE_ID) " +
+								"VALUES " +
+								"(?, ?, ?, ?)";
+						stmt = c.prepareStatement(query);
+						stmt.setInt(1, next.getIdProveedor());
+						stmt.setLong(2, key);
+						stmt.setLong(3, next.getCodigoIdentificador());
+						stmt.setString(4, next.getIdLinea());
+						stmt.executeUpdate();
+					}
+					*/
+				}
+				if (articulo.isDrogasModificado()){
+					/*
+					//Para cada droga seleccionada inserto una fila en product_drugs
+					if (articulo.getDrogas() != null){
+						for(long idDroga : articulo.getDrogas()){
+							query = "INSERT INTO PRODUCT_DRUGS " +
+									"(PRODUCT_ID, DRUG_ID) " +
+									"VALUES " +
+									"(?, ?)";
+							stmt = c.prepareStatement(query);
+							stmt.setLong(1, key);
+							stmt.setLong(2, idDroga);
+							stmt.executeUpdate();
+						}
+					}
+					*/
+					
+				}
+				if (articulo.isAccionesTerModificado()){
+					/*
+					//Para cada acción terapéutica seleccionada inserto una fila en product_therap_actions
+					if (articulo.getAccionesTer() != null){
+						for(long idAccTer : articulo.getAccionesTer()){
+							query = "INSERT INTO PRODUCT_THERAP_ACTIONS " +
+									"(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " +
+									"VALUES " +
+									"(?, ?)";
+							stmt = c.prepareStatement(query);
+							stmt.setLong(1, key);
+							stmt.setLong(2, idAccTer);
+							stmt.executeUpdate();
+						}
+					}
+					*/	
+				}				
+				
+				//Commiteo todo y cierro conexion
+				c.commit();
+				stmt.close();
+				c.close();
+				
+				// indexacion de solr del producto nuevo
+				deltaImportSolr();
+			} catch ( Exception e ) {
+				//Hago rollback de las cosas y lanzo excepcion
+				c.rollback();
+				e.printStackTrace();				
+				throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+			}
+		} catch (NamingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		}
+		
 	}
 }
 

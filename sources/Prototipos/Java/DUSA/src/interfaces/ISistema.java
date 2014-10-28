@@ -39,6 +39,19 @@ public interface ISistema {
 	 * @author José Aguerre
 	 */
 	public void altaArticulo(Articulo articulo) throws Excepciones;
+	
+	/**
+	 * Modifica un articulo del sistema
+	 * 
+	 * @param articulo
+	 *            - Articulo
+	 * @throws Excepciones
+	 *             ERROR_SISTEMA (en caso de error a la hora de
+	 *             persistir en la base de datos)
+	 * @author Jmaguerre
+	 * 
+	 */
+	public void modificarArticulo(Articulo articulo) throws Excepciones;
 
 	/**
 	 * Retorna todos los proveedores activos existentes en el sistema.
