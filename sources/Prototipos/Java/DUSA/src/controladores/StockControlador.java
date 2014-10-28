@@ -263,6 +263,13 @@ public class StockControlador implements IStock {
 		return FabricaPersistencia.getStockPersistencia().obtenerTiposIva();
 	}
 
-	
+	/**
+	 * @author Guille
+	 */
+	@Override
+	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones {
+		
+		
+	}
 	
 }

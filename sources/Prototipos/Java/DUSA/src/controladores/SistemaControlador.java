@@ -162,4 +162,10 @@ public class SistemaControlador implements ISistema {
 		return user;
 
 	}
+	
+	@Override
+	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones {
+		
+		
+	}
 }
