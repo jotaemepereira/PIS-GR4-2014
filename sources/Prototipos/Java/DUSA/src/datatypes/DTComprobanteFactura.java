@@ -1,6 +1,7 @@
 package datatypes;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -27,7 +28,7 @@ public class DTComprobanteFactura {
     private BigDecimal montoTotalAPagar;
     private BigDecimal montoTributoIvaMinimo;
     private BigDecimal montoTributoIvaBasico;
-    private List<DTLineaFacturaCompra> detalle;
+    private List<DTLineaFacturaCompra> detalle = new ArrayList<DTLineaFacturaCompra>();
    // private List<DataVencimiento> vencimientos;
     
     

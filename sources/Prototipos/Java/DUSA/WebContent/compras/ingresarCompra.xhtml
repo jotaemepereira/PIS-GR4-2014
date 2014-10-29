@@ -126,42 +126,51 @@
 										<!--       TABLA DE LA COMPRA     -->
 										<div class="row" style="margin-bottom: 1%;">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<p:dataTable var="pedido" id="tablePedido"
-													value="#{stockBean.pedidos}" widgetVar="tablePedido"
+												<p:dataTable var="detalle" id="tablePedido"
+													value="#{comprasBean.factura.detalle}"
 													emptyMessage="No se encontraron registros.">
 													<!-- rendered="${stockBean.disablePrediccionDePedido || stockBean.disableDesdeUltimoPedido}" -->
 													<div class="row">
 														<p:column headerText="Artículo"
 															styleClass="col-xs-3 col-sm-2 col-md-2 col-lg-2">
-															<h:outputText value="100" />
+															<h:outputText value="#{detalle.numeroArticulo}" />
 														</p:column>
 														<p:column headerText="Descripción"
 															styleClass="col-xs-3 col-sm-2 col-md-3 col-lg-3">
-															<h:outputText value="dsc" />
+															<h:outputText value="#{detalle.descripcion}" />
 														</p:column>
 														<p:column headerText="$ última compra"
 															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
-															<h:outputText value="100" />
+															<h:outputText value="#{detalle.costoUltimaCompra}" />
 														</p:column>
 														<p:column headerText="$ unitario"
 															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-															<p:inputText styleClass="form-control" value="" />
+															<p:inputText styleClass="form-control" value="#{detalle.precioUnitario}" >
+																<p:ajax listener="#{comprasBean.calcularTotal(detalle)}"
+																update="tablePedido" />
+															</p:inputText>
 														</p:column>
 														<p:column headerText="Descuento"
 															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-															<p:inputText styleClass="form-control" value="" />
+															<p:inputText styleClass="form-control" value="#{detalle.descuento}">
+																<p:ajax listener="#{comprasBean.calcularTotal(detalle)}"
+																update="tablePedido" />
+															</p:inputText>
 														</p:column>
 														<p:column headerText="Dsc. descuento"
 															styleClass="hidden-xs hidden-sm col-md-2 col-lg-2">
-															<p:inputText styleClass="form-control" value="" />
+															<p:inputText styleClass="form-control" value="#{detalle.descripcionOferta}" />
 														</p:column>
 														<p:column headerText="Cantidad"
 															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-															<p:inputText styleClass="form-control" value="" />
+															<p:inputText styleClass="form-control" value="#{detalle.cantidad}" >
+																<p:ajax listener="#{comprasBean.calcularTotal(detalle)}"
+																update="tablePedido" />
+															</p:inputText>
 														</p:column>
 														<p:column headerText="$ total"
 															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-															<h:outputText value="100" />
+															<h:outputText value="#{detalle.total}" />
 														</p:column>
 													</div>
 												</p:dataTable>
@@ -199,7 +208,7 @@
 													<p:outputLabel value="IVA min"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
+														<p:inputText value="${comprasBean.factura.montoTributoIvaMinimo}" style="width:100%"
 															styleClass="form-control" />
 													</div>
 												</div>
@@ -209,7 +218,7 @@
 													<p:outputLabel value="Gravado IVA min."
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
+														<p:inputText value="${comprasBean.factura.montoNetoGravadoIvaMinimo}" style="width:100%"
 															styleClass="form-control" />
 													</div>
 												</div>
@@ -219,7 +228,7 @@
 													<p:outputLabel value="IVA min."
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<h:outputText value="100" style="width:100%" />
+														<h:outputText value="${comprasBean.factura.totalIvaMinimo}" style="width:100%" />
 													</div>
 												</div>
 											</div>
@@ -228,19 +237,20 @@
 													<p:outputLabel value="IVA"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
+														<p:inputText value="${comprasBean.factura.montoRetenidoIVA}" style="width:100%"
 															styleClass="form-control" />
 													</div>
 												</div>
 											</div>
 										</div>
+										
 										<div class="row">
 											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 												<div class="row">
 													<p:outputLabel value="IVA básico"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
+														<p:inputText value="${comprasBean.factura.montoTributoIvaBasico}" style="width:100%"
 															styleClass="form-control" />
 													</div>
 												</div>
@@ -250,7 +260,7 @@
 													<p:outputLabel value="Gravado IVA básico."
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
+														<p:inputText value="${comprasBean.factura.montoNetoGravadoIvaBasico}" style="width:100%"
 															styleClass="form-control" />
 													</div>
 												</div>
@@ -260,7 +270,7 @@
 													<p:outputLabel value="IVA básico."
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<h:outputText value="100" style="width:100%" />
+														<h:outputText value="${comprasBean.factura.totalIvaBasico}" style="width:100%" />
 													</div>
 												</div>
 											</div>
@@ -269,7 +279,7 @@
 													<p:outputLabel value="IRAE"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
+														<p:inputText value="${comprasBean.factura.montoRetenidoIRAE}" style="width:100%"
 															styleClass="form-control" />
 													</div>
 												</div>
@@ -283,7 +293,7 @@
 													<p:outputLabel value="No gravado"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
+														<p:inputText value="${comprasBean.factura.montoNoGravado}" style="width:100%"
 															styleClass="form-control" />
 													</div>
 												</div>
@@ -296,21 +306,13 @@
 											style="margin-top: 20px; border-top: 1px solid #E3E3E3; padding-top: 10px; margin-bottom: 1%">
 											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"></div>
 											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-												<div class="row">
-													<p:outputLabel value="No facturable"
-														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
-													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
-															styleClass="form-control" />
-													</div>
-												</div>
 											</div>
 											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 												<div class="row">
 													<p:outputLabel value="Redondeo"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
+														<p:inputText value="${comprasBean.factura.montoNoFacturable}" style="width:100%"
 															styleClass="form-control" />
 													</div>
 												</div>
@@ -320,7 +322,7 @@
 													<p:outputLabel value="Total"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<h:outputText value="100" style="width:100%" />
+														<h:outputText value="${comprasBean.factura.montoTotalAPagar}" style="width:100%" />
 													</div>
 												</div>
 											</div>
@@ -411,7 +413,7 @@
 									styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 									<p:commandButton icon="ui-icon-plusthick"
 										update=":form1:tablePedido" title="agregar artículo"
-										actionListener="${comprasBean.agregarArticulo}"
+										actionListener="${comprasBean.agregarArticulo(articuloBusqueda)}"
 										styleClass="btn-default" style="margin:0 2% 10px 0;" />
 								</p:column>
 							</div>

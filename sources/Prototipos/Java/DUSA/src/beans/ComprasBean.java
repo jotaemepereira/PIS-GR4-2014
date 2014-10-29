@@ -7,6 +7,7 @@ package beans;
 import interfaces.ISistema;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import controladores.Excepciones;
 import controladores.FabricaSistema;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTComprobanteFactura;
+import datatypes.DTLineaFacturaCompra;
 import datatypes.DTProveedor;
 
 @ManagedBean
@@ -184,8 +186,22 @@ public class ComprasBean implements Serializable {
 		}
 	}
 
-	public void agregarArticulo() {
-		// TODO agregar articulo a la lista
+	public void agregarArticulo(DTBusquedaArticulo articulo) {
+		DTLineaFacturaCompra linea = new DTLineaFacturaCompra();
+		
+		linea.setDescripcion(articulo.getDescripcion());
+		linea.setNumeroArticulo(2);
+		linea.setProductId(articulo.getIdArticulo());
+		linea.setCantidad(1);
+		linea.setCostoUltimaCompra(articulo.getCostoReal());
+		linea.setDescripcionOferta("");
+		linea.setDescuento(new BigDecimal(0));
+		linea.setTotal(new BigDecimal(0));
+		linea.setPrecioUnitario(new BigDecimal(0));
+		
+		List<DTLineaFacturaCompra> detalle = factura.getDetalle();
+		detalle.add(linea);
+		
 	}
 
 	public void buscarArticulos() {
@@ -203,6 +219,17 @@ public class ComprasBean implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * frente a un cambio en el precio, cantidad o descuento, calcula el total de ese articulo
+	 */
+	public void calcularTotal(DTLineaFacturaCompra detalle){
+		BigDecimal precio = detalle.getPrecioUnitario();
+		BigDecimal descuento = detalle.getDescuento().subtract(new BigDecimal(100)).abs().divide(new BigDecimal(100));
+		BigDecimal cantidad = new BigDecimal(detalle.getCantidad());
+		
+		detalle.setTotal( precio.multiply(cantidad).multiply(descuento));
 	}
 	
 }
