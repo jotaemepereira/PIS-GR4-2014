@@ -6,12 +6,12 @@
 	
 	<div class="vpanel_left">
 		<ul class="nav nav-pills nav-stacked">
-			<li>
+			<li style="#{loginBean.getAltaProveedorRet()}">
 				<a href="altaProveedor.jsf">
 					<span class="glyphicon glyphicon-plus"></span> Alta de proveedor
 				</a>
 			</li>
-			<li>
+			<li style="#{loginBean.getModificarProveedorRet()}">
 				<a href="#">
 					<span class="glyphicon glyphicon-pencil"></span> Modificación de proveedor
 				</a>
@@ -21,7 +21,7 @@
 					<span class="glyphicon glyphicon-remove"></span> Baja de proveedor
 				</a>
 			</li>
-			<li>
+			<li style="#{loginBean.getBuscarProveedorRet()}">
 				<a href="#">
 					<span class="glyphicon glyphicon-search"></span> Búsqueda de proveedor
 				</a>

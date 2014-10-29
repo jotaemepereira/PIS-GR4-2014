@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class LineaVenta {
+public class LineaVenta implements Serializable {
 	private long ventaId;
 	private long productoId;
 	private Articulo articulo;
@@ -13,6 +14,13 @@ public class LineaVenta {
 	private boolean recetaBlanca;
 	private boolean recetaNaranja;
 	private boolean recetaVerde;
+	private String descuentoPrecio;
+	private String descuentoReceta;
+	private String descripcionOferta;
+	
+	private BigDecimal irae;
+	private BigDecimal iva;
+	private int indicadorFacturacion;
 
 	public long getVentaId() {
 		return ventaId;
@@ -92,6 +100,54 @@ public class LineaVenta {
 
 	public void setRecetaVerde(boolean recetaVerde) {
 		this.recetaVerde = recetaVerde;
+	}
+
+	public String getDescuentoPrecio() {
+		return descuentoPrecio;
+	}
+
+	public void setDescuentoPrecio(String descuentoPrecio) {
+		this.descuentoPrecio = descuentoPrecio;
+	}
+
+	public String getDescuentoReceta() {
+		return descuentoReceta;
+	}
+
+	public void setDescuentoReceta(String descuentoReceta) {
+		this.descuentoReceta = descuentoReceta;
+	}
+
+	public BigDecimal getIrae() {
+		return irae;
+	}
+
+	public void setIrae(BigDecimal irae) {
+		this.irae = irae;
+	}
+
+	public BigDecimal getIva() {
+		return iva;
+	}
+
+	public void setIva(BigDecimal iva) {
+		this.iva = iva;
+	}
+
+	public int getIndicadorFacturacion() {
+		return indicadorFacturacion;
+	}
+
+	public void setIndicadorFacturacion(int indicadorFacturacion) {
+		this.indicadorFacturacion = indicadorFacturacion;
+	}
+
+	public String getDescripcionOferta() {
+		return descripcionOferta;
+	}
+
+	public void setDescripcionOferta(String descripcionOferta) {
+		this.descripcionOferta = descripcionOferta;
 	}
 
 }

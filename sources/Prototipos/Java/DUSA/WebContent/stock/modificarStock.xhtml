@@ -22,6 +22,8 @@
 		<h:form id="form1">
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
+			#{loginBean.redirectIfNotLoggedIn()}
+        	#{stockBean.setISistema(loginBean.instanciaSistema)}
 			<p:focus></p:focus>
 			<div class="vpanel_right">
 				<div class="wrapper">
@@ -34,7 +36,7 @@
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
 								<div class="container-fluid">
-									<p:wizard flowListener="#{stockBean.onFlowProcess}" step="#{stockBean.pasoActual}">
+									<p:wizard flowListener="#{stockBean.onFlowProcess}"	>
 										<p:tab id="paso1" title="Búsqueda">
 											<div class="row" style="margin-bottom: 1%;">
 												<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">

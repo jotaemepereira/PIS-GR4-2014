@@ -4,5 +4,5 @@ $(document).ready(function(e){
 	$(".btn").focus( function(e){ $(this).removeClass("ui-state-focus"); });
 	$(".btn").mouseover(function(e){ $(this).removeClass('ui-state-hover'); });
 	$(".btn").mousedown(function(e){ $(this).removeClass('ui-state-active'); });
-	
+	$(".btn").click(function(e){ $(this).removeClass('ui-state-hover'); });
 });

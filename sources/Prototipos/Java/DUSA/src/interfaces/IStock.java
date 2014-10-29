@@ -8,6 +8,7 @@ import model.AccionTer;
 import model.Articulo;
 import model.Droga;
 import model.Pedido;
+import model.TipoIva;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
@@ -29,6 +30,19 @@ public interface IStock {
 	 * 
 	 */
 	public void altaArticulo(Articulo articulo) throws Excepciones;
+	
+	/**
+	 * Modifica un articulo del sistema
+	 * 
+	 * @param articulo
+	 *            - Articulo
+	 * @throws Excepciones
+	 *             ERROR_SISTEMA (en caso de error a la hora de
+	 *             persistir en la base de datos)
+	 * @author Jmaguerre
+	 * 
+	 */
+	public void modificarArticulo(Articulo articulo) throws Excepciones;
 
 	/**
 	 * Genera un pedido de artículos de D.U.S.A. Donde la cantidad de cada
@@ -108,4 +122,24 @@ public interface IStock {
 	 */
 	public List<DTBusquedaArticulo> buscarArticulos(
 			String busqueda) throws Excepciones;
+
+	/**
+	 * Retorna los distintos tipos de iva existentes en el sistema.
+	 * 
+	 * @return List<TipoIva> lista de los distintos tipos de iva existentes en el sistema.
+	 * @throws Excepciones
+	 * @author José Aguerre
+	 */
+	public List<TipoIva> obtenerTiposIva() throws Excepciones;
+	
+	/**
+	 * Modifica el stock del articulo con id idArticulo al valor nuevoValor
+	 * 
+	 * @author Guille
+	 * @param idArticulo
+	 * @param nuevoValor stock nuevo para el articulo. 
+	 * @throws Excepciones
+	 */
+	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
+	
 }

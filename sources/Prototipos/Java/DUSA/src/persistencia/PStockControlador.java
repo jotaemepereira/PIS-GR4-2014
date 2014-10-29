@@ -26,6 +26,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.primefaces.json.JSONObject;
 
+import Util.NamedParameterStatement;
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
@@ -37,6 +38,7 @@ import model.Droga;
 import model.Enumerados;
 import model.LineaPedido;
 import model.Pedido;
+import model.TipoIva;
 import interfaces.IStockPersistencia;
 
 public class PStockControlador implements IStockPersistencia {
@@ -47,10 +49,10 @@ public class PStockControlador implements IStockPersistencia {
 		
 		String query = "INSERT INTO PRODUCTS " +
 						"(BRAND_ID, PRODUCT_TYPE, DESCRIPTION, PRESENTATION, KEY1, KEY2, KEY3, IS_PSYCHOTROPIC, IS_NARCOTIC, IS_REFRIGERATOR, SALE_CODE, AUTHORIZATION_TYPE,"
-						+ " UNIT_PRICE, SALE_PRICE, SALE_PRICE_PORCENTAGE,LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE, BARCODE, LAST_PRICE_DATE"
-						+ ", NEAREST_DUE_DATE, STOCK, MINIMUM_STOCK, LAST_MODIFIED, STATUS) " +
+						+ " UNIT_PRICE, SALE_PRICE, SALE_PRICE_PORCENTAGE,LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE_ID, BARCODE, LAST_PRICE_DATE"
+						+ ", NEAREST_DUE_DATE, STOCK, MINIMUM_STOCK, USERNAME, LAST_MODIFIED, STATUS) " +
 						" VALUES " +
-						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, LOCALTIMESTAMP, ?) RETURNING PRODUCT_ID;";
+						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, ?, LOCALTIMESTAMP, ?) RETURNING PRODUCT_ID;";
 		Connection c;
 		try {
 			c = Conexion.getConnection();
@@ -85,12 +87,17 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.setBigDecimal(17, articulo.getCostoOferta());//Null
 				stmt.setBigDecimal(18, articulo.getUltimoCosto());//Null
 				stmt.setBigDecimal(19, articulo.getCostoPromedio());//Null
-				stmt.setInt(20, articulo.getTipoIva());//Null
+				if (articulo.getTipoIva() != null){
+					stmt.setInt(20, articulo.getTipoIva().getTipoIVA());//Null
+				}else{
+					stmt.setNull(20, java.sql.Types.INTEGER);
+				}				
 				stmt.setString(21, articulo.getCodigoBarras());//Null
 				stmt.setNull(22, java.sql.Types.TIMESTAMP);//Null Vencimiento Más Cercano
 				stmt.setLong(23, articulo.getStock());//Not Null
 				stmt.setLong(24, articulo.getStockMinimo());//Null
-				stmt.setBoolean(25, true);//Not Null
+				stmt.setString(25, articulo.getUsuario().getNombre());//Not Null
+				stmt.setBoolean(26, true);//Not Null
 				
 				ResultSet rs = stmt.executeQuery();
 				//Obtengo la clave del nuevo artículo creado
@@ -339,8 +346,10 @@ public class PStockControlador implements IStockPersistencia {
 	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones{
 		DTVenta articulo = new DTVenta();
 		PreparedStatement stmt = null;
-		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK "
-				+ "FROM PRODUCTS "
+		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR "
+				+ "FROM PRODUCTS p "
+				+ "INNER JOIN tax_types tt ON p.tax_type_id = tt.tax_type_id "
+				
 				+ "WHERE PRODUCT_ID = ?";
 		try {
 			Connection c = Conexion.getConnection();
@@ -353,6 +362,10 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setRecetaVerde(rs.getBoolean("IS_PSYCHOTROPIC"));
 				articulo.setRecetaNaranja(rs.getBoolean("IS_NARCOTIC"));
 				articulo.setStock(rs.getInt("STOCK"));
+				articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
+				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
+				articulo.setIva(rs.getBigDecimal("BILLING_INDICATOR"));
+				
 			}
 			rs.close();
 			stmt.close();
@@ -492,7 +505,7 @@ public class PStockControlador implements IStockPersistencia {
 		PreparedStatement stmt = null;
 		
 		String query = "INSERT INTO ORDERS_DUSA "
-						+ "(USER_ID, PAYMENT_TYPE, ORDER_DATE) VALUES "
+						+ "(USERNAME, PAYMENT_TYPE, ORDER_DATE) VALUES "
 						+ " (?, ?, LOCALTIMESTAMP) RETURNING ORDER_DUSA_ID;";
 		try {
 			
@@ -501,7 +514,8 @@ public class PStockControlador implements IStockPersistencia {
 			try {
 				
 				stmt = c.prepareStatement(query);
-				stmt.setInt(1, p.getIdUsuario());
+//				stmt.setInt(1, p.getIdUsuario());
+				stmt.setString(1, p.getUsuario().getNombre());
 				stmt.setString(2, "" + p.getFormaDePago() + "");
 				
 				ResultSet rs = stmt.executeQuery();
@@ -732,10 +746,10 @@ public class PStockControlador implements IStockPersistencia {
 					articulo.setCostoOferta(rs.getBigDecimal("offer_cost"));
 					articulo.setUltimoCosto(rs.getBigDecimal("last_cost"));
 					articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
-					BigDecimal auxDecimal = rs.getBigDecimal("tax_type");
-					if (auxDecimal != null) {
-						articulo.setTipoIva(auxDecimal.intValue());
-					}
+//					BigDecimal auxDecimal = rs.getBigDecimal("TAX_TYPE_ID");
+//					if (auxDecimal != null) {
+//						articulo.getTipoIva().setTipoIVA(auxDecimal.intValue());
+//					}
 					articulo.setCodigoBarras(rs.getString("barcode"));
 					Timestamp timestamp = rs.getTimestamp("nearest_due_date");
 					if (timestamp != null) {
@@ -767,6 +781,353 @@ public class PStockControlador implements IStockPersistencia {
 		}
 		
 		return articulo;
+	}
+
+
+	@Override
+	public List<TipoIva> obtenerTiposIva() throws Excepciones {
+		List<TipoIva> ret = null;
+		PreparedStatement stmt = null;
+		String query = "SELECT t.tax_type_id, t.description " +
+						"FROM TAX_TYPES t ";
+		
+		try {
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			ret = new ArrayList<TipoIva>();
+			while(rs.next()){
+				TipoIva nuevo = new TipoIva();
+				nuevo.setTipoIVA(rs.getInt("tax_type_id"));
+				nuevo.setDescripcion(rs.getString("description"));
+				ret.add(nuevo);
+			}
+			rs.close();
+			stmt.close();
+		} catch (Exception e){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		return ret;
+	}
+
+
+	@Override
+	public void persistirTiposIva(List<TipoIva> lista) throws Excepciones {
+		PreparedStatement stmt = null;		
+		try{
+			Connection c = Conexion.getConnection();
+			
+			for (TipoIva t: lista){
+				String query = "INSERT INTO TAX_TYPES "
+						+ "(TAX_TYPE_ID, DESCRIPTION, RATE_TYPE, BILLING_INDICATOR, "
+						+ "IVA_VALUE, TAX_VALUE, IVA_VOUCHER, IRAE_VOUCHER, STATUS) VALUES "
+						+ " (?, ?, ?, ?, ?, ?, ?, ?, TRUE);";
+				stmt = c.prepareStatement(query);
+				stmt.setInt(1, t.getTipoIVA());
+				stmt.setString(2, t.getDescripcion());
+				stmt.setInt(3, t.getTipoTasa());
+				stmt.setInt(4, t.getIndicadorFacturacion());
+				stmt.setBigDecimal(5, t.getValorIVA());
+				stmt.setBigDecimal(6, t.getValorTributo());
+				stmt.setBigDecimal(7, t.getResguardoIVA());
+				stmt.setBigDecimal(8, t.getResguardoIRAE());
+				stmt.executeUpdate();				
+			}
+			stmt.close();
+			c.close();
+		}catch(Exception e){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+	}
+	
+	/**
+	 * @author Guille
+	 */
+	@Override
+	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones {
+		
+		PreparedStatement stmt = null;		
+		try{
+			Connection c = Conexion.getConnection();
+			
+			String query = "UPDATE PRODUCTS SET STOCK = ? "
+					+ "WHERE PRODUCT_ID = ?;";
+			
+			stmt = c.prepareStatement(query);
+			stmt.setLong(1, nuevoValor);
+			stmt.setLong(2, idArticulo);
+			
+			stmt.executeUpdate();
+			
+			stmt.close();
+			c.close();
+		}catch(Exception e){
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+	}
+
+	@Override
+	public void modificarArticulo(Articulo articulo) throws Excepciones {
+		NamedParameterStatement stmt = null;
+		
+		String query = "UPDATE PRODUCTS SET ";
+
+		if (articulo.isIdMarcaModificado()){
+			query += "BRAND_ID = :brand_id, ";
+		}
+		if (articulo.isTipoArticuloModificado()){
+			query += "PRODUCT_TYPE = :product_type, ";
+		}
+		if (articulo.isDescripcionModificado()){
+			query += "DESCRIPTION = :description, ";
+		}
+		if (articulo.isPresentacionModificado()){
+			query += "PRESENTATION = :presentation, ";
+		}
+		if (articulo.isClave1Modificado()){
+			query += "KEY1 = :key1, ";
+		}
+		if (articulo.isClave2Modificado()){
+			query += "KEY2 = :key2, ";
+		}
+		if (articulo.isClave3Modificado()){
+			query += "KEY3 = :key3, ";
+		}
+		if (articulo.isEsPsicofarmacoModificado()){
+			query += "IS_PSYCHOTROPIC = :isPsychotropic, ";
+		}
+		if (articulo.isEsEstupefacienteModificado()){
+			query += "IS_NARCOTIC = :isNarcotic, ";
+		}
+		if (articulo.isEsHeladeraModificado()){
+			query += "IS_REFRIGERATOR = :isRefrigerator, ";
+		}
+		if (articulo.isCodigoVentaModificado()){
+			query += "SALE_CODE = :sale_code, ";
+		}
+		if (articulo.isTipoAutorizacionModificado()){
+			query += "AUTHORIZATION_TYPE = :authorization_type, ";
+		}
+		if (articulo.isPrecioUnitarioModificado()){
+			query += "UNIT_PRICE = :unit_price, ";
+			//Si se modifica el precio unitario tiene que cambiar el valor en fechaUltimoPrecio
+			query += "LAST_PRICE_DATE = LOCALTIMESTAMP, ";
+		}
+		if (articulo.isPrecioVentaModificado()){
+			query += "SALE_PRICE = :sale_price, ";
+		}
+		if (articulo.isPorcentajePrecioVentaModificado()){
+			query += "SALE_PRICE_PORCENTAGE = :sale_price_porcentage, ";
+		}
+		if (articulo.isCostoListaModificado()){
+			query += "LIST_COST = :list_cost, ";
+		}
+		if (articulo.isCostoOfertaModificado()){
+			query += "OFFER_COST = :offer_cost, ";
+		}
+		if (articulo.isUltimoCostoModificado()){
+			query += "LAST_COST = :last_cost, ";
+		}
+		if (articulo.isCostoPromedioModificado()){
+			query += "AVG_COST = :avg_cost, ";
+		}
+		if (articulo.isTipoIvaModificado()){
+			query += "TAX_TYPE_ID = :tax_type_id, ";
+		}
+		if (articulo.isCodigoBarrasModificado()){
+			query += "BARCODE = :barcode, ";
+		}
+		if (articulo.isVencimientoMasCercanoModificado()){
+			query += "NEAREST_DUE_DATE = :nearest_due_date, ";
+		}
+		if (articulo.isStockMinimoModificado()){
+			query += "MINIMUM_STOCK = :minimum_stock, ";
+		}
+		if (articulo.isUsuarioModificado()){
+			query += "USERNAME = :username, ";
+		}
+		
+		//Seteo fecha de última modificación a la actual
+		query += "LAST_MODIFIED = LOCALTIMESTAMP) ";
+		query += "WHERE PRODUCT_ID = :product_id;";
+		
+		Connection c;
+		try {
+			c = Conexion.getConnection();
+			c.setAutoCommit(false);
+			try {
+				// Seteo los datos a modificar en la bd
+				stmt = new NamedParameterStatement(c, query);
+				
+				if (articulo.isIdMarcaModificado()){
+					if (articulo.getIdMarca() != 0){
+						stmt.setInt("brand_id", articulo.getIdMarca());
+					}else{
+						stmt.setNull("brand_id", java.sql.Types.INTEGER);
+					}			
+				}
+				if (articulo.isTipoArticuloModificado()){
+					stmt.setChar("product_type", articulo.getTipoArticulo());
+				}
+				if (articulo.isDescripcionModificado()){
+					stmt.setString("description", articulo.getDescripcion());
+				}
+				if (articulo.isPresentacionModificado()){
+					stmt.setString("presentation", articulo.getPresentacion());
+				}
+				if (articulo.isClave1Modificado()){
+					stmt.setString("key1", articulo.getClave1());
+				}
+				if (articulo.isClave2Modificado()){
+					stmt.setString("key2", articulo.getClave2());
+				}
+				if (articulo.isClave3Modificado()){
+					stmt.setString("key3", articulo.getClave3());
+				}
+				if (articulo.isEsPsicofarmacoModificado()){
+					stmt.setBoolean("isPsychotropic", articulo.isEsPsicofarmaco());
+				}
+				if (articulo.isEsEstupefacienteModificado()){
+					stmt.setBoolean("isNarcotic", articulo.isEsEstupefaciente());
+				}
+				if (articulo.isEsHeladeraModificado()){
+					stmt.setBoolean("isRefrigerator", articulo.isEsHeladera());
+				}
+				if (articulo.isCodigoVentaModificado()){
+					if (articulo.getCodigoVenta() != 0x00){
+						stmt.setChar("sale_code", articulo.getCodigoVenta());
+					}else{
+						stmt.setNull("sale_code", java.sql.Types.CHAR);
+					}
+				}
+				if (articulo.isTipoAutorizacionModificado()){
+					stmt.setChar("authorization_type", articulo.getTipoAutorizacion());
+				}
+				if (articulo.isPrecioUnitarioModificado()){
+					stmt.setBigDecimal("unit_price", articulo.getPrecioUnitario());
+				}
+				if (articulo.isPrecioVentaModificado()){
+					stmt.setBigDecimal("sale_price", articulo.getPrecioVenta());
+				}
+				if (articulo.isPorcentajePrecioVentaModificado()){
+					stmt.setBigDecimal("sale_price_porcentage", articulo.getPorcentajePrecioVenta());
+				}
+				if (articulo.isCostoListaModificado()){
+					stmt.setBigDecimal("list_cost", articulo.getCostoLista());
+				}
+				if (articulo.isCostoOfertaModificado()){
+					stmt.setBigDecimal("offer_cost", articulo.getCostoOferta());
+				}
+				if (articulo.isUltimoCostoModificado()){
+					stmt.setBigDecimal("last_cost", articulo.getUltimoCosto());
+				}
+				if (articulo.isCostoPromedioModificado()){
+					stmt.setBigDecimal("avg_cost", articulo.getCostoPromedio());
+				}
+				if (articulo.isTipoIvaModificado()){
+					if (articulo.getTipoIva() != null){
+						stmt.setInt("tax_type_id", articulo.getTipoIva().getTipoIVA());
+					}else{
+						stmt.setNull("tax_type_id", java.sql.Types.INTEGER);
+					}
+				}
+				if (articulo.isCodigoBarrasModificado()){
+					stmt.setString("barcode", articulo.getCodigoBarras());
+				}
+				if (articulo.isVencimientoMasCercanoModificado()){
+					stmt.setTimestamp("nearest_due_date", new java.sql.Timestamp(articulo.getVencimientoMasCercano().getTime()));
+				}
+				if (articulo.isStockMinimoModificado()){
+					stmt.setLong("minimum_stock", articulo.getStockMinimo());
+				}
+				if (articulo.isUsuarioModificado()){
+					stmt.setString("username", articulo.getUsuario().getNombre());
+				}
+				
+				stmt.setLong("product_id", articulo.getIdArticulo());
+				
+				stmt.executeUpdate();
+				
+				//TODO Guardar cambios de proveedores, drogas y acciones terapeuticas				
+				if (articulo.isProveedoresModificado()){
+					/*
+					//Para cada proveedor asociado inserto una fila en products_suppliers
+					List<DTProveedor> proveedores = new ArrayList<DTProveedor>(articulo.getProveedores().values()); 
+					Iterator<DTProveedor> i = proveedores.iterator();
+					while (i.hasNext()){
+						DTProveedor next = i.next();
+						query = "INSERT INTO PRODUCTS_SUPPLIERS " +
+								"(SUPPLIER_ID, PRODUCT_ID, PRODUCT_NUMBER, LINE_ID) " +
+								"VALUES " +
+								"(?, ?, ?, ?)";
+						stmt = c.prepareStatement(query);
+						stmt.setInt(1, next.getIdProveedor());
+						stmt.setLong(2, key);
+						stmt.setLong(3, next.getCodigoIdentificador());
+						stmt.setString(4, next.getIdLinea());
+						stmt.executeUpdate();
+					}
+					*/
+				}
+				if (articulo.isDrogasModificado()){
+					/*
+					//Para cada droga seleccionada inserto una fila en product_drugs
+					if (articulo.getDrogas() != null){
+						for(long idDroga : articulo.getDrogas()){
+							query = "INSERT INTO PRODUCT_DRUGS " +
+									"(PRODUCT_ID, DRUG_ID) " +
+									"VALUES " +
+									"(?, ?)";
+							stmt = c.prepareStatement(query);
+							stmt.setLong(1, key);
+							stmt.setLong(2, idDroga);
+							stmt.executeUpdate();
+						}
+					}
+					*/
+					
+				}
+				if (articulo.isAccionesTerModificado()){
+					/*
+					//Para cada acción terapéutica seleccionada inserto una fila en product_therap_actions
+					if (articulo.getAccionesTer() != null){
+						for(long idAccTer : articulo.getAccionesTer()){
+							query = "INSERT INTO PRODUCT_THERAP_ACTIONS " +
+									"(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " +
+									"VALUES " +
+									"(?, ?)";
+							stmt = c.prepareStatement(query);
+							stmt.setLong(1, key);
+							stmt.setLong(2, idAccTer);
+							stmt.executeUpdate();
+						}
+					}
+					*/	
+				}
+				
+				//Commiteo todo y cierro conexion
+				c.commit();
+				stmt.close();
+				c.close();
+				
+				// indexacion de solr del producto nuevo
+				deltaImportSolr();
+			} catch ( Exception e ) {
+				//Hago rollback de las cosas y lanzo excepcion
+				c.rollback();
+				e.printStackTrace();				
+				throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+			}
+		} catch (NamingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		}
+		
 	}
 }
 

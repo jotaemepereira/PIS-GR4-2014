@@ -11,6 +11,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import datatypes.DTProveedor;
+import uy.com.dusa.ws.DataIVA;
 import uy.com.dusa.ws.DataInfoProducto;
 import uy.com.dusa.ws.DataLineaPedidoSimple;
 import uy.com.dusa.ws.DataPedidoSimple;
@@ -26,6 +27,8 @@ import model.Enumerados;
 import model.Enumerados.TipoFormaDePago;
 import model.LineaPedido;
 import model.Pedido;
+import model.TipoIva;
+import model.Usuario;
 import interfaces.IServicio;
 
 
@@ -79,6 +82,14 @@ public class ServicioDusaControlador implements IServicio {
 		//articulo.setStockMinimo();
 		//articulo.setTipoAutorizacion();
 		//articulo.setTipoIva();
+		
+		//TODO ver que pasa con esto Jaguerre
+		TipoIva tipoIva = new TipoIva();
+		tipoIva.setTipoIVA(52);
+		articulo.setTipoIva(tipoIva);
+		Usuario usr = new Usuario();
+		usr.setNombre("Admin");
+		articulo.setUsuario(usr);
 		//articulo.setUltimoCosto();
 		//articulo.setVencimientoMasCercano();
 	
@@ -155,5 +166,33 @@ public class ServicioDusaControlador implements IServicio {
 	public List<Articulo> obtenerArticulos() {
 		List<Articulo> articulos = new ArrayList<Articulo>();
 		return articulos;	
+	}
+
+	@Override
+	public List<TipoIva> obtenerTiposIva() throws Excepciones {
+		List<TipoIva> ret = new ArrayList<TipoIva>();
+		WSConsultaStock servicio = getServicioStock();
+		try{
+			List<DataIVA> lista = servicio.getTiposIVA(userTest, passTest).getIvas();
+			for (DataIVA di: lista){
+				ret.add(transformarTipoIVA(di));
+			}
+		}catch (Exception e){
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		return ret;
+	}
+
+	private TipoIva transformarTipoIVA(DataIVA di) {
+		TipoIva ret = new TipoIva();
+		ret.setTipoIVA(di.getTipoIVA());
+		ret.setDescripcion(di.getDescripcion());
+		ret.setTipoTasa(di.getTipoTasa());
+		ret.setIndicadorFacturacion(di.getIndicadorFacturacion());
+		ret.setValorIVA(di.getValorIVA());
+		ret.setValorTributo(di.getValorTributo());
+		ret.setResguardoIVA(di.getResguardoIVA());
+		ret.setResguardoIRAE(di.getResguardoIRAE());		
+		return ret;
 	}
 }

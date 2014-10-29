@@ -59,10 +59,16 @@ public class Enumerados {
 	    public static final int interrumpida = 2;
 	    public static final int controlada = 3;
 	}
+	public final class indicadoresFacturacion{
+	    public static final int EXENTO = 1;
+	    public static final int MINIMO = 2;
+	    public static final int BASICO = 3;
+	}
 	public class EstadoVenta {
 		public static final char PENDIENTE = 'P';
 		public static final char FACTURADA = 'F';
 		public static final char CANCELADA = 'C';
+		public static final char PERDIDA = 'X';
 	}
 	
 	public final class habilitado {	    
@@ -76,6 +82,11 @@ public class Enumerados {
 		public static final char PERFUMERIA = 'P';
 		public static final char OTROS = 'O';
 		
+	}
+	
+	public class formaDePago {
+		public static final String CONTADO = "CONTADO";
+		public static final String CREDITO = "CREDITO";
 	}
 	
 	public static String descripcionTipoArticulo(String tipo){

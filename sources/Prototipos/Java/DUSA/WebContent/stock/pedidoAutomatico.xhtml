@@ -40,6 +40,8 @@
 			<p:hotkey bind="Ctrl+return" update="panel msgs" actionListener="#{stockBean.enviarPedido}"/>
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
+			#{loginBean.redirectIfNotLoggedIn()}
+        	#{stockBean.setISistema(loginBean.instanciaSistema)}
 			<!--		-->
 			<p:focus></p:focus>
 			
@@ -61,7 +63,10 @@
 										<h:commandButton id="btn1" value="Desde el último pedido" update="btn1 btn2 show-hide" actionListener="#{stockBean.desdeUltimoPedido}" 
 											styleClass="btn btn-default elegirTipo" style="margin:0 2% 10px 0;" disabled="${stockBean.disableDesdeUltimoPedido}" />
 										<h:commandButton id="btn2" value="Predicción de pedido" update="btn1 btn2 show-hide" actionListener="#{stockBean.prediccionDePedido}"
-											styleClass="btn btn-default elegirTipo" style="margin:0 0 10px 0;" disabled="${stockBean.disablePrediccionDePedido}" />
+											styleClass="btn btn-default elegirTipo" style="margin:0 0 10px 0;" disabled="${stockBean.disablePrediccionDePedido}">
+											
+												<p:ajax process="@this" update="btn1 btn2 show-hide"/>
+										</h:commandButton>
 									</div>
 								</div>
 							
@@ -105,9 +110,9 @@
 													
 													<p:column headerText="Cantidad" styleClass="col-xs-4 col-sm-3 col-md-2 col-lg-2">
 													        <p:inputMask id="cantidad" mask="?9999" styleClass="form-control" style="text-align: center" readonly="false" value="#{pedido.cantidad}">
-													    	<p:ajax listener="#{stockBean.nuevoSubtotal(pedido)}"
-																update="subtotal" process="@this" />
-																</p:inputMask>
+													    		<p:ajax listener="#{stockBean.nuevoSubtotal(pedido)}"
+																			update="subtotal" process="@this" />
+															</p:inputMask>
 															
 													</p:column>
 													

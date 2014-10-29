@@ -14,14 +14,35 @@ import model.Articulo;
 import model.Droga;
 import model.LineaPedido;
 import model.Pedido;
+import model.TipoIva;
 
-/**  
-* @author Santiago
-*
-*/
 public interface IStockPersistencia {
 	
+	/**
+	 * Da de alta un articulo en el sistema
+	 * 
+	 * @param articulo
+	 *            - Articulo
+	 * @throws Excepciones
+	 *             ERROR_SISTEMA (en caso de error a la hora de
+	 *             persistir en la base de datos)
+	 * @author Jmaguerre
+	 * 
+	 */
 	public void persistirArticulo(Articulo articulo)throws Excepciones;
+	
+	/**
+	 * Modifica un articulo del sistema
+	 * 
+	 * @param articulo
+	 *            - Articulo
+	 * @throws Excepciones
+	 *             ERROR_SISTEMA (en caso de error a la hora de
+	 *             persistir en la base de datos)
+	 * @author Jmaguerre
+	 * 
+	 */
+	public void modificarArticulo(Articulo articulo) throws Excepciones;
 	
 	/**
 	 * Retorna la fecha del ultimo pedido realizado a D.U.S.A.
@@ -107,4 +128,30 @@ public interface IStockPersistencia {
 	 * @throws Excepciones 
 	 */
 	void buscarArticulosId(DTBusquedaArticulo articulo) throws Excepciones;
+
+	/**
+	 * Retorna los distintos tipos de iva existentes en el sistema.
+	 * 
+	 * @return List<TipoIva> lista de los distintos tipos de iva existentes en el sistema.
+	 * @throws Excepciones
+	 * @author José Aguerre
+	 */
+	public List<TipoIva> obtenerTiposIva() throws Excepciones;
+
+	/**
+	 * Persiste los tipos de iva en el sistema.
+	 * @param lista
+	 * @author Jose Aguerre
+	 */
+	public void persistirTiposIva(List<TipoIva> lista) throws Excepciones;
+	
+	/**
+	 * Modifica el stock del articulo con id idArticulo al valor nuevoValor
+	 * 
+	 * @author Guille
+	 * @param idArticulo
+	 * @param nuevoValor stock nuevo para el articulo. 
+	 * @throws Excepciones
+	 */
+	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
 }

@@ -12,6 +12,7 @@ import model.Enumerados;
 import model.GeneradorPedido;
 import model.LineaPedido;
 import model.Pedido;
+import model.TipoIva;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -29,7 +30,6 @@ import datatypes.DTLineaPedido;
 import datatypes.DTProduct;
 import datatypes.DTProveedor;
 import datatypes.DTVenta;
-import model.Articulo;
 import controladores.FabricaPersistencia;
 
 public class StockControlador implements IStock {
@@ -109,9 +109,9 @@ public class StockControlador implements IStock {
 				 dtlPedido.setStockMinimo(articulo.getStockMinimo());
 				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				 dtlPedido.setCantidad(lPedido.getCantidad());
-				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().setScale(2, RoundingMode.HALF_EVEN).floatValue());
-				 // TODO: hardcodear id de DUSA
-				 // TODO: Calcular costo ponderado promedio
+				 dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
+				 dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().floatValue());
+				 
 				 DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
 				 
 				 if (dtProveedor != null){
@@ -167,6 +167,8 @@ public class StockControlador implements IStock {
 				dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				dtlPedido.setCantidad(lPedido.getCantidad());
 				dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
+				dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().floatValue());
+				
 				DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
 				if (dtProveedor != null){
 					 //Preventivo control si no es de DUSA no se ingresa
@@ -201,7 +203,18 @@ public class StockControlador implements IStock {
 
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
+		//grabarTiposIVA();
 		return FabricaPersistencia.getStockPersistencia().obtenerAccionesTerapeuticas();
+	}
+
+	private void grabarTiposIVA() {
+		try {
+			List<TipoIva> lista = FabricaServicios.getIServicios().obtenerTiposIva();
+			FabricaPersistencia.getStockPersistencia().persistirTiposIva(lista);
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -221,8 +234,6 @@ public class StockControlador implements IStock {
 			articuloV.setPresentacion(articuloB.getPresentacion());
 			articuloV.setPrincipioActivo(articuloB.getDroga());
 			articuloV.setLaboratorio(articuloB.getMarca());
-			articuloV.setDescuento1(new BigDecimal(25));
-			articuloV.setDescuento2(new BigDecimal(40));
 			articulos.add(articuloV);
 		}
 		
@@ -247,6 +258,24 @@ public class StockControlador implements IStock {
 		}
 	}
 
-	
+	@Override
+	public List<TipoIva> obtenerTiposIva() throws Excepciones {
+		return FabricaPersistencia.getStockPersistencia().obtenerTiposIva();
+	}
+
+	/**
+	 * @author Guille
+	 */
+	@Override
+	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones {
+		
+		FabricaPersistencia.getStockPersistencia().modificarStock(idArticulo, nuevoValor);
+	}
+
+	@Override
+	public void modificarArticulo(Articulo articulo) throws Excepciones {
+		FabricaPersistencia.getStockPersistencia().modificarArticulo(articulo);
+		
+	}
 	
 }

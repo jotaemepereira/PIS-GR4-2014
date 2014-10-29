@@ -6,27 +6,27 @@
 
 	<div class="vpanel_left">
 		<ul class="nav nav-pills nav-stacked">
-			<li>
+			<li style="#{loginBean.getAltaArticuloRet()}">
 				<a href="altaArticulo.jsf">
 					<span class="glyphicon glyphicon-plus"></span> Alta de artículo
 				</a>
 			</li>
-			<li>
+			<li style="#{loginBean.getModificarArticuloRet()}">
 				<a href="#">
 					<span class="glyphicon glyphicon-pencil"></span> Modificación de artículo
 				</a>
 			</li>
-			<li>
+			<li style="#{loginBean.getBajaArticuloRet()}">
 				<a href="#">
 					<span class="glyphicon glyphicon-remove"></span> Baja de artículo
 				</a>
 			</li>
-			<li>
-				<a href="#">
+			<li style="#{loginBean.getBuscarArticuloRet()}">
+				<a href="busquedaArticulo.jsf">
 					<span class="glyphicon glyphicon-search"></span> Búsqueda de artículo
 				</a>
 			</li>
-			<li>
+			<li style="#{loginBean.getPedidoPermiso()}">
 				<a href="pedidoAutomatico.jsf">
 					<span class="glyphicon glyphicon-plus"></span> Pedido automático
 				</a>

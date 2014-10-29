@@ -13,6 +13,7 @@ import model.Articulo;
 import model.Droga;
 import model.Pedido;
 import model.Enumerados.casoDeUso;
+import model.TipoIva;
 import model.Usuario;
 import model.Proveedor;
 import model.Venta;
@@ -146,5 +147,31 @@ public class SistemaControlador implements ISistema {
 		//else
 		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 
+	}
+
+	@Override
+	public List<TipoIva> obtenerTiposIva() throws Excepciones {
+		//actualizarStock();
+		return FabricaLogica.getIStock().obtenerTiposIva();
+
+	}
+
+	@Override
+	public Usuario obtenerUsuarioLogueado() {
+		// TODO Auto-generated method stub
+		return user;
+
+	}
+	
+	@Override
+	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones {
+		
+		FabricaLogica.getIStock().modificarStock(idArticulo, nuevoValor);
+	}
+
+	@Override
+	public void modificarArticulo(Articulo articulo) throws Excepciones {
+		FabricaLogica.getIStock().modificarArticulo(articulo);
+		
 	}
 }

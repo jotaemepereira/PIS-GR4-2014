@@ -34,6 +34,8 @@
 			<p:hotkey bind="Ctrl+return" update="panel msgs" actionListener="#{proveedoresBean.altaProveedor}"/>
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/proveedores.xhtml" />
+			#{loginBean.redirectIfNotLoggedIn()}
+        	#{proveedoresBean.setISistema(loginBean.instanciaSistema)}
 			<p:focus></p:focus>
 			<div class="vpanel_right">
 				<div class="wrapper">				

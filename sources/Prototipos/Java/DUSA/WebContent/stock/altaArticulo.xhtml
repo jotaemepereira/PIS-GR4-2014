@@ -23,7 +23,8 @@
 		<h:form id="form1">
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
-
+			#{loginBean.redirectIfNotLoggedIn()}
+        	#{stockBean.setISistema(loginBean.instanciaSistema)}
 			<div class="vpanel_right">
 				<div class="wrapper">				
 					<div class="panel panel-default" id="panel">
@@ -188,7 +189,7 @@
 														<p:message for="codigoIdentificador" display="text" />
 													</div>
 													<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-														<p:commandButton value="Agregar" update="panel msgs tablaProveedores" validateClient="true" actionListener="#{stockBean.agregarProveedor}" 
+														<p:commandButton value="Agregar" update="msgs codigoIdentificador proveedor tablaProveedores" validateClient="true" actionListener="#{stockBean.agregarProveedor}" 
 														styleClass="btn btn-info pull-right" process="@this,codigoIdentificador"/>
 													</div>
 												</div>
@@ -343,9 +344,9 @@
 										</div>
 										<div class="row">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<p:selectOneMenu id="tipoIVA" value="#{stockBean.articulo.tipoIva}" style="height: 100%" required="false" >
+												<p:selectOneMenu id="tipoIVA" value="#{stockBean.tipoIvaSeleccionado}" style="height: 100%" required="false" >
 										            <f:selectItem itemLabel="Seleccione tipo de IVA" itemValue="#{null}" />
-										            <f:selectItems value="#{stockBean.tiposIVA}" />
+										            <f:selectItems value="#{stockBean.tiposIVA}" var="t" itemLabel="#{t.descripcion}" itemValue="#{t.tipoIVA}" />
 										        </p:selectOneMenu>
 										    </div>
 										</div>

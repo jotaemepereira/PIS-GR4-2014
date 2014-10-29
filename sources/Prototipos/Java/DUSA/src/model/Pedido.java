@@ -9,17 +9,17 @@ import model.Enumerados.TipoFormaDePago;
 //@autor Guille
 public class Pedido {
 	
-	Long 				idPedido;
-	Date 				fecha;
-	TipoFormaDePago 	formaDePago;
-	int					idUsuario; 
-	List<LineaPedido>	lineas;
+	private Long 				idPedido;
+	private Date 				fecha;
+	private TipoFormaDePago 	formaDePago;
+	private Usuario				usuario; 
+	private List<LineaPedido>	lineas;
 	
 	public Pedido() {
 		
 		this.idPedido = new Long(0);
 		this.fecha = null;
-		this.idUsuario = 0;
+		this.usuario = new Usuario();
 		this.lineas = new ArrayList<LineaPedido>();
 		
 	}
@@ -48,12 +48,12 @@ public class Pedido {
 		this.formaDePago = formaDePago;
 	}
 	
-	public int getIdUsuario() {
-		return idUsuario;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 	
-	public void setIdUsuario(int idUsuario) {
-		this.idUsuario = idUsuario;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 	
 	public List<LineaPedido> getLineas() {

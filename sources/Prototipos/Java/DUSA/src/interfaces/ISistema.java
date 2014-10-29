@@ -16,6 +16,9 @@ import model.Droga;
 import model.Pedido;
 import model.Presentacion;
 import model.Proveedor;
+import model.TipoIva;
+import model.Usuario;
+
 import model.Venta;
 
 public interface ISistema {
@@ -24,7 +27,31 @@ public interface ISistema {
 	
 	public void altaProveedor(Proveedor proveedor) throws Excepciones;
 
+	/**
+	 * Se encarga de dar de alta un nuevo artículo en el sistema.
+	 * 
+	 * @param articulo
+	 * 			Artículo a persistir.
+	 * 
+	 * @throws Excepciones
+	 *             - ERROR_SISTEMA (en caso que suceda algún error a la hora de
+	 *             conectarse o comunicarse con la base)
+	 * @author José Aguerre
+	 */
 	public void altaArticulo(Articulo articulo) throws Excepciones;
+	
+	/**
+	 * Modifica un articulo del sistema
+	 * 
+	 * @param articulo
+	 *            - Articulo
+	 * @throws Excepciones
+	 *             ERROR_SISTEMA (en caso de error a la hora de
+	 *             persistir en la base de datos)
+	 * @author Jmaguerre
+	 * 
+	 */
+	public void modificarArticulo(Articulo articulo) throws Excepciones;
 
 	/**
 	 * Retorna todos los proveedores activos existentes en el sistema.
@@ -169,5 +196,27 @@ public interface ISistema {
 	 * @param codigoIdentificador 
 	 */
 	public boolean existeCodigoParaProveedor(long idProveedor, long codigoIdentificador) throws Excepciones;
+
+	/**
+	 * Retorna los distintos tipos de iva existentes en el sistema.
+	 * 
+	 * @return List<TipoIva> lista de los distintos tipos de iva existentes en el sistema.
+	 * @throws Excepciones
+	 * @author José Aguerre
+	 */
+	public List<TipoIva> obtenerTiposIva() throws Excepciones;
+	
+
+	public Usuario obtenerUsuarioLogueado();
+	
+	/**
+	 * Modifica el stock del articulo con id idArticulo al valor nuevoValor
+	 * 
+	 * @author Guille
+	 * @param idArticulo
+	 * @param nuevoValor stock nuevo para el articulo. 
+	 * @throws Excepciones
+	 */
+	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
 
 }
