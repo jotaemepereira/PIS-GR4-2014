@@ -3,24 +3,16 @@ package datatypes;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import uy.com.dusa.ws.ComprobanteFormaDePago;
-import uy.com.dusa.ws.DataLineaComprobante;
-import uy.com.dusa.ws.DataVencimiento;
-
 public class DTComprobanteFactura {
+	private int idOrden;
 	private int tipoCFE;
     private String serieCFE;
     private int numeroCFE;
-    @XmlSchemaType(name = "dateTime")
     private XMLGregorianCalendar fechaComprobante;
-    @XmlSchemaType(name = "dateTime")
-    private XMLGregorianCalendar fechaEmision;
     private int numeroCliente;
-   // private ComprobanteFormaDePago formaDePago;
+    private String formaDePago;
     private long ordenDeCompra;
     private BigDecimal montoNoGravado;
     private BigDecimal montoNetoGravadoIvaMinimo;
@@ -35,10 +27,8 @@ public class DTComprobanteFactura {
     private BigDecimal montoTotalAPagar;
     private BigDecimal montoTributoIvaMinimo;
     private BigDecimal montoTributoIvaBasico;
-  /*  @XmlElement(nillable = true)
-    private List<DataLineaComprobante> detalle;
-    @XmlElement(nillable = true)
-    private List<DataVencimiento> vencimientos;*/
+    private List<DTLineaFacturaCompra> detalle;
+   // private List<DataVencimiento> vencimientos;
     
     
 	public int getTipoCFE() {
@@ -65,12 +55,6 @@ public class DTComprobanteFactura {
 	public void setNumeroCliente(int numeroCliente) {
 		this.numeroCliente = numeroCliente;
 	}
-	/*public ComprobanteFormaDePago getFormaDePago() {
-		return formaDePago;
-	}
-	public void setFormaDePago(ComprobanteFormaDePago formaDePago) {
-		this.formaDePago = formaDePago;
-	}*/
 	public long getOrdenDeCompra() {
 		return ordenDeCompra;
 	}
@@ -154,5 +138,29 @@ public class DTComprobanteFactura {
 	}
 	public void setMontoTributoIvaBasico(BigDecimal montoTributoIvaBasico) {
 		this.montoTributoIvaBasico = montoTributoIvaBasico;
+	}
+	public XMLGregorianCalendar getFechaComprobante() {
+		return fechaComprobante;
+	}
+	public void setFechaComprobante(XMLGregorianCalendar fechaComprobante) {
+		this.fechaComprobante = fechaComprobante;
+	}
+	public List<DTLineaFacturaCompra> getDetalle() {
+		return detalle;
+	}
+	public void setDetalle(List<DTLineaFacturaCompra> detalle) {
+		this.detalle = detalle;
+	}
+	public String getFormaDePago() {
+		return formaDePago;
+	}
+	public void setFormaDePago(String formaDePago) {
+		this.formaDePago = formaDePago;
+	}
+	public int getIdOrden() {
+		return idOrden;
+	}
+	public void setIdOrden(int idOrden) {
+		this.idOrden = idOrden;
 	}
 }

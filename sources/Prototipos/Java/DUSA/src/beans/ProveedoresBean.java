@@ -1,5 +1,7 @@
 package beans;
 
+import interfaces.ISistema;
+
 import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -21,6 +23,8 @@ import controladores.FabricaSistema;
  */
 public class ProveedoresBean implements Serializable {
 
+	private ISistema instanciaSistema;
+	
 	private static final long serialVersionUID = 1L;
 
 	private String RUT;
@@ -137,6 +141,10 @@ public class ProveedoresBean implements Serializable {
 
 	public void setMarcaOlab(Boolean marcaOlab) {
 		this.marcaOlab = marcaOlab;
+	}
+	
+	public void setISistema(ISistema s) {
+		this.instanciaSistema = s;
 	}
 
 	/**
@@ -262,7 +270,7 @@ public class ProveedoresBean implements Serializable {
 		 * en caso de error lo muestro
 		 */
 		try {
-			FabricaSistema.getISistema().altaProveedor(proveedor);
+			this.instanciaSistema.altaProveedor(proveedor);
 		} catch (Excepciones e) {
 			if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
 				context.addMessage(null, new FacesMessage(

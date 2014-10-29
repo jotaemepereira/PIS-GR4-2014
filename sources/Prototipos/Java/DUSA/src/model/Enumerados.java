@@ -84,6 +84,11 @@ public class Enumerados {
 		
 	}
 	
+	public class formaDePago {
+		public static final String CONTADO = "CONTADO";
+		public static final String CREDITO = "CREDITO";
+	}
+	
 	public static String descripcionTipoArticulo(String tipo){
 		switch (tipo.charAt(0)) {
 			case tipoArticulo.MEDICAMENTO:

@@ -4,6 +4,8 @@
  */
 package beans;
 
+import interfaces.ISistema;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,9 @@ import datatypes.DTProveedor;
 @ManagedBean
 @SessionScoped
 public class ComprasBean implements Serializable {
+	
+	private ISistema instanciaSistema;
+	
 	private static final long serialVersionUID = 1L;
 	
 	private Boolean disableBotones = false;
@@ -126,13 +131,16 @@ public class ComprasBean implements Serializable {
 	public void setBusqueda(String busqueda){
 		this.busqueda = busqueda;
 	}
-
-	// funciones ingresar compra
 	
-	public ComprasBean(){
-		actualizarProveedores() ;
+	public void setISistema(ISistema s) {
+		this.instanciaSistema = s;
+		
+		if(this.instanciaSistema != null){
+			actualizarProveedores() ;
+		}
 	}
 
+	// funciones ingresar compra
 	public void ingresoManual() {
 		disableBotones = true;
 		hideTable = "visible";
@@ -167,7 +175,7 @@ public class ComprasBean implements Serializable {
 	public void actualizarProveedores() {
 		Map<Integer, DTProveedor> proveedoresLista;
 		try {
-			proveedoresLista = FabricaSistema.getISistema().obtenerProveedores();
+			proveedoresLista = this.instanciaSistema.obtenerProveedores();
 			this.proveedores = new ArrayList<DTProveedor>(
 					proveedoresLista.values());
 		} catch (Excepciones e) {
@@ -181,7 +189,7 @@ public class ComprasBean implements Serializable {
 	}
 
 	public void buscarArticulos() {
-		System.out.println("buscar");
+		System.out.println("********* BUSCAR: " + busqueda + " *********");
 		busquedaArticulos = new ArrayList<DTBusquedaArticulo>();
 
 		if (busqueda.equals("")) {
@@ -189,7 +197,7 @@ public class ComprasBean implements Serializable {
 		}
 
 		try {
-			busquedaArticulos = FabricaSistema.getISistema().buscarArticulos(busqueda);
+			busquedaArticulos = this.instanciaSistema.buscarArticulos(busqueda);
 			System.out.println("CANTIDAD ENCONTRADA: " + busquedaArticulos.size());
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
