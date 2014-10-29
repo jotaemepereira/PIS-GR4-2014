@@ -271,5 +271,11 @@ public class StockControlador implements IStock {
 		
 		FabricaPersistencia.getStockPersistencia().modificarStock(idArticulo, nuevoValor);
 	}
+
+	@Override
+	public void modificarArticulo(Articulo articulo) throws Excepciones {
+		FabricaPersistencia.getStockPersistencia().modificarArticulo(articulo);
+		
+	}
 	
 }

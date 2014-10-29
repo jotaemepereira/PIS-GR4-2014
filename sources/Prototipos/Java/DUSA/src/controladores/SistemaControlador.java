@@ -168,4 +168,10 @@ public class SistemaControlador implements ISistema {
 		
 		FabricaLogica.getIStock().modificarStock(idArticulo, nuevoValor);
 	}
+
+	@Override
+	public void modificarArticulo(Articulo articulo) throws Excepciones {
+		FabricaLogica.getIStock().modificarArticulo(articulo);
+		
+	}
 }
