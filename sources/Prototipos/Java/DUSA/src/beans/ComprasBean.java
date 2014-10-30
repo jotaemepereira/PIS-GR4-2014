@@ -21,6 +21,7 @@ import datatypes.DTBusquedaArticulo;
 import datatypes.DTComprobanteFactura;
 import datatypes.DTLineaFacturaCompra;
 import datatypes.DTProveedor;
+import datatypes.DTTiposDGI;
 
 @ManagedBean
 @SessionScoped
@@ -44,6 +45,8 @@ public class ComprasBean implements Serializable {
 	private List<DTComprobanteFactura> facturasDUSA = new ArrayList<DTComprobanteFactura>();
 	private long ordenDeCompraDUSA;
 	private DTComprobanteFactura factura = new DTComprobanteFactura();
+	
+	private List<DTTiposDGI> tiposDGI = new ArrayList<DTTiposDGI>();
 
 	// getters y setters
 	public Boolean getDisableBotones() {
@@ -142,6 +145,14 @@ public class ComprasBean implements Serializable {
 		}
 	}
 
+	public List<DTTiposDGI> getTiposDGI() {
+		return tiposDGI;
+	}
+
+	public void setTiposDGI(List<DTTiposDGI> tiposDGI) {
+		this.tiposDGI = tiposDGI;
+	}
+
 	// funciones ingresar compra
 	public void ingresoManual() {
 		disableBotones = true;
@@ -231,5 +242,6 @@ public class ComprasBean implements Serializable {
 		
 		detalle.setTotal( precio.multiply(cantidad).multiply(descuento));
 	}
+
 	
 }

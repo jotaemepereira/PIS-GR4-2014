@@ -80,7 +80,7 @@
 													<h:panelGrid columns="3" style="width:100%" class="listaLineaVentas">
 														<h:outputText value=" #{venta2.articulo.descripcion}" />
 														<h:outputText value="$ #{venta2.articulo.precioVenta}" />
-														<h:outputText value=" " />
+														<h:outputText value=" #{venta2.descuentoPrecio}" />
 
 														<h:outputText value=" #{venta2.articulo.presentacion}" />
 														<p:inputText id="cantidad" value="#{venta2.cantidad}" style="width:40px;">
@@ -88,20 +88,33 @@
 																update="GridVentas2 :form1:total" process="@this" />
 															<p:ajax listener="#{ventaBean.strSubTotal()}"
 																update="GridVentas2 :form1:subTotal" process="@this" />
+															<p:ajax listener="#{ventaBean.strDescuentoPrecio2()}"
+																update="@form" process="@this" />
 														</p:inputText>
-													
-													
+														
+
 														<p:outputPanel visible="#{venta2.isRecetaBlanca}"
 															style=" padding: 0; margin: 0;">
-																<p:outputLabel for="receta" value="Desc. receta:" style="width:100%" />
-																<p:selectOneMenu id="receta"
-																	value="#{venta2.descuentoReceta}" style="width:110%">
-																	<f:selectItem itemLabel="sin descuento" itemValue="" />
-																	<f:selectItem itemLabel="40% descuento" itemValue="40" />
-																	<f:selectItem itemLabel="25% descuento" itemValue="25" />
-																	<p:ajax listener="#{ventaBean.strTotal()}"
-																update="GridVentas2 :form1:total" process="@this" />
-																</p:selectOneMenu>
+															<p:outputLabel for="receta" value="Desc. receta:"
+																style="width:100%" />
+															<p:selectOneMenu id="receta"
+																value="#{venta2.descuentoReceta}" style="width:110%">
+																<f:selectItem itemLabel="sin descuento" itemValue="" />
+																<f:selectItem itemLabel="40% descuento" itemValue="40" />
+																<f:selectItem itemLabel="25% descuento" itemValue="25" />
+																<p:ajax listener="#{ventaBean.strTotal()}"
+																	update="GridVentas2 :form1:total" process="@this" />
+																<p:ajax listener="#{ventaBean.strDescuentoPrecio2()}"
+																	update="@form" process="@this" />
+															</p:selectOneMenu>
+														</p:outputPanel>
+
+														<p:outputPanel style=" padding: 0; margin: 0;">
+															<p:outputLabel for="totalPrecioLinea" value="Total precio articulos:"
+																style="width:100%" />
+															<h:outputText id="totalPrecioLinea"
+																value="#{venta2.totalPrecioLinea}">
+															</h:outputText>
 														</p:outputPanel>
 
 													</h:panelGrid>
@@ -167,7 +180,7 @@
 														styleClass="tablaBusqueda">
 
 														<h:outputText value="#{venta.descripcion}" />
-														<h:outputText value="$ #{venta.precioVenta}" />
+														<h:outputText value="precio: $#{venta.precioVenta}" />
 														<p:outputPanel visible="#{venta.isRecetaVerde}"
 															style="padding: 0; margin: 0;">
 															<p:selectBooleanCheckbox value="#{venta.recetaVerde}">
@@ -179,11 +192,14 @@
 
 
 														<h:outputText value=" #{venta.presentacion}" />
+														<p:outputPanel style="padding: 0; margin: 0;">
+														<p:outputLabel for="descuento" value="Desc.(%)" />
 														<p:inputText id="descuento" value="#{venta.descuento}"
 															style="width:50%">
 															<p:ajax listener="#{ventaBean.strDescuentoPrecio()}"
 																update="@form" process="@this" />
 														</p:inputText>
+														</p:outputPanel>
 														<p:outputPanel visible="#{venta.isRecetaBlanca}"
 															style="padding: 0; margin: 0;">
 															<p:selectBooleanCheckbox value="#{venta.recetaBlanca}">
@@ -196,7 +212,7 @@
 
 														<h:outputText value=" #{venta.principioActivo}" />
 														<h:outputText id="descuentoPrecio"
-															value=" #{venta.descuentoPrecio}">
+															value="#{venta.descuentoPrecio}">
 														</h:outputText>
 														<p:outputPanel visible="#{venta.isRecetaNaranja}"
 															style="padding: 0; margin: 0;">

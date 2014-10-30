@@ -122,6 +122,28 @@
 											</h:panelGroup>
 
 										</div>
+										
+										<div class="row">
+											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-2">
+												<p:selectOneMenu id="tipoCFE"
+														value="#{comprasBean.factura.tipoCFE}" filter="true"
+														filterMatchMode="contains" required="true">
+														<f:selectItem itemLabel="Seleccione un tipo de factura"
+															itemValue="#{null}" />
+														<f:selectItems value="${comprasBean.tiposDGI}" var="m"
+															itemLabel="#{m.descripcion}"
+															itemValue="#{m.id}" />
+													</p:selectOneMenu>
+											</div>
+											
+											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-1">
+												<p:inputText value="${comprasBean.factura.serieCFE}" />
+											</div>
+											
+											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-1">
+												<p:inputText value="${comprasBean.factura.numeroCFE}" />
+											</div>
+										</div>
 
 										<!--       TABLA DE LA COMPRA     -->
 										<div class="row" style="margin-bottom: 1%;">
