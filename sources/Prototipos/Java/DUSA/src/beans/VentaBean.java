@@ -127,57 +127,96 @@ public class VentaBean implements Serializable {
 		}
 
 	}
+	
+	public void strDescuentoPrecio2() {
 
-	public void agregarVentaPerdida() {
+		Iterator<LineaVenta> it = lineasVenta2.iterator();
+		while (it.hasNext()) {
+			LineaVenta v = it.next();
 
-		try {
-
-			venta.setLineas(lineasVenta2);
-			venta.setTotalIvaBasico(new BigDecimal(0));
-			venta.setTotalIvaMinimo(new BigDecimal(0));
-			// TODO Agarrar el usuario logueado
-			Usuario usr = new Usuario();
-			usr.setNombre("Admin");
-			venta.setUsuario(usr);
-			// TODO ver como se elige la forma de pago.
-			venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO.toString());
-			venta.setCantidadLineas(lineasVenta2.size());
-
-			Iterator<LineaVenta> it = lineasVenta2.iterator();
-			while (it.hasNext()) {
-				LineaVenta lv = it.next();
-				if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.BASICO) {
-					venta.setTotalIvaBasico(venta.getTotalIvaBasico().add(
-							lv.getIva()));
-				} else if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.MINIMO) {
-					venta.setTotalIvaMinimo(venta.getTotalIvaMinimo().add(
-							lv.getIva()));
-				}
-
+			BigDecimal x = (v.getArticulo().getPrecioVenta().multiply(v.getDescuento()))
+					.divide(new BigDecimal(100));
+			
+			BigDecimal n = new BigDecimal(0);
+			// calculo descuento por receta blanca 1 del 25%
+			if (v.getDescuentoReceta().equals("25")) {
+				n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
+						25))).divide(new BigDecimal(100));
+			}
+			// calculo descuento por receta blanca 2 del 40%
+			if (v.getDescuentoReceta().equals("40")) {
+				n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
+						30))).divide(new BigDecimal(100));
 			}
 
-			venta.setEstadoVenta(String
-					.valueOf(Enumerados.EstadoVenta.PERDIDA)); // estado X
-																	// seria la
-																	// venta
-																	// perdida
+			v.setTotalPrecioLinea("$"
+					+ (v.getArticulo().getPrecioVenta().subtract(x)).subtract(n).multiply(new BigDecimal(v.getCantidad())).toString() );
 
-			FabricaSistema.getISistema().registrarNuevaVenta(venta);
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Venta perdida ingresada con éxito", ""));
-		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, e
-							.getMessage(), ""));
 		}
 
-		lineasVenta2 = new ArrayList<LineaVenta>();
-		lineasVenta = new ArrayList<DTVenta>();
+	}
+
+	public void agregarVentaPerdida() {
+		
+		if (!lineasVenta2.isEmpty()){
+			
+			try {
+
+				venta.setLineas(lineasVenta2);
+				venta.setTotalIvaBasico(new BigDecimal(0));
+				venta.setTotalIvaMinimo(new BigDecimal(0));
+				// TODO Agarrar el usuario logueado
+				Usuario usr = new Usuario();
+				usr.setNombre("Admin");
+				venta.setUsuario(usr);
+				// TODO ver como se elige la forma de pago.
+				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO.toString());
+				venta.setCantidadLineas(lineasVenta2.size());
+
+				Iterator<LineaVenta> it = lineasVenta2.iterator();
+				while (it.hasNext()) {
+					LineaVenta lv = it.next();
+					if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.BASICO) {
+						venta.setTotalIvaBasico(venta.getTotalIvaBasico().add(
+								lv.getIva()));
+					} else if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.MINIMO) {
+						venta.setTotalIvaMinimo(venta.getTotalIvaMinimo().add(
+								lv.getIva()));
+					}
+
+				}
+
+				venta.setEstadoVenta(String
+						.valueOf(Enumerados.EstadoVenta.PERDIDA)); // estado X
+																		// seria la
+																		// venta
+																		// perdida
+
+				FabricaSistema.getISistema().registrarNuevaVenta(venta);
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Venta perdida ingresada con éxito", ""));
+			} catch (Excepciones e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e
+								.getMessage(), ""));
+			}
+
+			lineasVenta2 = new ArrayList<LineaVenta>();
+			lineasVenta = new ArrayList<DTVenta>();
+			
+		}else{
+			
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Debe ingresar al menos un articulo para registrar la venta perdida", ""));	
+		}
+
 	}
 
 	public void facturarVenta() {
@@ -190,55 +229,67 @@ public class VentaBean implements Serializable {
 		// e1.printStackTrace();
 		// }
 		// ////////////////////////////////////////////////////////
+		
+		if (!lineasVenta2.isEmpty()){
+			
+			try {
 
-		try {
+				venta.setLineas(lineasVenta2);
+				venta.setTotalIvaBasico(new BigDecimal(0));
+				venta.setTotalIvaMinimo(new BigDecimal(0));
+				// TODO Agarrar el usuario logueado
+				Usuario usr = new Usuario();
+				usr.setNombre("Admin");
+				venta.setUsuario(usr);
+				// TODO ver como se elige la forma de pago.
+				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO.toString());
+				venta.setCantidadLineas(lineasVenta2.size());
 
-			venta.setLineas(lineasVenta2);
-			venta.setTotalIvaBasico(new BigDecimal(0));
-			venta.setTotalIvaMinimo(new BigDecimal(0));
-			// TODO Agarrar el usuario logueado
-			Usuario usr = new Usuario();
-			usr.setNombre("Admin");
-			venta.setUsuario(usr);
-			// TODO ver como se elige la forma de pago.
-			venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO.toString());
-			venta.setCantidadLineas(lineasVenta2.size());
+				Iterator<LineaVenta> it = lineasVenta2.iterator();
+				while (it.hasNext()) {
+					LineaVenta lv = it.next();
+					if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.BASICO) {
+						venta.setTotalIvaBasico(venta.getTotalIvaBasico().add(
+								lv.getIva()));
+					} else if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.MINIMO) {
+						venta.setTotalIvaMinimo(venta.getTotalIvaMinimo().add(
+								lv.getIva()));
+					}
 
-			Iterator<LineaVenta> it = lineasVenta2.iterator();
-			while (it.hasNext()) {
-				LineaVenta lv = it.next();
-				if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.BASICO) {
-					venta.setTotalIvaBasico(venta.getTotalIvaBasico().add(
-							lv.getIva()));
-				} else if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.MINIMO) {
-					venta.setTotalIvaMinimo(venta.getTotalIvaMinimo().add(
-							lv.getIva()));
 				}
 
+				venta.setEstadoVenta(String
+						.valueOf(Enumerados.EstadoVenta.PENDIENTE)); // estado p
+																		// seria la
+																		// venta
+																		// pendiente
+
+				FabricaSistema.getISistema().registrarNuevaVenta(venta);
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Factura ingresada con éxito", ""));
+			} catch (Excepciones e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e
+								.getMessage(), ""));
 			}
 
-			venta.setEstadoVenta(String
-					.valueOf(Enumerados.EstadoVenta.PENDIENTE)); // estado p
-																	// seria la
-																	// venta
-																	// pendiente
-
-			FabricaSistema.getISistema().registrarNuevaVenta(venta);
+			lineasVenta2 = new ArrayList<LineaVenta>();
+			lineasVenta = new ArrayList<DTVenta>();
+			
+		}else{
+			
 			FacesContext.getCurrentInstance().addMessage(
 					null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Factura ingresada con éxito", ""));
-		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, e
-							.getMessage(), ""));
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"Debe ingresar al menos un articulo para enviar a facturar", ""));
 		}
-
-		lineasVenta2 = new ArrayList<LineaVenta>();
-		lineasVenta = new ArrayList<DTVenta>();
+		
+		
 	}
 
 	public void agregarLineaVenta(DTVenta v) {
@@ -246,6 +297,7 @@ public class VentaBean implements Serializable {
 		v.setCantidad(1);
 		v.setDescuentoReceta("");
 		LineaVenta e = new LineaVenta();
+		e.setTotalPrecioLinea("$"+ (v.getPrecioVenta().subtract((v.getPrecioVenta().multiply(v.getDescuento())).divide(new BigDecimal(100)))).toString());
 		e.setLinea(lineasVenta2.size() + 1);
 		e.setDescuentoReceta(v.getDescuentoReceta());
 		e.setPrecio(v.getPrecioVenta());
@@ -256,6 +308,7 @@ public class VentaBean implements Serializable {
 		e.setRecetaVerde(v.isRecetaVerde());
 		e.setProductoId(v.getProductId());
 		e.setDescripcionOferta("Falta ver este tema");
+		e.setDescuentoPrecio(v.getDescuentoPrecio());
 
 		Articulo a = new Articulo();
 		a.setPrecioVenta(v.getPrecioVenta());

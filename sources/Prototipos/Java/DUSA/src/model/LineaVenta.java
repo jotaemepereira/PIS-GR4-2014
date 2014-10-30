@@ -17,6 +17,7 @@ public class LineaVenta implements Serializable {
 	private String descuentoPrecio;
 	private String descuentoReceta;
 	private String descripcionOferta;
+	private String totalPrecioLinea;
 	
 	private BigDecimal irae;
 	private BigDecimal iva;
@@ -148,6 +149,14 @@ public class LineaVenta implements Serializable {
 
 	public void setDescripcionOferta(String descripcionOferta) {
 		this.descripcionOferta = descripcionOferta;
+	}
+
+	public String getTotalPrecioLinea() {
+		return totalPrecioLinea;
+	}
+
+	public void setTotalPrecioLinea(String totalPrecioLinea) {
+		this.totalPrecioLinea = totalPrecioLinea;
 	}
 
 }
