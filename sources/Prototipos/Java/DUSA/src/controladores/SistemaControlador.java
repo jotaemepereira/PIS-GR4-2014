@@ -71,7 +71,16 @@ public class SistemaControlador implements ISistema {
 
 	}
 
+	@Override
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones {
+		// TODO chequeo permisos del usuario
+		//if (user.tienePermiso(casoDeUso.buscarArticulo))
+		return FabricaLogica.getIStock().buscarArticulos(busqueda, proveedor);
+		//else
+		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 
+	}
+	
 	@Override
 	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior() throws Excepciones {
 		//if (user.tienePermiso(casoDeUso.generPeEnBaseAPedAnt))

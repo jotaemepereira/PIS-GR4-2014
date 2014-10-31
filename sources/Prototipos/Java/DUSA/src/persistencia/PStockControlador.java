@@ -310,6 +310,92 @@ public class PStockControlador implements IStockPersistencia {
 	}
 	
 	@Override
+	public List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda, int proveedor) throws Excepciones{
+		List<DTBusquedaArticuloSolr> listaArticulos = new ArrayList<DTBusquedaArticuloSolr>();
+		
+		String urlString = "http://localhost:8080/solr";
+		SolrServer solr = new HttpSolrServer(urlString);
+		SolrQuery parameters = new SolrQuery();
+		parameters.setRequestHandler("/articulos/select");
+		String regexpBusqueda = "*" + busqueda + "*";
+		parameters.set("q", "KEY1:" + regexpBusqueda + 
+							" KEY2:" + regexpBusqueda + 
+							" KEY3:" + regexpBusqueda + 
+							" CRITERIO_INTERNO:" + regexpBusqueda + 
+							" DESCRIPTION:" + regexpBusqueda + 
+							" BARCODE:" + regexpBusqueda +
+							" DROGAS: " + regexpBusqueda +
+							" PRESENTATION: " + regexpBusqueda + 
+							" ACCIONES_TERAPEUTICAS: " + regexpBusqueda +
+							" MARCA: " + regexpBusqueda +
+							" SUPPLIER_DATA: " + "#" + busqueda + "*");
+		parameters.set("wt", "json");
+		parameters.set("fl", "DESCRIPTION id BARCODE DROGAS PRESENTATION ACCIONES_TERAPEUTICAS MARCA SUPPLIER_DATA");
+		parameters.set("start", 0);
+		parameters.set("rows", 100);
+		parameters.set("fq", "SUPPLIER_DATA: \"" + proveedor + "#*\"");
+		parameters.set("sort", "DESCRIPTION DESC");
+		
+		try {
+			SolrDocumentList response = solr.query(parameters).getResults();
+			System.out.println(response);
+			Long cant = response.getNumFound();
+			if(cant > 100){
+				cant = (long) 100;
+			}
+			for(int i = 0; i < cant; i++){
+				System.out.println(response.get(i));
+				
+				SolrDocument item = response.get(i);
+				
+				DTBusquedaArticuloSolr articulo = new DTBusquedaArticuloSolr();
+				articulo.setIdArticulo(Integer.parseInt(item.getFieldValue("id").toString()));
+				articulo.setCodigoBarras(item.getFieldValue("BARCODE").toString());
+				articulo.setDescripcion(item.getFieldValue("DESCRIPTION").toString());
+				if(item.getFieldValue("DROGAS") == null){
+					articulo.setDroga("");
+				}else{
+					articulo.setDroga(item.getFieldValue("DROGAS").toString().replace("[", "").replace("]", ""));
+				}
+				if(item.getFieldValue("PRESENTATION") == null){
+					articulo.setPresentacion("");
+				}else{
+					articulo.setPresentacion(item.getFieldValue("PRESENTATION").toString());
+				}
+				if(item.getFieldValue("ACCIONES_TERAPEUTICAS") == null){
+					articulo.setAccionesTerapeuticas("");
+				}else{
+					articulo.setAccionesTerapeuticas(item.getFieldValue("ACCIONES_TERAPEUTICAS").toString().replace("[", "").replace("]", ""));
+				}
+				if(item.getFieldValue("MARCA") == null){
+					articulo.setMarca("");
+				}else{
+					articulo.setMarca(item.getFieldValue("MARCA").toString());
+				}
+				String data_proveedor = item.getFieldValue("SUPPLIER_DATA").toString().replace("[", "").replace("]", "");
+				String [] data = data_proveedor.split(",");
+				int j = 0;
+				while((j < data.length) && (!data[j].split("#")[0].trim().equals(String.valueOf(proveedor)))){
+					j++;
+				}
+				if(j < data.length){
+					articulo.setNumeroProducto_proveedor(Integer.parseInt(data[j].split("#")[1].trim()));
+				}else{
+					articulo.setNumeroProducto_proveedor(0);
+				}
+				
+				System.out.println("numero2: " + articulo.getNumeroProducto_proveedor());
+				listaArticulos.add(articulo);
+			}
+		} catch (SolrServerException e) {
+			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		
+		return listaArticulos;
+	}
+	
+	@Override
 	public void buscarArticulosId(DTBusquedaArticulo articulo) throws Excepciones{
 		PreparedStatement stmt = null;
 		

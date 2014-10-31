@@ -26,26 +26,27 @@ import datatypes.DTTiposDGI;
 @ManagedBean
 @SessionScoped
 public class ComprasBean implements Serializable {
-	
+
 	private ISistema instanciaSistema;
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private Boolean disableBotones = false;
+	private Boolean facturaAutomatica = false;
 	private String hideTable = "hidden";
 	private String selectFacturaDUSA = "hidden";
 	private String selectProveedores = "hidden";
 
 	private List<DTProveedor> proveedores;
-	private int selectedProveedor;
-	
+	private int proveedorSeleccionado;
+
 	private List<DTBusquedaArticulo> busquedaArticulos;
 	private String busqueda;
-	
+
 	private List<DTComprobanteFactura> facturasDUSA = new ArrayList<DTComprobanteFactura>();
 	private long ordenDeCompraDUSA;
 	private DTComprobanteFactura factura = new DTComprobanteFactura();
-	
+
 	private List<DTTiposDGI> tiposDGI = new ArrayList<DTTiposDGI>();
 
 	// getters y setters
@@ -121,27 +122,19 @@ public class ComprasBean implements Serializable {
 		this.selectProveedores = selectProveedores;
 	}
 
-	public int getSelectedProveedor() {
-		return selectedProveedor;
-	}
-
-	public void setSelectedProveedor(int selectedProveedor) {
-		this.selectedProveedor = selectedProveedor;
-	}
-	
-	public String getBusqueda(){
+	public String getBusqueda() {
 		return busqueda;
 	}
-	
-	public void setBusqueda(String busqueda){
+
+	public void setBusqueda(String busqueda) {
 		this.busqueda = busqueda;
 	}
-	
+
 	public void setISistema(ISistema s) {
 		this.instanciaSistema = s;
-		
-		if(this.instanciaSistema != null){
-			actualizarProveedores() ;
+
+		if (this.instanciaSistema != null) {
+			actualizarProveedores();
 		}
 	}
 
@@ -152,9 +145,27 @@ public class ComprasBean implements Serializable {
 	public void setTiposDGI(List<DTTiposDGI> tiposDGI) {
 		this.tiposDGI = tiposDGI;
 	}
+	
+
+	public int getProveedorSeleccionado() {
+		return proveedorSeleccionado;
+	}
+
+	public void setProveedorSeleccionado(int proveedorSeleccionado) {
+		this.proveedorSeleccionado = proveedorSeleccionado;
+	}
+
+	public Boolean getFacturaAutomatica() {
+		return facturaAutomatica;
+	}
+
+	public void setFacturaAutomatica(Boolean facturaAutomatica) {
+		this.facturaAutomatica = facturaAutomatica;
+	}
 
 	// funciones ingresar compra
 	public void ingresoManual() {
+		facturaAutomatica = false;
 		disableBotones = true;
 		hideTable = "visible";
 		selectFacturaDUSA = "hidden";
@@ -162,6 +173,7 @@ public class ComprasBean implements Serializable {
 	}
 
 	public void facturaAutomaticaDUSA() {
+		facturaAutomatica = true;
 		disableBotones = true;
 		hideTable = "visible";
 		selectFacturaDUSA = "visible";
@@ -177,7 +189,7 @@ public class ComprasBean implements Serializable {
 
 	public void ingresarCompra() {
 		// TODO guardar la compra
-
+		System.out.println("PROVEEDOR: " + factura.getIdProveedor());
 		// Reseteo los valores por defecto
 		disableBotones = false;
 		hideTable = "hidden";
@@ -199,9 +211,9 @@ public class ComprasBean implements Serializable {
 
 	public void agregarArticulo(DTBusquedaArticulo articulo) {
 		DTLineaFacturaCompra linea = new DTLineaFacturaCompra();
-		
+
 		linea.setDescripcion(articulo.getDescripcion());
-		linea.setNumeroArticulo(2);
+		linea.setNumeroArticulo(articulo.getNumeroProducto_proveedor());
 		linea.setProductId(articulo.getIdArticulo());
 		linea.setCantidad(1);
 		linea.setCostoUltimaCompra(articulo.getCostoReal());
@@ -209,14 +221,14 @@ public class ComprasBean implements Serializable {
 		linea.setDescuento(new BigDecimal(0));
 		linea.setTotal(new BigDecimal(0));
 		linea.setPrecioUnitario(new BigDecimal(0));
-		
+
 		List<DTLineaFacturaCompra> detalle = factura.getDetalle();
 		detalle.add(linea);
-		
+
 	}
 
 	public void buscarArticulos() {
-		System.out.println("********* BUSCAR: " + busqueda + " *********");
+		System.out.println("********* BUSCAR: " + busqueda + " PROVEEDOR: " + this.proveedorSeleccionado + " *********");
 		busquedaArticulos = new ArrayList<DTBusquedaArticulo>();
 
 		if (busqueda.equals("")) {
@@ -224,24 +236,57 @@ public class ComprasBean implements Serializable {
 		}
 
 		try {
-			busquedaArticulos = this.instanciaSistema.buscarArticulos(busqueda);
-			System.out.println("CANTIDAD ENCONTRADA: " + busquedaArticulos.size());
+			if(factura.getIdProveedor() != 0) {
+				busquedaArticulos = this.instanciaSistema.buscarArticulos(busqueda, this.proveedorSeleccionado);
+			}else{
+				busquedaArticulos = this.instanciaSistema.buscarArticulos(busqueda);
+			}
+			System.out.println("CANTIDAD ENCONTRADA: "
+					+ busquedaArticulos.size());
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
-	 * frente a un cambio en el precio, cantidad o descuento, calcula el total de ese articulo
+	 * frente a un cambio en el precio, cantidad o descuento, calcula el total
+	 * de ese articulo
 	 */
-	public void calcularTotal(DTLineaFacturaCompra detalle){
+	public void calcularTotalArticulo(DTLineaFacturaCompra detalle) {
 		BigDecimal precio = detalle.getPrecioUnitario();
-		BigDecimal descuento = detalle.getDescuento().subtract(new BigDecimal(100)).abs().divide(new BigDecimal(100));
+		BigDecimal descuento = detalle.getDescuento()
+				.subtract(new BigDecimal(100)).abs()
+				.divide(new BigDecimal(100));
 		BigDecimal cantidad = new BigDecimal(detalle.getCantidad());
-		
-		detalle.setTotal( precio.multiply(cantidad).multiply(descuento));
+
+		detalle.setTotal(precio.multiply(cantidad).multiply(descuento));
 	}
 
+	/**
+	 * frente a un cambio en los montos de iva o retenciones, recalcula el total
+	 * de cada iva y el total
+	 */
+	public void actualizarDatos() {
+
+		factura.setTotalIvaBasico(factura.getMontoNetoGravadoIvaBasico().add(
+				factura.getMontoTributoIvaBasico()));
+		factura.setTotalIvaMinimo(factura.getMontoNetoGravadoIvaMinimo().add(
+				factura.getMontoTributoIvaMinimo()));
+
+		factura.setMontoTotalAPagar(factura.getTotalIvaBasico()
+				.add(factura.getTotalIvaMinimo())
+				.add(factura.getMontoRetenidoIRAE())
+				.add(factura.getMontoRetenidoIVA())
+				.add(factura.getMontoNoGravado())
+				.add(factura.getMontoNoFacturable()));
+
+	}
 	
+	public void saveProveedor(){
+
+		this.proveedorSeleccionado = factura.getIdProveedor();
+
+	}
+
 }

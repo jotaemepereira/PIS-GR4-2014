@@ -1,4 +1,4 @@
-package datatypes;
+package model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -6,8 +6,7 @@ import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
-public class DTComprobanteFactura {
-	
+public class Orden {
 	private int idProveedor;
 	private int idOrden;
 	private int tipoCFE;
@@ -30,7 +29,7 @@ public class DTComprobanteFactura {
     private BigDecimal montoTotalAPagar = new BigDecimal(0);
     private BigDecimal montoTributoIvaMinimo = new BigDecimal(0);
     private BigDecimal montoTributoIvaBasico = new BigDecimal(0);
-    private List<DTLineaFacturaCompra> detalle = new ArrayList<DTLineaFacturaCompra>();
+    private List<OrdenDetalle> detalle = new ArrayList<OrdenDetalle>();
    // private List<DataVencimiento> vencimientos;
     
     
@@ -148,10 +147,10 @@ public class DTComprobanteFactura {
 	public void setFechaComprobante(XMLGregorianCalendar fechaComprobante) {
 		this.fechaComprobante = fechaComprobante;
 	}
-	public List<DTLineaFacturaCompra> getDetalle() {
+	public List<OrdenDetalle> getDetalle() {
 		return detalle;
 	}
-	public void setDetalle(List<DTLineaFacturaCompra> detalle) {
+	public void setDetalle(List<OrdenDetalle> detalle) {
 		this.detalle = detalle;
 	}
 	public String getFormaDePago() {
@@ -172,4 +171,5 @@ public class DTComprobanteFactura {
 	public void setIdProveedor(int idProveedor) {
 		this.idProveedor = idProveedor;
 	}
+
 }

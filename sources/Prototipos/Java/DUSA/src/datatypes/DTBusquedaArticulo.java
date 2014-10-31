@@ -12,7 +12,7 @@ public class DTBusquedaArticulo extends DTBusquedaArticuloSolr {
 	private BigDecimal costoPonderado;
 	
 	public DTBusquedaArticulo(DTBusquedaArticuloSolr busqueda){
-		super(busqueda.getAccionesTerapeuticas(), busqueda.getCodigoBarras(), busqueda.getDescripcion(), busqueda.getDroga(), busqueda.getIdArticulo(), busqueda.getMarca(), busqueda.getPresentacion());
+		super(busqueda.getAccionesTerapeuticas(), busqueda.getCodigoBarras(), busqueda.getDescripcion(), busqueda.getDroga(), busqueda.getIdArticulo(), busqueda.getMarca(), busqueda.getPresentacion(), busqueda.getNumeroProducto_proveedor());
 	}
 	
 	public String getControlDeVenta() {

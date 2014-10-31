@@ -141,5 +141,17 @@ public interface IStock {
 	 * @throws Excepciones
 	 */
 	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
+
+	/**
+	 * retorna los articulos que coincidan con el string ingresado
+	 * @param busqueda - string a buscar
+	 * @param proveedor - buscar articulos de determinado proveedor
+	 * @return List<DTBusquedaArticulo> lista de los articulos encontrados segun el texto
+	 *         ingresado con todos los campos necesarios para el caso de uso
+	 *         busqueda articulos
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones;
 	
 }

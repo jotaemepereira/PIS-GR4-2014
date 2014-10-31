@@ -125,10 +125,8 @@ public class StockControlador implements IStock {
 		return lPedidos;
 	}
 	
-	@Override
-	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones{
+	private List<DTBusquedaArticulo> getDatosArticulosBuscados(List<DTBusquedaArticuloSolr> encontrados) throws Excepciones{
 		List<DTBusquedaArticulo> articulos = new ArrayList<DTBusquedaArticulo>();
-		List<DTBusquedaArticuloSolr> encontrados = FabricaPersistencia.getStockPersistencia().buscarArticulosSolr(busqueda);
 		
 		Iterator<DTBusquedaArticuloSolr> it = encontrados.iterator();
 		while (it.hasNext()) {
@@ -142,6 +140,13 @@ public class StockControlador implements IStock {
 		}
 		
 		return articulos;
+	}
+	
+	@Override
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones{
+		List<DTBusquedaArticuloSolr> encontrados = FabricaPersistencia.getStockPersistencia().buscarArticulosSolr(busqueda);
+		
+		return getDatosArticulosBuscados(encontrados);
 	}
 	
 	@Override
@@ -276,6 +281,13 @@ public class StockControlador implements IStock {
 	public void modificarArticulo(Articulo articulo) throws Excepciones {
 		FabricaPersistencia.getStockPersistencia().modificarArticulo(articulo);
 		
+	}
+
+	@Override
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones{
+		List<DTBusquedaArticuloSolr> encontrados = FabricaPersistencia.getStockPersistencia().buscarArticulosSolr(busqueda, proveedor);
+		
+		return getDatosArticulosBuscados(encontrados);
 	}
 	
 }

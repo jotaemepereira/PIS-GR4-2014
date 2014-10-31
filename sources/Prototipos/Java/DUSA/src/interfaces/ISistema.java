@@ -18,7 +18,6 @@ import model.Presentacion;
 import model.Proveedor;
 import model.TipoIva;
 import model.Usuario;
-
 import model.Venta;
 
 public interface ISistema {
@@ -174,14 +173,13 @@ public interface ISistema {
 	 * retorna los articulos que coincidan con el string ingresado
 	 * 
 	 * @param busqueda
-	 * @return List<Articulo> lista de los articulos encontrados segun el texto
+	 * @return List<DTBusquedaArticulo> lista de los articulos encontrados segun el texto
 	 *         ingresado con todos los campos necesarios para el caso de uso
 	 *         busqueda articulos
 	 * @throws Excepciones
 	 * @author Victoria Diaz
 	 */
-	public List<DTBusquedaArticulo> buscarArticulos(
-			String busqueda) throws Excepciones;
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones;
 
 	/**
 	 * Chequea la existencia del codigoIdentificador para el proveedor.
@@ -218,5 +216,17 @@ public interface ISistema {
 	 * @throws Excepciones
 	 */
 	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
+
+	/**
+	 * retorna los articulos que coincidan con el string ingresado
+	 * @param busqueda - string a buscar
+	 * @param proveedor - buscar articulos de determinado proveedor
+	 * @return List<DTBusquedaArticulo> lista de los articulos encontrados segun el texto
+	 *         ingresado con todos los campos necesarios para el caso de uso
+	 *         busqueda articulos
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones;
 
 }
