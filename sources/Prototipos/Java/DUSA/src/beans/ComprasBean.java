@@ -173,6 +173,9 @@ public class ComprasBean implements Serializable {
 	}
 
 	public void facturaAutomaticaDUSA() {
+		// TODO Traigo factura
+		
+		
 		facturaAutomatica = true;
 		disableBotones = true;
 		hideTable = "visible";
@@ -185,16 +188,19 @@ public class ComprasBean implements Serializable {
 		hideTable = "hidden";
 		selectFacturaDUSA = "hidden";
 		selectProveedores = "hidden";
+		factura = new DTComprobanteFactura();
 	}
 
 	public void ingresarCompra() {
 		// TODO guardar la compra
-		System.out.println("PROVEEDOR: " + factura.getIdProveedor());
+
+		
 		// Reseteo los valores por defecto
 		disableBotones = false;
 		hideTable = "hidden";
 		selectFacturaDUSA = "hidden";
 		selectProveedores = "hidden";
+		factura = new DTComprobanteFactura();
 	}
 
 	public void actualizarProveedores() {
@@ -228,7 +234,6 @@ public class ComprasBean implements Serializable {
 	}
 
 	public void buscarArticulos() {
-		System.out.println("********* BUSCAR: " + busqueda + " PROVEEDOR: " + this.proveedorSeleccionado + " *********");
 		busquedaArticulos = new ArrayList<DTBusquedaArticulo>();
 
 		if (busqueda.equals("")) {
