@@ -1,6 +1,7 @@
 package beans;
 
 import interfaces.ISistema;
+import interfaces.IStock;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -24,6 +25,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.event.FlowEvent;
 
 import controladores.Excepciones;
+import controladores.FabricaLogica;
 import controladores.FabricaSistema;
 import model.AccionTer;
 import model.Articulo;
@@ -96,6 +98,15 @@ public class StockBean implements Serializable {
 	private Articulo articuloParaDesarme;
 	private int nuevoStockSeleccionado;
 	private int nuevoStockDesarme;
+	private long[] nuevoStock;
+
+	public long[] getNuevoStock() {
+		return nuevoStock;
+	}
+
+	public void setNuevoStock(long[] nuevoStock) {
+		this.nuevoStock = nuevoStock;
+	}
 
 	public Articulo getArticuloSeleccionado() {
 		return articuloSeleccionado;
@@ -392,7 +403,7 @@ public class StockBean implements Serializable {
 		pedidos.clear();
 
 		try {
-//			this.instanciaSistema.actualizarStock();
+			// this.instanciaSistema.actualizarStock();
 			pedidos = this.instanciaSistema
 					.generarPedidoEnBaseAPedidoAnterior();
 
@@ -436,8 +447,7 @@ public class StockBean implements Serializable {
 
 		try {
 
-			pedidos = this.instanciaSistema
-					.generarPedidoEnBaseAHistorico(5);
+			pedidos = this.instanciaSistema.generarPedidoEnBaseAHistorico(5);
 		} catch (Exception e) {
 
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -609,8 +619,8 @@ public class StockBean implements Serializable {
 
 	private boolean existeCodigoParaProveedor(long idProveedor,
 			long codigoIdentificador) throws Excepciones {
-		return this.instanciaSistema.existeCodigoParaProveedor(
-				idProveedor, codigoIdentificador);
+		return this.instanciaSistema.existeCodigoParaProveedor(idProveedor,
+				codigoIdentificador);
 	}
 
 	private boolean existeProveedor(int proveedor) {
@@ -651,7 +661,7 @@ public class StockBean implements Serializable {
 					TipoIva ti = new TipoIva();
 					ti.setTipoIVA(tipoIvaSeleccionado);
 					articulo.setTipoIva(ti);
-					
+
 					/* Cargo el precio de venta segÃºn corresponda */
 					/*
 					 * Si no se carga nada, se asume el mismo que el precio
@@ -688,7 +698,8 @@ public class StockBean implements Serializable {
 					}
 
 					/* Cargo el usuario que realiza el alta */
-					articulo.setUsuario(this.instanciaSistema.obtenerUsuarioLogueado());
+					articulo.setUsuario(this.instanciaSistema
+							.obtenerUsuarioLogueado());
 
 					/*
 					 * Llamo a la logica para que se de de alta el articulo en
@@ -747,7 +758,7 @@ public class StockBean implements Serializable {
 	public StockBean() {
 
 		this.noEsMedicamento = true;
-		
+
 	}
 
 	public void cargarMarcas() {
@@ -761,8 +772,7 @@ public class StockBean implements Serializable {
 
 	public void cargarProveedores() {
 		try {
-			this.proveedores = this.instanciaSistema
-					.obtenerProveedores();
+			this.proveedores = this.instanciaSistema.obtenerProveedores();
 			this.listaProveedores = new ArrayList<DTProveedor>(
 					this.proveedores.values());
 		} catch (Excepciones e) {
@@ -849,8 +859,13 @@ public class StockBean implements Serializable {
 		}
 
 		try {
-			resBusqueda = this.instanciaSistema
-					.buscarArticulos(busqueda);
+			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);
+			if (resBusqueda != null && resBusqueda.size() > 0) {
+				nuevoStock = new long[resBusqueda.size()];
+				for (int i = 0; i < resBusqueda.size(); i++) {
+					nuevoStock[i] = 0;
+				}
+			}
 			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
@@ -867,7 +882,11 @@ public class StockBean implements Serializable {
 	}
 
 	public String onFlowProcess(FlowEvent event) {
-		return event.getNewStep();
+		if (tipoMotivo == 1) {
+			return "busquedaAjuste";
+		} else {
+			return event.getNewStep();
+		}
 	}
 
 	public void buscarArticulosDesarme() {
@@ -878,11 +897,96 @@ public class StockBean implements Serializable {
 		}
 
 		try {
-			resBusquedaDesarme = this.instanciaSistema.buscarArticulos(
-					busquedaDesarme);
+			resBusquedaDesarme = this.instanciaSistema
+					.buscarArticulos(busquedaDesarme);
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	public void confirmarCambioStock() {
+		FacesContext contexto = FacesContext.getCurrentInstance();
+		try {
+			if (motivo.trim().isEmpty()) {
+				contexto.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Debe ingresar un motivo.", ""));
+			} else {
+				int cambios = 0;
+				for (int i = 0; i < resBusqueda.size(); i++) {
+					if (resBusqueda.get(i).getStock() != nuevoStock[i]) {
+						cambios++;
+					}
+				}
+
+				if (cambios > 0) {
+
+					long[] ids = new long[cambios];
+					long[] stocks = new long[cambios];
+
+					for (int i = 0; i < resBusqueda.size(); i++) {
+						if (resBusqueda.get(i).getStock() != nuevoStock[i]) {
+							ids[i] = resBusqueda.get(i).getIdArticulo();
+							stocks[i] = nuevoStock[i];
+						}
+					}
+
+					IStock is = FabricaLogica.getIStock();
+					is.modificarStock(ids, stocks);
+
+					contexto.addMessage(null, new FacesMessage(
+							FacesMessage.SEVERITY_INFO,
+							"Desarme realizado con éxito.", ""));
+				}
+				contexto.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"No hay cambios ingresados.", ""));
+			}
+		} catch (Exception e) {
+			contexto.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"No puede cargar Precio de venta y Porcentaje de venta al mismo tiempo.",
+							""));
+		}
+	}
+
+	public void confirmarDesarme() {
+		FacesContext contexto = FacesContext.getCurrentInstance();
+		try {
+			if (nuevoStockSeleccionado >= articuloSeleccionado.getStock()) {
+				contexto.addMessage(
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_ERROR,
+								"El nuevo stock del artículo origen debe ser menor al actual.",
+								""));
+			} else if (nuevoStockDesarme <= articuloParaDesarme.getStock()) {
+				contexto.addMessage(
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_ERROR,
+								"El nuevo stock del artículo destino debe ser mayor al actual.",
+								""));
+			} else {
+				IStock is = FabricaLogica.getIStock();
+				is.modificarStock(articuloSeleccionado.getIdArticulo(),
+						articuloParaDesarme.getIdArticulo(),
+						nuevoStockSeleccionado, nuevoStockDesarme);
+
+				contexto.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_INFO,
+						"Desarme realizado con éxito.", ""));
+			}
+		} catch (Exception e) {
+			contexto.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"No puede cargar Precio de venta y Porcentaje de venta al mismo tiempo.",
+							""));
 		}
 	}
 

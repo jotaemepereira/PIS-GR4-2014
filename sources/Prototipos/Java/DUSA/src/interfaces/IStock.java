@@ -142,6 +142,30 @@ public interface IStock {
 	 */
 	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
 
+	
+	/**
+	 * Modifica el stock del articulo con id idArticulo al valor nuevoValor
+	 * 
+	 * @author Seba
+	 * @param idsArticulo
+	 * @param nuevosValores
+	 * @throws Excepciones
+	 */
+	public void modificarStock(long[] idsArticulo, long[] nuevosValores) throws Excepciones;
+
+	/**
+	 * Metodo para efectuar un desarme
+	 * 
+	 * @author Seba
+	 * @param idArticulo
+	 * @param idDestino
+	 * @param nuevoValorArticulo
+	 * @param nuevoValorDestino
+	 * @param nuevoValor stock nuevo para el articulo. 
+	 * @throws Excepciones
+	 */
+	public void modificarStock(long idArticulo, long idDestino, long nuevoValorArticulo, long nuevoValorDestino) throws Excepciones;
+	
 	/**
 	 * retorna los articulos que coincidan con el string ingresado
 	 * @param busqueda - string a buscar

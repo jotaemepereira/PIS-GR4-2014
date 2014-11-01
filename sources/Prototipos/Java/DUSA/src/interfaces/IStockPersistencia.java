@@ -180,5 +180,15 @@ public interface IStockPersistencia {
 	 * @throws Excepciones
 	 */
 	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
+	
+	/**
+	 * Modifica el stock de los articulos en idsArticulo con los nuevos Valores en nuevosValores
+	 * 
+	 * @author Guille
+	 * @param idArticulo
+	 * @param nuevoValor stock nuevo para el articulo. 
+	 * @throws Excepciones
+	 */
+	public void modificarStock(long[] idsArticulo, long[] nuevosValores) throws Excepciones;
 
 }
