@@ -998,13 +998,10 @@ public class PStockControlador implements IStockPersistencia {
 	 * @author Seba
 	 */
 	@Override
-	public void modificarStock(long[] idsArticulo, long[] nuevosValores)
-			throws Excepciones {
-
+	public void modificarStock(long[] idsArticulo, long[] nuevosValores)  throws Exception {
 		PreparedStatement stmt = null;
+		Connection c = Conexion.getConnection();
 		try {
-			Connection c = Conexion.getConnection();
-
 			for (int i = 0; i < idsArticulo.length; i++) {
 				String query = "UPDATE PRODUCTS SET STOCK = ? "
 						+ "WHERE PRODUCT_ID = ?;";
@@ -1015,11 +1012,12 @@ public class PStockControlador implements IStockPersistencia {
 
 				stmt.executeUpdate();
 			}
-			stmt.close();
-			c.close();
 		} catch (Exception e) {
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
+		} finally{
+			stmt.close();
+			c.close();
 		}
 	}
 

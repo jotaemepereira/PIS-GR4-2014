@@ -22,8 +22,8 @@
 		<h:form id="form1">
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
-			<!-- 			#{loginBean.redirectIfNotLoggedIn()} -->
-			<!--         	#{stockBean.setISistema(loginBean.instanciaSistema)} -->
+			#{loginBean.redirectIfNotLoggedIn()}
+			#{stockBean.setISistema(loginBean.instanciaSistema)}
 			<p:focus></p:focus>
 			<div class="vpanel_right">
 				<div class="wrapper">
@@ -48,7 +48,7 @@
 												<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
 													style="bottom: -26px;">
 													<div class="btn-group ">
-														<h:commandButton value="Buscar" update="panel"
+														<h:commandButton value="Buscar" update=":form1"
 															actionListener="#{stockBean.buscarArticulos}"
 															class="btn btn-success" />
 													</div>
@@ -60,6 +60,7 @@
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 													<p:dataTable var="articuloBusqueda" id="tableBusqueda"
 														value="#{stockBean.resBusqueda}"
+														rowKey="#{articuloBusqueda.idArticulo}"
 														selection="#{stockBean.articuloSeleccionado}"
 														selectionMode="single"
 														emptyMessage="No se encontraron artículos">
@@ -84,37 +85,9 @@
 																<h:outputText value="#{articuloBusqueda.droga}" />
 															</p:column>
 
-															<p:column headerText="Precios"
-																styleClass="col-xs-3 col-sm-3 col-md-1 col-lg-2">
-
-																<div>
-																	<h:outputLabel>P&uacute;blico: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.precioPublico}" />
-																</div>
-
-																<div>
-																	<h:outputLabel>De venta: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.precioDeVenta}" />
-																</div>
-															</p:column>
-
-															<p:column headerText="Costo de lista"
-																styleClass="hidden-xs hidden-sm col-md-1 col-lg-2">
-																<div>
-																	<h:outputLabel>De lista: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.costoDeLista}" />
-																</div>
-
-																<div>
-																	<h:outputLabel>Real: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.costoReal}" />
-																</div>
-
-																<div>
-																	<h:outputLabel>Pond: </h:outputLabel>
-																	<h:outputText
-																		value="#{articuloBusqueda.costoPonderado}" />
-																</div>
+															<p:column headerText="Stock"
+																styleClass="hidden-xs col-sm-2 col-md-2 col-lg-1">
+																<h:outputText value="#{articuloBusqueda.stock}" />
 															</p:column>
 														</div>
 													</p:dataTable>
@@ -132,8 +105,8 @@
 												<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
 													style="bottom: -26px;">
 													<div class="btn-group ">
-														<h:commandButton value="Buscar" update="panel"
-															actionListener="#{stockBean.buscarArticulosDesarme}"
+														<h:commandButton value="Buscar" update=":form1"
+															actionListener="#{stockBean.buscarArticulosDesarme()}"
 															class="btn btn-success" />
 													</div>
 												</div>
@@ -144,6 +117,7 @@
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 													<p:dataTable var="articuloBusqueda" id="tableBusqueda2"
 														value="#{stockBean.resBusquedaDesarme}"
+														rowKey="#{articuloBusqueda.idArticulo}"
 														selection="#{stockBean.articuloParaDesarme}"
 														selectionMode="single"
 														emptyMessage="No se encontraron artículos">
@@ -168,38 +142,11 @@
 																<h:outputText value="#{articuloBusqueda.droga}" />
 															</p:column>
 
-															<p:column headerText="Precios"
-																styleClass="col-xs-3 col-sm-3 col-md-1 col-lg-2">
-
-																<div>
-																	<h:outputLabel>P&uacute;blico: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.precioPublico}" />
-																</div>
-
-																<div>
-																	<h:outputLabel>De venta: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.precioDeVenta}" />
-																</div>
+															<p:column headerText="Stock"
+																styleClass="hidden-xs col-sm-2 col-md-2 col-lg-1">
+																<h:outputText value="#{articuloBusqueda.stock}" />
 															</p:column>
 
-															<p:column headerText="Costo de lista"
-																styleClass="hidden-xs hidden-sm col-md-1 col-lg-2">
-																<div>
-																	<h:outputLabel>De lista: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.costoDeLista}" />
-																</div>
-
-																<div>
-																	<h:outputLabel>Real: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.costoReal}" />
-																</div>
-
-																<div>
-																	<h:outputLabel>Pond: </h:outputLabel>
-																	<h:outputText
-																		value="#{articuloBusqueda.costoPonderado}" />
-																</div>
-															</p:column>
 														</div>
 													</p:dataTable>
 												</div>
@@ -264,7 +211,8 @@
 												</tr>
 												<tr>
 													<td>Motivo:</td>
-													<td colspan="3"><p:inputText value="#{stockBean.motivo}"
+													<td colspan="3"><p:inputText
+															value="#{stockBean.motivo}"
 															style="width: 100%; margin: 15px 0;">
 															<f:ajax event="change" execute="@this" />
 														</p:inputText></td>

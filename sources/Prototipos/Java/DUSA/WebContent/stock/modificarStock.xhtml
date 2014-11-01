@@ -22,8 +22,8 @@
 		<h:form id="form1">
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
-			<!-- 			#{loginBean.redirectIfNotLoggedIn()} -->
-			<!--         	#{stockBean.setISistema(loginBean.instanciaSistema)} -->
+			#{loginBean.redirectIfNotLoggedIn()}
+			#{stockBean.setISistema(loginBean.instanciaSistema)}
 			<p:focus></p:focus>
 			<div class="vpanel_right">
 				<div class="wrapper">
@@ -57,9 +57,7 @@
 									<div class="row" style="margin-bottom: 1%; text-align: center;">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<p:dataTable var="articuloBusqueda" id="tableBusqueda"
-												value="#{stockBean.resBusqueda}"
-												selection="#{stockBean.articuloSeleccionado}"
-												selectionMode="single" rowIndexVar="rowIndex"
+												value="#{stockBean.resBusqueda}" rowIndexVar="rowIndex"
 												emptyMessage="No se encontraron artículos">
 												<div class="row">
 													<p:column headerText="Descripción"
@@ -82,20 +80,6 @@
 														<h:outputText value="#{articuloBusqueda.droga}" />
 													</p:column>
 
-													<p:column headerText="Precios"
-														styleClass="col-xs-3 col-sm-3 col-md-1 col-lg-2">
-
-														<div>
-															<h:outputLabel>P&uacute;blico: </h:outputLabel>
-															<h:outputText value="#{articuloBusqueda.precioPublico}" />
-														</div>
-
-														<div>
-															<h:outputLabel>De venta: </h:outputLabel>
-															<h:outputText value="#{articuloBusqueda.precioDeVenta}" />
-														</div>
-													</p:column>
-
 													<p:column headerText="Stock actual" style="width: 50px;">
 														<h:outputText value="#{articuloBusqueda.stock}"
 															style="width: 50px;">
@@ -103,7 +87,7 @@
 													</p:column>
 													<p:column headerText="Nuevo stock" style="width: 50px;">
 														<p:inputText
-															value="#{articuloBusqueda.nuevoStock[rowIndex]}"
+															value="#{stockBean.nuevoStock[rowIndex]}"
 															style="width: 50px;">
 															<f:ajax event="change" execute="@this" />
 														</p:inputText>
@@ -112,7 +96,13 @@
 											</p:dataTable>
 										</div>
 									</div>
-
+									<div style="margin-top: 15px;">
+										Motivo:
+										<p:inputText value="#{stockBean.motivo}"
+											style="width: 350px; margin: 15px 0;">
+											<f:ajax event="change" execute="@this" />
+										</p:inputText>
+									</div>
 									<p:commandButton
 										actionListener="#{stockBean.confirmarCambioStock()}"
 										styleClass="btn btn-default" oncomplete="PF('dlg2').hide()"
