@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 import datatypes.DTBusquedaArticulo;
+import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
+import datatypes.DTTiposDGI;
 import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Orden;
 import model.Pedido;
 import model.Enumerados.casoDeUso;
 import model.TipoIva;
@@ -183,4 +186,16 @@ public class SistemaControlador implements ISistema {
 		FabricaLogica.getIStock().modificarArticulo(articulo);
 		
 	}
+
+	@Override
+	public void ingresarFacturaCompra(Orden orden) throws Excepciones {
+		// TODO Auto-generated method stub
+		FabricaLogica.getInstanciaCompras().ingresarFacturaCompra(orden);
+	}
+
+	@Override
+	public List<DTTiposDGI> obtenerTiposDGI() throws Excepciones {
+		return FabricaLogica.getInstanciaCompras().obtenerTiposDGI();
+	}
+
 }

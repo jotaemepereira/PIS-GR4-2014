@@ -2,6 +2,8 @@ package datatypes;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -13,8 +15,7 @@ public class DTComprobanteFactura {
 	private int tipoCFE;
     private String serieCFE;
     private int numeroCFE;
-    private XMLGregorianCalendar fechaComprobante;
-    private int numeroCliente;
+    private Date fechaComprobante;
     private String formaDePago;
     private long ordenDeCompra;
     private BigDecimal montoNoGravado = new BigDecimal(0);
@@ -32,7 +33,9 @@ public class DTComprobanteFactura {
     private BigDecimal montoTributoIvaBasico = new BigDecimal(0);
     private List<DTLineaFacturaCompra> detalle = new ArrayList<DTLineaFacturaCompra>();
    // private List<DataVencimiento> vencimientos;
-    
+
+    // suma de los subtotales de cada producto individual
+    private BigDecimal subtotalProdctos = new BigDecimal(0);
     
 	public int getTipoCFE() {
 		return tipoCFE;
@@ -51,12 +54,6 @@ public class DTComprobanteFactura {
 	}
 	public void setNumeroCFE(int numeroCFE) {
 		this.numeroCFE = numeroCFE;
-	}
-	public int getNumeroCliente() {
-		return numeroCliente;
-	}
-	public void setNumeroCliente(int numeroCliente) {
-		this.numeroCliente = numeroCliente;
 	}
 	public long getOrdenDeCompra() {
 		return ordenDeCompra;
@@ -142,10 +139,10 @@ public class DTComprobanteFactura {
 	public void setMontoTributoIvaBasico(BigDecimal montoTributoIvaBasico) {
 		this.montoTributoIvaBasico = montoTributoIvaBasico;
 	}
-	public XMLGregorianCalendar getFechaComprobante() {
+	public Date getFechaComprobante() {
 		return fechaComprobante;
 	}
-	public void setFechaComprobante(XMLGregorianCalendar fechaComprobante) {
+	public void setFechaComprobante(Date fechaComprobante) {
 		this.fechaComprobante = fechaComprobante;
 	}
 	public List<DTLineaFacturaCompra> getDetalle() {
@@ -171,5 +168,11 @@ public class DTComprobanteFactura {
 	}
 	public void setIdProveedor(int idProveedor) {
 		this.idProveedor = idProveedor;
+	}
+	public BigDecimal getSubtotalProdctos() {
+		return subtotalProdctos;
+	}
+	public void setSubtotalProdctos(BigDecimal subtotalProdctos) {
+		this.subtotalProdctos = subtotalProdctos;
 	}
 }

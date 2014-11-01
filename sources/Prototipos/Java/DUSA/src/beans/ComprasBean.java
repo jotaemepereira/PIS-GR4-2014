@@ -9,12 +9,15 @@ import interfaces.ISistema;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
+import model.Orden;
+import model.OrdenDetalle;
 import controladores.Excepciones;
 import controladores.FabricaSistema;
 import datatypes.DTBusquedaArticulo;
@@ -33,6 +36,7 @@ public class ComprasBean implements Serializable {
 
 	private Boolean disableBotones = false;
 	private Boolean facturaAutomatica = false;
+	private Boolean serieFactura = false;
 	private String hideTable = "hidden";
 	private String selectFacturaDUSA = "hidden";
 	private String selectProveedores = "hidden";
@@ -134,9 +138,9 @@ public class ComprasBean implements Serializable {
 		this.instanciaSistema = s;
 
 		if (this.instanciaSistema != null) {
-			actualizarProveedores();
+			obtenerTiposDGI();
 		}
-	}
+	}	
 
 	public List<DTTiposDGI> getTiposDGI() {
 		return tiposDGI;
@@ -165,11 +169,14 @@ public class ComprasBean implements Serializable {
 
 	// funciones ingresar compra
 	public void ingresoManual() {
+		actualizarProveedores();
+		
 		facturaAutomatica = false;
 		disableBotones = true;
 		hideTable = "visible";
 		selectFacturaDUSA = "hidden";
 		selectProveedores = "visible";
+		serieFactura = false;
 	}
 
 	public void facturaAutomaticaDUSA() {
@@ -181,6 +188,7 @@ public class ComprasBean implements Serializable {
 		hideTable = "visible";
 		selectFacturaDUSA = "visible";
 		selectProveedores = "hidden";
+		serieFactura = true;
 	}
 
 	public void cancelarIngresarCompra() {
@@ -189,11 +197,79 @@ public class ComprasBean implements Serializable {
 		selectFacturaDUSA = "hidden";
 		selectProveedores = "hidden";
 		factura = new DTComprobanteFactura();
+		serieFactura = false;
 	}
 
 	public void ingresarCompra() {
-		// TODO guardar la compra
+		System.out.println("INGRESAR COMPRA");
 
+		// TODO: verificar que total != 0
+		
+		List<OrdenDetalle> detalles = new ArrayList<OrdenDetalle>();
+		Orden orden = new Orden();
+		
+		// Genero todos los detalles de las órdenes
+		Iterator<DTLineaFacturaCompra> it = factura.getDetalle().iterator();
+		int numeroLinea = 0;
+		
+		while (it.hasNext()) {
+			DTLineaFacturaCompra linea = (DTLineaFacturaCompra) it.next();
+			OrdenDetalle detalle = new OrdenDetalle();
+			numeroLinea++;
+			
+			try {
+				detalle.setCantidad(linea.getCantidad());
+				detalle.setDescripcionOferta(linea.getDescripcionOferta());
+				detalle.setDescuento(linea.getDescuento());
+				detalle.setIndicadorDeFacturacion(linea.getIndicadorDeFacturacion());
+				detalle.setNumeroArticulo(linea.getNumeroArticulo());
+				if(factura.getOrdenDeCompra() != 0){ // en el caso de factura de DUSA
+					detalle.setNumeroLinea(linea.getNumeroLinea());
+				}else{ // caso de factura manual
+					detalle.setNumeroLinea(numeroLinea);
+				}
+				detalle.setPrecioUnitario(linea.getPrecioUnitario());
+				detalle.setProductId(linea.getProductId());
+				
+				detalles.add(detalle);
+			} catch (Excepciones e) {
+				// TODO: handle exception
+				return;
+			}
+		}
+		
+		// Guardo los datos de la factura
+		try {
+			orden.setCantidadLineas(numeroLinea);
+			orden.setDetalle(detalles);
+			orden.setFechaComprobante(factura.getFechaComprobante());
+			orden.setFormaDePago(factura.getFormaDePago());
+			orden.setIdProveedor(factura.getIdProveedor());
+			orden.setMontoNetoGravadoIvaBasico(factura.getMontoNetoGravadoIvaBasico());
+			orden.setMontoNetoGravadoIvaMinimo(factura.getMontoNetoGravadoIvaMinimo());
+			orden.setMontoNoFacturable(factura.getMontoNoFacturable());
+			orden.setMontoNoGravado(factura.getMontoNoGravado());
+			orden.setMontoRetenidoIRAE(factura.getMontoRetenidoIRAE());
+			orden.setMontoRetenidoIVA(factura.getMontoRetenidoIVA());
+			orden.setMontoTotalAPagar(factura.getMontoTotalAPagar());
+			orden.setMontoTributoIvaBasico(factura.getMontoTributoIvaBasico());
+			orden.setMontoTributoIvaMinimo(factura.getMontoTributoIvaMinimo());
+			orden.setNumeroCFE(factura.getNumeroCFE());
+			orden.setTipoCFE(factura.getTipoCFE());
+			orden.setTotalIvaBasico(factura.getTotalIvaBasico());
+			orden.setTotalIvaMinimo(factura.getTotalIvaMinimo());
+		} catch (Excepciones e) {
+			// TODO: handle exception
+			return;
+		}
+
+		try {
+			this.instanciaSistema.ingresarFacturaCompra(orden);
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
 		
 		// Reseteo los valores por defecto
 		disableBotones = false;
@@ -201,6 +277,7 @@ public class ComprasBean implements Serializable {
 		selectFacturaDUSA = "hidden";
 		selectProveedores = "hidden";
 		factura = new DTComprobanteFactura();
+		serieFactura = false;
 	}
 
 	public void actualizarProveedores() {
@@ -211,6 +288,14 @@ public class ComprasBean implements Serializable {
 					proveedoresLista.values());
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void obtenerTiposDGI(){
+		try {
+			this.tiposDGI = this.instanciaSistema.obtenerTiposDGI();
+		} catch (Excepciones e) {
 			e.printStackTrace();
 		}
 	}
@@ -259,13 +344,21 @@ public class ComprasBean implements Serializable {
 	 * de ese articulo
 	 */
 	public void calcularTotalArticulo(DTLineaFacturaCompra detalle) {
+		// Saco el valor anterior de la suma del subtotal
+		factura.setSubtotalProdctos(factura.getSubtotalProdctos().subtract(detalle.getTotal()));
+		
+		// Calculo el total del producto modificado
 		BigDecimal precio = detalle.getPrecioUnitario();
 		BigDecimal descuento = detalle.getDescuento()
 				.subtract(new BigDecimal(100)).abs()
 				.divide(new BigDecimal(100));
 		BigDecimal cantidad = new BigDecimal(detalle.getCantidad());
 
-		detalle.setTotal(precio.multiply(cantidad).multiply(descuento));
+		BigDecimal total = precio.multiply(cantidad).multiply(descuento);
+		detalle.setTotal(total);
+		
+		// Agrego el precio calculado al total
+		factura.setSubtotalProdctos(factura.getSubtotalProdctos().add(total));
 	}
 
 	/**
@@ -292,6 +385,23 @@ public class ComprasBean implements Serializable {
 
 		this.proveedorSeleccionado = factura.getIdProveedor();
 
+	}
+	
+	public void cambioTipoCFE(){
+		if((factura.getTipoCFE() == 1) || (factura.getTipoCFE() == 2)){
+			serieFactura = true;
+			factura.setSerieCFE("");
+		}else{
+			serieFactura = (false || facturaAutomatica);
+		}
+	}
+
+	public Boolean getSerieFactura() {
+		return serieFactura;
+	}
+
+	public void setSerieFactura(Boolean serieFactura) {
+		this.serieFactura = serieFactura;
 	}
 
 }
