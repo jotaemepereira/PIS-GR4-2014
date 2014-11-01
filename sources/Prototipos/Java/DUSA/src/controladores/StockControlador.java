@@ -117,19 +117,17 @@ public class StockControlador implements IStock {
 				dtlPedido.setIdArticulo(lPedido.getIdArticulo());
 				dtlPedido.setDescripcionArticulo(articulo.getDescripcion());
 				dtlPedido.setStockMinimo(articulo.getStockMinimo());
+				dtlPedido.setStockActual(articulo.getStock());
 				dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				dtlPedido.setCantidad(lPedido.getCantidad());
 				dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
-				dtlPedido.setSubtotal(lPedido.getCantidad()
-						* articulo.getPrecioUnitario().floatValue());
+				dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().floatValue());
 
-				DTProveedor dtProveedor = articulo.getProveedores().get(
-						Enumerados.infoDUSA.proveedorID);
+				DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
 
 				if (dtProveedor != null) {
 					// Preventivo control si no es de DUSA no se ingresa
-					dtlPedido.setNumeroArticulo(dtProveedor
-							.getCodigoIdentificador());
+					dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
 					lPedidos.add(dtlPedido);
 				}
 			}
@@ -188,6 +186,7 @@ public class StockControlador implements IStock {
 				dtlPedido.setIdArticulo(lPedido.getIdArticulo());
 				dtlPedido.setDescripcionArticulo(articulo.getDescripcion());
 				dtlPedido.setStockMinimo(articulo.getStockMinimo());
+				dtlPedido.setStockActual(articulo.getStock());
 				dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				dtlPedido.setCantidad(lPedido.getCantidad());
 				dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());

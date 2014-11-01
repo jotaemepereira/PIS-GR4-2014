@@ -3,6 +3,7 @@ package datatypes;
 public class DTFormasVenta {
 	private char formaVenta;
 	private String descripcion;
+	
 	public char getFormaVenta() {
 		return formaVenta;
 	}

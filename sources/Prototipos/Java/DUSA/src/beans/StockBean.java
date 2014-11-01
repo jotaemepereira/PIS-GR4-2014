@@ -403,7 +403,7 @@ public class StockBean implements Serializable {
 		pedidos.clear();
 
 		try {
-			// this.instanciaSistema.actualizarStock();
+//			this.instanciaSistema.actualizarStock();
 			pedidos = this.instanciaSistema
 					.generarPedidoEnBaseAPedidoAnterior();
 
@@ -935,7 +935,7 @@ public class StockBean implements Serializable {
 
 					contexto.addMessage(null, new FacesMessage(
 							FacesMessage.SEVERITY_INFO,
-							"Cambio de stock realizado con éxito.", ""));
+							"Cambio de stock realizado con Ã©xito.", ""));
 
 					resBusqueda = new ArrayList<DTBusquedaArticulo>();
 					motivo = "";
@@ -944,6 +944,7 @@ public class StockBean implements Serializable {
 					contexto.addMessage(null, new FacesMessage(
 							FacesMessage.SEVERITY_ERROR,
 							"No hay cambios ingresados.", ""));
+
 				}
 			}
 		} catch (Exception e) {
@@ -964,14 +965,14 @@ public class StockBean implements Serializable {
 						null,
 						new FacesMessage(
 								FacesMessage.SEVERITY_ERROR,
-								"El nuevo stock del artículo origen debe ser menor al actual.",
+								"El nuevo stock del artÃ­culo origen debe ser menor al actual.",
 								""));
 			} else if (nuevoStockDesarme <= articuloParaDesarme.getStock()) {
 				contexto.addMessage(
 						null,
 						new FacesMessage(
 								FacesMessage.SEVERITY_ERROR,
-								"El nuevo stock del artículo destino debe ser mayor al actual.",
+								"El nuevo stock del artÃ­culo destino debe ser mayor al actual.",
 								""));
 			} else {
 				IStock is = FabricaLogica.getIStock();
@@ -981,8 +982,7 @@ public class StockBean implements Serializable {
 
 				contexto.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_INFO,
-						"Desarme realizado con éxito.", ""));
-
+						"Desarme realizado con Ã©xito.", ""));
 			}
 		} catch (Exception e) {
 			contexto.addMessage(

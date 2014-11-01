@@ -2,7 +2,7 @@ package datatypes;
 
 public class DTTiposDGI {
 	private String descripcion;
-	private String id;
+	private int id;
 	
 	public String getDescripcion() {
 		return descripcion;
@@ -10,10 +10,10 @@ public class DTTiposDGI {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-	public String getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 }
