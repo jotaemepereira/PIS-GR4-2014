@@ -108,6 +108,11 @@
 														
 													</p:column>
 													
+													<p:column headerText="Stock actual" styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+														<h:outputText value="#{pedido.stockActual}" />
+														
+													</p:column>
+													
 													<p:column headerText="Cantidad" styleClass="col-xs-4 col-sm-3 col-md-2 col-lg-2">
 													        <p:inputMask id="cantidad" mask="?9999" styleClass="form-control" style="text-align: center" readonly="false" value="#{pedido.cantidad}">
 													    		<p:ajax listener="#{stockBean.nuevoSubtotal(pedido)}"

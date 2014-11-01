@@ -107,6 +107,7 @@ public class StockControlador implements IStock {
 				 dtlPedido.setIdArticulo(lPedido.getIdArticulo());
 				 dtlPedido.setDescripcionArticulo(articulo.getDescripcion());
 				 dtlPedido.setStockMinimo(articulo.getStockMinimo());
+				 dtlPedido.setStockActual(articulo.getStock());
 				 dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				 dtlPedido.setCantidad(lPedido.getCantidad());
 				 dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
@@ -164,6 +165,7 @@ public class StockControlador implements IStock {
 				dtlPedido.setIdArticulo(lPedido.getIdArticulo());
 				dtlPedido.setDescripcionArticulo(articulo.getDescripcion());
 				dtlPedido.setStockMinimo(articulo.getStockMinimo());
+				dtlPedido.setStockActual(articulo.getStock());
 				dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
 				dtlPedido.setCantidad(lPedido.getCantidad());
 				dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
