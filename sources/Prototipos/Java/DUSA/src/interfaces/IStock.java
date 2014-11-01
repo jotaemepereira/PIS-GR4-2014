@@ -30,6 +30,19 @@ public interface IStock {
 	 * 
 	 */
 	public void altaArticulo(Articulo articulo) throws Excepciones;
+	
+	/**
+	 * Modifica un articulo del sistema
+	 * 
+	 * @param articulo
+	 *            - Articulo
+	 * @throws Excepciones
+	 *             ERROR_SISTEMA (en caso de error a la hora de
+	 *             persistir en la base de datos)
+	 * @author Jmaguerre
+	 * 
+	 */
+	public void modificarArticulo(Articulo articulo) throws Excepciones;
 
 	/**
 	 * Genera un pedido de artículos de D.U.S.A. Donde la cantidad de cada
@@ -128,5 +141,41 @@ public interface IStock {
 	 * @throws Excepciones
 	 */
 	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
+
+	
+	/**
+	 * Modifica el stock del articulo con id idArticulo al valor nuevoValor
+	 * 
+	 * @author Seba
+	 * @param idsArticulo
+	 * @param nuevosValores
+	 * @throws Excepciones
+	 */
+	public void modificarStock(long[] idsArticulo, long[] nuevosValores) throws Excepciones;
+
+	/**
+	 * Metodo para efectuar un desarme
+	 * 
+	 * @author Seba
+	 * @param idArticulo
+	 * @param idDestino
+	 * @param nuevoValorArticulo
+	 * @param nuevoValorDestino
+	 * @param nuevoValor stock nuevo para el articulo. 
+	 * @throws Excepciones
+	 */
+	public void modificarStock(long idArticulo, long idDestino, long nuevoValorArticulo, long nuevoValorDestino) throws Excepciones;
+	
+	/**
+	 * retorna los articulos que coincidan con el string ingresado
+	 * @param busqueda - string a buscar
+	 * @param proveedor - buscar articulos de determinado proveedor
+	 * @return List<DTBusquedaArticulo> lista de los articulos encontrados segun el texto
+	 *         ingresado con todos los campos necesarios para el caso de uso
+	 *         busqueda articulos
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones;
 	
 }

@@ -11,7 +11,7 @@
 		<link href="../CSS/General.css" rel="stylesheet" />
 		<link href="../CSS/font-awesome.min.css" rel="stylesheet" />
 		<script src="../JS/bootstrap.min.js"></script>
-		<script src="../JS/pedidoAutomatico.js"></script>
+		<script src="../JS/ingresarCompra.js"></script>
 		<f:facet name="first">
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
@@ -30,7 +30,17 @@
 }
 
 .ui-selectonemenu-label {
-	width: 100%;
+	width: 100% !important;
+}
+
+.calendario input {
+	width: 100% !important;
+}
+
+.lineaSuperior {
+	margin-top: 20px; 
+	border-top: 1px solid #E3E3E3; 
+	padding-top: 10px;
 }
 </style>
 	</h:head>
@@ -41,6 +51,8 @@
 			<!-- <p:hotkey bind="Ctrl+return" update="panel msgs" actionListener=""/> -->
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
+			#{loginBean.redirectIfNotLoggedIn()}
+        	#{comprasBean.setISistema(loginBean.instanciaSistema)}
 			<p:focus></p:focus>
 			<div class="vpanel_right">
 				<div class="wrapper">
@@ -58,31 +70,33 @@
 									<div class="row">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
 											style="text-align: center;">
-											<h:commandButton id="btn1" value="Ingreso manual"
+											<p:commandButton id="btn1" value="Ingreso manual"
 												update="btn1 btn2 show-hide"
 												actionListener="${comprasBean.ingresoManual}"
 												styleClass="btn btn-default" style="margin:0 2% 10px 0;"
-												disabled="${comprasBean.disableBotones}" />
-											<h:commandButton id="btn2"
+												disabled="${comprasBean.disableBotones}" process="@this"
+												oncomplete="actualizarBotones();" />
+											<p:commandButton id="btn2"
 												value="Cargar factura automática D.U.S.A."
-												update="btn1 btn2 show-hide"
+												update="btn1 btn2 show-hide" ajax="true"
 												actionListener="${comprasBean.facturaAutomaticaDUSA}"
 												styleClass="btn btn-default" style="margin:0 0 10px 0;"
-												disabled="${comprasBean.disableBotones}" />
+												disabled="${comprasBean.disableBotones}" process="@this"
+												oncomplete="actualizarBotones();" />
 										</div>
 									</div>
 
 									<!--      PANEL DE LA FACTURA       -->
 									<h:panelGroup id="show-hide" layout="block"
 										class="${comprasBean.hideTable}">
-										<div class="row"
+										<div class="row ${comprasBean.selectFacturaDUSA}"
 											style="margin-bottom: 1%; text-align: center;">
 											<!--      SELECT DE ORDENES DE COMPRA EN EL CASO DE FACTURA AUTOMATICA DUSA -->
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+												<p:outputLabel value="Órdenes de compra DUSA: *" />
 												<p:selectOneMenu id="facturar"
 													value="#{comprasBean.ordenDeCompraDUSA}" filter="true"
 													filterMatchMode="contains" required="false"
-													styleClass="${comprasBean.selectFacturaDUSA}"
 													style="width:100%">
 													<f:selectItem itemLabel="Seleccione una factura"
 														itemValue="#{null}" />
@@ -91,75 +105,139 @@
 														itemValue="#{m.ordenDeCompra}" />
 												</p:selectOneMenu>
 											</div>
+										</div>
 
-											<!--       SELECT DE PROVEEDORES PARA INGRESO MANUAL  -->
-											<h:panelGroup styleClass="${comprasBean.selectProveedores}">
-												<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-													<p:selectOneMenu id="proveedores"
-														value="#{comprasBean.selectedProveedor}" filter="true"
-														filterMatchMode="contains" required="false"
-														style="width:100%">
-														<f:selectItem itemLabel="Seleccione un proveedor"
-															itemValue="#{null}" />
-														<f:selectItems value="${comprasBean.proveedores}" var="m"
-															itemLabel="#{m.nombreComercial}"
-															itemValue="#{m.idProveedor}" />
-													</p:selectOneMenu>
-												</div>
-												<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
-													<p:commandButton icon="ui-icon-transferthick-e-w"
-														update="proveedores" title="actualizar lista"
-														actionListener="${comprasBean.actualizarProveedores}"
-														styleClass="btn-default" style="margin:0 2% 10px 0;" />
-												</div>
-												<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-													<a href="../proveedores/altaProveedor.jsf" target="_blank"
-														class="btn btn-default">Crear nuevo proveedor</a>
-												</div>
+										<!--       SELECT DE PROVEEDORES PARA INGRESO MANUAL  -->
+										<div class="row ${comprasBean.selectProveedores}"
+											style="margin-bottom: 1%;">
+											<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+												<p:outputLabel value="Proveedor: *" />
+												<p:selectOneMenu id="proveedores"
+													value="${comprasBean.factura.idProveedor}" filter="true"
+													filterMatchMode="contains" required="true"
+													style="width:100%">
+													<f:selectItem itemLabel="Seleccione un proveedor"
+														itemValue="0" />
+													<f:selectItems value="${comprasBean.proveedores}" var="m"
+														itemLabel="#{m.nombreComercial}"
+														itemValue="#{m.idProveedor}" />
+												</p:selectOneMenu>
+											</div>
+											<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"
+												style="top: 26px !important;">
+												<p:commandButton icon="ui-icon-transferthick-e-w"
+													update="proveedores" title="actualizar lista"
+													actionListener="${comprasBean.actualizarProveedores}"
+													styleClass="btn-default" style="margin:0 2% 10px 0;" />
+											</div>
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
+												style="top: 26px !important;">
+												<a href="../proveedores/altaProveedor.jsf" target="_blank"
+													class="btn btn-default">Crear nuevo proveedor</a>
+											</div>
 
-											</h:panelGroup>
+										</div>
 
+										<!--       DATOS FACTURA DGI	    -->
+										<div class="row lineaSuperior" style="margin-bottom: 1%">
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+												<p:outputLabel value="Tipo factura: *" />
+												<p:selectOneMenu id="tipoCFE"
+													value="#{comprasBean.factura.tipoCFE}" filter="true"
+													filterMatchMode="contains" required="false"
+													style="width: 100%"
+													disabled="${comprasBean.facturaAutomatica}" >
+													<p:ajax event="change" update=":form1:serieCFE" listener="#{comprasBean.cambioTipoCFE}"/>
+													<f:selectItem itemLabel="Seleccione un tipo de factura"
+														itemValue="#{null}" />
+													<f:selectItems value="${comprasBean.tiposDGI}" var="m"
+														itemLabel="#{m.descripcion}" itemValue="#{m.id}" />
+												</p:selectOneMenu>
+											</div>
+
+											<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+												<p:outputLabel value="Serie factura:" />
+												<p:inputText value="${comprasBean.factura.serieCFE}"
+													style="width: 100%" id="serieCFE"
+													disabled="${comprasBean.serieFactura}" />
+											</div>
+
+											<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+												<p:outputLabel value="Numero factura: *" />
+												<p:inputText value="${comprasBean.factura.numeroCFE}"
+													style="width: 100%" required="true"
+													disabled="${comprasBean.facturaAutomatica}" />
+											</div>
+
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"></div>
+
+											<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+												<p:outputLabel value="Fecha factura:" />
+												<p:calendar value="${comprasBean.factura.fechaComprobante}"
+													styleClass="calendario"
+													disabled="${comprasBean.facturaAutomatica}" required="true"></p:calendar>
+											</div>
 										</div>
 
 										<!--       TABLA DE LA COMPRA     -->
 										<div class="row" style="margin-bottom: 1%;">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<p:dataTable var="pedido" id="tablePedido"
-													value="#{stockBean.pedidos}"
+												<p:dataTable var="detalle" id="tablePedido"
+													value="#{comprasBean.factura.detalle}"
 													emptyMessage="No se encontraron registros.">
 													<!-- rendered="${stockBean.disablePrediccionDePedido || stockBean.disableDesdeUltimoPedido}" -->
 													<div class="row">
 														<p:column headerText="Artículo"
-															styleClass="col-xs-3 col-sm-2 col-md-2 col-lg-2">
-															<h:outputText value="100" />
+															styleClass="col-xs-2 col-sm-1 col-md-1 col-lg-1">
+															<h:outputText value="#{detalle.numeroArticulo}" />
 														</p:column>
 														<p:column headerText="Descripción"
 															styleClass="col-xs-3 col-sm-2 col-md-3 col-lg-3">
-															<h:outputText value="dsc" />
+															<h:outputText value="#{detalle.descripcion}" />
 														</p:column>
 														<p:column headerText="$ última compra"
 															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
-															<h:outputText value="100" />
+															<h:outputText value="#{detalle.costoUltimaCompra}" />
 														</p:column>
 														<p:column headerText="$ unitario"
-															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-															<p:inputText styleClass="form-control" value="" />
+															styleClass="col-xs-4 col-sm-3 col-md-2 col-lg-2">
+															<p:inputText styleClass="form-control"
+																value="#{detalle.precioUnitario}"
+																disabled="${comprasBean.facturaAutomatica}">
+																<p:ajax
+																	listener="#{comprasBean.calcularTotalArticulo(detalle)}"
+																	update="tablePedido :form1:subtotalProductos" />
+															</p:inputText>
 														</p:column>
 														<p:column headerText="Descuento"
 															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-															<p:inputText styleClass="form-control" value="" />
+															<p:inputText styleClass="form-control"
+																value="#{detalle.descuento}"
+																disabled="${comprasBean.facturaAutomatica}">
+																<p:ajax
+																	listener="#{comprasBean.calcularTotalArticulo(detalle)}"
+																	update="tablePedido :form1:subtotalProductos" />
+															</p:inputText>
 														</p:column>
 														<p:column headerText="Dsc. descuento"
 															styleClass="hidden-xs hidden-sm col-md-2 col-lg-2">
-															<p:inputText styleClass="form-control" value="" />
+															<p:inputText styleClass="form-control"
+																value="#{detalle.descripcionOferta}"
+																disabled="${comprasBean.facturaAutomatica}" />
 														</p:column>
 														<p:column headerText="Cantidad"
 															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-															<p:inputText styleClass="form-control" value="" />
+															<p:inputText styleClass="form-control"
+																value="#{detalle.cantidad}"
+																disabled="${comprasBean.facturaAutomatica}">
+																<p:ajax
+																	listener="#{comprasBean.calcularTotalArticulo(detalle)}"
+																	update="tablePedido :form1:subtotalProductos" />
+															</p:inputText>
 														</p:column>
 														<p:column headerText="$ total"
 															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-															<h:outputText value="100" />
+															<h:outputText value="#{detalle.total}" />
 														</p:column>
 													</div>
 												</p:dataTable>
@@ -167,16 +245,39 @@
 											</div>
 										</div>
 
-										<!--   AGREGAR ARTICULOS NUEVOS   -->
 										<div class="row">
-											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<p:commandButton value="Agregar artículo"
-													onclick="PF('dialogArticulo').show();"
-													styleClass="btn btn-default" style="float:right" />
+											<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9"></div>
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+												<div class="row">
+													<div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+														<p:outputLabel value="Subtotal productos:" />
+													</div>
+
+													<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+														<h:outputText id="subtotalProductos"
+															value="${comprasBean.factura.subtotalProdctos}" />
+													</div>
+												</div>
 											</div>
 										</div>
 
-										<div class="row">
+										<!--   AGREGAR ARTICULOS NUEVOS   -->
+										<div class="row" style="margin-bottom: 1%">
+											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+												<span data-toggle="tooltip"
+													title="Para mejorar la búsqueda, seleccione un proveedor."
+													class="glyphicon glyphicon-question-sign"
+													style="float: right; margin-left: 1%;" />
+												<p:commandButton value="Agregar artículo"
+													onclick="PF('dialogArticulo').show();"
+													styleClass="btn btn-default" style="float:right"
+													actionListener="${comprasBean.saveProveedor}"
+													process=":form1:proveedores @this"
+													disabled="${comprasBean.facturaAutomatica}" />
+											</div>
+										</div>
+
+										<div class="row lineaSuperior" style="margin-bottom: 1%">
 											<p:outputLabel
 												styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3"
 												value="Tributo" />
@@ -197,8 +298,13 @@
 													<p:outputLabel value="IVA min"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
-															styleClass="form-control" />
+														<p:inputText
+															value="${comprasBean.factura.montoTributoIvaMinimo}"
+															style="width:100%"
+															disabled="${comprasBean.facturaAutomatica}">
+															<p:ajax listener="${comprasBean.actualizarDatos}"
+																update="totalIvaBasico totalIvaMinimo total" />
+														</p:inputText>
 													</div>
 												</div>
 											</div>
@@ -207,8 +313,13 @@
 													<p:outputLabel value="Gravado IVA min."
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
-															styleClass="form-control" />
+														<p:inputText
+															value="${comprasBean.factura.montoNetoGravadoIvaMinimo}"
+															style="width:100%"
+															disabled="${comprasBean.facturaAutomatica}">
+															<p:ajax listener="${comprasBean.actualizarDatos}"
+																update="totalIvaBasico totalIvaMinimo total" />
+														</p:inputText>
 													</div>
 												</div>
 											</div>
@@ -217,7 +328,9 @@
 													<p:outputLabel value="IVA min."
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<h:outputText value="100" style="width:100%" />
+														<h:outputText id="totalIvaMinimo"
+															value="${comprasBean.factura.totalIvaMinimo}"
+															style="width:100%" />
 													</div>
 												</div>
 											</div>
@@ -226,20 +339,31 @@
 													<p:outputLabel value="IVA"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
-															styleClass="form-control" />
+														<p:inputText
+															value="${comprasBean.factura.montoRetenidoIVA}"
+															style="width:100%"
+															disabled="${comprasBean.facturaAutomatica}">
+															<p:ajax listener="${comprasBean.actualizarDatos}"
+																update="totalIvaBasico totalIvaMinimo total" />
+														</p:inputText>
 													</div>
 												</div>
 											</div>
 										</div>
+
 										<div class="row">
 											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 												<div class="row">
 													<p:outputLabel value="IVA básico"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
-															styleClass="form-control" />
+														<p:inputText
+															value="${comprasBean.factura.montoTributoIvaBasico}"
+															style="width:100%"
+															disabled="${comprasBean.facturaAutomatica}">
+															<p:ajax listener="${comprasBean.actualizarDatos}"
+																update="totalIvaBasico totalIvaMinimo total" />
+														</p:inputText>
 													</div>
 												</div>
 											</div>
@@ -248,8 +372,13 @@
 													<p:outputLabel value="Gravado IVA básico."
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
-															styleClass="form-control" />
+														<p:inputText
+															value="${comprasBean.factura.montoNetoGravadoIvaBasico}"
+															style="width:100%"
+															disabled="${comprasBean.facturaAutomatica}">
+															<p:ajax listener="${comprasBean.actualizarDatos}"
+																update="totalIvaBasico totalIvaMinimo total" />
+														</p:inputText>
 													</div>
 												</div>
 											</div>
@@ -258,7 +387,10 @@
 													<p:outputLabel value="IVA básico."
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<h:outputText value="100" style="width:100%" />
+														<h:outputText id="totalIvaBasico"
+															value="${comprasBean.factura.totalIvaBasico}"
+															style="width:100%"
+															valueChangeListener="${comprasBean.actualizarDatos}" />
 													</div>
 												</div>
 											</div>
@@ -267,8 +399,13 @@
 													<p:outputLabel value="IRAE"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
-															styleClass="form-control" />
+														<p:inputText
+															value="${comprasBean.factura.montoRetenidoIRAE}"
+															style="width:100%"
+															disabled="${comprasBean.facturaAutomatica}">
+															<p:ajax listener="${comprasBean.actualizarDatos}"
+																update="totalIvaBasico totalIvaMinimo total" />
+														</p:inputText>
 													</div>
 												</div>
 											</div>
@@ -281,8 +418,12 @@
 													<p:outputLabel value="No gravado"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
-															styleClass="form-control" />
+														<p:inputText value="${comprasBean.factura.montoNoGravado}"
+															style="width:100%"
+															disabled="${comprasBean.facturaAutomatica}">
+															<p:ajax listener="${comprasBean.actualizarDatos}"
+																update="totalIvaBasico totalIvaMinimo total" />
+														</p:inputText>
 													</div>
 												</div>
 											</div>
@@ -290,26 +431,22 @@
 											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"></div>
 										</div>
 
-										<div class="row"
-											style="margin-top: 20px; border-top: 1px solid #E3E3E3; padding-top: 10px; margin-bottom: 1%">
+										<div class="row lineaSuperior"
+											style="margin-bottom: 1%">
 											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"></div>
-											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-												<div class="row">
-													<p:outputLabel value="No facturable"
-														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
-													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
-															styleClass="form-control" />
-													</div>
-												</div>
-											</div>
+											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"></div>
 											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 												<div class="row">
 													<p:outputLabel value="Redondeo"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText value="100" style="width:100%"
-															styleClass="form-control" />
+														<p:inputText
+															value="${comprasBean.factura.montoNoFacturable}"
+															style="width:100%"
+															disabled="${comprasBean.facturaAutomatica}">
+															<p:ajax listener="${comprasBean.actualizarDatos}"
+																update="totalIvaBasico totalIvaMinimo total" />
+														</p:inputText>
 													</div>
 												</div>
 											</div>
@@ -318,24 +455,28 @@
 													<p:outputLabel value="Total"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<h:outputText value="100" style="width:100%" />
+														<h:outputText id="total"
+															value="${comprasBean.factura.montoTotalAPagar}"
+															style="width:100%" />
 													</div>
 												</div>
 											</div>
 										</div>
 
 										<!--    BOTONES DE CONFIRMAR Y CANCELAR      -->
-										<div class="row" style="margin-bottom: 1%;">
+										<div class="row lineaSuperior" style="margin-bottom: 1%;">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<div class="btn-group pull-right">
-													<p:commandButton value="Pedido"
+													<p:commandButton value="Ingresar compra"
 														update="btn1 btn2 msgs show-hide"
 														styleClass="btn btn-success"
-														actionListener="${comprasBean.ingresarCompra}" />
+														actionListener="${comprasBean.ingresarCompra}"
+														oncomplete="actualizarBotones();" />
 													<p:commandButton value="Cancelar"
 														update="btn1 btn2 msgs show-hide"
-														styleClass="btn btn-default"
-														actionListener="${comprasBean.cancelarIngresarCompra}">
+														styleClass="btn btn-default" process="@this"
+														actionListener="${comprasBean.cancelarIngresarCompra}"
+														oncomplete="actualizarBotones();">
 														<p:confirm header="Confirmación"
 															message="¿Está seguro que desea cancelar el ingreso de la factura?"
 															icon="ui-icon-alert" />
@@ -364,57 +505,67 @@
 		</p:confirmDialog>
 
 		<p:dialog header="Seleccione un artículo" widgetVar="dialogArticulo"
-			minHeight="40" style="max-width:90%">
-			<div class="row" style="margin-bottom: 1%;">
-				<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-					<p:outputLabel for="busqueda" value="Buscar:" />
-					<p:inputText id="busqueda" styleClass="form-control"
-						value="#{comprasBean.busqueda}" style="height: 100%"
-						required="false" />
-				</div>
-				<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
-					style="bottom: -26px;">
-					<div class="btn-group ">
-						<h:commandButton value="Buscar" update="tableBusqueda"
-							actionListener="#{comprasBean.buscarArticulos}"
-							class="btn btn-success" />
+			minHeight="40" style="max-width:90%" closeOnEscape="true"
+			id="dialogArticulo">
+			<h:form id="formBusqueda">
+				<div class="row" style="margin-bottom: 1%;">
+					<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+						<p:outputLabel for="busqueda" value="Buscar:" />
+						<p:inputText id="busqueda" styleClass="form-control"
+							value="#{comprasBean.busqueda}" style="height: 100%" />
+					</div>
+					<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
+						style="bottom: -26px;">
+						<div class="btn-group ">
+							<p:commandButton value="Buscar" update="tableBusqueda"
+								actionListener="#{comprasBean.buscarArticulos}"
+								styleClass="btn btn-success" ajax="true"
+								process="busqueda @this" />
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="row">
-				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-					<p:dataTable var="articuloBusqueda" id="tableBusqueda"
-						value="#{comprasBean.busquedaArticulos}"
-						emptyMessage="No se encontraron artículos">
-						<div class="row">
-							<p:column headerText="Artículo"
-								styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-								<h:outputText value="" />
-							</p:column>
+				<div class="row">
+					<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+						<p:dataTable var="articuloBusqueda" id="tableBusqueda"
+							value="#{comprasBean.busquedaArticulos}"
+							emptyMessage="No se encontraron artículos"
+							style="overflow-y:scroll; height: 75vh">
+							<div class="row">
+								<p:column headerText="Artículo"
+									styleClass="col-xs-2 col-sm-2 col-md-2 col-lg-2"
+									style="text-align:center">
+									<h:outputText
+										value="#{articuloBusqueda.numeroProducto_proveedor}" />
+								</p:column>
 
-							<p:column headerText="Descripción"
-								styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-								<h:outputText value="" />
-							</p:column>
+								<p:column headerText="Descripción"
+									styleClass="col-xs-4 col-sm-4 col-md-4 col-lg-4"
+									style="text-align:center">
+									<h:outputText value="#{articuloBusqueda.descripcion}" />
+								</p:column>
 
-							<p:column headerText="Presentación"
-								styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-								<h:outputText value="" />
-							</p:column>
+								<p:column headerText="Presentación"
+									styleClass="col-xs-4 col-sm-4 col-md-4 col-lg-4"
+									style="text-align:center">
+									<h:outputText value="#{articuloBusqueda.presentacion}" />
+								</p:column>
 
-							<p:column headerText="Agregar"
-								styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-								<p:commandButton icon="ui-icon-plusthick" update="tablePedido"
-									title="agregar artículo"
-									actionListener="${comprasBean.agregarArticulo}"
-									styleClass="btn-default" style="margin:0 2% 10px 0;" />
-							</p:column>
-						</div>
-					</p:dataTable>
+								<p:column headerText="Agregar"
+									styleClass="col-xs-2 col-sm-2 col-md-2 col-lg-2"
+									style="text-align:center">
+									<p:commandButton icon="ui-icon-plusthick"
+										update=":form1:tablePedido" title="agregar artículo"
+										actionListener="${comprasBean.agregarArticulo(articuloBusqueda)}"
+										styleClass="btn-default" style="margin:0 2% 10px 0;" />
+								</p:column>
+							</div>
+						</p:dataTable>
+					</div>
 				</div>
-			</div>
+			</h:form>
 		</p:dialog>
+
 	</h:body>
 
 </f:view>

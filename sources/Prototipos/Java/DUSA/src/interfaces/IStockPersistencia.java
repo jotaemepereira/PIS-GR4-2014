@@ -16,13 +16,33 @@ import model.LineaPedido;
 import model.Pedido;
 import model.TipoIva;
 
-/**  
-* @author Santiago
-*
-*/
 public interface IStockPersistencia {
 	
+	/**
+	 * Da de alta un articulo en el sistema
+	 * 
+	 * @param articulo
+	 *            - Articulo
+	 * @throws Excepciones
+	 *             ERROR_SISTEMA (en caso de error a la hora de
+	 *             persistir en la base de datos)
+	 * @author Jmaguerre
+	 * 
+	 */
 	public void persistirArticulo(Articulo articulo)throws Excepciones;
+	
+	/**
+	 * Modifica un articulo del sistema
+	 * 
+	 * @param articulo
+	 *            - Articulo
+	 * @throws Excepciones
+	 *             ERROR_SISTEMA (en caso de error a la hora de
+	 *             persistir en la base de datos)
+	 * @author Jmaguerre
+	 * 
+	 */
+	public void modificarArticulo(Articulo articulo) throws Excepciones;
 	
 	/**
 	 * Retorna la fecha del ultimo pedido realizado a D.U.S.A.
@@ -41,8 +61,34 @@ public interface IStockPersistencia {
 	 */
 	public void persistirPedido(Pedido p) throws Excepciones;
 	public boolean existeArticulo(String descripcion) throws Excepciones;
+	
+	/**
+	 * función encargada de realizar la busqueda en solr
+	 * @param busqueda - string a buscar
+	 * @return lista con los articulos encontrados
+	 * @throws Excepciones
+	 */
 	public List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda) throws Excepciones;
+	
+	/**
+	 * función encargada de realizar la busqueda en solr
+	 * @param busqueda - string a buscar
+	 * @param proveedor - filtrar por proveedor
+	 * @return lista de articulos encontrados
+	 * @throws Excepciones
+	 */
+	List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda, int proveedor) throws Excepciones;
+	
+	/**
+	 * realiza la reindexacion total de solr
+	 * @throws Excepciones
+	 */
 	public void fullImportSolr() throws Excepciones;
+	
+	/**
+	 * actualiza los indices modificados a partir de la última vez que se realizó una importacion
+	 * @throws Excepciones
+	 */
 	public void deltaImportSolr() throws Excepciones;
 	
 	/**
@@ -134,4 +180,15 @@ public interface IStockPersistencia {
 	 * @throws Excepciones
 	 */
 	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
+	
+	/**
+	 * Modifica el stock de los articulos en idsArticulo con los nuevos Valores en nuevosValores
+	 * 
+	 * @author Guille
+	 * @param idArticulo
+	 * @param nuevoValor stock nuevo para el articulo. 
+	 * @throws Excepciones
+	 */
+	public void modificarStock(long[] idsArticulo, long[] nuevosValores) throws Excepciones;
+
 }

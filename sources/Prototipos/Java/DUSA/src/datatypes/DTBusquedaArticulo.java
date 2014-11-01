@@ -10,9 +10,10 @@ public class DTBusquedaArticulo extends DTBusquedaArticuloSolr {
 	private BigDecimal costoDeLista;
 	private BigDecimal costoReal;
 	private BigDecimal costoPonderado;
+	private long stock;
 	
 	public DTBusquedaArticulo(DTBusquedaArticuloSolr busqueda){
-		super(busqueda.getAccionesTerapeuticas(), busqueda.getCodigoBarras(), busqueda.getDescripcion(), busqueda.getDroga(), busqueda.getIdArticulo(), busqueda.getMarca(), busqueda.getPresentacion());
+		super(busqueda.getAccionesTerapeuticas(), busqueda.getCodigoBarras(), busqueda.getDescripcion(), busqueda.getDroga(), busqueda.getIdArticulo(), busqueda.getMarca(), busqueda.getPresentacion(), busqueda.getNumeroProducto_proveedor());
 	}
 	
 	public String getControlDeVenta() {
@@ -56,5 +57,13 @@ public class DTBusquedaArticulo extends DTBusquedaArticuloSolr {
 	}
 	public void setCostoPonderado(BigDecimal costoPonderado) {
 		this.costoPonderado = costoPonderado;
+	}
+
+	public long getStock() {
+		return stock;
+	}
+
+	public void setStock(long stock) {
+		this.stock = stock;
 	}
 }

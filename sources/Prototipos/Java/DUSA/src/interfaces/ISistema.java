@@ -7,18 +7,20 @@ import java.util.Map;
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
+import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
+import datatypes.DTTiposDGI;
 import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Orden;
 import model.Pedido;
 import model.Presentacion;
 import model.Proveedor;
 import model.TipoIva;
 import model.Usuario;
-
 import model.Venta;
 
 public interface ISistema {
@@ -39,6 +41,19 @@ public interface ISistema {
 	 * @author José Aguerre
 	 */
 	public void altaArticulo(Articulo articulo) throws Excepciones;
+	
+	/**
+	 * Modifica un articulo del sistema
+	 * 
+	 * @param articulo
+	 *            - Articulo
+	 * @throws Excepciones
+	 *             ERROR_SISTEMA (en caso de error a la hora de
+	 *             persistir en la base de datos)
+	 * @author Jmaguerre
+	 * 
+	 */
+	public void modificarArticulo(Articulo articulo) throws Excepciones;
 
 	/**
 	 * Retorna todos los proveedores activos existentes en el sistema.
@@ -161,14 +176,25 @@ public interface ISistema {
 	 * retorna los articulos que coincidan con el string ingresado
 	 * 
 	 * @param busqueda
-	 * @return List<Articulo> lista de los articulos encontrados segun el texto
+	 * @return List<DTBusquedaArticulo> lista de los articulos encontrados segun el texto
 	 *         ingresado con todos los campos necesarios para el caso de uso
 	 *         busqueda articulos
 	 * @throws Excepciones
 	 * @author Victoria Diaz
 	 */
-	public List<DTBusquedaArticulo> buscarArticulos(
-			String busqueda) throws Excepciones;
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones;
+	
+	/**
+	 * retorna los articulos que coincidan con el string ingresado
+	 * @param busqueda - string a buscar
+	 * @param proveedor - buscar articulos de determinado proveedor
+	 * @return List<DTBusquedaArticulo> lista de los articulos encontrados segun el texto
+	 *         ingresado con todos los campos necesarios para el caso de uso
+	 *         busqueda articulos
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones;
 
 	/**
 	 * Chequea la existencia del codigoIdentificador para el proveedor.
@@ -205,5 +231,23 @@ public interface ISistema {
 	 * @throws Excepciones
 	 */
 	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
+
+	/**
+	 * Ingresa una factura de compra al sistema
+	 * 
+	 * @param orden
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public void ingresarFacturaCompra(Orden orden) throws Excepciones;
+	
+	/**
+	 * Obtiene los tipos de las facturas de la base de datos
+	 * 
+	 * @return lista con las distintas formas de venta
+	 * @author Victoria Díaz
+	 * @throws Excepciones 
+	 */
+	public List<DTTiposDGI> obtenerTiposDGI() throws Excepciones;
 
 }

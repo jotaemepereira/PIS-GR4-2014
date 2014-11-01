@@ -22,294 +22,102 @@
 		<h:form id="form1">
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
-			#{loginBean.redirectIfNotLoggedIn()}
-        	#{stockBean.setISistema(loginBean.instanciaSistema)}
+			<!-- 			#{loginBean.redirectIfNotLoggedIn()} -->
+			<!--         	#{stockBean.setISistema(loginBean.instanciaSistema)} -->
 			<p:focus></p:focus>
 			<div class="vpanel_right">
 				<div class="wrapper">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title">Busqueda de art&iacute;culo</h3>
+							<h3 class="panel-title">Modificar stock</h3>
 						</div>
 						<p:messages id="msgs" />
 
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
 								<div class="container-fluid">
-									<p:wizard flowListener="#{stockBean.onFlowProcess}"	>
-										<p:tab id="paso1" title="Búsqueda">
-											<div class="row" style="margin-bottom: 1%;">
-												<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-													<p:outputLabel for="busqueda" value="Buscar:" />
-													<p:inputText id="busqueda" styleClass="form-control"
-														value="#{stockBean.busqueda}" style="height: 100%"
-														required="false" />
-												</div>
-												<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
-													style="bottom: -26px;">
-													<div class="btn-group ">
-														<h:commandButton value="Buscar" update="panel"
-															actionListener="#{stockBean.buscarArticulos}"
-															class="btn btn-success" />
-													</div>
-												</div>
+
+									<div class="row" style="margin-bottom: 1%;">
+										<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
+											<p:outputLabel for="busqueda" value="Buscar:" />
+											<p:inputText id="busqueda" styleClass="form-control"
+												value="#{stockBean.busqueda}" style="height: 100%"
+												required="false" />
+										</div>
+										<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
+											style="bottom: -26px;">
+											<div class="btn-group ">
+												<h:commandButton value="Buscar" update="panel"
+													actionListener="#{stockBean.buscarArticulos}"
+													class="btn btn-success" />
 											</div>
+										</div>
+									</div>
 
-											<div class="row"
-												style="margin-bottom: 1%; text-align: center;">
-												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-													<p:dataTable var="articuloBusqueda" id="tableBusqueda"
-														value="#{stockBean.resBusqueda}"
-														selection="#{stockBean.articuloSeleccionado}"
-														selectionMode="single"
-														emptyMessage="No se encontraron artículos">
-														<div class="row">
-															<p:column headerText="Descripción"
-																styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-																<h:outputText value="#{articuloBusqueda.descripcion}" />
-															</p:column>
+									<div class="row" style="margin-bottom: 1%; text-align: center;">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:dataTable var="articuloBusqueda" id="tableBusqueda"
+												value="#{stockBean.resBusqueda}"
+												selection="#{stockBean.articuloSeleccionado}"
+												selectionMode="single" rowIndexVar="rowIndex"
+												emptyMessage="No se encontraron artículos">
+												<div class="row">
+													<p:column headerText="Descripción"
+														styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+														<h:outputText value="#{articuloBusqueda.descripcion}" />
+													</p:column>
 
-															<p:column headerText="Marca"
-																styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-																<h:outputText value="#{articuloBusqueda.marca}" />
-															</p:column>
+													<p:column headerText="Marca"
+														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.marca}" />
+													</p:column>
 
-															<p:column headerText="Present."
-																styleClass="col-xs-3 col-xs-2 col-md-2 col-lg-1">
-																<h:outputText value="#{articuloBusqueda.presentacion}" />
-															</p:column>
+													<p:column headerText="Present."
+														styleClass="col-xs-3 col-xs-2 col-md-2 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.presentacion}" />
+													</p:column>
 
-															<p:column headerText="Droga"
-																styleClass="hidden-xs col-sm-2 col-md-2 col-lg-1">
-																<h:outputText value="#{articuloBusqueda.droga}" />
-															</p:column>
+													<p:column headerText="Droga"
+														styleClass="hidden-xs col-sm-2 col-md-2 col-lg-1">
+														<h:outputText value="#{articuloBusqueda.droga}" />
+													</p:column>
 
-															<p:column headerText="Precios"
-																styleClass="col-xs-3 col-sm-3 col-md-1 col-lg-2">
+													<p:column headerText="Precios"
+														styleClass="col-xs-3 col-sm-3 col-md-1 col-lg-2">
 
-																<div>
-																	<h:outputLabel>P&uacute;blico: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.precioPublico}" />
-																</div>
-
-																<div>
-																	<h:outputLabel>De venta: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.precioDeVenta}" />
-																</div>
-															</p:column>
-
-															<p:column headerText="Costo de lista"
-																styleClass="hidden-xs hidden-sm col-md-1 col-lg-2">
-																<div>
-																	<h:outputLabel>De lista: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.costoDeLista}" />
-																</div>
-
-																<div>
-																	<h:outputLabel>Real: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.costoReal}" />
-																</div>
-
-																<div>
-																	<h:outputLabel>Pond: </h:outputLabel>
-																	<h:outputText
-																		value="#{articuloBusqueda.costoPonderado}" />
-																</div>
-															</p:column>
+														<div>
+															<h:outputLabel>P&uacute;blico: </h:outputLabel>
+															<h:outputText value="#{articuloBusqueda.precioPublico}" />
 														</div>
-													</p:dataTable>
-												</div>
-											</div>
-										</p:tab>
-										<p:tab id="paso2" title="Motivo">
-											<div>
-												<table>
-													<tr>
-														<td>Motivo:</td>
-														<td><p:selectOneRadio id="sorMotivo"
-																value="#{stockBean.tipoMotivo}">
-																<f:selectItem itemLabel="Ajuste" itemValue="1" />
-																<f:selectItem itemLabel="Desarme" itemValue="2" />
-															</p:selectOneRadio></td>
-													</tr>
-													<tr>
-														<td><p:inputText value="#{stockBean.motivo}">
-																<f:ajax event="change" execute="@this" />
-															</p:inputText></td>
-													</tr>
-												</table>
-											</div>
-										</p:tab>
-										<p:tab id="paso3" title="Búsqueda para desarme">
-											<div class="row" style="margin-bottom: 1%;">
-												<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-													<p:outputLabel for="busqueda2" value="Buscar:" />
-													<p:inputText id="busqueda2" styleClass="form-control"
-														value="#{stockBean.busquedaDesarme}" style="height: 100%"
-														required="false" />
-												</div>
-												<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
-													style="bottom: -26px;">
-													<div class="btn-group ">
-														<h:commandButton value="Buscar" update="panel"
-															actionListener="#{stockBean.buscarArticulosDesarme}"
-															class="btn btn-success" />
-													</div>
-												</div>
-											</div>
 
-											<div class="row"
-												style="margin-bottom: 1%; text-align: center;">
-												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-													<p:dataTable var="articuloBusqueda" id="tableBusqueda2"
-														value="#{stockBean.resBusquedaDesarme}"
-														selection="#{stockBean.articuloParaDesarme}"
-														selectionMode="single"
-														emptyMessage="No se encontraron artículos">
-														<div class="row">
-															<p:column headerText="Descripción"
-																styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-																<h:outputText value="#{articuloBusqueda.descripcion}" />
-															</p:column>
-
-															<p:column headerText="Marca"
-																styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-																<h:outputText value="#{articuloBusqueda.marca}" />
-															</p:column>
-
-															<p:column headerText="Present."
-																styleClass="col-xs-3 col-xs-2 col-md-2 col-lg-1">
-																<h:outputText value="#{articuloBusqueda.presentacion}" />
-															</p:column>
-
-															<p:column headerText="Droga"
-																styleClass="hidden-xs col-sm-2 col-md-2 col-lg-1">
-																<h:outputText value="#{articuloBusqueda.droga}" />
-															</p:column>
-
-															<p:column headerText="Precios"
-																styleClass="col-xs-3 col-sm-3 col-md-1 col-lg-2">
-
-																<div>
-																	<h:outputLabel>P&uacute;blico: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.precioPublico}" />
-																</div>
-
-																<div>
-																	<h:outputLabel>De venta: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.precioDeVenta}" />
-																</div>
-															</p:column>
-
-															<p:column headerText="Costo de lista"
-																styleClass="hidden-xs hidden-sm col-md-1 col-lg-2">
-																<div>
-																	<h:outputLabel>De lista: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.costoDeLista}" />
-																</div>
-
-																<div>
-																	<h:outputLabel>Real: </h:outputLabel>
-																	<h:outputText value="#{articuloBusqueda.costoReal}" />
-																</div>
-
-																<div>
-																	<h:outputLabel>Pond: </h:outputLabel>
-																	<h:outputText
-																		value="#{articuloBusqueda.costoPonderado}" />
-																</div>
-															</p:column>
+														<div>
+															<h:outputLabel>De venta: </h:outputLabel>
+															<h:outputText value="#{articuloBusqueda.precioDeVenta}" />
 														</div>
-													</p:dataTable>
+													</p:column>
+
+													<p:column headerText="Stock actual" style="width: 50px;">
+														<h:outputText value="#{articuloBusqueda.stock}"
+															style="width: 50px;">
+														</h:outputText>
+													</p:column>
+													<p:column headerText="Nuevo stock" style="width: 50px;">
+														<p:inputText
+															value="#{articuloBusqueda.nuevoStock[rowIndex]}"
+															style="width: 50px;">
+															<f:ajax event="change" execute="@this" />
+														</p:inputText>
+													</p:column>
 												</div>
-											</div>
-										</p:tab>
-										<p:tab id="paso4" title="Desarme">
-											<div>
-												<div class="pull-left">
-													<table>
-														<tr>
-															<td>Descripción:</td>
-															<td><h:outputText
-																	value="#{stockBean.articuloSeleccionado.descripcion}" /></td>
-														</tr>
-														<tr>
-															<td>Marca:</td>
-															<td><h:outputText
-																	value="#{stockBean.articuloSeleccionado.marca}" /></td>
-														</tr>
-														<tr>
-															<td>Presentación:</td>
-															<td><h:outputText
-																	value="#{stockBean.articuloSeleccionado.presentacion}" /></td>
-														</tr>
-														<tr>
-															<td>Droga:</td>
-															<td><h:outputText
-																	value="#{stockBean.articuloSeleccionado.droga}" /></td>
-														</tr>
-														<tr>
-															<td>Stock actual:</td>
-															<td><h:outputText
-																	value="#{stockBean.articuloSeleccionado.stock}" /></td>
-														</tr>
-														<tr>
-															<td>Nuevo stock:</td>
-															<td><p:inputText
-																	value="#{stockBean.nuevoStockSeleccionado}">
-																	<f:ajax event="change" execute="@this" />
-																</p:inputText></td>
-														</tr>
-													</table>
-												</div>
-												<div class="pull-left">
-													<table>
-														<tr>
-															<td>Descripción:</td>
-															<td><h:outputText
-																	value="#{stockBean.articuloParaDesarme.descripcion}" /></td>
-														</tr>
-														<tr>
-															<td>Marca:</td>
-															<td><h:outputText
-																	value="#{stockBean.articuloParaDesarme.marca}" /></td>
-														</tr>
-														<tr>
-															<td>Presentación:</td>
-															<td><h:outputText
-																	value="#{stockBean.articuloParaDesarme.presentacion}" /></td>
-														</tr>
-														<tr>
-															<td>Droga:</td>
-															<td><h:outputText
-																	value="#{stockBean.articuloParaDesarme.droga}" /></td>
-														</tr>
-														<tr>
-															<td>Stock actual:</td>
-															<td><h:outputText
-																	value="#{stockBean.articuloParaDesarme.stock}" /></td>
-														</tr>
-														<tr>
-															<td>Nuevo stock:</td>
-															<td><p:inputText
-																	value="#{stockBean.nuevoStockDesarme}">
-																	<f:ajax event="change" execute="@this" />
-																</p:inputText></td>
-														</tr>
-													</table>
-												</div>
-												<div style="clear: both;"></div>
-											</div>
-											<div style="margin-top: 15px;">
-												<p:commandButton
-													actionListener="#{stockBean.confirmar()}"
-													styleClass="btn btn-default pull-right"
-													oncomplete="PF('dlg2').hide()" update=":form1"
-													value="Cancelar" title="Facturar">
-												</p:commandButton>
-											</div>
-										</p:tab>
-									</p:wizard>
+											</p:dataTable>
+										</div>
+									</div>
+
+									<p:commandButton
+										actionListener="#{stockBean.confirmarCambioStock()}"
+										styleClass="btn btn-default" oncomplete="PF('dlg2').hide()"
+										update=":form1" value="Confirmar" title="Facturar">
+									</p:commandButton>
 								</div>
 							</h:panelGroup>
 						</div>

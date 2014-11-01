@@ -26,6 +26,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.primefaces.json.JSONObject;
 
+import Util.NamedParameterStatement;
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
@@ -43,15 +44,15 @@ import interfaces.IStockPersistencia;
 public class PStockControlador implements IStockPersistencia {
 
 	@Override
-	public void persistirArticulo(Articulo articulo) throws Excepciones{
+	public void persistirArticulo(Articulo articulo) throws Excepciones {
 		PreparedStatement stmt = null;
-		
-		String query = "INSERT INTO PRODUCTS " +
-						"(BRAND_ID, PRODUCT_TYPE, DESCRIPTION, PRESENTATION, KEY1, KEY2, KEY3, IS_PSYCHOTROPIC, IS_NARCOTIC, IS_REFRIGERATOR, SALE_CODE, AUTHORIZATION_TYPE,"
-						+ " UNIT_PRICE, SALE_PRICE, SALE_PRICE_PORCENTAGE,LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE_ID, BARCODE, LAST_PRICE_DATE"
-						+ ", NEAREST_DUE_DATE, STOCK, MINIMUM_STOCK, USERNAME, LAST_MODIFIED, STATUS) " +
-						" VALUES " +
-						" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, ?, LOCALTIMESTAMP, ?) RETURNING PRODUCT_ID;";
+
+		String query = "INSERT INTO PRODUCTS "
+				+ "(BRAND_ID, PRODUCT_TYPE, DESCRIPTION, PRESENTATION, KEY1, KEY2, KEY3, IS_PSYCHOTROPIC, IS_NARCOTIC, IS_REFRIGERATOR, SALE_CODE, AUTHORIZATION_TYPE,"
+				+ " UNIT_PRICE, SALE_PRICE, SALE_PRICE_PORCENTAGE,LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE_ID, BARCODE, LAST_PRICE_DATE"
+				+ ", NEAREST_DUE_DATE, STOCK, MINIMUM_STOCK, USERNAME, LAST_MODIFIED, STATUS) "
+				+ " VALUES "
+				+ " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, ?, LOCALTIMESTAMP, ?) RETURNING PRODUCT_ID;";
 		Connection c;
 		try {
 			c = Conexion.getConnection();
@@ -59,61 +60,68 @@ public class PStockControlador implements IStockPersistencia {
 			try {
 				// Seteo los datos a insertar en la bd
 				stmt = c.prepareStatement(query);
-				if (articulo.getIdMarca() != 0){
+				if (articulo.getIdMarca() != 0) {
 					stmt.setInt(1, articulo.getIdMarca());
-				}else{
+				} else {
 					stmt.setNull(1, java.sql.Types.INTEGER);
-				}				
-				stmt.setString(2, String.valueOf(articulo.getTipoArticulo()));//Null
-				stmt.setString(3, articulo.getDescripcion());//Not Null
-				stmt.setString(4, articulo.getPresentacion());//Null
-				stmt.setString(5, articulo.getClave1());//Null
-				stmt.setString(6, articulo.getClave2());//Null
-				stmt.setString(7, articulo.getClave3());//Null
-				stmt.setBoolean(8, articulo.isEsPsicofarmaco());//Not Null
-				stmt.setBoolean(9, articulo.isEsEstupefaciente());//Not Null
-				stmt.setBoolean(10, articulo.isEsHeladera());//Not Null
-				if (articulo.getCodigoVenta() != 0x00){
-					stmt.setString(11, String.valueOf(articulo.getCodigoVenta()));//Null
-				}else{
+				}
+				stmt.setString(2, String.valueOf(articulo.getTipoArticulo()));// Null
+				stmt.setString(3, articulo.getDescripcion());// Not Null
+				stmt.setString(4, articulo.getPresentacion());// Null
+				stmt.setString(5, articulo.getClave1());// Null
+				stmt.setString(6, articulo.getClave2());// Null
+				stmt.setString(7, articulo.getClave3());// Null
+				stmt.setBoolean(8, articulo.isEsPsicofarmaco());// Not Null
+				stmt.setBoolean(9, articulo.isEsEstupefaciente());// Not Null
+				stmt.setBoolean(10, articulo.isEsHeladera());// Not Null
+				if (articulo.getCodigoVenta() != 0x00) {
+					stmt.setString(11,
+							String.valueOf(articulo.getCodigoVenta()));// Null
+				} else {
 					stmt.setNull(11, java.sql.Types.CHAR);
-				}				
-				stmt.setString(12, String.valueOf(Enumerados.habilitado.HABILITADO));//Not Null
-				stmt.setBigDecimal(13, articulo.getPrecioUnitario());//Not Null
-				stmt.setBigDecimal(14, articulo.getPrecioVenta());//Not Null
-				stmt.setBigDecimal(15, articulo.getPorcentajePrecioVenta());//Not Null
-				stmt.setBigDecimal(16, articulo.getCostoLista());//Not Null
-				stmt.setBigDecimal(17, articulo.getCostoOferta());//Null
-				stmt.setBigDecimal(18, articulo.getUltimoCosto());//Null
-				stmt.setBigDecimal(19, articulo.getCostoPromedio());//Null
-				if (articulo.getTipoIva() != null){
-					stmt.setInt(20, articulo.getTipoIva().getTipoIVA());//Null
-				}else{
+				}
+				stmt.setString(12,
+						String.valueOf(Enumerados.habilitado.HABILITADO));// Not
+																			// Null
+				stmt.setBigDecimal(13, articulo.getPrecioUnitario());// Not Null
+				stmt.setBigDecimal(14, articulo.getPrecioVenta());// Not Null
+				stmt.setBigDecimal(15, articulo.getPorcentajePrecioVenta());// Not
+																			// Null
+				stmt.setBigDecimal(16, articulo.getCostoLista());// Not Null
+				stmt.setBigDecimal(17, articulo.getCostoOferta());// Null
+				stmt.setBigDecimal(18, articulo.getUltimoCosto());// Null
+				stmt.setBigDecimal(19, articulo.getCostoPromedio());// Null
+				if (articulo.getTipoIva() != null) {
+					stmt.setInt(20, articulo.getTipoIva().getTipoIVA());// Null
+				} else {
 					stmt.setNull(20, java.sql.Types.INTEGER);
-				}				
-				stmt.setString(21, articulo.getCodigoBarras());//Null
-				stmt.setNull(22, java.sql.Types.TIMESTAMP);//Null Vencimiento Más Cercano
-				stmt.setLong(23, articulo.getStock());//Not Null
-				stmt.setLong(24, articulo.getStockMinimo());//Null
-				stmt.setString(25, articulo.getUsuario().getNombre());//Not Null
-				stmt.setBoolean(26, true);//Not Null
-				
+				}
+				stmt.setString(21, articulo.getCodigoBarras());// Null
+				stmt.setNull(22, java.sql.Types.TIMESTAMP);// Null Vencimiento
+															// Más Cercano
+				stmt.setLong(23, articulo.getStock());// Not Null
+				stmt.setLong(24, articulo.getStockMinimo());// Null
+				stmt.setString(25, articulo.getUsuario().getNombre());// Not
+																		// Null
+				stmt.setBoolean(26, true);// Not Null
+
 				ResultSet rs = stmt.executeQuery();
-				//Obtengo la clave del nuevo artículo creado
+				// Obtengo la clave del nuevo artículo creado
 				long key = 0;
-				while (rs.next()){
+				while (rs.next()) {
 					key = rs.getLong(1);
 				}
-				
-				//Para cada proveedor asociado inserto una fila en products_suppliers
-				List<DTProveedor> proveedores = new ArrayList<DTProveedor>(articulo.getProveedores().values()); 
+
+				// Para cada proveedor asociado inserto una fila en
+				// products_suppliers
+				List<DTProveedor> proveedores = new ArrayList<DTProveedor>(
+						articulo.getProveedores().values());
 				Iterator<DTProveedor> i = proveedores.iterator();
-				while (i.hasNext()){
+				while (i.hasNext()) {
 					DTProveedor next = i.next();
-					query = "INSERT INTO PRODUCTS_SUPPLIERS " +
-							"(SUPPLIER_ID, PRODUCT_ID, PRODUCT_NUMBER, LINE_ID) " +
-							"VALUES " +
-							"(?, ?, ?, ?)";
+					query = "INSERT INTO PRODUCTS_SUPPLIERS "
+							+ "(SUPPLIER_ID, PRODUCT_ID, PRODUCT_NUMBER, LINE_ID) "
+							+ "VALUES " + "(?, ?, ?, ?)";
 					stmt = c.prepareStatement(query);
 					stmt.setInt(1, next.getIdProveedor());
 					stmt.setLong(2, key);
@@ -121,47 +129,48 @@ public class PStockControlador implements IStockPersistencia {
 					stmt.setString(4, next.getIdLinea());
 					stmt.executeUpdate();
 				}
-				
-				//Para cada droga seleccionada inserto una fila en product_drugs
-				if (articulo.getDrogas() != null){
-					for(long idDroga : articulo.getDrogas()){
-						query = "INSERT INTO PRODUCT_DRUGS " +
-								"(PRODUCT_ID, DRUG_ID) " +
-								"VALUES " +
-								"(?, ?)";
+
+				// Para cada droga seleccionada inserto una fila en
+				// product_drugs
+				if (articulo.getDrogas() != null) {
+					for (long idDroga : articulo.getDrogas()) {
+						query = "INSERT INTO PRODUCT_DRUGS "
+								+ "(PRODUCT_ID, DRUG_ID) " + "VALUES "
+								+ "(?, ?)";
 						stmt = c.prepareStatement(query);
 						stmt.setLong(1, key);
 						stmt.setLong(2, idDroga);
 						stmt.executeUpdate();
 					}
 				}
-				
-				//Para cada acción terapéutica seleccionada inserto una fila en product_therap_actions
-				if (articulo.getAccionesTer() != null){
-					for(long idAccTer : articulo.getAccionesTer()){
-						query = "INSERT INTO PRODUCT_THERAP_ACTIONS " +
-								"(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " +
-								"VALUES " +
-								"(?, ?)";
+
+				// Para cada acción terapéutica seleccionada inserto una fila
+				// en product_therap_actions
+				if (articulo.getAccionesTer() != null) {
+					for (long idAccTer : articulo.getAccionesTer()) {
+						query = "INSERT INTO PRODUCT_THERAP_ACTIONS "
+								+ "(PRODUCT_ID, THERAPEUTIC_ACTION_ID) "
+								+ "VALUES " + "(?, ?)";
 						stmt = c.prepareStatement(query);
 						stmt.setLong(1, key);
 						stmt.setLong(2, idAccTer);
 						stmt.executeUpdate();
 					}
 				}
-				
-				//Commiteo todo y cierro conexion
+
+				// Commiteo todo y cierro conexion
 				c.commit();
 				stmt.close();
 				c.close();
-				
+
 				// indexacion de solr del producto nuevo
 				deltaImportSolr();
-			} catch ( Exception e ) {
-				//Hago rollback de las cosas y lanzo excepcion
+			} catch (Exception e) {
+				// Hago rollback de las cosas y lanzo excepcion
 				c.rollback();
-				e.printStackTrace();				
-				throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+				e.printStackTrace();
+				throw (new Excepciones("Error sistema",
+						Excepciones.ERROR_SISTEMA));
 			}
 		} catch (NamingException e1) {
 			// TODO Auto-generated catch block
@@ -173,35 +182,35 @@ public class PStockControlador implements IStockPersistencia {
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 	}
-	
 
 	@Override
 	public boolean existeArticulo(String descripcion) throws Excepciones {
 		int cant = 0;
 		PreparedStatement stmt = null;
-		String query = "SELECT COUNT(*) AS cant FROM products " +
-						"WHERE DESCRIPTION = ?";
-				
+		String query = "SELECT COUNT(*) AS cant FROM products "
+				+ "WHERE DESCRIPTION = ?";
+
 		try {
 			Connection c = Conexion.getConnection();
-			
+
 			stmt = c.prepareStatement(query);
 			stmt.setString(1, descripcion);
 			ResultSet rs = stmt.executeQuery();
-			//Obtengo la cantidad de proveedores con ese rut
-			while(rs.next()){
+			// Obtengo la cantidad de proveedores con ese rut
+			while (rs.next()) {
 				cant = rs.getInt("cant");
 			}
 			rs.close();
 			stmt.close();
 			c.close();
-		} catch ( Exception e ) {
-			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
 		}
 		return (cant > 0);
 	}
 
-	public List<Articulo> buscarArticulo(String descripcion){
+	public List<Articulo> buscarArticulo(String descripcion) {
 
 		return null;
 
@@ -209,154 +218,261 @@ public class PStockControlador implements IStockPersistencia {
 
 	@Override
 	public Date obtenerFechaUltimoPedido() throws Excepciones {
-		
+
 		Date ret = null;
 		PreparedStatement stmt = null;
-		String query = "SELECT order_date FROM orders_dusa" +
-				" GROUP BY order_date" +
-				" ORDER BY order_date DESC" +
-				" LIMIT 1;";
+		String query = "SELECT order_date FROM orders_dusa"
+				+ " GROUP BY order_date" + " ORDER BY order_date DESC"
+				+ " LIMIT 1;";
 		try {
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				
+
 				Timestamp time = rs.getTimestamp("order_date");
 				ret = new Date(time.getTime());
 			}
 			rs.close();
 			stmt.close();
 			c.close();
-		} catch ( Exception e ) {
-			
+		} catch (Exception e) {
+
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 		return ret;
 	}
 
-	
 	@Override
-	public List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda) throws Excepciones{
+	public List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda)
+			throws Excepciones {
 		List<DTBusquedaArticuloSolr> listaArticulos = new ArrayList<DTBusquedaArticuloSolr>();
-		
+
 		String urlString = "http://localhost:8080/solr";
 		SolrServer solr = new HttpSolrServer(urlString);
 		SolrQuery parameters = new SolrQuery();
 		parameters.setRequestHandler("/articulos/select");
 		String regexpBusqueda = "*" + busqueda + "*";
-		parameters.set("q", "KEY1:" + regexpBusqueda + 
-							" KEY2:" + regexpBusqueda + 
-							" KEY3:" + regexpBusqueda + 
-							" CRITERIO_INTERNO:" + regexpBusqueda + 
-							" DESCRIPTION:" + regexpBusqueda + 
-							" BARCODE:" + regexpBusqueda +
-							" DROGAS: " + regexpBusqueda +
-							" PRESENTATION: " + regexpBusqueda + 
-							" ACCIONES_TERAPEUTICAS: " + regexpBusqueda +
-							" MARCA: " + regexpBusqueda);
+		parameters.set("q", "KEY1:" + regexpBusqueda + " KEY2:"
+				+ regexpBusqueda + " KEY3:" + regexpBusqueda
+				+ " CRITERIO_INTERNO:" + regexpBusqueda + " DESCRIPTION:"
+				+ regexpBusqueda + " BARCODE:" + regexpBusqueda + " DROGAS: "
+				+ regexpBusqueda + " PRESENTATION: " + regexpBusqueda
+				+ " ACCIONES_TERAPEUTICAS: " + regexpBusqueda + " MARCA: "
+				+ regexpBusqueda);
 		parameters.set("wt", "json");
-		parameters.set("fl", "DESCRIPTION id BARCODE DROGAS PRESENTATION ACCIONES_TERAPEUTICAS MARCA");
+		parameters
+				.set("fl",
+						"DESCRIPTION id BARCODE DROGAS PRESENTATION ACCIONES_TERAPEUTICAS MARCA");
 		parameters.set("start", 0);
 		parameters.set("rows", 100);
 		parameters.set("sort", "DESCRIPTION DESC");
-		
+
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
 			System.out.println(response);
 			Long cant = response.getNumFound();
-			if(cant > 100){
+			if (cant > 100) {
 				cant = (long) 100;
 			}
-			for(int i = 0; i < cant; i++){
+			for (int i = 0; i < cant; i++) {
 				System.out.println(response.get(i));
-				
+
 				SolrDocument item = response.get(i);
-				
+
 				DTBusquedaArticuloSolr articulo = new DTBusquedaArticuloSolr();
-				articulo.setIdArticulo(Integer.parseInt(item.getFieldValue("id").toString()));
-				articulo.setCodigoBarras(item.getFieldValue("BARCODE").toString());
-				articulo.setDescripcion(item.getFieldValue("DESCRIPTION").toString());
-				if(item.getFieldValue("DROGAS") == null){
+				articulo.setIdArticulo(Integer.parseInt(item
+						.getFieldValue("id").toString()));
+				articulo.setCodigoBarras(item.getFieldValue("BARCODE")
+						.toString());
+				articulo.setDescripcion(item.getFieldValue("DESCRIPTION")
+						.toString());
+				if (item.getFieldValue("DROGAS") == null) {
 					articulo.setDroga("");
-				}else{
-					articulo.setDroga(item.getFieldValue("DROGAS").toString().replace("[", "").replace("]", ""));
+				} else {
+					articulo.setDroga(item.getFieldValue("DROGAS").toString()
+							.replace("[", "").replace("]", ""));
 				}
-				if(item.getFieldValue("PRESENTATION") == null){
+				if (item.getFieldValue("PRESENTATION") == null) {
 					articulo.setPresentacion("");
-				}else{
-					articulo.setPresentacion(item.getFieldValue("PRESENTATION").toString());
+				} else {
+					articulo.setPresentacion(item.getFieldValue("PRESENTATION")
+							.toString());
 				}
-				if(item.getFieldValue("ACCIONES_TERAPEUTICAS") == null){
+				if (item.getFieldValue("ACCIONES_TERAPEUTICAS") == null) {
 					articulo.setAccionesTerapeuticas("");
-				}else{
-					articulo.setAccionesTerapeuticas(item.getFieldValue("ACCIONES_TERAPEUTICAS").toString().replace("[", "").replace("]", ""));
+				} else {
+					articulo.setAccionesTerapeuticas(item
+							.getFieldValue("ACCIONES_TERAPEUTICAS").toString()
+							.replace("[", "").replace("]", ""));
 				}
-				if(item.getFieldValue("MARCA") == null){
+				if (item.getFieldValue("MARCA") == null) {
 					articulo.setMarca("");
-				}else{
+				} else {
 					articulo.setMarca(item.getFieldValue("MARCA").toString());
 				}
 				listaArticulos.add(articulo);
 			}
 		} catch (SolrServerException e) {
 			e.printStackTrace();
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
 		}
-		
+
 		return listaArticulos;
 	}
-	
+
 	@Override
-	public void buscarArticulosId(DTBusquedaArticulo articulo) throws Excepciones{
+	public List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda,
+			int proveedor) throws Excepciones {
+		List<DTBusquedaArticuloSolr> listaArticulos = new ArrayList<DTBusquedaArticuloSolr>();
+
+		String urlString = "http://localhost:8080/solr";
+		SolrServer solr = new HttpSolrServer(urlString);
+		SolrQuery parameters = new SolrQuery();
+		parameters.setRequestHandler("/articulos/select");
+		String regexpBusqueda = "*" + busqueda + "*";
+		parameters.set("q", "KEY1:" + regexpBusqueda + " KEY2:"
+				+ regexpBusqueda + " KEY3:" + regexpBusqueda
+				+ " CRITERIO_INTERNO:" + regexpBusqueda + " DESCRIPTION:"
+				+ regexpBusqueda + " BARCODE:" + regexpBusqueda + " DROGAS: "
+				+ regexpBusqueda + " PRESENTATION: " + regexpBusqueda
+				+ " ACCIONES_TERAPEUTICAS: " + regexpBusqueda + " MARCA: "
+				+ regexpBusqueda + " SUPPLIER_DATA: " + "#" + busqueda + "*");
+		parameters.set("wt", "json");
+		parameters
+				.set("fl",
+						"DESCRIPTION id BARCODE DROGAS PRESENTATION ACCIONES_TERAPEUTICAS MARCA SUPPLIER_DATA");
+		parameters.set("start", 0);
+		parameters.set("rows", 100);
+		parameters.set("fq", "SUPPLIER_DATA: \"" + proveedor + "#*\"");
+		parameters.set("sort", "DESCRIPTION DESC");
+
+		try {
+			SolrDocumentList response = solr.query(parameters).getResults();
+			System.out.println(response);
+			Long cant = response.getNumFound();
+			if (cant > 100) {
+				cant = (long) 100;
+			}
+			for (int i = 0; i < cant; i++) {
+				System.out.println(response.get(i));
+
+				SolrDocument item = response.get(i);
+
+				DTBusquedaArticuloSolr articulo = new DTBusquedaArticuloSolr();
+				articulo.setIdArticulo(Integer.parseInt(item
+						.getFieldValue("id").toString()));
+				articulo.setCodigoBarras(item.getFieldValue("BARCODE")
+						.toString());
+				articulo.setDescripcion(item.getFieldValue("DESCRIPTION")
+						.toString());
+				if (item.getFieldValue("DROGAS") == null) {
+					articulo.setDroga("");
+				} else {
+					articulo.setDroga(item.getFieldValue("DROGAS").toString()
+							.replace("[", "").replace("]", ""));
+				}
+				if (item.getFieldValue("PRESENTATION") == null) {
+					articulo.setPresentacion("");
+				} else {
+					articulo.setPresentacion(item.getFieldValue("PRESENTATION")
+							.toString());
+				}
+				if (item.getFieldValue("ACCIONES_TERAPEUTICAS") == null) {
+					articulo.setAccionesTerapeuticas("");
+				} else {
+					articulo.setAccionesTerapeuticas(item
+							.getFieldValue("ACCIONES_TERAPEUTICAS").toString()
+							.replace("[", "").replace("]", ""));
+				}
+				if (item.getFieldValue("MARCA") == null) {
+					articulo.setMarca("");
+				} else {
+					articulo.setMarca(item.getFieldValue("MARCA").toString());
+				}
+				String data_proveedor = item.getFieldValue("SUPPLIER_DATA")
+						.toString().replace("[", "").replace("]", "");
+				String[] data = data_proveedor.split(",");
+				int j = 0;
+				while ((j < data.length)
+						&& (!data[j].split("#")[0].trim().equals(
+								String.valueOf(proveedor)))) {
+					j++;
+				}
+				if (j < data.length) {
+					articulo.setNumeroProducto_proveedor(Integer
+							.parseInt(data[j].split("#")[1].trim()));
+				} else {
+					articulo.setNumeroProducto_proveedor(0);
+				}
+
+				System.out.println("numero2: "
+						+ articulo.getNumeroProducto_proveedor());
+				listaArticulos.add(articulo);
+			}
+		} catch (SolrServerException e) {
+			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+
+		return listaArticulos;
+	}
+
+	@Override
+	public void buscarArticulosId(DTBusquedaArticulo articulo)
+			throws Excepciones {
 		PreparedStatement stmt = null;
-		
-		String query = "SELECT UNIT_PRICE, SALE_PRICE, LIST_COST, LAST_COST, AVG_COST, SALE_CODE, PRODUCT_TYPE "
-				+ "FROM PRODUCTS "
-				+ "WHERE PRODUCT_ID = ?";
+
+		String query = "SELECT UNIT_PRICE, SALE_PRICE, LIST_COST, LAST_COST, AVG_COST, SALE_CODE, PRODUCT_TYPE, STOCK "
+				+ "FROM PRODUCTS " + "WHERE PRODUCT_ID = ?";
 		try {
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			stmt.setInt(1, articulo.getIdArticulo());
 			ResultSet rs = stmt.executeQuery();
-			//Obtengo la cantidad de proveedores con ese rut
-			while (rs.next()){
-				articulo.setTipoDeArticulo(model.Enumerados.descripcionTipoArticuloAbreviado(rs.getString("PRODUCT_TYPE")));
-				articulo.setControlDeVenta(model.Enumerados.descripcionTipoVenta(rs.getString("SALE_CODE")));
+			// Obtengo la cantidad de proveedores con ese rut
+			while (rs.next()) {
+				articulo.setTipoDeArticulo(model.Enumerados
+						.descripcionTipoArticuloAbreviado(rs
+								.getString("PRODUCT_TYPE")));
+				articulo.setControlDeVenta(model.Enumerados
+						.descripcionTipoVenta(rs.getString("SALE_CODE")));
 				articulo.setPrecioDeVenta(rs.getBigDecimal("UNIT_PRICE"));
 				articulo.setPrecioPublico(rs.getBigDecimal("SALE_PRICE"));
 				articulo.setCostoDeLista(rs.getBigDecimal("LIST_COST"));
 				articulo.setCostoReal(rs.getBigDecimal("LAST_COST"));
 				articulo.setCostoPonderado(rs.getBigDecimal("AVG_COST"));
+				articulo.setStock(rs.getLong("STOCK"));
 			}
 			rs.close();
 			stmt.close();
 			c.close();
-		} catch ( Exception e ) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
-			
+
 	}
-	
-	
+
 	@Override
-	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones{
+	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones {
 		DTVenta articulo = new DTVenta();
 		PreparedStatement stmt = null;
 		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR "
 				+ "FROM PRODUCTS p "
 				+ "INNER JOIN tax_types tt ON p.tax_type_id = tt.tax_type_id "
-				
+
 				+ "WHERE PRODUCT_ID = ?";
 		try {
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			stmt.setInt(1, idArticulo);
 			ResultSet rs = stmt.executeQuery();
-			//Obtengo la cantidad de proveedores con ese rut
-			while (rs.next()){
+			// Obtengo la cantidad de proveedores con ese rut
+			while (rs.next()) {
 				articulo.setPrecioVenta(rs.getBigDecimal("SALE_PRICE"));
 				articulo.setRecetaVerde(rs.getBoolean("IS_PSYCHOTROPIC"));
 				articulo.setRecetaNaranja(rs.getBoolean("IS_NARCOTIC"));
@@ -364,31 +480,29 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
 				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
 				articulo.setIva(rs.getBigDecimal("BILLING_INDICATOR"));
-				
+
 			}
 			rs.close();
 			stmt.close();
 			c.close();
-		} catch ( Exception e ) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
-		
+
 		articulo.setCantidad(0);
 		articulo.setRecetaBlanca(false);
-		
+
 		/*
-		BigDecimal desc1 = new BigDecimal(10);
-    	BigDecimal desc2 = new BigDecimal(30);
-    	BigDecimal desc3 = new BigDecimal(50);
-		articulo.setDescuento1(desc1);
-		articulo.setDescuento2(desc2);
-		articulo.setDescuento3(desc3);
-		*/
-			
+		 * BigDecimal desc1 = new BigDecimal(10); BigDecimal desc2 = new
+		 * BigDecimal(30); BigDecimal desc3 = new BigDecimal(50);
+		 * articulo.setDescuento1(desc1); articulo.setDescuento2(desc2);
+		 * articulo.setDescuento3(desc3);
+		 */
+
 		return articulo;
 	}
-	
+
 	@Override
 	public void fullImportSolr() throws Excepciones {
 		String urlString = "http://localhost:8080/solr";
@@ -399,17 +513,17 @@ public class PStockControlador implements IStockPersistencia {
 		parameters.setParam("entity", "stock");
 		parameters.setParam("clean", true);
 		parameters.setParam("commit", true);
-		
+
 		QueryResponse response;
 		try {
 			response = solr.query(parameters);
 			System.out.println(response);
 		} catch (SolrServerException e) {
 			e.printStackTrace();
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
 		}
 	}
-
 
 	@Override
 	public void deltaImportSolr() throws Excepciones {
@@ -421,226 +535,235 @@ public class PStockControlador implements IStockPersistencia {
 		parameters.setParam("entity", "stock");
 		parameters.setParam("clean", false);
 		parameters.setParam("commit", true);
-		
+
 		SolrDocumentList response;
 		try {
 			response = solr.query(parameters).getResults();
 			System.out.println(response);
 		} catch (SolrServerException e) {
 			e.printStackTrace();
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
 		}
 	}
-	
+
 	/**
 	 * @author Guille
 	 */
 	@Override
 	public long getStockMinimo(long idArticulo) throws Excepciones {
-		
+
 		long sMinimo = 0;
-		
-		String query = "SELECT minimum_stock FROM products WHERE product_id=" +idArticulo + ";";
+
+		String query = "SELECT minimum_stock FROM products WHERE product_id="
+				+ idArticulo + ";";
 		try {
-			
+
 			Connection c = Conexion.getConnection();
 			PreparedStatement stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
-			
-			while (rs.next()) {		
+
+			while (rs.next()) {
 				sMinimo = rs.getLong(1);
 			}
-			
+
 			rs.close();
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
-			//Excepcion personalizada
+			// Excepcion personalizada
 			e.printStackTrace();
-			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA);
 		}
-		
+
 		return sMinimo;
 	}
-	
+
 	/**
-	 * @author santiago 
-	 * @throws Excepciones 
+	 * @author santiago
+	 * @throws Excepciones
 	 */
 	@Override
-	public int getStock(long idArticulo) throws Excepciones{
-	//consulta que obtiene el stock de un articulo
-		
+	public int getStock(long idArticulo) throws Excepciones {
+		// consulta que obtiene el stock de un articulo
+
 		PreparedStatement stmt = null;
-		
-		String query = "SELECT stock  FROM products WHERE product_id = " +idArticulo +";";
+
+		String query = "SELECT stock  FROM products WHERE product_id = "
+				+ idArticulo + ";";
 		int ret = 0;
 		try {
-			
+
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				
+
 				ret = (int) rs.getLong(1);
 			}
 			rs.close();
 			stmt.close();
 			c.close();
-		} catch ( Exception e ) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
-		return ret ;
+		return ret;
 	}
+
 	/**
 	 * @author Guille
-	 * @throws Excepciones 
+	 * @throws Excepciones
 	 */
 	@Override
-	public void persistirPedido(Pedido p) throws Excepciones{
+	public void persistirPedido(Pedido p) throws Excepciones {
 		// TODO Auto-generated method stub
-		
+
 		PreparedStatement stmt = null;
-		
+
 		String query = "INSERT INTO ORDERS_DUSA "
-						+ "(USERNAME, PAYMENT_TYPE, ORDER_DATE) VALUES "
-						+ " (?, ?, LOCALTIMESTAMP) RETURNING ORDER_DUSA_ID;";
+				+ "(USERNAME, PAYMENT_TYPE, ORDER_DATE) VALUES "
+				+ " (?, ?, LOCALTIMESTAMP) RETURNING ORDER_DUSA_ID;";
 		try {
-			
+
 			Connection c = Conexion.getConnection();
 			c.setAutoCommit(false);
 			try {
-				
+
 				stmt = c.prepareStatement(query);
-//				stmt.setInt(1, p.getIdUsuario());
+				// stmt.setInt(1, p.getIdUsuario());
 				stmt.setString(1, p.getUsuario().getNombre());
 				stmt.setString(2, "" + p.getFormaDePago() + "");
-				
+
 				ResultSet rs = stmt.executeQuery();
-				//Obtengo la clave del pedido persistido
+				// Obtengo la clave del pedido persistido
 				long pedidoID = 0;
-				while (rs.next()){
+				while (rs.next()) {
 					pedidoID = rs.getLong(1);
 				}
-				//Cierro canal y su dependencia, porque voy abrir uno nuevo.
+				// Cierro canal y su dependencia, porque voy abrir uno nuevo.
 				rs.close();
 				stmt.close();
-				//Para cada linea pedido asociado inserto una fila en ORDER_DUSA_DETAILS
-				for (Iterator<LineaPedido> iter = p.getLineas().iterator(); iter.hasNext();) {
-					
+				// Para cada linea pedido asociado inserto una fila en
+				// ORDER_DUSA_DETAILS
+				for (Iterator<LineaPedido> iter = p.getLineas().iterator(); iter
+						.hasNext();) {
+
 					LineaPedido lPedido = iter.next();
-					
+
 					query = "INSERT INTO ORDER_DUSA_DETAILS "
 							+ "(ORDER_DUSA_ID, PRODUCT_ID, QUANTITY) VALUES "
 							+ " (?, ?, ?);";
 					stmt = c.prepareStatement(query);
 					stmt.setLong(1, pedidoID);
 					stmt.setLong(2, lPedido.getIdArticulo().longValue());
-					stmt.setInt	(3, lPedido.getCantidad());
-					
+					stmt.setInt(3, lPedido.getCantidad());
+
 					stmt.executeUpdate();
 				}
-				//commit de los cambios y cerrar los canales
+				// commit de los cambios y cerrar los canales
 				c.commit();
-				
+
 				stmt.close();
 				c.close();
-			} catch ( Exception e ) {
-				//Regreso al estado anterior de la base y lanzo la excepcion correspondiente
-				
+			} catch (Exception e) {
+				// Regreso al estado anterior de la base y lanzo la excepcion
+				// correspondiente
+
 				c.rollback();
 				e.printStackTrace();
-				throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+				throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+						Excepciones.ERROR_SISTEMA));
 			}
-		} catch (Excepciones e){
-			//Paso las excepciones personalizadas. 
+		} catch (Excepciones e) {
+			// Paso las excepciones personalizadas.
 			throw e;
 		} catch (Exception e) {
 			// Error de conexión con la base de datos
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 	}
-	
-	
+
 	/**
-	 * @author santiago 
+	 * @author santiago
 	 */
 	@Override
-	public List<Long> obtenerIdTodosLosArticulos() throws Excepciones{
+	public List<Long> obtenerIdTodosLosArticulos() throws Excepciones {
 		List<Long> idArts = new ArrayList<Long>();
 		PreparedStatement stmt = null;
 		String query = "SELECT p.product_id "
-						+ "FROM products p "
-						+ "INNER JOIN products_suppliers ps ON p.product_id = ps.product_id "
-						+ "WHERE ps.supplier_id = ? AND p.status = ?;";
-		
+				+ "FROM products p "
+				+ "INNER JOIN products_suppliers ps ON p.product_id = ps.product_id "
+				+ "WHERE ps.supplier_id = ? AND p.status = ?;";
+
 		try {
-			
+
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
-			stmt.setInt		(1, Enumerados.infoDUSA.proveedorID);
-			stmt.setBoolean	(2, true);
-			
+			stmt.setInt(1, Enumerados.infoDUSA.proveedorID);
+			stmt.setBoolean(2, true);
+
 			ResultSet rs = stmt.executeQuery();
-			
-			while(rs.next()){
+
+			while (rs.next()) {
 				idArts.add(rs.getLong(1));
 			}
-			
+
 			rs.close();
 			stmt.close();
 			c.close();
-		} catch ( Exception e ) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
-		
+
 		return idArts;
 	}
-	
+
 	/**
-	 * @author Guille 
+	 * @author Guille
 	 */
 	@Override
 	public boolean existeArticuloDeDUSA(Long idArticulo) throws Excepciones {
-		
+
 		int cant = 0;
 		PreparedStatement stmt = null;
-		String query = "SELECT count(*) AS cant" + 
-						"FROM products_suppliers ps " + 
-						"WHERE ps.product_id = ? AND " + 
-								"ps.supplier_id = ?;";
-		
+		String query = "SELECT count(*) AS cant"
+				+ "FROM products_suppliers ps "
+				+ "WHERE ps.product_id = ? AND " + "ps.supplier_id = ?;";
+
 		try {
-			
+
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			stmt.setLong(1, idArticulo);
-			stmt.setInt(2, Enumerados.infoDUSA.proveedorID); //Hay que ver cual es para hardcodearlo en un lugar solo.
+			stmt.setInt(2, Enumerados.infoDUSA.proveedorID); // Hay que ver cual
+																// es para
+																// hardcodearlo
+																// en un lugar
+																// solo.
 			ResultSet rs = stmt.executeQuery();
-			
-			while(rs.next()){
+
+			while (rs.next()) {
 				cant = rs.getInt("cant");
 			}
 			rs.close();
 			stmt.close();
 			c.close();
-		} catch ( Exception e ) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 		return cant > 0;
 	}
 
-
 	@Override
 	public List<Droga> obtenerDrogas() throws Excepciones {
 		List<Droga> ret = null;
 		PreparedStatement stmt = null;
-		String query = "SELECT d.drug_id, d.description " +
-						"FROM DRUGS d ";
-		
+		String query = "SELECT d.drug_id, d.description " + "FROM DRUGS d ";
+
 		try {
 			Connection c = Conexion.getConnection();
 			c.setAutoCommit(false);
@@ -648,7 +771,7 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.setFetchSize(100);
 			ResultSet rs = stmt.executeQuery();
 			ret = new ArrayList<Droga>();
-			while(rs.next()){
+			while (rs.next()) {
 				Droga nuevo = new Droga();
 				nuevo.setIdDroga(rs.getLong("drug_id"));
 				nuevo.setDescripcion(rs.getString("description"));
@@ -656,21 +779,20 @@ public class PStockControlador implements IStockPersistencia {
 			}
 			rs.close();
 			stmt.close();
-		} catch (Exception e){
-			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
 		}
-		return ret;	
+		return ret;
 	}
 
-
 	@Override
-	public List<AccionTer> obtenerAccionesTerapeuticas()
-			throws Excepciones {
+	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
 		List<AccionTer> ret = null;
 		PreparedStatement stmt = null;
-		String query = "SELECT ta.therapeutic_action_id, ta.description " +
-						"FROM THERAPEUTIC_ACTIONS ta ";
-		
+		String query = "SELECT ta.therapeutic_action_id, ta.description "
+				+ "FROM THERAPEUTIC_ACTIONS ta ";
+
 		try {
 			Connection c = Conexion.getConnection();
 			c.setAutoCommit(false);
@@ -678,7 +800,7 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.setFetchSize(100);
 			ResultSet rs = stmt.executeQuery();
 			ret = new ArrayList<AccionTer>();
-			while(rs.next()){
+			while (rs.next()) {
 				AccionTer nuevo = new AccionTer();
 				nuevo.setIdAccionTer(rs.getLong("therapeutic_action_id"));
 				nuevo.setDescripcion(rs.getString("description"));
@@ -686,10 +808,11 @@ public class PStockControlador implements IStockPersistencia {
 			}
 			rs.close();
 			stmt.close();
-		} catch (Exception e){
-			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
 		}
-		return ret;	
+		return ret;
 	}
 
 	/**
@@ -698,29 +821,29 @@ public class PStockControlador implements IStockPersistencia {
 	@Override
 	public Articulo obtenerArticuloConId(long idArticulo) throws Excepciones {
 		// TODO Auto-generated method stub
-		
+
 		Articulo articulo = null;
 		Map<Integer, DTProveedor> ret = null;
 		PreparedStatement stmt = null;
-		String query = "SELECT * " +
-						"FROM products p INNER JOIN products_suppliers ps ON p.product_id = ps.product_id " +
-							"INNER JOIN (SELECT supplier_id, comercialname FROM suppliers) as s ON s.supplier_id = ps.supplier_id " +
-						"WHERE p.product_id = ?;";
+		String query = "SELECT * "
+				+ "FROM products p INNER JOIN products_suppliers ps ON p.product_id = ps.product_id "
+				+ "INNER JOIN (SELECT supplier_id, comercialname FROM suppliers) as s ON s.supplier_id = ps.supplier_id "
+				+ "WHERE p.product_id = ?;";
 		try {
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			stmt.setLong(1, idArticulo);
 			ResultSet rs = stmt.executeQuery();
 			ret = new HashMap<Integer, DTProveedor>();
-			while(rs.next()){
-				
+			while (rs.next()) {
+
 				if (articulo == null) {
-					
+
 					articulo = new Articulo();
-					
+
 					articulo.setIdArticulo(rs.getLong("product_id"));
 					String aux = rs.getString("product_type");
-					if (aux != null){
+					if (aux != null) {
 						articulo.setTipoArticulo(aux.charAt(0));
 					}
 					articulo.setDescripcion(rs.getString("description"));
@@ -740,62 +863,65 @@ public class PStockControlador implements IStockPersistencia {
 					}
 					articulo.setPrecioUnitario(rs.getBigDecimal("unit_price"));
 					articulo.setPrecioVenta(rs.getBigDecimal("sale_price"));
-					articulo.setPorcentajePrecioVenta(rs.getBigDecimal("sale_price_porcentage"));
+					articulo.setPorcentajePrecioVenta(rs
+							.getBigDecimal("sale_price_porcentage"));
 					articulo.setCostoLista(rs.getBigDecimal("list_cost"));
 					articulo.setCostoOferta(rs.getBigDecimal("offer_cost"));
 					articulo.setUltimoCosto(rs.getBigDecimal("last_cost"));
 					articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
-//					BigDecimal auxDecimal = rs.getBigDecimal("TAX_TYPE_ID");
-//					if (auxDecimal != null) {
-//						articulo.getTipoIva().setTipoIVA(auxDecimal.intValue());
-//					}
+					// BigDecimal auxDecimal = rs.getBigDecimal("TAX_TYPE_ID");
+					// if (auxDecimal != null) {
+					// articulo.getTipoIva().setTipoIVA(auxDecimal.intValue());
+					// }
 					articulo.setCodigoBarras(rs.getString("barcode"));
 					Timestamp timestamp = rs.getTimestamp("nearest_due_date");
 					if (timestamp != null) {
-						
-						articulo.setVencimientoMasCercano(new java.util.Date(timestamp.getTime()));
+
+						articulo.setVencimientoMasCercano(new java.util.Date(
+								timestamp.getTime()));
 					}
 					articulo.setStock(rs.getLong("stock"));
 					articulo.setStockMinimo(rs.getLong("minimum_stock"));
 					articulo.setStatus(rs.getBoolean("status"));
 				}
-				
+
 				DTProveedor dtProveedor = new DTProveedor();
 				dtProveedor.setIdProveedor(rs.getInt("supplier_id"));
-				dtProveedor.setCodigoIdentificador(rs.getLong("product_number"));
+				dtProveedor
+						.setCodigoIdentificador(rs.getLong("product_number"));
 				dtProveedor.setNombreComercial(rs.getString("comercialname"));
 				dtProveedor.setIdLinea(rs.getString("line_id"));
-				
+
 				ret.put(dtProveedor.getIdProveedor(), dtProveedor);
 			}
 			if (articulo != null) {
-				
+
 				articulo.setProveedores(ret);
 			}
 			rs.close();
 			stmt.close();
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
 		}
-		
+
 		return articulo;
 	}
-
 
 	@Override
 	public List<TipoIva> obtenerTiposIva() throws Excepciones {
 		List<TipoIva> ret = null;
 		PreparedStatement stmt = null;
-		String query = "SELECT t.tax_type_id, t.description " +
-						"FROM TAX_TYPES t ";
-		
+		String query = "SELECT t.tax_type_id, t.description "
+				+ "FROM TAX_TYPES t ";
+
 		try {
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			ret = new ArrayList<TipoIva>();
-			while(rs.next()){
+			while (rs.next()) {
 				TipoIva nuevo = new TipoIva();
 				nuevo.setTipoIVA(rs.getInt("tax_type_id"));
 				nuevo.setDescripcion(rs.getString("description"));
@@ -803,20 +929,20 @@ public class PStockControlador implements IStockPersistencia {
 			}
 			rs.close();
 			stmt.close();
-		} catch (Exception e){
-			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
 		}
 		return ret;
 	}
 
-
 	@Override
 	public void persistirTiposIva(List<TipoIva> lista) throws Excepciones {
-		PreparedStatement stmt = null;		
-		try{
+		PreparedStatement stmt = null;
+		try {
 			Connection c = Conexion.getConnection();
-			
-			for (TipoIva t: lista){
+
+			for (TipoIva t : lista) {
 				String query = "INSERT INTO TAX_TYPES "
 						+ "(TAX_TYPE_ID, DESCRIPTION, RATE_TYPE, BILLING_INDICATOR, "
 						+ "IVA_VALUE, TAX_VALUE, IVA_VOUCHER, IRAE_VOUCHER, STATUS) VALUES "
@@ -830,39 +956,333 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.setBigDecimal(6, t.getValorTributo());
 				stmt.setBigDecimal(7, t.getResguardoIVA());
 				stmt.setBigDecimal(8, t.getResguardoIRAE());
-				stmt.executeUpdate();				
+				stmt.executeUpdate();
 			}
 			stmt.close();
 			c.close();
-		}catch(Exception e){
-			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
 		}
 	}
-	
+
 	/**
 	 * @author Guille
 	 */
 	@Override
-	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones {
-		
-		PreparedStatement stmt = null;		
-		try{
+	public void modificarStock(long idArticulo, long nuevoValor)
+			throws Excepciones {
+
+		PreparedStatement stmt = null;
+		try {
 			Connection c = Conexion.getConnection();
-			
+
 			String query = "UPDATE PRODUCTS SET STOCK = ? "
 					+ "WHERE PRODUCT_ID = ?;";
-			
+
 			stmt = c.prepareStatement(query);
 			stmt.setLong(1, nuevoValor);
 			stmt.setLong(2, idArticulo);
-			
+
 			stmt.executeUpdate();
-			
+
 			stmt.close();
 			c.close();
-		}catch(Exception e){
-			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
 		}
 	}
-}
 
+	/**
+	 * @author Seba
+	 */
+	@Override
+	public void modificarStock(long[] idsArticulo, long[] nuevosValores)
+			throws Excepciones {
+
+		PreparedStatement stmt = null;
+		try {
+			Connection c = Conexion.getConnection();
+
+			for (int i = 0; i < idsArticulo.length; i++) {
+				String query = "UPDATE PRODUCTS SET STOCK = ? "
+						+ "WHERE PRODUCT_ID = ?;";
+
+				stmt = c.prepareStatement(query);
+				stmt.setLong(1, nuevosValores[i]);
+				stmt.setLong(2, idsArticulo[i]);
+
+				stmt.executeUpdate();
+			}
+			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+	}
+
+	@Override
+	public void modificarArticulo(Articulo articulo) throws Excepciones {
+		NamedParameterStatement stmt = null;
+
+		String query = "UPDATE PRODUCTS SET ";
+
+		if (articulo.isIdMarcaModificado()) {
+			query += "BRAND_ID = :brand_id, ";
+		}
+		if (articulo.isTipoArticuloModificado()) {
+			query += "PRODUCT_TYPE = :product_type, ";
+		}
+		if (articulo.isDescripcionModificado()) {
+			query += "DESCRIPTION = :description, ";
+		}
+		if (articulo.isPresentacionModificado()) {
+			query += "PRESENTATION = :presentation, ";
+		}
+		if (articulo.isClave1Modificado()) {
+			query += "KEY1 = :key1, ";
+		}
+		if (articulo.isClave2Modificado()) {
+			query += "KEY2 = :key2, ";
+		}
+		if (articulo.isClave3Modificado()) {
+			query += "KEY3 = :key3, ";
+		}
+		if (articulo.isEsPsicofarmacoModificado()) {
+			query += "IS_PSYCHOTROPIC = :isPsychotropic, ";
+		}
+		if (articulo.isEsEstupefacienteModificado()) {
+			query += "IS_NARCOTIC = :isNarcotic, ";
+		}
+		if (articulo.isEsHeladeraModificado()) {
+			query += "IS_REFRIGERATOR = :isRefrigerator, ";
+		}
+		if (articulo.isCodigoVentaModificado()) {
+			query += "SALE_CODE = :sale_code, ";
+		}
+		if (articulo.isTipoAutorizacionModificado()) {
+			query += "AUTHORIZATION_TYPE = :authorization_type, ";
+		}
+		if (articulo.isPrecioUnitarioModificado()) {
+			query += "UNIT_PRICE = :unit_price, ";
+			// Si se modifica el precio unitario tiene que cambiar el valor en
+			// fechaUltimoPrecio
+			query += "LAST_PRICE_DATE = LOCALTIMESTAMP, ";
+		}
+		if (articulo.isPrecioVentaModificado()) {
+			query += "SALE_PRICE = :sale_price, ";
+		}
+		if (articulo.isPorcentajePrecioVentaModificado()) {
+			query += "SALE_PRICE_PORCENTAGE = :sale_price_porcentage, ";
+		}
+		if (articulo.isCostoListaModificado()) {
+			query += "LIST_COST = :list_cost, ";
+		}
+		if (articulo.isCostoOfertaModificado()) {
+			query += "OFFER_COST = :offer_cost, ";
+		}
+		if (articulo.isUltimoCostoModificado()) {
+			query += "LAST_COST = :last_cost, ";
+		}
+		if (articulo.isCostoPromedioModificado()) {
+			query += "AVG_COST = :avg_cost, ";
+		}
+		if (articulo.isTipoIvaModificado()) {
+			query += "TAX_TYPE_ID = :tax_type_id, ";
+		}
+		if (articulo.isCodigoBarrasModificado()) {
+			query += "BARCODE = :barcode, ";
+		}
+		if (articulo.isVencimientoMasCercanoModificado()) {
+			query += "NEAREST_DUE_DATE = :nearest_due_date, ";
+		}
+		if (articulo.isStockMinimoModificado()) {
+			query += "MINIMUM_STOCK = :minimum_stock, ";
+		}
+		if (articulo.isUsuarioModificado()) {
+			query += "USERNAME = :username, ";
+		}
+
+		// Seteo fecha de última modificación a la actual
+		query += "LAST_MODIFIED = LOCALTIMESTAMP) ";
+		query += "WHERE PRODUCT_ID = :product_id;";
+
+		Connection c;
+		try {
+			c = Conexion.getConnection();
+			c.setAutoCommit(false);
+			try {
+				// Seteo los datos a modificar en la bd
+				stmt = new NamedParameterStatement(c, query);
+
+				if (articulo.isIdMarcaModificado()) {
+					if (articulo.getIdMarca() != 0) {
+						stmt.setInt("brand_id", articulo.getIdMarca());
+					} else {
+						stmt.setNull("brand_id", java.sql.Types.INTEGER);
+					}
+				}
+				if (articulo.isTipoArticuloModificado()) {
+					stmt.setChar("product_type", articulo.getTipoArticulo());
+				}
+				if (articulo.isDescripcionModificado()) {
+					stmt.setString("description", articulo.getDescripcion());
+				}
+				if (articulo.isPresentacionModificado()) {
+					stmt.setString("presentation", articulo.getPresentacion());
+				}
+				if (articulo.isClave1Modificado()) {
+					stmt.setString("key1", articulo.getClave1());
+				}
+				if (articulo.isClave2Modificado()) {
+					stmt.setString("key2", articulo.getClave2());
+				}
+				if (articulo.isClave3Modificado()) {
+					stmt.setString("key3", articulo.getClave3());
+				}
+				if (articulo.isEsPsicofarmacoModificado()) {
+					stmt.setBoolean("isPsychotropic",
+							articulo.isEsPsicofarmaco());
+				}
+				if (articulo.isEsEstupefacienteModificado()) {
+					stmt.setBoolean("isNarcotic", articulo.isEsEstupefaciente());
+				}
+				if (articulo.isEsHeladeraModificado()) {
+					stmt.setBoolean("isRefrigerator", articulo.isEsHeladera());
+				}
+				if (articulo.isCodigoVentaModificado()) {
+					if (articulo.getCodigoVenta() != 0x00) {
+						stmt.setChar("sale_code", articulo.getCodigoVenta());
+					} else {
+						stmt.setNull("sale_code", java.sql.Types.CHAR);
+					}
+				}
+				if (articulo.isTipoAutorizacionModificado()) {
+					stmt.setChar("authorization_type",
+							articulo.getTipoAutorizacion());
+				}
+				if (articulo.isPrecioUnitarioModificado()) {
+					stmt.setBigDecimal("unit_price",
+							articulo.getPrecioUnitario());
+				}
+				if (articulo.isPrecioVentaModificado()) {
+					stmt.setBigDecimal("sale_price", articulo.getPrecioVenta());
+				}
+				if (articulo.isPorcentajePrecioVentaModificado()) {
+					stmt.setBigDecimal("sale_price_porcentage",
+							articulo.getPorcentajePrecioVenta());
+				}
+				if (articulo.isCostoListaModificado()) {
+					stmt.setBigDecimal("list_cost", articulo.getCostoLista());
+				}
+				if (articulo.isCostoOfertaModificado()) {
+					stmt.setBigDecimal("offer_cost", articulo.getCostoOferta());
+				}
+				if (articulo.isUltimoCostoModificado()) {
+					stmt.setBigDecimal("last_cost", articulo.getUltimoCosto());
+				}
+				if (articulo.isCostoPromedioModificado()) {
+					stmt.setBigDecimal("avg_cost", articulo.getCostoPromedio());
+				}
+				if (articulo.isTipoIvaModificado()) {
+					if (articulo.getTipoIva() != null) {
+						stmt.setInt("tax_type_id", articulo.getTipoIva()
+								.getTipoIVA());
+					} else {
+						stmt.setNull("tax_type_id", java.sql.Types.INTEGER);
+					}
+				}
+				if (articulo.isCodigoBarrasModificado()) {
+					stmt.setString("barcode", articulo.getCodigoBarras());
+				}
+				if (articulo.isVencimientoMasCercanoModificado()) {
+					stmt.setTimestamp("nearest_due_date",
+							new java.sql.Timestamp(articulo
+									.getVencimientoMasCercano().getTime()));
+				}
+				if (articulo.isStockMinimoModificado()) {
+					stmt.setLong("minimum_stock", articulo.getStockMinimo());
+				}
+				if (articulo.isUsuarioModificado()) {
+					stmt.setString("username", articulo.getUsuario()
+							.getNombre());
+				}
+
+				stmt.setLong("product_id", articulo.getIdArticulo());
+
+				stmt.executeUpdate();
+
+				// TODO Guardar cambios de proveedores, drogas y acciones
+				// terapeuticas
+				if (articulo.isProveedoresModificado()) {
+					/*
+					 * //Para cada proveedor asociado inserto una fila en
+					 * products_suppliers List<DTProveedor> proveedores = new
+					 * ArrayList
+					 * <DTProveedor>(articulo.getProveedores().values());
+					 * Iterator<DTProveedor> i = proveedores.iterator(); while
+					 * (i.hasNext()){ DTProveedor next = i.next(); query =
+					 * "INSERT INTO PRODUCTS_SUPPLIERS " +
+					 * "(SUPPLIER_ID, PRODUCT_ID, PRODUCT_NUMBER, LINE_ID) " +
+					 * "VALUES " + "(?, ?, ?, ?)"; stmt =
+					 * c.prepareStatement(query); stmt.setInt(1,
+					 * next.getIdProveedor()); stmt.setLong(2, key);
+					 * stmt.setLong(3, next.getCodigoIdentificador());
+					 * stmt.setString(4, next.getIdLinea());
+					 * stmt.executeUpdate(); }
+					 */
+				}
+				if (articulo.isDrogasModificado()) {
+					/*
+					 * //Para cada droga seleccionada inserto una fila en
+					 * product_drugs if (articulo.getDrogas() != null){ for(long
+					 * idDroga : articulo.getDrogas()){ query =
+					 * "INSERT INTO PRODUCT_DRUGS " + "(PRODUCT_ID, DRUG_ID) " +
+					 * "VALUES " + "(?, ?)"; stmt = c.prepareStatement(query);
+					 * stmt.setLong(1, key); stmt.setLong(2, idDroga);
+					 * stmt.executeUpdate(); } }
+					 */
+
+				}
+				if (articulo.isAccionesTerModificado()) {
+					/*
+					 * //Para cada acción terapéutica seleccionada inserto una
+					 * fila en product_therap_actions if
+					 * (articulo.getAccionesTer() != null){ for(long idAccTer :
+					 * articulo.getAccionesTer()){ query =
+					 * "INSERT INTO PRODUCT_THERAP_ACTIONS " +
+					 * "(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " + "VALUES " +
+					 * "(?, ?)"; stmt = c.prepareStatement(query);
+					 * stmt.setLong(1, key); stmt.setLong(2, idAccTer);
+					 * stmt.executeUpdate(); } }
+					 */
+				}
+
+				// Commiteo todo y cierro conexion
+				c.commit();
+				stmt.close();
+				c.close();
+
+				// indexacion de solr del producto nuevo
+				deltaImportSolr();
+			} catch (Exception e) {
+				// Hago rollback de las cosas y lanzo excepcion
+				c.rollback();
+				e.printStackTrace();
+				throw (new Excepciones("Error sistema",
+						Excepciones.ERROR_SISTEMA));
+			}
+		} catch (NamingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		}
+
+	}
+}

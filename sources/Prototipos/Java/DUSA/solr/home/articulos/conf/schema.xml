@@ -40,6 +40,7 @@
 	<field name="PRESENTATION" type="text_es_fuzzy" indexed="true" stored="true" required="false" multiValued="false" />
 	<field name="ACCIONES_TERAPEUTICAS" type="text_es_fuzzy" indexed="true" stored="true" required="false" multiValued="true" />
 	<field name="MARCA" type="text_es_fuzzy" indexed="true" stored="true" required="false" multiValued="false" />
+	<field name="SUPPLIER_DATA" type="text_es_fuzzy" indexed="true" stored="true" required="false" multiValued="true" />
 <!-- 
 		[DUSA-FIN]
 	-->

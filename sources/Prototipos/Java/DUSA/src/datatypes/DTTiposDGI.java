@@ -1,19 +1,19 @@
 package datatypes;
 
-public class DTFormasVenta {
-	private char formaVenta;
+public class DTTiposDGI {
 	private String descripcion;
+	private int id;
 	
-	public char getFormaVenta() {
-		return formaVenta;
-	}
-	public void setFormaVenta(char formaVenta) {
-		this.formaVenta = formaVenta;
-	}
 	public String getDescripcion() {
 		return descripcion;
 	}
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 }

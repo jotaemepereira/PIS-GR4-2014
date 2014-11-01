@@ -28,21 +28,29 @@
 			<field column="CRITERIO_INTERNO" name="CRITERIO_INTERNO" />
 			<field column="MARCA" name="MARCA" />
 			<field column="PRESENTATION" name="PRESENTATION" />
-			
+
 			<entity name="drugs"
 				query="SELECT D.DESCRIPTION AS DROGAS
 							FROM PRODUCT_DRUGS PD 
 							INNER JOIN DRUGS D ON D.DRUG_ID = PD.DRUG_ID
 							WHERE PD.PRODUCT_ID = '${stock.id}'">
-					<field column="DROGAS" name="DROGAS" />
+				<field column="DROGAS" name="DROGAS" />
 			</entity>
-			
+
 			<entity name="acciones_terapeuticas"
 				query="SELECT D.DESCRIPTION AS ACCIONES_TERAPEUTICAS 
 							FROM PRODUCT_THERAP_ACTIONS PTA 
 							INNER JOIN THERAPEUTIC_ACTIONS D ON D.THERAPEUTIC_ACTION_ID = PTA.THERAPEUTIC_ACTION_ID
 							WHERE PTA.PRODUCT_ID = '${stock.id}'">
-					<field column="ACCIONES_TERAPEUTICAS" name="ACCIONES_TERAPEUTICAS" />
+				<field column="ACCIONES_TERAPEUTICAS" name="ACCIONES_TERAPEUTICAS" />
+			</entity>
+			
+			<entity name="acciones_terapeuticas"
+				query="SELECT (CAST( S.SUPPLIER_ID AS VARCHAR) || '#' || CAST( S.PRODUCT_NUMBER AS VARCHAR)) AS SUPPLIER_DATA
+							FROM PRODUCTS_SUPPLIERS S
+							WHERE S.PRODUCT_ID = '${stock.id}'">
+				<!-- string que reperesenta el proveedor de este laboratorio, quedando SUPPLIER_DATA = SUPPLIER_ID#PRODUCT_NUMBER -->
+				<field column="SUPPLIER_DATA" name="SUPPLIER_DATA" /> />
 			</entity>
 
 		</entity>
