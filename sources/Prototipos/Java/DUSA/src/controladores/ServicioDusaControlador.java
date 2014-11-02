@@ -1,23 +1,30 @@
 package controladores;
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import datatypes.DTComprobanteFactura;
 import datatypes.DTProveedor;
+import uy.com.dusa.ws.DataComprobante;
 import uy.com.dusa.ws.DataIVA;
 import uy.com.dusa.ws.DataInfoProducto;
 import uy.com.dusa.ws.DataLineaPedidoSimple;
 import uy.com.dusa.ws.DataPedidoSimple;
 import uy.com.dusa.ws.MensajeError;
 import uy.com.dusa.ws.PedidoFormaDePago;
+import uy.com.dusa.ws.ResultGetComprobante;
+import uy.com.dusa.ws.ResultGetComprobantes;
 import uy.com.dusa.ws.ResultRealizarPedido;
+import uy.com.dusa.ws.WSConsultaComprobantes;
+import uy.com.dusa.ws.WSConsultaComprobantesService;
 import uy.com.dusa.ws.WSConsultaStock;
 import uy.com.dusa.ws.WSConsultaStockService;
 import uy.com.dusa.ws.WSPedidos;
@@ -194,5 +201,37 @@ public class ServicioDusaControlador implements IServicio {
 		ret.setResguardoIVA(di.getResguardoIVA());
 		ret.setResguardoIRAE(di.getResguardoIRAE());		
 		return ret;
+	}
+
+	@Override
+	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
+		Map<Long, DTComprobanteFactura> comprobantes = new HashMap<Long, DTComprobanteFactura>();
+		
+		try {
+			WSConsultaComprobantes wscomprobantes = new WSConsultaComprobantesService().getWSConsultaComprobantesPort();
+			GregorianCalendar gCalendar = new GregorianCalendar(2014, 8, 15);
+
+			//gCalendar.setTime(fecha);
+			XMLGregorianCalendar  fechaXML = DatatypeFactory.newInstance().
+					newXMLGregorianCalendar(gCalendar);
+			ResultGetComprobantes resComprobantes = wscomprobantes.getComprobantesDesdeFecha(userTest, passTest, fechaXML);
+			
+			List<DataComprobante> listComprobantes = resComprobantes.getComprobantes();
+			System.out.println("SE ENCONTRAROR CANT COMPROBANTES: " + listComprobantes.size());
+			
+			Iterator<DataComprobante> it = listComprobantes.iterator();
+			
+			while (it.hasNext()) {
+				DataComprobante dataComprobante = (DataComprobante) it.next();
+				
+				comprobantes.put(dataComprobante.getOrdenDeCompra(), new DTComprobanteFactura(dataComprobante));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_CONEXION_WS, Excepciones.ERROR_SIN_CONEXION);
+		}
+		
+		return comprobantes;
 	}
 }

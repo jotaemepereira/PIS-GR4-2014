@@ -15,7 +15,7 @@ public class Orden {
 	private int idOrden;
 	private int tipoCFE;
 	private String serieCFE;
-	private int numeroCFE;
+	private long numeroCFE;
 	private Date fechaComprobante;
 	private String formaDePago;
 	private long ordenDeCompra;
@@ -56,11 +56,11 @@ public class Orden {
 		this.serieCFE = serieCFE;
 	}
 
-	public int getNumeroCFE() {
+	public long getNumeroCFE() {
 		return numeroCFE;
 	}
 
-	public void setNumeroCFE(int numeroCFE) throws Excepciones {
+	public void setNumeroCFE(long numeroCFE) throws Excepciones {
 		if (numeroCFE == 0) {
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_DATOS,
 					Excepciones.ERROR_DATOS));

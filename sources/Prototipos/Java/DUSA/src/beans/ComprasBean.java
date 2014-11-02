@@ -9,6 +9,7 @@ import interfaces.ISistema;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,10 +48,12 @@ public class ComprasBean implements Serializable {
 	private List<DTBusquedaArticulo> busquedaArticulos;
 	private String busqueda;
 
+	private Map<Long, DTComprobanteFactura> mapFacturasDUSA = new HashMap<Long, DTComprobanteFactura>();
 	private List<DTComprobanteFactura> facturasDUSA = new ArrayList<DTComprobanteFactura>();
 	private long ordenDeCompraDUSA;
 	private DTComprobanteFactura factura = new DTComprobanteFactura();
 
+	private Map<Integer, DTTiposDGI> mapTiposDGI = new HashMap<Integer, DTTiposDGI>();
 	private List<DTTiposDGI> tiposDGI = new ArrayList<DTTiposDGI>();
 
 	// getters y setters
@@ -166,6 +169,14 @@ public class ComprasBean implements Serializable {
 	public void setFacturaAutomatica(Boolean facturaAutomatica) {
 		this.facturaAutomatica = facturaAutomatica;
 	}
+	
+	public Boolean getSerieFactura() {
+		return serieFactura;
+	}
+
+	public void setSerieFactura(Boolean serieFactura) {
+		this.serieFactura = serieFactura;
+	}
 
 	// funciones ingresar compra
 	public void ingresoManual() {
@@ -180,8 +191,15 @@ public class ComprasBean implements Serializable {
 	}
 
 	public void facturaAutomaticaDUSA() {
-		// TODO Traigo factura
-		
+		try {
+			mapFacturasDUSA = this.instanciaSistema.obtenerFacturasDUSA();
+			this.facturasDUSA = new ArrayList<DTComprobanteFactura>(
+					mapFacturasDUSA.values());
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
 		
 		facturaAutomatica = true;
 		disableBotones = true;
@@ -189,6 +207,10 @@ public class ComprasBean implements Serializable {
 		selectFacturaDUSA = "visible";
 		selectProveedores = "hidden";
 		serieFactura = true;
+	}
+	
+	public void seleccionFacturaDUSA(){
+		factura = mapFacturasDUSA.get(ordenDeCompraDUSA);
 	}
 
 	public void cancelarIngresarCompra() {
@@ -294,7 +316,8 @@ public class ComprasBean implements Serializable {
 	
 	public void obtenerTiposDGI(){
 		try {
-			this.tiposDGI = this.instanciaSistema.obtenerTiposDGI();
+			this.mapTiposDGI = this.instanciaSistema.obtenerTiposDGI();
+			this.tiposDGI = new ArrayList<DTTiposDGI>(mapTiposDGI.values());
 		} catch (Excepciones e) {
 			e.printStackTrace();
 		}
@@ -312,6 +335,7 @@ public class ComprasBean implements Serializable {
 		linea.setDescuento(new BigDecimal(0));
 		linea.setTotal(new BigDecimal(0));
 		linea.setPrecioUnitario(new BigDecimal(0));
+		linea.setCostoUltimaCompra(articulo.getCostoReal());
 
 		List<DTLineaFacturaCompra> detalle = factura.getDetalle();
 		detalle.add(linea);
@@ -396,12 +420,7 @@ public class ComprasBean implements Serializable {
 		}
 	}
 
-	public Boolean getSerieFactura() {
-		return serieFactura;
+	public String getNombreTipoFactura(int tipo){
+		return mapTiposDGI.get(tipo).getDescripcion();
 	}
-
-	public void setSerieFactura(Boolean serieFactura) {
-		this.serieFactura = serieFactura;
-	}
-
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
+import datatypes.DTComprobanteFactura;
 import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
@@ -251,6 +252,15 @@ public interface ISistema {
 	 * @author Victoria Díaz
 	 * @throws Excepciones 
 	 */
-	public List<DTTiposDGI> obtenerTiposDGI() throws Excepciones;
+	public Map<Integer, DTTiposDGI> obtenerTiposDGI() throws Excepciones;
+	
+	/**
+	 * trae las facturas por el servicio de DUSA
+	 * 
+	 * @return lista de facturas de DUSA automaticas
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones;
 
 }

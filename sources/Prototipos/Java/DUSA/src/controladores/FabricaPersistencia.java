@@ -1,5 +1,6 @@
 package controladores;
 
+import datatypes.DTLineaFacturaCompra;
 import interfaces.IComprasPersistencia;
 import interfaces.IFacturacionPersistencia;
 import interfaces.IProveedoresPersistencia;

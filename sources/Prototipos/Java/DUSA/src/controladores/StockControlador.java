@@ -5,23 +5,30 @@ import interfaces.ISeleccionador;
 import interfaces.IServicio;
 import interfaces.IStock;
 import interfaces.IStockPersistencia;
+import interfaces.IUsuarioPersistencia;
 import model.AccionTer;
 import model.Articulo;
+import model.Cambio;
 import model.Droga;
 import model.Enumerados;
 import model.GeneradorPedido;
 import model.LineaPedido;
+import model.Mail;
 import model.Pedido;
 import model.TipoIva;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 
 import persistencia.PStockControlador;
 import datatypes.DTBusquedaArticuloSolr;
@@ -292,8 +299,30 @@ public class StockControlador implements IStock {
 		for (Articulo a : articulos) {
 			sp.persistirArticulo(a);
 		}
+	}                      
+	List <Cambio> actualizarStock(Timestamp ultAct) throws Excepciones{
+		IServicio serv = FabricaServicios.getIServicios();
+		List<Articulo> arts = serv.obtenerActualizacionDeStock(ultAct);
+		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
+		List<Cambio> cambios =sp.actualizarStock(arts);
+		IUsuarioPersistencia iup = FabricaPersistencia.getInstanciaUsuaruiPersistencia();
+		List <String> admins = iup.getAdminisMails();
+		Mail m = new Mail();
+		m.setDestinatarios("santiago.taba@gmail.com");
+		m.setAsunto("cambio en productos de DUSA");   
+		m.setContenido(cambios);
+		m.setEmisor("dusapis", "grupo4grupo4");
+		try {
+			m.Enviar();
+		} catch (AddressException e) {
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		return cambios;
+		                
 	}
-
+         
 	@Override
 	public List<TipoIva> obtenerTiposIva() throws Excepciones {
 		return FabricaPersistencia.getStockPersistencia().obtenerTiposIva();

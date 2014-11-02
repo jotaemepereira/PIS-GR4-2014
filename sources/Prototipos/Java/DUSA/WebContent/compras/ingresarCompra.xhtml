@@ -42,6 +42,10 @@
 	border-top: 1px solid #E3E3E3; 
 	padding-top: 10px;
 }
+
+.ui-selectonemenu-filter-container{
+	width: 100% !important;
+}
 </style>
 	</h:head>
 	<h:body>
@@ -98,10 +102,11 @@
 													value="#{comprasBean.ordenDeCompraDUSA}" filter="true"
 													filterMatchMode="contains" required="false"
 													style="width:100%">
+													<p:ajax event="change" update="panel" listener="#{comprasBean.seleccionFacturaDUSA}"/>
 													<f:selectItem itemLabel="Seleccione una factura"
 														itemValue="#{null}" />
 													<f:selectItems value="${comprasBean.facturasDUSA}" var="m"
-														itemLabel="#{m.fechaComprobante} #{m.ordenDeCompra}"
+														itemLabel="#{comprasBean.getNombreTipoFactura(m.tipoCFE)} #{m.serieCFE} #{m.numeroCFE}"
 														itemValue="#{m.ordenDeCompra}" />
 												</p:selectOneMenu>
 											</div>

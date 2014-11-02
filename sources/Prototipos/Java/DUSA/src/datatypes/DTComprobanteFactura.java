@@ -4,9 +4,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import controladores.FabricaPersistencia;
+import uy.com.dusa.ws.DataComprobante;
+import uy.com.dusa.ws.DataLineaComprobante;
 
 public class DTComprobanteFactura {
 	
@@ -14,7 +19,7 @@ public class DTComprobanteFactura {
 	private int idOrden;
 	private int tipoCFE;
     private String serieCFE;
-    private int numeroCFE;
+    private long numeroCFE;
     private Date fechaComprobante;
     private String formaDePago;
     private long ordenDeCompra;
@@ -37,6 +42,38 @@ public class DTComprobanteFactura {
     // suma de los subtotales de cada producto individual
     private BigDecimal subtotalProdctos = new BigDecimal(0);
     
+    public DTComprobanteFactura(){}
+    
+    public DTComprobanteFactura(DataComprobante comprobante){
+    	this.idProveedor = 1;
+    	this.tipoCFE = comprobante.getTipoCFE();
+    	this.serieCFE = comprobante.getSerieCFE();
+    	this.numeroCFE = comprobante.getNumeroCFE();
+    	this.fechaComprobante = comprobante.getFechaComprobante().toGregorianCalendar().getTime();
+    	this.formaDePago = comprobante.getFormaDePago().name();
+    	this.ordenDeCompra = comprobante.getOrdenDeCompra();
+    	this.montoNoGravado = comprobante.getMontoNoGravado();
+    	this.montoNetoGravadoIvaMinimo = comprobante.getMontoNetoGravadoIvaMinimo();
+    	this.montoNetoGravadoIvaBasico = comprobante.getMontoNetoGravadoIvaBasico();
+    	this.totalIvaMinimo = comprobante.getTotalIvaMinimo();
+    	this.totalIvaBasico = comprobante.getTotalIvaBasico();
+    	this.montoTotal = comprobante.getMontoTotal();
+    	this.montoRetenidoIVA = comprobante.getMontoRetenidoIVA();
+    	this.montoRetenidoIRAE = comprobante.getMontoRetenidoIRAE();
+    	this.montoNoFacturable = comprobante.getMontoNoFacturable();
+    	this.montoTotalAPagar = comprobante.getMontoTotalAPagar();
+    	this.montoTributoIvaMinimo = comprobante.getMontoTributoIvaMinimo();
+    	this.montoTributoIvaBasico = comprobante.getMontoTributoIvaBasico();
+    	
+    	Iterator<DataLineaComprobante> it = comprobante.getDetalle().iterator();
+    	while (it.hasNext()) {
+			DataLineaComprobante dataLineaComprobante = (DataLineaComprobante) it
+					.next();
+			this.detalle.add(new DTLineaFacturaCompra(dataLineaComprobante));
+		}
+    	
+    }
+    
 	public int getTipoCFE() {
 		return tipoCFE;
 	}
@@ -49,10 +86,10 @@ public class DTComprobanteFactura {
 	public void setSerieCFE(String serieCFE) {
 		this.serieCFE = serieCFE;
 	}
-	public int getNumeroCFE() {
+	public long getNumeroCFE() {
 		return numeroCFE;
 	}
-	public void setNumeroCFE(int numeroCFE) {
+	public void setNumeroCFE(long numeroCFE) {
 		this.numeroCFE = numeroCFE;
 	}
 	public long getOrdenDeCompra() {
@@ -175,4 +212,5 @@ public class DTComprobanteFactura {
 	public void setSubtotalProdctos(BigDecimal subtotalProdctos) {
 		this.subtotalProdctos = subtotalProdctos;
 	}
+
 }

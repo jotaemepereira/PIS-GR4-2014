@@ -2,8 +2,10 @@ package interfaces;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 import controladores.Excepciones;
+import datatypes.DTComprobanteFactura;
 import model.*;
 
 /**  
@@ -27,4 +29,13 @@ public interface IServicio {
 	 * @author Jose Aguerre
 	 */
 	public List<TipoIva> obtenerTiposIva() throws Excepciones;
+	
+	/**
+	 * trae las facturas por el servicio de DUSA
+	 * 
+	 * @return lista de facturas de DUSA automaticas
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones;
 }
