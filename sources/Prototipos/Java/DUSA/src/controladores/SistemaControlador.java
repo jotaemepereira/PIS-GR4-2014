@@ -5,12 +5,16 @@ import java.util.List;
 import java.util.Map;
 
 import datatypes.DTBusquedaArticulo;
+import datatypes.DTComprobanteFactura;
+import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
+import datatypes.DTTiposDGI;
 import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Orden;
 import model.Pedido;
 import model.Enumerados.casoDeUso;
 import model.TipoIva;
@@ -71,7 +75,16 @@ public class SistemaControlador implements ISistema {
 
 	}
 
+	@Override
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones {
+		// TODO chequeo permisos del usuario
+		//if (user.tienePermiso(casoDeUso.buscarArticulo))
+		return FabricaLogica.getIStock().buscarArticulos(busqueda, proveedor);
+		//else
+		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 
+	}
+	
 	@Override
 	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior() throws Excepciones {
 		//if (user.tienePermiso(casoDeUso.generPeEnBaseAPedAnt))
@@ -164,9 +177,18 @@ public class SistemaControlador implements ISistema {
 	}
 	
 	@Override
-	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones {
-		
+	public void modificarStock(long idArticulo, long nuevoValor, long registroCantidad, char tipoMovimiento, String motivo) throws Excepciones {
+	
 		FabricaLogica.getIStock().modificarStock(idArticulo, nuevoValor);
+		
+		try {
+			FabricaPersistencia.getStockPersistencia().movimientoStock(user.getNombre(), idArticulo, registroCantidad, tipoMovimiento, motivo);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+		}
+		
 	}
 
 	@Override
@@ -174,4 +196,21 @@ public class SistemaControlador implements ISistema {
 		FabricaLogica.getIStock().modificarArticulo(articulo);
 		
 	}
+
+	@Override
+	public void ingresarFacturaCompra(Orden orden) throws Excepciones {
+		// TODO Auto-generated method stub
+		FabricaLogica.getInstanciaCompras().ingresarFacturaCompra(orden);
+	}
+
+	@Override
+	public Map<Integer, DTTiposDGI> obtenerTiposDGI() throws Excepciones {
+		return FabricaLogica.getInstanciaCompras().obtenerTiposDGI();
+	}
+
+	@Override
+	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
+		return FabricaLogica.getInstanciaCompras().obtenerFacturasDUSA();
+	}
+
 }

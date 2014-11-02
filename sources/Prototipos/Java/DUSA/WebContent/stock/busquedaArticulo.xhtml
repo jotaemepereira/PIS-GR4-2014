@@ -78,48 +78,53 @@
 														styleClass="col-xs-3 col-xs-2 col-md-2 col-lg-1">
 														<h:outputText value="#{articuloBusqueda.presentacion}" />
 													</p:column>
-
-													<p:column headerText="Droga"
-														styleClass="hidden-xs col-sm-2 col-md-2 col-lg-1">
-														<h:outputText value="#{articuloBusqueda.droga}" />
-													</p:column>
-
-													<p:column headerText="Control de venta"
-														styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
-														<h:outputText value="#{articuloBusqueda.controlDeVenta}" />
-													</p:column>
-
-													<p:column headerText="Precios"
-														styleClass="col-xs-3 col-sm-3 col-md-1 col-lg-2">
-														
-														<div>
-															<h:outputLabel>P&uacute;blico: </h:outputLabel>
-															<h:outputText value="#{articuloBusqueda.precioPublico}" />
-														</div>
-														
-														<div>
-															<h:outputLabel>De venta: </h:outputLabel>
-															<h:outputText value="#{articuloBusqueda.precioDeVenta}" />
-														</div>
-													</p:column>
 													
-													<p:column headerText="Costo de lista"
-														styleClass="hidden-xs hidden-sm col-md-1 col-lg-2">
-														<div>
-															<h:outputLabel>De lista: </h:outputLabel>
-															<h:outputText value="#{articuloBusqueda.costoDeLista}" />
-														</div>
-														
-														<div>
-															<h:outputLabel>Real: </h:outputLabel>
-															<h:outputText value="#{articuloBusqueda.costoReal}" />
-														</div>
-														
-														<div>
-															<h:outputLabel>Pond: </h:outputLabel>
-															<h:outputText value="#{articuloBusqueda.costoPonderado}" />
-														</div>
+													<p:column headerText="Stock"
+														styleClass="col-xs-3 col-xs-2 col-md-2 col-lg-1"> 
+														<h:outputText value="#{articuloBusqueda.stock}"/>
 													</p:column>
+
+<!-- 													<p:column headerText="Droga" -->
+<!-- 														styleClass="hidden-xs col-sm-2 col-md-2 col-lg-1"> -->
+<!-- 														<h:outputText value="#{articuloBusqueda.droga}" /> -->
+<!-- 													</p:column> -->
+
+<!-- 													<p:column headerText="Control de venta" -->
+<!-- 														styleClass="hidden-xs hidden-sm col-md-1 col-lg-1"> -->
+<!-- 														<h:outputText value="#{articuloBusqueda.controlDeVenta}" /> -->
+<!-- 													</p:column> -->
+
+<!-- 													<p:column headerText="Precios" -->
+<!-- 														styleClass="col-xs-3 col-sm-3 col-md-1 col-lg-2"> -->
+														
+<!-- 														<div> -->
+<!-- 															<h:outputLabel>P&uacute;blico: </h:outputLabel> -->
+<!-- 															<h:outputText value="#{articuloBusqueda.precioPublico}" /> -->
+<!-- 														</div> -->
+														
+<!-- 														<div> -->
+<!-- 															<h:outputLabel>De venta: </h:outputLabel> -->
+<!-- 															<h:outputText value="#{articuloBusqueda.precioDeVenta}" /> -->
+<!-- 														</div> -->
+<!-- 													</p:column> -->
+													
+<!-- 													<p:column headerText="Costos" -->
+<!-- 														styleClass="hidden-xs hidden-sm col-md-1 col-lg-2"> -->
+<!-- 														<div> -->
+<!-- 															<h:outputLabel>De lista: </h:outputLabel> -->
+<!-- 															<h:outputText value="#{articuloBusqueda.costoDeLista}" /> -->
+<!-- 														</div> -->
+														
+<!-- 														<div> -->
+<!-- 															<h:outputLabel>Real: </h:outputLabel> -->
+<!-- 															<h:outputText value="#{articuloBusqueda.costoReal}" /> -->
+<!-- 														</div> -->
+														
+<!-- 														<div> -->
+<!-- 															<h:outputLabel>Pond: </h:outputLabel> -->
+<!-- 															<h:outputText value="#{articuloBusqueda.costoPonderado}" /> -->
+<!-- 														</div> -->
+<!-- 													</p:column> -->
 
 												</div>
 											</p:dataTable>

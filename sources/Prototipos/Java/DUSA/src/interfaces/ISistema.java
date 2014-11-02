@@ -7,18 +7,21 @@ import java.util.Map;
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
+import datatypes.DTComprobanteFactura;
+import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
+import datatypes.DTTiposDGI;
 import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Orden;
 import model.Pedido;
 import model.Presentacion;
 import model.Proveedor;
 import model.TipoIva;
 import model.Usuario;
-
 import model.Venta;
 
 public interface ISistema {
@@ -174,14 +177,25 @@ public interface ISistema {
 	 * retorna los articulos que coincidan con el string ingresado
 	 * 
 	 * @param busqueda
-	 * @return List<Articulo> lista de los articulos encontrados segun el texto
+	 * @return List<DTBusquedaArticulo> lista de los articulos encontrados segun el texto
 	 *         ingresado con todos los campos necesarios para el caso de uso
 	 *         busqueda articulos
 	 * @throws Excepciones
 	 * @author Victoria Diaz
 	 */
-	public List<DTBusquedaArticulo> buscarArticulos(
-			String busqueda) throws Excepciones;
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones;
+	
+	/**
+	 * retorna los articulos que coincidan con el string ingresado
+	 * @param busqueda - string a buscar
+	 * @param proveedor - buscar articulos de determinado proveedor
+	 * @return List<DTBusquedaArticulo> lista de los articulos encontrados segun el texto
+	 *         ingresado con todos los campos necesarios para el caso de uso
+	 *         busqueda articulos
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones;
 
 	/**
 	 * Chequea la existencia del codigoIdentificador para el proveedor.
@@ -212,11 +226,41 @@ public interface ISistema {
 	/**
 	 * Modifica el stock del articulo con id idArticulo al valor nuevoValor
 	 * 
-	 * @author Guille
 	 * @param idArticulo
-	 * @param nuevoValor stock nuevo para el articulo. 
+	 * @param nuevoValor
+	 * @param registroCantidad cantidad asociada al tipo de movimiento
+	 * @param char tipoMovimientoDeStock que indica aumento, baja o desarme de stock 
+	 * @param motivo Motivo por el cual se efectúa la modificación.
+	 * @see model.Enumerados.tipoMovimientoDeStock
 	 * @throws Excepciones
 	 */
-	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
+	public void modificarStock(long idArticulo, long nuevoValor, long registroCantidad, char tipoMovimiento, String motivo) throws Excepciones;
+
+	/**
+	 * Ingresa una factura de compra al sistema
+	 * 
+	 * @param orden
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public void ingresarFacturaCompra(Orden orden) throws Excepciones;
+	
+	/**
+	 * Obtiene los tipos de las facturas de la base de datos
+	 * 
+	 * @return lista con las distintas formas de venta
+	 * @author Victoria Díaz
+	 * @throws Excepciones 
+	 */
+	public Map<Integer, DTTiposDGI> obtenerTiposDGI() throws Excepciones;
+	
+	/**
+	 * trae las facturas por el servicio de DUSA
+	 * 
+	 * @return lista de facturas de DUSA automaticas
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones;
 
 }

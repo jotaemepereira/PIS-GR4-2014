@@ -1,7 +1,10 @@
 package interfaces;
 
+import java.util.List;
+
 import controladores.Excepciones;
 import model.Actividad;
+import model.Cambio;
 import model.Usuario;
 
 /**
@@ -13,5 +16,6 @@ public interface IUsuarioPersistencia {
 	
 	public Usuario getUsuario( String nombre, String contrasenia) throws Excepciones;
 	public void registrarActividad(Actividad actividad) throws Excepciones;
+	public List<String> getAdminisMails() throws Excepciones;
 
 }

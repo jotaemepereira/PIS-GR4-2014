@@ -1,9 +1,12 @@
 package controladores;
 
+import datatypes.DTLineaFacturaCompra;
+import interfaces.IComprasPersistencia;
 import interfaces.IFacturacionPersistencia;
 import interfaces.IProveedoresPersistencia;
 import interfaces.IStockPersistencia;
 import interfaces.IUsuarioPersistencia;
+import persistencia.PComprasControlador;
 import persistencia.PFacturacionControlador;
 import persistencia.PProveedoresControlador;
 import persistencia.PStockControlador;
@@ -28,4 +31,7 @@ public class FabricaPersistencia {
 		return new PUsuarioControlador();
 	}
 	
+	public static IComprasPersistencia getInstanciaComprasPersistencia(){
+		return new PComprasControlador();
+	}
 }

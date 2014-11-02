@@ -8,10 +8,11 @@ public class DTBusquedaArticuloSolr {
 	private String droga;
 	private String accionesTerapeuticas;
 	private String codigoBarras;
+	private int numeroProducto_proveedor;
 	
 	public DTBusquedaArticuloSolr(String accionesTerapeuticas2,
 			String codigoBarras2, String descripcion2, String droga2,
-			int idArticulo2, String marca2, String presentacion2) {
+			int idArticulo2, String marca2, String presentacion2, int numeroProducto_proveedor) {
 		
 		this.accionesTerapeuticas = accionesTerapeuticas2;
 		this.codigoBarras = codigoBarras2;
@@ -20,6 +21,7 @@ public class DTBusquedaArticuloSolr {
 		this.idArticulo = idArticulo2;
 		this.marca = marca2;
 		this.presentacion = presentacion2;
+		this.numeroProducto_proveedor = numeroProducto_proveedor;
 	}
 	
 	public DTBusquedaArticuloSolr() {
@@ -65,6 +67,14 @@ public class DTBusquedaArticuloSolr {
 	}
 	public void setPresentacion(String presentacion) {
 		this.presentacion = presentacion;
+	}
+
+	public int getNumeroProducto_proveedor() {
+		return numeroProducto_proveedor;
+	}
+
+	public void setNumeroProducto_proveedor(int numeroProducto_proveedor) {
+		this.numeroProducto_proveedor = numeroProducto_proveedor;
 	}
 
 }
