@@ -1,10 +1,12 @@
 package interfaces;
 
 import java.util.List;
+import java.util.Map;
 
 import model.Orden;
 import controladores.Excepciones;
 import datatypes.DTFormasVenta;
+import datatypes.DTLineaFacturaCompra;
 import datatypes.DTTiposDGI;
 
 public interface IComprasPersistencia {
@@ -24,6 +26,16 @@ public interface IComprasPersistencia {
 	 * @author Victoria Díaz
 	 * @throws Excepciones 
 	 */
-	public List<DTTiposDGI> obtenerTiposDGI() throws Excepciones;
+	public Map<Integer, DTTiposDGI> obtenerTiposDGI() throws Excepciones;
+
+	/**
+	 * Completa los datos de un articulo de una factura para el caso cuando se traen
+	 * las facturas de DUSA
+	 * 
+	 * @param dtLineaFacturaCompra
+	 * @author Victoria Díaz
+	 * @throws Excepciones 
+	 */
+	public void getDatosArticuloLinea(DTLineaFacturaCompra dtLineaFacturaCompra) throws Excepciones;
 	
 }

@@ -13,6 +13,7 @@ import model.AccionTer;
 import model.Articulo;
 import model.Droga;
 import model.LineaPedido;
+import model.OrdenDetalle;
 import model.Pedido;
 import model.TipoIva;
 
@@ -191,4 +192,12 @@ public interface IStockPersistencia {
 	 */
 	public void modificarStock(long[] idsArticulo, long[] nuevosValores) throws Excepciones;
 
+	/**
+	 * Aumenta el valor del stock segun lo comprado
+	 * 
+	 * @param detalles
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public void actualizarStockCompra(List<OrdenDetalle> detalles) throws Excepciones;
 }

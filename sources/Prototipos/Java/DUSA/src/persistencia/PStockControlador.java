@@ -37,6 +37,7 @@ import model.Articulo;
 import model.Droga;
 import model.Enumerados;
 import model.LineaPedido;
+import model.OrdenDetalle;
 import model.Pedido;
 import model.TipoIva;
 import interfaces.IStockPersistencia;
@@ -1016,6 +1017,34 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.executeUpdate();
 			}
 			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+	}
+	
+	public void actualizarStockCompra(List<OrdenDetalle> detalles)
+			throws Excepciones {
+
+		PreparedStatement stmt = null;
+		try {
+			Connection c = Conexion.getConnection();
+			String  query = "UPDATE products SET stock = stock + ?, last_cost = ? ";
+					query += "WHERE product_id = ?;";
+					
+			Iterator<OrdenDetalle> it = detalles.iterator();
+			while (it.hasNext()) {
+				OrdenDetalle ordenDetalle = (OrdenDetalle) it.next();
+				stmt = c.prepareStatement(query);
+				stmt.setInt(1, ordenDetalle.getCantidad());
+				stmt.setBigDecimal(2, ordenDetalle.getPrecioUnitario());
+				stmt.setLong(3, ordenDetalle.getProductId());
+				
+				stmt.executeUpdate();
+				stmt.close();
+			}
+
 			c.close();
 		} catch (Exception e) {
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,

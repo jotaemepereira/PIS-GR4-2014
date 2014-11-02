@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import datatypes.DTBusquedaArticulo;
+import datatypes.DTComprobanteFactura;
 import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
 import datatypes.DTProveedor;
@@ -194,8 +195,13 @@ public class SistemaControlador implements ISistema {
 	}
 
 	@Override
-	public List<DTTiposDGI> obtenerTiposDGI() throws Excepciones {
+	public Map<Integer, DTTiposDGI> obtenerTiposDGI() throws Excepciones {
 		return FabricaLogica.getInstanciaCompras().obtenerTiposDGI();
+	}
+
+	@Override
+	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
+		return FabricaLogica.getInstanciaCompras().obtenerFacturasDUSA();
 	}
 
 }

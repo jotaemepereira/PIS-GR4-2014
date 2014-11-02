@@ -1,9 +1,11 @@
 package interfaces;
 
 import java.util.List;
+import java.util.Map;
 
 import model.Orden;
 import controladores.Excepciones;
+import datatypes.DTComprobanteFactura;
 import datatypes.DTFormasVenta;
 import datatypes.DTTiposDGI;
 
@@ -25,5 +27,14 @@ public interface ICompras {
 	 * @author Victoria Díaz
 	 * @throws Excepciones 
 	 */
-	public List<DTTiposDGI> obtenerTiposDGI() throws Excepciones;
+	public Map<Integer, DTTiposDGI> obtenerTiposDGI() throws Excepciones;
+	
+	/**
+	 * trae las facturas por el servicio de DUSA
+	 * 
+	 * @return lista de facturas de DUSA automaticas
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones;
 }

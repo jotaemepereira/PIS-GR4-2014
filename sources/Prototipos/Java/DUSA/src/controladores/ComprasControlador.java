@@ -2,7 +2,9 @@ package controladores;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
+import datatypes.DTComprobanteFactura;
 import datatypes.DTFormasVenta;
 import datatypes.DTTiposDGI;
 import interfaces.ICompras;
@@ -15,11 +17,17 @@ public class ComprasControlador implements ICompras {
 	@Override
 	public void ingresarFacturaCompra(Orden orden) throws Excepciones {
 		FabricaPersistencia.getInstanciaComprasPersistencia().ingresarFacturaCompra(orden);
+		FabricaPersistencia.getStockPersistencia().actualizarStockCompra(orden.getDetalle());
 	}
 
 	@Override
-	public List<DTTiposDGI> obtenerTiposDGI() throws Excepciones {
+	public Map<Integer, DTTiposDGI> obtenerTiposDGI() throws Excepciones {
 		return FabricaPersistencia.getInstanciaComprasPersistencia().obtenerTiposDGI();
+	}
+
+	@Override
+	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
+		return FabricaServicios.getIServicios().obtenerFacturasDUSA();
 	}
 	
 }

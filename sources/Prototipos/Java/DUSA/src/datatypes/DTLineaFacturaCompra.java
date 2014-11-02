@@ -2,10 +2,14 @@ package datatypes;
 
 import java.math.BigDecimal;
 
+import controladores.Excepciones;
+import controladores.FabricaPersistencia;
+import uy.com.dusa.ws.DataLineaComprobante;
+
 public class DTLineaFacturaCompra {
-	private int idOrden;
+	private long idOrden;
     private int numeroLinea;
-    private int numeroArticulo;
+    private long numeroArticulo;
     private int cantidad;
     private BigDecimal precioUnitario;
     private BigDecimal descuento;
@@ -14,14 +18,31 @@ public class DTLineaFacturaCompra {
     
     private BigDecimal costoUltimaCompra;
     private String descripcion;
-    private int productId;
+    private long productId;
     private BigDecimal total;
     
+    public DTLineaFacturaCompra(){}
     
-	public int getIdOrden() {
+    public DTLineaFacturaCompra(DataLineaComprobante linea){
+    	this.numeroLinea = linea.getNumeroLinea();
+    	this.numeroArticulo = linea.getNumeroArticulo();
+    	this.cantidad = linea.getCantidad();
+    	this.precioUnitario = linea.getPrecioUnitario();
+    	this.descuento = linea.getDescuento();
+    	this.descripcionOferta = linea.getDescripcionOferta();
+    	this.indicadorDeFacturacion = linea.getIndicadorDeFacturacion();
+    	
+    	try {
+			FabricaPersistencia.getInstanciaComprasPersistencia().getDatosArticuloLinea(this);
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+		}
+    }
+    
+	public long getIdOrden() {
 		return idOrden;
 	}
-	public void setIdOrden(int idOrden) {
+	public void setIdOrden(long idOrden) {
 		this.idOrden = idOrden;
 	}
 	public int getNumeroLinea() {
@@ -30,10 +51,10 @@ public class DTLineaFacturaCompra {
 	public void setNumeroLinea(int numeroLinea) {
 		this.numeroLinea = numeroLinea;
 	}
-	public int getNumeroArticulo() {
+	public long getNumeroArticulo() {
 		return numeroArticulo;
 	}
-	public void setNumeroArticulo(int numeroArticulo) {
+	public void setNumeroArticulo(long numeroArticulo) {
 		this.numeroArticulo = numeroArticulo;
 	}
 	public int getCantidad() {
@@ -72,10 +93,10 @@ public class DTLineaFacturaCompra {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-	public int getProductId() {
+	public long getProductId() {
 		return productId;
 	}
-	public void setProductId(int productId) {
+	public void setProductId(long productId) {
 		this.productId = productId;
 	}
 	public BigDecimal getTotal() {

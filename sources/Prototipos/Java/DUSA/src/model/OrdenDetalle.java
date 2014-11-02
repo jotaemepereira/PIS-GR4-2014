@@ -5,21 +5,21 @@ import java.math.BigDecimal;
 import controladores.Excepciones;
 
 public class OrdenDetalle {
-	private int idOrden;
+	private long idOrden;
 	private int numeroLinea;
-	private int numeroArticulo;
+	private long numeroArticulo;
 	private int cantidad;
 	private BigDecimal precioUnitario;
 	private BigDecimal descuento;
 	private String descripcionOferta;
 	private int indicadorDeFacturacion;
-	private int productId;
+	private long productId;
 
-	public int getIdOrden() {
+	public long getIdOrden() {
 		return idOrden;
 	}
 
-	public void setIdOrden(int idOrden) {
+	public void setIdOrden(long idOrden) {
 		this.idOrden = idOrden;
 	}
 
@@ -35,11 +35,11 @@ public class OrdenDetalle {
 		this.numeroLinea = numeroLinea;
 	}
 
-	public int getNumeroArticulo() {
+	public long getNumeroArticulo() {
 		return numeroArticulo;
 	}
 
-	public void setNumeroArticulo(int numeroArticulo) {
+	public void setNumeroArticulo(long numeroArticulo) {
 		this.numeroArticulo = numeroArticulo;
 	}
 
@@ -90,11 +90,11 @@ public class OrdenDetalle {
 		this.indicadorDeFacturacion = indicadorDeFacturacion;
 	}
 
-	public int getProductId() {
+	public long getProductId() {
 		return productId;
 	}
 
-	public void setProductId(int productId) throws Excepciones {
+	public void setProductId(long productId) throws Excepciones {
 		if(productId == 0){
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}

@@ -7,8 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.NamingException;
 
@@ -17,6 +19,7 @@ import model.Orden;
 import model.OrdenDetalle;
 import controladores.Excepciones;
 import datatypes.DTFormasVenta;
+import datatypes.DTLineaFacturaCompra;
 import datatypes.DTProveedor;
 import datatypes.DTTiposDGI;
 import interfaces.IComprasPersistencia;
@@ -43,7 +46,7 @@ public class PComprasControlador implements IComprasPersistencia {
 			stmt.setString("username", "Admin"); //TODO poner el correcto
 			stmt.setInt("dgi_type_id", orden.getTipoCFE());
 			stmt.setString("serial", orden.getSerieCFE());
-			stmt.setInt("order_number", orden.getNumeroCFE());
+			stmt.setLong("order_number", orden.getNumeroCFE());
 			stmt.setTimestamp("order_date", new Timestamp(orden.getFechaComprobante().getTime()));
 			stmt.setString("payment_type", orden.getFormaDePago());
 			stmt.setBigDecimal("not_taxed_amount", orden.getMontoNoGravado());
@@ -80,8 +83,8 @@ public class PComprasControlador implements IComprasPersistencia {
 				
 				stmt.setLong("order_id", key);
 				stmt.setInt("line", ordenDetalle.getNumeroLinea());
-				stmt.setInt("product_id", ordenDetalle.getProductId());
-				stmt.setInt("product_number", ordenDetalle.getNumeroArticulo());
+				stmt.setLong("product_id", ordenDetalle.getProductId());
+				stmt.setLong("product_number", ordenDetalle.getNumeroArticulo());
 				stmt.setBigDecimal("cost", ordenDetalle.getPrecioUnitario());
 				stmt.setInt("quantity", ordenDetalle.getCantidad());
 				stmt.setBigDecimal("discount", ordenDetalle.getDescuento());
@@ -107,8 +110,8 @@ public class PComprasControlador implements IComprasPersistencia {
 	}
 
 	@Override
-	public List<DTTiposDGI> obtenerTiposDGI() throws Excepciones {
-		List<DTTiposDGI> ret = null;
+	public Map<Integer, DTTiposDGI> obtenerTiposDGI() throws Excepciones {
+		Map<Integer, DTTiposDGI> ret = null;
 		PreparedStatement stmt = null;
 		String query = "SELECT dgi_type_id, description " + "FROM dgi_types ";
 
@@ -116,18 +119,51 @@ public class PComprasControlador implements IComprasPersistencia {
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
-			ret = new ArrayList<DTTiposDGI>();
+			ret = new HashMap<Integer, DTTiposDGI>();
 			while (rs.next()) {
 				DTTiposDGI tipo = new DTTiposDGI();
 				tipo.setId(rs.getInt("dgi_type_id"));
 				tipo.setDescripcion(rs.getString("description"));
-				ret.add(tipo);
+				ret.put(tipo.getId(), tipo);
 			}
+			
+			stmt.close();
+			c.close();
 		} catch (Exception e) {
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
 		return ret;
+	}
+
+	@Override
+	public void getDatosArticuloLinea(DTLineaFacturaCompra dtLineaFacturaCompra) throws Excepciones {
+		PreparedStatement stmt = null;
+		String 	query = "SELECT p.description, p.last_cost, p.product_id ";
+				query += "FROM products p ";
+				query += "INNER JOIN products_suppliers ps ON ps.product_id = p.product_id ";
+				query += "WHERE ps.product_number = ? ";
+
+		try {
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			stmt.setLong(1, dtLineaFacturaCompra.getNumeroArticulo());
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			while (rs.next()) {
+				dtLineaFacturaCompra.setProductId(rs.getLong("product_id"));
+				dtLineaFacturaCompra.setDescripcion(rs.getString("description"));
+				dtLineaFacturaCompra.setCostoUltimaCompra(rs.getBigDecimal("last_cost"));
+			}
+			
+			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
 	}
 
 }
