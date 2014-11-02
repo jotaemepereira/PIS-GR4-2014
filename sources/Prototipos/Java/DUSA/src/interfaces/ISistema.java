@@ -225,12 +225,15 @@ public interface ISistema {
 	/**
 	 * Modifica el stock del articulo con id idArticulo al valor nuevoValor
 	 * 
-	 * @author Guille
 	 * @param idArticulo
-	 * @param nuevoValor stock nuevo para el articulo. 
+	 * @param nuevoValor
+	 * @param registroCantidad cantidad asociada al tipo de movimiento
+	 * @param char tipoMovimientoDeStock que indica aumento, baja o desarme de stock 
+	 * @param motivo Motivo por el cual se efectúa la modificación.
+	 * @see model.Enumerados.tipoMovimientoDeStock
 	 * @throws Excepciones
 	 */
-	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones;
+	public void modificarStock(long idArticulo, long nuevoValor, long registroCantidad, char tipoMovimiento, String motivo) throws Excepciones;
 
 	/**
 	 * Ingresa una factura de compra al sistema

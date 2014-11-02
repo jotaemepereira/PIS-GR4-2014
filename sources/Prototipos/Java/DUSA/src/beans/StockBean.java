@@ -1,7 +1,6 @@
 package beans;
 
 import interfaces.ISistema;
-import interfaces.IStock;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -30,6 +29,7 @@ import controladores.FabricaSistema;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Enumerados.tipoMovimientoDeStock;
 import model.TipoIva;
 import model.Usuario;
 import model.Enumerados.TipoFormaDePago;
@@ -918,20 +918,37 @@ public class StockBean implements Serializable {
 
 				if (cambios > 0) {
 
-					long[] ids = new long[cambios];
-					long[] stocks = new long[cambios];
-					int j = 0;
+//					long[] ids = new long[cambios];
+//					long[] stocks = new long[cambios];
+//					int j = 0;
 
 					for (int i = 0; i < resBusqueda.size(); i++) {
-						if (resBusqueda.get(i).getStock() != nuevoStock[i]) {
-							ids[j] = resBusqueda.get(i).getIdArticulo();
-							stocks[j] = nuevoStock[i];
-							j++;
+						
+						long actualStock = resBusqueda.get(i).getStock();
+						if (actualStock != nuevoStock[i]) {
+//							ids[j] = resBusqueda.get(i).getIdArticulo();
+//							stocks[j] = nuevoStock[i];
+//							j++;
+							
+							
+							
+							//Comparo para generar el registro del movimiento de stock 
+							if (actualStock < nuevoStock[i]) {
+								
+								this.instanciaSistema.modificarStock(resBusqueda.get(i).getIdArticulo(),
+										nuevoStock[i], nuevoStock[i]-actualStock, tipoMovimientoDeStock.aumentoStock, motivo);
+							} else {
+								
+								this.instanciaSistema.modificarStock(resBusqueda.get(i).getIdArticulo(),
+										nuevoStock[i], actualStock-nuevoStock[i], tipoMovimientoDeStock.bajaStock, motivo);
+							}
+							
+//							is.modificarStock(resBusqueda.get(i).getIdArticulo(), nuevoStock[i]);
 						}
 					}
-
-					IStock is = FabricaLogica.getIStock();
-					is.modificarStock(ids, stocks);
+					
+//					IStock is = FabricaLogica.getIStock();
+//					is.modificarStock(ids, stocks);
 
 					contexto.addMessage(null, new FacesMessage(
 							FacesMessage.SEVERITY_INFO,
@@ -947,6 +964,14 @@ public class StockBean implements Serializable {
 
 				}
 			}
+		} catch (Excepciones ex){ 
+			
+			contexto.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							ex.getMessage(),
+							""));
 		} catch (Exception e) {
 			contexto.addMessage(
 					null,
@@ -975,16 +1000,32 @@ public class StockBean implements Serializable {
 								"El nuevo stock del artículo destino debe ser mayor al actual.",
 								""));
 			} else {
-				IStock is = FabricaLogica.getIStock();
-				is.modificarStock(articuloSeleccionado.getIdArticulo(),
-						articuloParaDesarme.getIdArticulo(),
-						nuevoStockSeleccionado, nuevoStockDesarme);
+//				IStock is = FabricaLogica.getIStock();
+//				is.modificarStock(articuloSeleccionado.getIdArticulo(),
+//						articuloParaDesarme.getIdArticulo(),
+//						nuevoStockSeleccionado, nuevoStockDesarme);
+				
+				this.instanciaSistema.modificarStock(articuloSeleccionado.getIdArticulo(), nuevoStockSeleccionado, 
+						articuloSeleccionado.getStock() - nuevoStockSeleccionado, tipoMovimientoDeStock.desarmeStock, motivo);
+				
+				this.instanciaSistema.modificarStock(articuloParaDesarme.getIdArticulo(), nuevoStockDesarme, 
+						nuevoStockDesarme - articuloParaDesarme.getStock(), tipoMovimientoDeStock.desarmeStock, motivo);
+				
 
 				contexto.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_INFO,
 						"Desarme realizado con éxito.", ""));
 			}
-		} catch (Exception e) {
+		} catch (Excepciones ex){ 
+			
+			contexto.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							ex.getMessage(),
+							""));
+		}catch (Exception e) {
+			e.printStackTrace();
 			contexto.addMessage(
 					null,
 					new FacesMessage(

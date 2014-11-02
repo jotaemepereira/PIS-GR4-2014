@@ -1020,6 +1020,37 @@ public class PStockControlador implements IStockPersistencia {
 			c.close();
 		}
 	}
+	
+	@Override
+	public void movimientoStock(String usuario, long aticuloID, long cantidad,
+			char tipoMovimiento, String motivo)
+			throws Exception {
+		
+		PreparedStatement stmt = null;
+		try {
+			Connection c = Conexion.getConnection();
+
+			String query = "INSERT INTO STOCK_MOVEMENTS "
+					+ "(USERNAME, PRODUCT_ID, QUANTITY, MOVEMENT_TYPE, "
+					+ "MOTIVE, MOVEMENT_DATE) VALUES "
+					+ " (?, ?, ?, ?, ?, LOCALTIMESTAMP);";
+			
+			stmt = c.prepareStatement(query);
+			stmt.setString(1, usuario);
+			stmt.setLong(2, aticuloID);
+			stmt.setLong(3, cantidad);
+			stmt.setString(4, String.valueOf(tipoMovimiento));
+			stmt.setString(5, motivo);
+			
+			stmt.executeUpdate();
+			
+			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+	}
 
 	@Override
 	public void modificarArticulo(Articulo articulo) throws Excepciones {

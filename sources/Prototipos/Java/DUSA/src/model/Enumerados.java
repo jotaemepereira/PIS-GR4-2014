@@ -135,4 +135,14 @@ public class Enumerados {
 			return "";
 		}
 	}
+	/**
+	 * 
+	 * @author Guille
+	 */
+	public final class tipoMovimientoDeStock {
+		
+		public static final char aumentoStock 	= 'A';
+		public static final char bajaStock 		= 'B';
+		public static final char desarmeStock 	= 'D';
+	}
 }

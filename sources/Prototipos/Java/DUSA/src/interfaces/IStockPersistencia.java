@@ -190,5 +190,19 @@ public interface IStockPersistencia {
 	 * @throws Excepciones
 	 */
 	public void modificarStock(long[] idsArticulo, long[] nuevosValores) throws Exception;
+	
+	/**
+	 * Persiste el movimiento de stock del articulo 'articuloID' realizado por el usuario 'usuario' 
+	 * 
+	 * @author Guille
+	 * @param usuario
+	 * @param productoID
+	 * @param cantidad Cantidad relacionada al tipo de movimiento
+	 * @param char tipoMovimientoDeStock indicando si es un aumento, baja o desarme de stock
+	 * @param motivo Motivo del cambio de stock
+	 * @see model.Enumerados.tipoMovimientoDeStock
+	 * @throws Exception
+	 */
+	public void movimientoStock(String usuario, long aticuloID, long cantidad, char tipoMovimiento, String motivo) throws Exception;
 
 }

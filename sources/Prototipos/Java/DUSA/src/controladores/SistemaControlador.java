@@ -176,9 +176,18 @@ public class SistemaControlador implements ISistema {
 	}
 	
 	@Override
-	public void modificarStock(long idArticulo, long nuevoValor) throws Excepciones {
-		
+	public void modificarStock(long idArticulo, long nuevoValor, long registroCantidad, char tipoMovimiento, String motivo) throws Excepciones {
+	
 		FabricaLogica.getIStock().modificarStock(idArticulo, nuevoValor);
+		
+		try {
+			FabricaPersistencia.getStockPersistencia().movimientoStock(user.getNombre(), idArticulo, registroCantidad, tipoMovimiento, motivo);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+		}
+		
 	}
 
 	@Override
