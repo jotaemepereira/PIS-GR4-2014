@@ -10,6 +10,7 @@ public class DTLineaPedido {
 	private BigDecimal precioUnitario;
 	private BigDecimal precioPonderado;
 	private Long stockMinimo;
+	private Long stockActual;
 	private BigDecimal subtotal;
 	
 	public DTLineaPedido() {
@@ -92,6 +93,21 @@ public class DTLineaPedido {
 	}
 	public void setStockMinimo(int stockMinimo) {
 		this.stockMinimo = new Long(stockMinimo);
+	}
+	public void setStockMinimo(long stockMinimo) {
+		this.stockMinimo = new Long(stockMinimo);
+	}
+	public Long getStockActual() {
+		return stockActual;
+	}
+	public void setStockActual(Long stockActual) {
+		this.stockActual = stockActual;
+	}
+	public void setStockActual(int stockActual) {
+		this.stockActual = new Long(stockMinimo);
+	}
+	public void setStockActual(long stockActual) {
+		this.stockActual = new Long(stockMinimo);
 	}
 	public BigDecimal getSubtotal() {
 		return subtotal;

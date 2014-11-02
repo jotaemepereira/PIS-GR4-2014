@@ -151,7 +151,7 @@ public interface IStock {
 	 * @param nuevosValores
 	 * @throws Excepciones
 	 */
-	public void modificarStock(long[] idsArticulo, long[] nuevosValores) throws Excepciones;
+	public void modificarStock(long[] idsArticulo, long[] nuevosValores) throws Exception;
 
 	/**
 	 * Metodo para efectuar un desarme

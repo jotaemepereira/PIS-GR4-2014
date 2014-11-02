@@ -90,12 +90,12 @@ public class StockBean implements Serializable {
 	private List<DTBusquedaArticulo> resBusqueda = new ArrayList<DTBusquedaArticulo>();
 
 	//
-	private Articulo articuloSeleccionado;
+	private DTBusquedaArticulo articuloSeleccionado;
 	private int tipoMotivo;
 	private String motivo;
-	private String busquedaDesarme;
+	private String busquedaDesarme = "";
 	private List<DTBusquedaArticulo> resBusquedaDesarme = new ArrayList<DTBusquedaArticulo>();
-	private Articulo articuloParaDesarme;
+	private DTBusquedaArticulo articuloParaDesarme;
 	private int nuevoStockSeleccionado;
 	private int nuevoStockDesarme;
 	private long[] nuevoStock;
@@ -108,11 +108,11 @@ public class StockBean implements Serializable {
 		this.nuevoStock = nuevoStock;
 	}
 
-	public Articulo getArticuloSeleccionado() {
+	public DTBusquedaArticulo getArticuloSeleccionado() {
 		return articuloSeleccionado;
 	}
 
-	public void setArticuloSeleccionado(Articulo articuloSeleccionado) {
+	public void setArticuloSeleccionado(DTBusquedaArticulo articuloSeleccionado) {
 		this.articuloSeleccionado = articuloSeleccionado;
 	}
 
@@ -149,11 +149,11 @@ public class StockBean implements Serializable {
 		this.resBusquedaDesarme = resBusquedaDesarme;
 	}
 
-	public Articulo getArticuloParaDesarme() {
+	public DTBusquedaArticulo getArticuloParaDesarme() {
 		return articuloParaDesarme;
 	}
 
-	public void setArticuloParaDesarme(Articulo articuloParaDesarme) {
+	public void setArticuloParaDesarme(DTBusquedaArticulo articuloParaDesarme) {
 		this.articuloParaDesarme = articuloParaDesarme;
 	}
 
@@ -403,7 +403,7 @@ public class StockBean implements Serializable {
 		pedidos.clear();
 
 		try {
-			// this.instanciaSistema.actualizarStock();
+//			this.instanciaSistema.actualizarStock();
 			pedidos = this.instanciaSistema
 					.generarPedidoEnBaseAPedidoAnterior();
 
@@ -863,7 +863,7 @@ public class StockBean implements Serializable {
 			if (resBusqueda != null && resBusqueda.size() > 0) {
 				nuevoStock = new long[resBusqueda.size()];
 				for (int i = 0; i < resBusqueda.size(); i++) {
-					nuevoStock[i] = 0;
+					nuevoStock[i] = resBusqueda.get(i).getStock();
 				}
 			}
 			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
@@ -882,11 +882,7 @@ public class StockBean implements Serializable {
 	}
 
 	public String onFlowProcess(FlowEvent event) {
-		if (tipoMotivo == 1) {
-			return "busquedaAjuste";
-		} else {
-			return event.getNewStep();
-		}
+		return event.getNewStep();
 	}
 
 	public void buscarArticulosDesarme() {
@@ -924,11 +920,13 @@ public class StockBean implements Serializable {
 
 					long[] ids = new long[cambios];
 					long[] stocks = new long[cambios];
+					int j = 0;
 
 					for (int i = 0; i < resBusqueda.size(); i++) {
 						if (resBusqueda.get(i).getStock() != nuevoStock[i]) {
-							ids[i] = resBusqueda.get(i).getIdArticulo();
-							stocks[i] = nuevoStock[i];
+							ids[j] = resBusqueda.get(i).getIdArticulo();
+							stocks[j] = nuevoStock[i];
+							j++;
 						}
 					}
 
@@ -937,18 +935,24 @@ public class StockBean implements Serializable {
 
 					contexto.addMessage(null, new FacesMessage(
 							FacesMessage.SEVERITY_INFO,
-							"Desarme realizado con éxito.", ""));
+							"Cambio de stock realizado con Ã©xito.", ""));
+
+					resBusqueda = new ArrayList<DTBusquedaArticulo>();
+					motivo = "";
+					busqueda = "";
+				} else {
+					contexto.addMessage(null, new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"No hay cambios ingresados.", ""));
+
 				}
-				contexto.addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"No hay cambios ingresados.", ""));
 			}
 		} catch (Exception e) {
 			contexto.addMessage(
 					null,
 					new FacesMessage(
 							FacesMessage.SEVERITY_ERROR,
-							"No puede cargar Precio de venta y Porcentaje de venta al mismo tiempo.",
+							"Error al ingresar cambio. Intente nuevamente",
 							""));
 		}
 	}
@@ -961,14 +965,14 @@ public class StockBean implements Serializable {
 						null,
 						new FacesMessage(
 								FacesMessage.SEVERITY_ERROR,
-								"El nuevo stock del artículo origen debe ser menor al actual.",
+								"El nuevo stock del artÃ­culo origen debe ser menor al actual.",
 								""));
 			} else if (nuevoStockDesarme <= articuloParaDesarme.getStock()) {
 				contexto.addMessage(
 						null,
 						new FacesMessage(
 								FacesMessage.SEVERITY_ERROR,
-								"El nuevo stock del artículo destino debe ser mayor al actual.",
+								"El nuevo stock del artÃ­culo destino debe ser mayor al actual.",
 								""));
 			} else {
 				IStock is = FabricaLogica.getIStock();
@@ -978,14 +982,14 @@ public class StockBean implements Serializable {
 
 				contexto.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_INFO,
-						"Desarme realizado con éxito.", ""));
+						"Desarme realizado con Ã©xito.", ""));
 			}
 		} catch (Exception e) {
 			contexto.addMessage(
 					null,
 					new FacesMessage(
 							FacesMessage.SEVERITY_ERROR,
-							"No puede cargar Precio de venta y Porcentaje de venta al mismo tiempo.",
+							"Error al ingresar cambio. Intente nuevamente",
 							""));
 		}
 	}
