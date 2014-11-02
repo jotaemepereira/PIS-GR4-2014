@@ -300,28 +300,28 @@ public class StockControlador implements IStock {
 			sp.persistirArticulo(a);
 		}
 	}                      
-	List <Cambio> actualizarStock(Timestamp ultAct) throws Excepciones{
-		IServicio serv = FabricaServicios.getIServicios();
-		List<Articulo> arts = serv.obtenerActualizacionDeStock(ultAct);
-		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
-		List<Cambio> cambios =sp.actualizarStock(arts);
-		IUsuarioPersistencia iup = FabricaPersistencia.getInstanciaUsuaruiPersistencia();
-		List <String> admins = iup.getAdminisMails();
-		Mail m = new Mail();
-		m.setDestinatarios("santiago.taba@gmail.com");
-		m.setAsunto("cambio en productos de DUSA");   
-		m.setContenido(cambios);
-		m.setEmisor("dusapis", "grupo4grupo4");
-		try {
-			m.Enviar();
-		} catch (AddressException e) {
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
-		return cambios;
-		                
-	}
+//	List <Cambio> actualizarStock(Timestamp ultAct) throws Excepciones{
+//		IServicio serv = FabricaServicios.getIServicios();
+//		List<Articulo> arts = serv.obtenerActualizacionDeStock(ultAct);
+//		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
+//		List<Cambio> cambios =sp.actualizarStock(arts);
+//		IUsuarioPersistencia iup = FabricaPersistencia.getInstanciaUsuaruiPersistencia();
+//		List <String> admins = iup.getAdminisMails();
+//		Mail m = new Mail();
+//		m.setDestinatarios("santiago.taba@gmail.com");
+//		m.setAsunto("cambio en productos de DUSA");   
+//		m.setContenido(cambios);
+//		m.setEmisor("dusapis", "grupo4grupo4");
+//		try {
+//			m.Enviar();
+//		} catch (AddressException e) {
+//			e.printStackTrace();
+//		} catch (MessagingException e) {
+//			e.printStackTrace();
+//		}
+//		return cambios;
+//		                
+//	}
          
 	@Override
 	public List<TipoIva> obtenerTiposIva() throws Excepciones {

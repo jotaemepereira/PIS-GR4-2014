@@ -34,6 +34,7 @@ import datatypes.DTProveedor;
 import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
+import model.Cambio;
 import model.Droga;
 import model.Enumerados;
 import model.LineaPedido;
@@ -482,7 +483,7 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
 				articulo.setIva(rs.getBigDecimal("BILLING_INDICATOR"));
 
-			}
+			}  
 			rs.close();
 			stmt.close();
 			c.close();
@@ -1341,6 +1342,15 @@ public class PStockControlador implements IStockPersistencia {
 			e1.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
+	} 
+
+	/**
+	 * @author santiago
+	 * @param arts
+	 * @return
+	 */
+	public List <Cambio> actualizarStock(List <Articulo> arts){
+		return null;
 
 	}
 }
