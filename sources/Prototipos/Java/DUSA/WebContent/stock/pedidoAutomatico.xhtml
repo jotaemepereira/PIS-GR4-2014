@@ -65,7 +65,7 @@
 										<h:commandButton id="btn2" value="Predicción de pedido" update="btn1 btn2 show-hide" actionListener="#{stockBean.prediccionDePedido}"
 											styleClass="btn btn-default elegirTipo" style="margin:0 0 10px 0;" disabled="${stockBean.disablePrediccionDePedido}">
 											
-												<p:ajax process="@this" update="btn1 btn2 show-hide"/>
+												<p:ajax process="@this" update="btn1 btn2 show-hide msgs"/>
 										</h:commandButton>
 									</div>
 								</div>

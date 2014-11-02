@@ -412,6 +412,9 @@ public class StockBean implements Serializable {
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+			disableDesdeUltimoPedido = false;
+			disablePrediccionDePedido = false;
+			hideElement = "hidden";
 		}
 
 		/*
@@ -440,19 +443,24 @@ public class StockBean implements Serializable {
 	 * genera el pedido segun la prediccion en base al pasado
 	 */
 	public void prediccionDePedido() {
-		disablePrediccionDePedido = true;
-		disableDesdeUltimoPedido = true;
-		hideElement = "visible";
+		
 		pedidos.clear();
 
 		try {
 
+			disablePrediccionDePedido = true;
+			disableDesdeUltimoPedido = true;
+			hideElement = "visible";
+			
 			pedidos = this.instanciaSistema.generarPedidoEnBaseAHistorico(5);
 		} catch (Exception e) {
 
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+			disableDesdeUltimoPedido = false;
+			disablePrediccionDePedido = false;
+			hideElement = "hidden";
 		}
 		/*
 		 * DTLineaPedido dt = new DTLineaPedido(); dt.setCantidad(3);

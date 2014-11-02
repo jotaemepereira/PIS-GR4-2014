@@ -87,26 +87,33 @@ public class SistemaControlador implements ISistema {
 	
 	@Override
 	public List<DTLineaPedido> generarPedidoEnBaseAPedidoAnterior() throws Excepciones {
-		//if (user.tienePermiso(casoDeUso.generPeEnBaseAPedAnt))
-		return FabricaLogica.getIStock().generarPedidoEnBaseAPedidoAnterior();
-		//else
-		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
-
+		
+		if (user.tienePermiso(casoDeUso.generPeEnBaseAPedAnt))
+			
+			return FabricaLogica.getIStock().generarPedidoEnBaseAPedidoAnterior();
+		else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 	}
 
 	@Override
 	public void realizarPedido(Pedido pedido) throws Excepciones {
-		// TODO Auto-generated method stub
-		FabricaLogica.getIStock().realizarPedido(pedido);
+		
+		if (user.tienePermiso(casoDeUso.realizarPedido)) {
+			
+			FabricaLogica.getIStock().realizarPedido(pedido);
+		} else {
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		}
 	}
 
 	@Override
 	public List<DTLineaPedido> generarPedidoEnBaseAHistorico(int diasAPredecir) throws Excepciones {
-		//if (user.tienePermiso(casoDeUso.genPedEnBaseAHist))
-		return FabricaLogica.getIStock().generarPedidoEnBaseAHistorico(diasAPredecir);
-		//else
-		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
-
+		
+		if (user.tienePermiso(casoDeUso.genPedEnBaseAHist))
+			
+			return FabricaLogica.getIStock().generarPedidoEnBaseAHistorico(diasAPredecir);
+		else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 	}
 
 	@Override
@@ -179,16 +186,21 @@ public class SistemaControlador implements ISistema {
 	@Override
 	public void modificarStock(long idArticulo, long nuevoValor, long registroCantidad, char tipoMovimiento, String motivo) throws Excepciones {
 	
-		FabricaLogica.getIStock().modificarStock(idArticulo, nuevoValor);
-		
-		try {
-			FabricaPersistencia.getStockPersistencia().movimientoStock(user.getNombre(), idArticulo, registroCantidad, tipoMovimiento, motivo);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+		if (user.tienePermiso(casoDeUso.modificarStock)) {
+			
+			FabricaLogica.getIStock().modificarStock(idArticulo, nuevoValor);
+			
+			try {
+				FabricaPersistencia.getStockPersistencia().movimientoStock(user.getNombre(), idArticulo, registroCantidad, tipoMovimiento, motivo);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+			}
+		} else {
+			
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		}
-		
 	}
 
 	@Override
