@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import sun.print.resources.serviceui;
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
@@ -201,16 +202,17 @@ public interface IStockPersistencia {
 	 */
 	public void actualizarStockCompra(List<OrdenDetalle> detalles) throws Excepciones;
 
-	void movimientoStock(String usuario, long aticuloID, long cantidad,
-			char tipoMovimiento, String motivo) throws Exception;
-
-	
-
 	/**
-	 * Aumenta el valor del stock segun lo comprado
+	 * Persiste el movimiento de stock del articulo 'articuloID' realizado por el usuario 'usuario' 
 	 * 
-	 * @param detalles
-	 * @throws Excepciones
-	 * @author Victoria Díaz
+	 * @param usuario
+	 * @param aticuloID
+	 * @param cantidad Cantidad relacionada al tipo de movimiento
+	 * @param tipoMovimiento tipoMovimientoDeStock indicando si es un aumento, baja o desarme de stock
+	 * @param motivo Motivo del cambio de stock
+	 * @throws Exception
+	 * @author Guille
+	 * @see model.Enumerados.tipoMovimientoDeStock
 	 */
+	public void movimientoStock(String usuario, long aticuloID, long cantidad, char tipoMovimiento, String motivo) throws Exception;
 }
