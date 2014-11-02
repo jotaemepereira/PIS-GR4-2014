@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import controladores.Excepciones;
@@ -182,6 +183,30 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 		}
 
 	}
+	
+	public List<String> getAdminisMails()throws Excepciones{
+		
+        List<String> adminMails = new ArrayList<String>();
+		String query = "SELECT u.mail FROM USERS u, USER_ROLES ur WHERE ur.role_id =1 AND u.user_id = ur.user_id;";
+		try {
+			Connection c = Conexion.getConnection();			
+			PreparedStatement stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){ 
+				adminMails.add(rs.getString("mail")); 
+				 
+			}
+			stmt.close();
+			c.close();
+
+		} catch (Exception e){
+			e.printStackTrace();
+			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+		return adminMails; 
+		
+	}
+	
 
 
 }
