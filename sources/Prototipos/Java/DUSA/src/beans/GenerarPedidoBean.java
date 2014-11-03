@@ -28,8 +28,6 @@ public class GenerarPedidoBean implements Serializable{
 	private ISistema instanciaSistema;
 
 	private List<DTLineaPedido> pedidos = new ArrayList<DTLineaPedido>();
-	private String message;
-	private String messageClass;
 	private Boolean disableDesdeUltimoPedido = false;
 	private Boolean disablePrediccionDePedido = false;
 	private String hideElement = "hidden";
@@ -40,32 +38,12 @@ public class GenerarPedidoBean implements Serializable{
 		return serialVersionUID;
 	}
 	
-	public void setISistema(ISistema s) {
-		this.instanciaSistema = s;
-	}
-	
 	public List<DTLineaPedido> getPedidos() {
 		return pedidos;
 	}
 	
 	public void setPedidos(List<DTLineaPedido> pedidos) {
 		this.pedidos = pedidos;
-	}
-	
-	public String getMessage() {
-		return message;
-	}
-	
-	public void setMessage(String message) {
-		this.message = message;
-	}
-	
-	public String getMessageClass() {
-		return messageClass;
-	}
-	
-	public void setMessageClass(String messageClass) {
-		this.messageClass = messageClass;
 	}
 	
 	public Boolean getDisableDesdeUltimoPedido() {
@@ -100,7 +78,15 @@ public class GenerarPedidoBean implements Serializable{
 		this.formaDePago = formaDePago;
 	}
 	
-	//Metodos
+	//Métodos
+	/**
+	 * Utilizado en el xhtml por el loginBean
+	 * @param s
+	 */
+	public void setISistema(ISistema s) {
+		
+		this.instanciaSistema = s;
+	}
 	
 	/**
 	 * genera el pedido desde el ultimo pedido en el sistema

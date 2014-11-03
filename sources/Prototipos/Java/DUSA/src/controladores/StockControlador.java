@@ -285,44 +285,35 @@ public class StockControlador implements IStock {
 		calendario.add(Calendar.DAY_OF_MONTH, -36);
 		calendario.add(Calendar.DAY_OF_WEEK, -2);
 		java.util.Date fecha = calendario.getTime();
-		List<Articulo> articulos = FabricaServicios.getIServicios()
-				.obtenerActualizacionDeStock(fecha);
-
-		// Se tendrian que recorrer todos los articulos y checkear si el
-		// artículo ya existe o no
-		// En caso de que exista, se actualiza el precio y el estado del
-		// artículo
-		// Caso contrario, el artículo es nuevo y se almacena en la base de
-		// datos.
-
-		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
-		for (Articulo a : articulos) {
-			sp.persistirArticulo(a);
+		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
+		List<Cambio> cambios = FabricaPersistencia.getStockPersistencia().obtenerCambios(articulos);
+		
+		String contenido = new String();
+		Iterator<Cambio> it = cambios.iterator();
+		while (it.hasNext()){
+			contenido.concat(it.next().toString());
 		}
-	}                      
-//	List <Cambio> actualizarStock(Timestamp ultAct) throws Excepciones{
-//		IServicio serv = FabricaServicios.getIServicios();
-//		List<Articulo> arts = serv.obtenerActualizacionDeStock(ultAct);
-//		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
-//		List<Cambio> cambios =sp.actualizarStock(arts);
-//		IUsuarioPersistencia iup = FabricaPersistencia.getInstanciaUsuaruiPersistencia();
-//		List <String> admins = iup.getAdminisMails();
-//		Mail m = new Mail();
-//		m.setDestinatarios("santiago.taba@gmail.com");
-//		m.setAsunto("cambio en productos de DUSA");   
-//		m.setContenido(cambios);
-//		m.setEmisor("dusapis", "grupo4grupo4");
-//		try {
-//			m.Enviar();
-//		} catch (AddressException e) {
-//			e.printStackTrace();
-//		} catch (MessagingException e) {
-//			e.printStackTrace();
-//		}
-//		return cambios;
-//		                
-//	}
+			
+		IUsuarioPersistencia iup = FabricaPersistencia.getInstanciaUsuaruiPersistencia();
+		List <String> admins = iup.getAdminisMails();
+		Mail m = new Mail();
+		m.setDestinatarios("santiago.taba@gmail.com");
+		m.setAsunto("cambio en productos de DUSA");   
+		m.setContenido(cambios);
+		m.setEmisor("dusapis", "grupo4grupo4");
+		try {
+			m.Enviar();
+		} catch (AddressException e) {
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		                
+	
          
+
+	}                      
+
 	@Override
 	public List<TipoIva> obtenerTiposIva() throws Excepciones {
 		return FabricaPersistencia.getStockPersistencia().obtenerTiposIva();

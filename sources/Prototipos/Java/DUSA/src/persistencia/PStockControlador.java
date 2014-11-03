@@ -28,6 +28,7 @@ import org.primefaces.json.JSONObject;
 
 import Util.NamedParameterStatement;
 import controladores.Excepciones;
+import controladores.FabricaPersistencia;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTProveedor;
@@ -212,7 +213,9 @@ public class PStockControlador implements IStockPersistencia {
 		return (cant > 0);
 	}
 
+	
 	public List<Articulo> buscarArticulo(String descripcion) {
+
 
 		return null;
 
@@ -1348,9 +1351,32 @@ public class PStockControlador implements IStockPersistencia {
 	 * @author santiago
 	 * @param arts
 	 * @return
+	 * @throws Excepciones 
 	 */
-	public List <Cambio> actualizarStock(List <Articulo> arts){
-		return null;
+	public List <Cambio> obtenerCambios(List <Articulo> arts) throws Excepciones{
 
+		Iterator<Articulo> it = arts.iterator();
+		List<Cambio> cambios = new ArrayList<Cambio>();
+		while (it.hasNext()){
+			
+			Articulo art = it.next();
+			if (this.existeArticulo(art.getDescripcion())){
+				//PROBAR CON EL ID
+				Articulo artAnt = this.obtenerArticulo(art.getDescripcion());
+				cambios.add(new Cambio(art,artAnt));
+				this.modificarArticulo(art);
+			}
+			else{
+				this.persistirArticulo(art);
+			}
+		}	
+		return cambios;
 	}
+	
+	
+		
+		private Articulo obtenerArticulo(String descripcion){
+		return null;
+	}
+	
 }

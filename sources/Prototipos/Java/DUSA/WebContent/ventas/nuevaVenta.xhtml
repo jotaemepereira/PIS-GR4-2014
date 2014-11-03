@@ -96,8 +96,9 @@
 																update="@form" process="@this" />
 														</p:inputText>
 														
-
-														<p:outputPanel visible="#{venta2.isRecetaBlanca}"
+														
+														<h:outputText value=" " rendered="#{!venta2.isRecetaBlanca()}" />
+														<p:outputPanel rendered="#{venta2.isRecetaBlanca()}" 
 															style=" padding: 0; margin: 0;">
 															<p:outputLabel for="receta" value="Desc. receta:"
 																style="width:100%" />
@@ -159,10 +160,16 @@
 												</table>
 												<div class="clearBoth"></div>
 											</div>
-											<div style="margin-top: 20px; text-align: right;">
-												<p:commandButton value="Enviar a facturar" id="ajax2"
+											<div style="margin-top: 20px; text-align: right;" >
+												<p:commandButton value="Enviar a facturar" id="ajax2" rendered="#{!ventaBean.ventaFacturacion}"
 													update="@form"
 													actionListener="#{ventaBean.facturarVenta()}"
+													process="@this" styleClass="ui-priority-primary" />
+											</div>
+											<div style="margin-top: 20px; text-align: right;" >
+												<p:commandButton value="Facturar" id="ajax1" rendered="#{!ventaBean.ventaFacturacion}"
+													update="@form"
+													actionListener="#{ventaBean.facturarVentaDirecto()}"
 													process="@this" styleClass="ui-priority-primary" />
 											</div>
 											<div style="margin-top: 30px; text-align: right;">
@@ -197,13 +204,11 @@
 
 														<h:outputText value="#{venta.descripcion}" />
 														<h:outputText value="precio: $#{venta.precioVenta}" />
-														<p:outputPanel visible="#{venta.isRecetaVerde}"
+														<p:outputPanel rendered="#{venta.isRecetaVerde()}"
 															style="padding: 0; margin: 0;">
-															<p:selectBooleanCheckbox value="#{venta.recetaVerde}">
-																<f:ajax event="change" execute="@this" />
-															</p:selectBooleanCheckbox>
 															<img src="../Images/receta_verde.png" />
 														</p:outputPanel>
+														<h:outputText value=" " rendered="#{!venta.isRecetaVerde()}" />
 														<h:outputText value="stock:#{venta.stock}" />
 
 
@@ -216,7 +221,7 @@
 																update="@form" process="@this" />
 														</p:inputText>
 														</p:outputPanel>
-														<p:outputPanel visible="#{venta.isRecetaBlanca}"
+														<p:outputPanel 
 															style="padding: 0; margin: 0;">
 															<p:selectBooleanCheckbox value="#{venta.recetaBlanca}">
 																<f:ajax event="change" execute="@this" />
@@ -230,13 +235,11 @@
 														<h:outputText id="descuentoPrecio"
 															value="#{venta.descuentoPrecio}">
 														</h:outputText>
-														<p:outputPanel visible="#{venta.isRecetaNaranja}"
+														<p:outputPanel rendered="#{venta.isRecetaNaranja()}"
 															style="padding: 0; margin: 0;">
-															<p:selectBooleanCheckbox value="#{venta.recetaNaranja}">
-																<f:ajax event="change" execute="@this" />
-															</p:selectBooleanCheckbox>
 															<img src="../Images/receta_naranja.png" />
 														</p:outputPanel>
+														<h:outputText value=" " rendered="#{!venta.isRecetaNaranja()}" />
 														<p:commandButton value="Agregar" id="ajax2" update="@form"
 															actionListener="#{ventaBean.agregarLineaVenta(venta)}"
 															process="@this" styleClass="ui-priority-primary" />

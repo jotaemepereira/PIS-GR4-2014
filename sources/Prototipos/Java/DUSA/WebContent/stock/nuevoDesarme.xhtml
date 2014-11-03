@@ -23,7 +23,7 @@
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
 			#{loginBean.redirectIfNotLoggedIn()}
-			#{stockBean.setISistema(loginBean.instanciaSistema)}
+			#{modificarStockBean.setISistema(loginBean.instanciaSistema)}
 			<p:focus></p:focus>
 			<div class="vpanel_right">
 				<div class="wrapper">
@@ -36,20 +36,20 @@
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
 								<div class="container-fluid">
-									<p:wizard flowListener="#{stockBean.onFlowProcess}">
+									<p:wizard flowListener="#{modificarStockBean.onFlowProcess}" id="wizardID">
 										<p:tab id="paso1" title="Artículo a desarmar">
 											<div class="row" style="margin-bottom: 1%;">
 												<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
 													<p:outputLabel for="busqueda" value="Buscar:" />
 													<p:inputText id="busqueda" styleClass="form-control"
-														value="#{stockBean.busqueda}" style="height: 100%"
+														value="#{modificarStockBean.busqueda}" style="height: 100%"
 														required="false" />
 												</div>
 												<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
 													style="bottom: -26px;">
 													<div class="btn-group ">
 														<h:commandButton value="Buscar" update=":form1"
-															actionListener="#{stockBean.buscarArticulos}"
+															actionListener="#{modificarStockBean.buscarArticulos}"
 															class="btn btn-success" />
 													</div>
 												</div>
@@ -59,9 +59,9 @@
 												style="margin-bottom: 1%; text-align: center;">
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 													<p:dataTable var="articuloBusqueda" id="tableBusqueda"
-														value="#{stockBean.resBusqueda}"
+														value="#{modificarStockBean.resBusqueda}"
 														rowKey="#{articuloBusqueda.idArticulo}"
-														selection="#{stockBean.articuloSeleccionado}"
+														selection="#{modificarStockBean.articuloSeleccionado}"
 														selectionMode="single"
 														emptyMessage="No se encontraron artículos">
 														<div class="row">
@@ -99,14 +99,14 @@
 												<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
 													<p:outputLabel for="busqueda2" value="Buscar:" />
 													<p:inputText id="busqueda2" styleClass="form-control"
-														value="#{stockBean.busquedaDesarme}" style="height: 100%"
+														value="#{modificarStockBean.busquedaDesarme}" style="height: 100%"
 														required="false" />
 												</div>
 												<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
 													style="bottom: -26px;">
 													<div class="btn-group ">
 														<h:commandButton value="Buscar" update=":form1"
-															actionListener="#{stockBean.buscarArticulosDesarme()}"
+															actionListener="#{modificarStockBean.buscarArticulosDesarme()}"
 															class="btn btn-success" />
 													</div>
 												</div>
@@ -116,9 +116,9 @@
 												style="margin-bottom: 1%; text-align: center;">
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 													<p:dataTable var="articuloBusqueda" id="tableBusqueda2"
-														value="#{stockBean.resBusquedaDesarme}"
+														value="#{modificarStockBean.resBusquedaDesarme}"
 														rowKey="#{articuloBusqueda.idArticulo}"
-														selection="#{stockBean.articuloParaDesarme}"
+														selection="#{modificarStockBean.articuloParaDesarme}"
 														selectionMode="single"
 														emptyMessage="No se encontraron artículos">
 														<div class="row">
@@ -158,53 +158,53 @@
 												<tr>
 													<td>Descripción:</td>
 													<td><h:outputText
-															value="#{stockBean.articuloSeleccionado.descripcion}" /></td>
+															value="#{modificarStockBean.articuloSeleccionado.descripcion}" /></td>
 													<td>Descripción:</td>
 													<td><h:outputText
-															value="#{stockBean.articuloParaDesarme.descripcion}" /></td>
+															value="#{modificarStockBean.articuloParaDesarme.descripcion}" /></td>
 												</tr>
 												<tr>
 													<td>Marca:</td>
 													<td><h:outputText
-															value="#{stockBean.articuloSeleccionado.marca}" /></td>
+															value="#{modificarStockBean.articuloSeleccionado.marca}" /></td>
 													<td>Marca:</td>
 													<td><h:outputText
-															value="#{stockBean.articuloParaDesarme.marca}" /></td>
+															value="#{modificarStockBean.articuloParaDesarme.marca}" /></td>
 												</tr>
 												<tr>
 													<td>Presentación:</td>
 													<td><h:outputText
-															value="#{stockBean.articuloSeleccionado.presentacion}" /></td>
+															value="#{modificarStockBean.articuloSeleccionado.presentacion}" /></td>
 													<td>Presentación:</td>
 													<td><h:outputText
-															value="#{stockBean.articuloParaDesarme.presentacion}" /></td>
+															value="#{modificarStockBean.articuloParaDesarme.presentacion}" /></td>
 												</tr>
 												<tr>
 													<td>Droga:</td>
 													<td><h:outputText
-															value="#{stockBean.articuloSeleccionado.droga}" /></td>
+															value="#{modificarStockBean.articuloSeleccionado.droga}" /></td>
 													<td>Droga:</td>
 													<td><h:outputText
-															value="#{stockBean.articuloParaDesarme.droga}" /></td>
+															value="#{modificarStockBean.articuloParaDesarme.droga}" /></td>
 												</tr>
 												<tr>
 													<td>Stock actual:</td>
 													<td><h:outputText
-															value="#{stockBean.articuloSeleccionado.stock}" /></td>
+															value="#{modificarStockBean.articuloSeleccionado.stock}" /></td>
 													<td>Stock actual:</td>
 													<td><h:outputText
-															value="#{stockBean.articuloParaDesarme.stock}" /></td>
+															value="#{modificarStockBean.articuloParaDesarme.stock}" /></td>
 												</tr>
 												<tr>
 													<td>Nuevo stock:</td>
 													<td><p:inputText
-															value="#{stockBean.nuevoStockSeleccionado}"
+															value="#{modificarStockBean.nuevoStockSeleccionado}"
 															style="width: 50px; margin-right: 10px;">
 															<f:ajax event="change" execute="@this" />
 														</p:inputText></td>
 													<td>Nuevo stock:</td>
 													<td><p:inputText
-															value="#{stockBean.nuevoStockDesarme}"
+															value="#{modificarStockBean.nuevoStockDesarme}"
 															style="width: 50px;">
 															<f:ajax event="change" execute="@this" />
 														</p:inputText></td>
@@ -212,7 +212,7 @@
 												<tr>
 													<td>Motivo:</td>
 													<td colspan="3"><p:inputText
-															value="#{stockBean.motivo}"
+															value="#{modificarStockBean.motivo}"
 															style="width: 100%; margin: 15px 0;">
 															<f:ajax event="change" execute="@this" />
 														</p:inputText></td>
@@ -220,8 +220,8 @@
 												<tr>
 													<td colspan="3"></td>
 													<td><p:commandButton
-															actionListener="#{stockBean.confirmarDesarme()}"
-															styleClass="btn btn-default"
+															actionListener="#{modificarStockBean.confirmarDesarme()}"
+															styleClass="btn btn-success"
 															oncomplete="PF('dlg2').hide()" update=":form1"
 															value="Confirmar" title="Facturar">
 														</p:commandButton></td>
