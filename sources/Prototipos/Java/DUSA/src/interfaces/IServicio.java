@@ -33,9 +33,8 @@ public interface IServicio {
 	/**
 	 * trae las facturas por el servicio de DUSA
 	 * 
-	 * @return lista de facturas de DUSA automaticas
 	 * @throws Excepciones
 	 * @author Victoria Díaz
 	 */
-	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones;
+	public void obtenerFacturasDUSA() throws Excepciones;
 }

@@ -4,15 +4,20 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import uy.com.dusa.ws.DataComprobante;
+import uy.com.dusa.ws.DataLineaComprobante;
 import controladores.Excepciones;
+import controladores.FabricaPersistencia;
+import datatypes.DTLineaFacturaCompra;
 
 public class Orden {
 	private int idProveedor;
-	private int idOrden;
+	private long idOrden;
 	private int tipoCFE;
 	private String serieCFE;
 	private long numeroCFE;
@@ -33,8 +38,52 @@ public class Orden {
 	private BigDecimal montoTributoIvaMinimo = new BigDecimal(0);
 	private BigDecimal montoTributoIvaBasico = new BigDecimal(0);
 	private List<OrdenDetalle> detalle = new ArrayList<OrdenDetalle>();
+	
+	private Boolean procesada;
 
 	// private List<DataVencimiento> vencimientos;
+	
+	public Orden(){}
+	
+	public Orden(DataComprobante comprobante, Boolean procesada) throws Excepciones{
+		this.idProveedor = 1;
+    	this.tipoCFE = comprobante.getTipoCFE();
+    	this.serieCFE = comprobante.getSerieCFE();
+    	this.numeroCFE = comprobante.getNumeroCFE();
+    	this.fechaComprobante = comprobante.getFechaComprobante().toGregorianCalendar().getTime();
+    	this.formaDePago = comprobante.getFormaDePago().name();
+    	this.ordenDeCompra = comprobante.getOrdenDeCompra();
+    	this.montoNoGravado = comprobante.getMontoNoGravado();
+    	this.montoNetoGravadoIvaMinimo = comprobante.getMontoNetoGravadoIvaMinimo();
+    	this.montoNetoGravadoIvaBasico = comprobante.getMontoNetoGravadoIvaBasico();
+    	this.totalIvaMinimo = comprobante.getTotalIvaMinimo();
+    	this.totalIvaBasico = comprobante.getTotalIvaBasico();
+    	this.montoTotal = comprobante.getMontoTotal();
+    	this.montoRetenidoIVA = comprobante.getMontoRetenidoIVA();
+    	this.montoRetenidoIRAE = comprobante.getMontoRetenidoIRAE();
+    	this.montoNoFacturable = comprobante.getMontoNoFacturable();
+    	this.montoTotalAPagar = comprobante.getMontoTotalAPagar();
+    	this.montoTributoIvaMinimo = comprobante.getMontoTributoIvaMinimo();
+    	this.montoTributoIvaBasico = comprobante.getMontoTributoIvaBasico();
+    	this.procesada = procesada;
+    	this.cantidadLineas = comprobante.getCantidadLineas();
+    	
+    	// Primeramente casteo los articulos de la factura
+    	Iterator<DataLineaComprobante> it = comprobante.getDetalle().iterator();
+    	while (it.hasNext()) {
+			DataLineaComprobante dataLineaComprobante = (DataLineaComprobante) it
+					.next();
+			OrdenDetalle detalle = new OrdenDetalle(dataLineaComprobante);
+			if(detalle.getProductId() != 0){ // el producto se encuentra en el sistema
+				this.detalle.add(detalle);
+			}else{
+				this.detalle = null;
+				return;
+			}
+			
+		}
+    	
+	}
 
 	public int getTipoCFE() {
 		return tipoCFE;
@@ -216,11 +265,11 @@ public class Orden {
 		this.formaDePago = formaDePago;
 	}
 
-	public int getIdOrden() {
+	public long getIdOrden() {
 		return idOrden;
 	}
 
-	public void setIdOrden(int idOrden) {
+	public void setIdOrden(long idOrden) {
 		this.idOrden = idOrden;
 	}
 
@@ -233,6 +282,14 @@ public class Orden {
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_DATOS, Excepciones.ERROR_DATOS));
 		}
 		this.idProveedor = idProveedor;
+	}
+
+	public Boolean getProcesada() {
+		return procesada;
+	}
+
+	public void setProcesada(Boolean procesada) {
+		this.procesada = procesada;
 	}
 
 }

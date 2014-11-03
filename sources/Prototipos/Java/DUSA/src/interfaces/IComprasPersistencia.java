@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import model.Orden;
+import model.OrdenDetalle;
 import controladores.Excepciones;
+import datatypes.DTComprobanteFactura;
 import datatypes.DTFormasVenta;
 import datatypes.DTLineaFacturaCompra;
 import datatypes.DTTiposDGI;
@@ -29,13 +31,20 @@ public interface IComprasPersistencia {
 	public Map<Integer, DTTiposDGI> obtenerTiposDGI() throws Excepciones;
 
 	/**
-	 * Completa los datos de un articulo de una factura para el caso cuando se traen
-	 * las facturas de DUSA
+	 * Completa los datos de un artículo de una factura
 	 * 
-	 * @param dtLineaFacturaCompra
+	 * @param detalle
+	 * @throws Excepciones
 	 * @author Victoria Díaz
-	 * @throws Excepciones 
 	 */
-	public void getDatosArticuloLinea(DTLineaFacturaCompra dtLineaFacturaCompra) throws Excepciones;
+	public void getDatosArticulo(OrdenDetalle detalle) throws Excepciones;
+	
+	/**
+	 * 
+	 * @return los comprobantes pendientes de procesar
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public Map<Long, DTComprobanteFactura> obtenerFacturasPendientes() throws Excepciones;
 	
 }

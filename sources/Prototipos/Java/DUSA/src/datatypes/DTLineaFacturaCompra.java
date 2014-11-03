@@ -23,22 +23,6 @@ public class DTLineaFacturaCompra {
     
     public DTLineaFacturaCompra(){}
     
-    public DTLineaFacturaCompra(DataLineaComprobante linea){
-    	this.numeroLinea = linea.getNumeroLinea();
-    	this.numeroArticulo = linea.getNumeroArticulo();
-    	this.cantidad = linea.getCantidad();
-    	this.precioUnitario = linea.getPrecioUnitario();
-    	this.descuento = linea.getDescuento();
-    	this.descripcionOferta = linea.getDescripcionOferta();
-    	this.indicadorDeFacturacion = linea.getIndicadorDeFacturacion();
-    	
-    	try {
-			FabricaPersistencia.getInstanciaComprasPersistencia().getDatosArticuloLinea(this);
-		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
-		}
-    }
-    
 	public long getIdOrden() {
 		return idOrden;
 	}

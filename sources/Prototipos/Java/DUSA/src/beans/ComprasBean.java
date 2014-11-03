@@ -280,6 +280,8 @@ public class ComprasBean implements Serializable {
 			orden.setTipoCFE(factura.getTipoCFE());
 			orden.setTotalIvaBasico(factura.getTotalIvaBasico());
 			orden.setTotalIvaMinimo(factura.getTotalIvaMinimo());
+			orden.setProcesada(true);
+			orden.setOrdenDeCompra(factura.getOrdenDeCompra());
 		} catch (Excepciones e) {
 			// TODO: handle exception
 			return;
@@ -289,7 +291,6 @@ public class ComprasBean implements Serializable {
 			this.instanciaSistema.ingresarFacturaCompra(orden);
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 			return;
 		}
 		

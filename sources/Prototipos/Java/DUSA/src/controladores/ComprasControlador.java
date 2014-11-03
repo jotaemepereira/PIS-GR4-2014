@@ -27,7 +27,8 @@ public class ComprasControlador implements ICompras {
 
 	@Override
 	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
-		return FabricaServicios.getIServicios().obtenerFacturasDUSA();
+		FabricaServicios.getIServicios().obtenerFacturasDUSA();
+		return FabricaPersistencia.getInstanciaComprasPersistencia().obtenerFacturasPendientes();
 	}
 	
 }

@@ -147,7 +147,7 @@
 										<div class="row lineaSuperior" style="margin-bottom: 1%">
 											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 												<p:outputLabel value="Tipo factura: *" />
-												<p:selectOneMenu id="tipoCFE"
+												<p:selectOneMenu id="tipoCFE" 
 													value="#{comprasBean.factura.tipoCFE}" filter="true"
 													filterMatchMode="contains" required="false"
 													style="width: 100%"
@@ -163,14 +163,14 @@
 											<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
 												<p:outputLabel value="Serie factura:" />
 												<p:inputText value="${comprasBean.factura.serieCFE}"
-													style="width: 100%" id="serieCFE"
+													style="width: 100%" id="serieCFE" styleClass="form-control"
 													disabled="${comprasBean.serieFactura}" />
 											</div>
 
 											<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
 												<p:outputLabel value="Numero factura: *" />
 												<p:inputText value="${comprasBean.factura.numeroCFE}"
-													style="width: 100%" required="true"
+													style="width: 100%" required="true" styleClass="form-control"
 													disabled="${comprasBean.facturaAutomatica}" />
 											</div>
 
@@ -180,7 +180,7 @@
 												<p:outputLabel value="Fecha factura:" />
 												<p:calendar value="${comprasBean.factura.fechaComprobante}"
 													styleClass="calendario"
-													disabled="${comprasBean.facturaAutomatica}" required="true"></p:calendar>
+													disabled="${comprasBean.facturaAutomatica}" required="true" />
 											</div>
 										</div>
 
@@ -303,7 +303,7 @@
 													<p:outputLabel value="IVA min"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText
+														<p:inputText styleClass="form-control"
 															value="${comprasBean.factura.montoTributoIvaMinimo}"
 															style="width:100%"
 															disabled="${comprasBean.facturaAutomatica}">
@@ -318,7 +318,7 @@
 													<p:outputLabel value="Gravado IVA min."
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText
+														<p:inputText styleClass="form-control"
 															value="${comprasBean.factura.montoNetoGravadoIvaMinimo}"
 															style="width:100%"
 															disabled="${comprasBean.facturaAutomatica}">
@@ -333,7 +333,7 @@
 													<p:outputLabel value="IVA min."
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<h:outputText id="totalIvaMinimo"
+														<h:outputText id="totalIvaMinimo" 
 															value="${comprasBean.factura.totalIvaMinimo}"
 															style="width:100%" />
 													</div>
@@ -344,7 +344,7 @@
 													<p:outputLabel value="IVA"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText
+														<p:inputText styleClass="form-control"
 															value="${comprasBean.factura.montoRetenidoIVA}"
 															style="width:100%"
 															disabled="${comprasBean.facturaAutomatica}">
@@ -362,7 +362,7 @@
 													<p:outputLabel value="IVA básico"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText
+														<p:inputText styleClass="form-control"
 															value="${comprasBean.factura.montoTributoIvaBasico}"
 															style="width:100%"
 															disabled="${comprasBean.facturaAutomatica}">
@@ -377,7 +377,7 @@
 													<p:outputLabel value="Gravado IVA básico."
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText
+														<p:inputText styleClass="form-control"
 															value="${comprasBean.factura.montoNetoGravadoIvaBasico}"
 															style="width:100%"
 															disabled="${comprasBean.facturaAutomatica}">
@@ -404,7 +404,7 @@
 													<p:outputLabel value="IRAE"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText
+														<p:inputText styleClass="form-control"
 															value="${comprasBean.factura.montoRetenidoIRAE}"
 															style="width:100%"
 															disabled="${comprasBean.facturaAutomatica}">
@@ -424,7 +424,7 @@
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
 														<p:inputText value="${comprasBean.factura.montoNoGravado}"
-															style="width:100%"
+															style="width:100%" styleClass="form-control"
 															disabled="${comprasBean.facturaAutomatica}">
 															<p:ajax listener="${comprasBean.actualizarDatos}"
 																update="totalIvaBasico totalIvaMinimo total" />
@@ -445,7 +445,7 @@
 													<p:outputLabel value="Redondeo"
 														styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 													<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-														<p:inputText
+														<p:inputText styleClass="form-control"
 															value="${comprasBean.factura.montoNoFacturable}"
 															style="width:100%"
 															disabled="${comprasBean.facturaAutomatica}">
