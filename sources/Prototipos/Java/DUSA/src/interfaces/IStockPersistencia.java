@@ -12,6 +12,7 @@ import datatypes.DTProveedor;
 import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
+import model.Cambio;
 import model.Droga;
 import model.LineaPedido;
 import model.OrdenDetalle;
@@ -62,7 +63,6 @@ public interface IStockPersistencia {
 	 * @throws Excepciones
 	 */
 	public void persistirPedido(Pedido p) throws Excepciones;
-	public boolean existeArticulo(String descripcion) throws Excepciones;
 	
 	/**
 	 * función encargada de realizar la busqueda en solr
@@ -215,4 +215,11 @@ public interface IStockPersistencia {
 	 * @see model.Enumerados.tipoMovimientoDeStock
 	 */
 	public void movimientoStock(String usuario, long aticuloID, long cantidad, char tipoMovimiento, String motivo) throws Exception;
+
+	public List <Cambio> obtenerCambios(List <Articulo> arts) throws Excepciones;
+
+	boolean existeArticulo(String descripcion) throws Excepciones;
+
+
 }
+
