@@ -47,12 +47,15 @@ import datatypes.DTTipoArticulo;
 @ViewScoped
 public class StockBean implements Serializable {
 
+	private static final BigDecimal ONEHUNDRED = new BigDecimal(100);
+	
 	private ISistema instanciaSistema;
 
 	private static final long serialVersionUID = 1L;
 	private Articulo articulo = new Articulo();
 	private boolean noEsMedicamento;
 	private int tipoIvaSeleccionado;
+	private String radioPrecioVenta;
 
 	// Proveedores
 	private int proveedor;
@@ -82,8 +85,6 @@ public class StockBean implements Serializable {
 	private String messageClass;
 	private Boolean disableDesdeUltimoPedido = false;
 	private Boolean disablePrediccionDePedido = false;
-	private String hideElement = "hidden";
-	private String formaDePago = "contado";
 
 	// Busqueda de artículos
 	private String busqueda = "";
@@ -95,18 +96,6 @@ public class StockBean implements Serializable {
 	private String motivo;
 	private String busquedaDesarme = "";
 	private List<DTBusquedaArticulo> resBusquedaDesarme = new ArrayList<DTBusquedaArticulo>();
-	private DTBusquedaArticulo articuloParaDesarme;
-	private int nuevoStockSeleccionado;
-	private int nuevoStockDesarme;
-	private long[] nuevoStock;
-
-	public long[] getNuevoStock() {
-		return nuevoStock;
-	}
-
-	public void setNuevoStock(long[] nuevoStock) {
-		this.nuevoStock = nuevoStock;
-	}
 
 	public DTBusquedaArticulo getArticuloSeleccionado() {
 		return articuloSeleccionado;
@@ -149,30 +138,6 @@ public class StockBean implements Serializable {
 		this.resBusquedaDesarme = resBusquedaDesarme;
 	}
 
-	public DTBusquedaArticulo getArticuloParaDesarme() {
-		return articuloParaDesarme;
-	}
-
-	public void setArticuloParaDesarme(DTBusquedaArticulo articuloParaDesarme) {
-		this.articuloParaDesarme = articuloParaDesarme;
-	}
-
-	public int getNuevoStockSeleccionado() {
-		return nuevoStockSeleccionado;
-	}
-
-	public void setNuevoStockSeleccionado(int nuevoStockSeleccionado) {
-		this.nuevoStockSeleccionado = nuevoStockSeleccionado;
-	}
-
-	public int getNuevoStockDesarme() {
-		return nuevoStockDesarme;
-	}
-
-	public void setNuevoStockDesarme(int nuevoStockDesarme) {
-		this.nuevoStockDesarme = nuevoStockDesarme;
-	}
-
 	public List<DTLineaPedido> getPedidos() {
 		return pedidos;
 	}
@@ -203,6 +168,14 @@ public class StockBean implements Serializable {
 
 	public void setTipoIvaSeleccionado(int tipoIvaSeleccionado) {
 		this.tipoIvaSeleccionado = tipoIvaSeleccionado;
+	}
+
+	public String getRadioPrecioVenta() {
+		return radioPrecioVenta;
+	}
+
+	public void setRadioPrecioVenta(String radioPrecioVenta) {
+		this.radioPrecioVenta = radioPrecioVenta;
 	}
 
 	public int getProveedor() {
@@ -330,14 +303,6 @@ public class StockBean implements Serializable {
 		this.codigoIdentificador = codigoIdentificador;
 	}
 
-	public String getFormaDePago() {
-		return formaDePago;
-	}
-
-	public void setFormaDePago(String formaDePago) {
-		this.formaDePago = formaDePago;
-	}
-
 	public Boolean getDisableDesdeUltimoPedido() {
 		return disableDesdeUltimoPedido;
 	}
@@ -393,230 +358,53 @@ public class StockBean implements Serializable {
 		this.resBusqueda = resBusqueda;
 	}
 
-	/**
-	 * genera el pedido desde el ultimo pedido en el sistema
-	 */
-	public void desdeUltimoPedido() {
-		disablePrediccionDePedido = true;
-		disableDesdeUltimoPedido = true;
-		hideElement = "visible";
-		pedidos.clear();
+	public void buscarArticulos() {
+		resBusqueda = new ArrayList<DTBusquedaArticulo>();
 
-		try {
-//			this.instanciaSistema.actualizarStock();
-			pedidos = this.instanciaSistema
-					.generarPedidoEnBaseAPedidoAnterior();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-			disableDesdeUltimoPedido = false;
-			disablePrediccionDePedido = false;
-			hideElement = "hidden";
-		}
-
-		/*
-		 * DTLineaPedido dt = new DTLineaPedido(); dt.setCantidad(5);
-		 * dt.setIdArticulo(5); dt.setNumeroArticulo(5); //
-		 * dt.setNombreArticulo("Ernex"); dt.setDescripcionArticulo("Ernex");
-		 * dt.setPrecioPonderado(40); dt.setPrecioUnitario(40);
-		 * dt.setStockMinimo(9); dt.setSubtotal(200); pedidos.add(dt);
-		 * 
-		 * dt = new DTLineaPedido(); dt.setCantidad(1); dt.setIdArticulo(6);
-		 * dt.setNumeroArticulo(6); // dt.setNombreArticulo("Alerfast");
-		 * dt.setDescripcionArticulo("Alerfast"); dt.setPrecioPonderado(70);
-		 * dt.setPrecioUnitario(70); dt.setStockMinimo(4); dt.setSubtotal(70);
-		 * pedidos.add(dt);
-		 * 
-		 * dt = new DTLineaPedido(); dt.setCantidad(4); dt.setIdArticulo(7);
-		 * dt.setNumeroArticulo(7); // dt.setNombreArticulo("Alerfast forte");
-		 * dt.setDescripcionArticulo("Alerfast forte");
-		 * dt.setPrecioPonderado(90); dt.setPrecioUnitario(90);
-		 * dt.setStockMinimo(4); dt.setSubtotal(360); pedidos.add(dt);
-		 */
-
-	}
-
-	/**
-	 * genera el pedido segun la prediccion en base al pasado
-	 */
-	public void prediccionDePedido() {
-		
-		pedidos.clear();
-
-		try {
-
-			disablePrediccionDePedido = true;
-			disableDesdeUltimoPedido = true;
-			hideElement = "visible";
-			
-			pedidos = this.instanciaSistema.generarPedidoEnBaseAHistorico(5);
-		} catch (Exception e) {
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-			disableDesdeUltimoPedido = false;
-			disablePrediccionDePedido = false;
-			hideElement = "hidden";
-		}
-		/*
-		 * DTLineaPedido dt = new DTLineaPedido(); dt.setCantidad(3);
-		 * dt.setIdArticulo(1); dt.setNumeroArticulo(1); //
-		 * dt.setNombreArticulo("Perifar 400");
-		 * dt.setDescripcionArticulo("Perifar 400"); dt.setPrecioPonderado(45);
-		 * dt.setPrecioUnitario(45); dt.setStockMinimo(7); dt.setSubtotal(135);
-		 * pedidos.add(dt);
-		 * 
-		 * dt = new DTLineaPedido(); dt.setCantidad(2); dt.setIdArticulo(2);
-		 * dt.setNumeroArticulo(2); // dt.setNombreArticulo("Aspirina");
-		 * dt.setDescripcionArticulo("Aspirina"); dt.setPrecioPonderado(50);
-		 * dt.setPrecioUnitario(50); dt.setStockMinimo(9); dt.setSubtotal(100);
-		 * pedidos.add(dt);
-		 * 
-		 * dt = new DTLineaPedido(); dt.setCantidad(3); dt.setIdArticulo(3);
-		 * dt.setNumeroArticulo(3); // dt.setNombreArticulo("Buscapina");
-		 * dt.setDescripcionArticulo("Buscapina"); dt.setPrecioPonderado(30);
-		 * dt.setPrecioUnitario(30); dt.setStockMinimo(7); dt.setSubtotal(90);
-		 * pedidos.add(dt);
-		 * 
-		 * dt = new DTLineaPedido(); dt.setCantidad(6); dt.setIdArticulo(4);
-		 * dt.setNumeroArticulo(4); // dt.setNombreArticulo("Biogrip");
-		 * dt.setDescripcionArticulo("Biogrip"); dt.setPrecioPonderado(10);
-		 * dt.setPrecioUnitario(10); dt.setStockMinimo(10); dt.setSubtotal(60);
-		 * pedidos.add(dt);
-		 */
-	}
-
-	/**
-	 * Recalcula el subtotal de la linea pedido
-	 * 
-	 * @param item
-	 *            a recalcular
-	 */
-	public void nuevoSubtotal(DTLineaPedido item) {
-
-		item.setSubtotal(item.getCantidad()
-				* item.getPrecioUnitario().floatValue());
-	}
-
-	/**
-	 * Elimina la linea pedido de la tabla
-	 * 
-	 * @param item
-	 *            a eliminar
-	 */
-	public void removeItem(DTLineaPedido item) {
-		pedidos.remove(item);
-	}
-
-	public void enviarPedido() {
-		System.out.println("******* ENVIAR PEDIDO ********");
-		FacesContext context = FacesContext.getCurrentInstance();
-
-		if (pedidos.isEmpty()) {
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					Excepciones.MENSAJE_PEDIDO_VACIO, ""));
+		if (busqueda.equals("")) {
 			return;
 		}
 
-		Pedido p = new Pedido();
-
-		p.setFecha(new Date(Calendar.getInstance().getTimeInMillis()));
-		/* Cargo el usuario que realiza el pedido */
-		p.setUsuario(this.instanciaSistema.obtenerUsuarioLogueado());
-
-		if (this.formaDePago.equalsIgnoreCase("contado")) {
-
-			p.setFormaDePago(TipoFormaDePago.CONTADO);
-		} else {
-
-			p.setFormaDePago(TipoFormaDePago.CREDITO);
-		}
-
-		for (DTLineaPedido dtLineaPedido : pedidos) {
-
-			LineaPedido lPedido = new LineaPedido(
-					dtLineaPedido.getIdArticulo(),
-					dtLineaPedido.getNumeroArticulo(),
-					dtLineaPedido.getCantidad());
-			p.getLineas().add(lPedido);
-		}
-
 		try {
-
-			this.instanciaSistema.realizarPedido(p);
-
-			pedidos.clear();
-			disableDesdeUltimoPedido = false;
-			disablePrediccionDePedido = false;
-			hideElement = "hidden";
-
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_INFO, Excepciones.MENSAJE_OK_PEDIDO,
-					""));
-		} catch (Excepciones ex) {
-
-			ex.printStackTrace();
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, ex.getMessage(), ""));
-		} catch (Exception e) {
+			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);			
+			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
+		} catch (Excepciones e) {
 			e.printStackTrace();
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 		}
 	}
-
-	public void cancelarPedido() {
-		System.out.println("******* CANCELAR PEDIDO ********");
-		pedidos.clear();
-		disableDesdeUltimoPedido = false;
-		disablePrediccionDePedido = false;
-		hideElement = "hidden";
-	}
-
+	
 	public void agregarProveedor() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (proveedor != 0) {
-			if (codigoIdentificador != 0) {
-				if (!existeProveedor(proveedor)) {
-					try {
-						if (!existeCodigoParaProveedor(proveedor,
-								codigoIdentificador)) {
-							DTProveedor p = new DTProveedor();
-							p.setIdProveedor(proveedor);
-							p.setNombreComercial(proveedores.get(proveedor)
-									.getNombreComercial());
-							p.setCodigoIdentificador(codigoIdentificador);
-							this.proveedoresSeleccionados.add(p);
-							this.proveedor = 0;
-							this.codigoIdentificador = 0;
-						} else {
-							context.addMessage(
-									null,
-									new FacesMessage(
-											FacesMessage.SEVERITY_WARN,
-											"Ya existe un artículo con ese código para el proveedor seleccionado.",
-											""));
-						}
-					} catch (Excepciones e) {
+			if (!existeProveedor(proveedor)) {
+				try {
+					if (codigoIdentificador == 0
+							|| !existeCodigoParaProveedor(proveedor,
+									codigoIdentificador)) {
+						DTProveedor p = new DTProveedor();
+						p.setIdProveedor(proveedor);
+						p.setNombreComercial(proveedores.get(proveedor)
+								.getNombreComercial());
+						p.setCodigoIdentificador(codigoIdentificador);
+						this.proveedoresSeleccionados.add(p);
+						this.proveedor = 0;
+						this.codigoIdentificador = 0;
+					} else {
 						context.addMessage(
 								null,
-								new FacesMessage(FacesMessage.SEVERITY_ERROR, e
-										.getMessage(), ""));
+								new FacesMessage(
+										FacesMessage.SEVERITY_WARN,
+										"Ya existe un artículo con ese código para el proveedor seleccionado.",
+										""));
 					}
-				} else {
+				} catch (Excepciones e) {
 					context.addMessage(null, new FacesMessage(
-							FacesMessage.SEVERITY_WARN,
-							"Ya seleccionó el proveedor.", ""));
+							FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 				}
 			} else {
 				context.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_WARN,
-						"Debe ingresar el código que lo identifica.", ""));
+						"Ya seleccionó el proveedor.", ""));
 			}
 		} else {
 			context.addMessage(null, new FacesMessage(
@@ -643,104 +431,92 @@ public class StockBean implements Serializable {
 	public void altaArticulo() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (!proveedoresSeleccionados.isEmpty()) {
-			if ((articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0 && articulo
-					.getPorcentajePrecioVenta().compareTo(BigDecimal.ZERO) == 0)
-					|| (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) != 0 && articulo
-							.getPorcentajePrecioVenta().compareTo(
-									BigDecimal.ZERO) == 0)
-					|| (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0 && articulo
-							.getPorcentajePrecioVenta().compareTo(
-									BigDecimal.ZERO) != 0)) {
-				try {
-					/* Cargo los proveedores seleccionados en el articulo */
-					Iterator<DTProveedor> i = proveedoresSeleccionados
-							.iterator();
-					while (i.hasNext()) {
-						DTProveedor next = i.next();
-						DTProveedor p = new DTProveedor();
-						p.setIdProveedor(next.getIdProveedor());
-						p.setNombreComercial(proveedores.get(
-								next.getIdProveedor()).getNombreComercial());
-						p.setCodigoIdentificador(next.getCodigoIdentificador());
-						this.articulo.agregarProveedor(p);
+			try {
+				/* Cargo los proveedores seleccionados en el articulo */
+				Iterator<DTProveedor> i = proveedoresSeleccionados
+						.iterator();
+				while (i.hasNext()) {
+					DTProveedor next = i.next();
+					DTProveedor p = new DTProveedor();
+					p.setIdProveedor(next.getIdProveedor());
+					p.setNombreComercial(proveedores.get(
+							next.getIdProveedor()).getNombreComercial());
+					p.setCodigoIdentificador(next.getCodigoIdentificador());
+					this.articulo.agregarProveedor(p);
+				}
+
+				/* Cargo el tipo de iva seleccionado */
+				TipoIva ti = new TipoIva();
+				ti.setTipoIVA(tipoIvaSeleccionado);
+				articulo.setTipoIva(ti);
+
+				/* Cargo el precio de venta según corresponda */
+				
+				/*
+				 * Si no se carga nada, se asume el mismo que el precio
+				 * público.
+				 * Si se carga precio de venta, se calcula el porcentaje.
+				 */
+				if (this.radioPrecioVenta.compareTo("$") == 0){
+					if (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0){
+						articulo.setPrecioVenta(articulo.getPrecioUnitario());
+						articulo.setPorcentajePrecioVenta(BigDecimal.ONE);
+					}else{
+						BigDecimal porcentaje = articulo.getPrecioVenta()
+								.multiply(ONEHUNDRED).divide(articulo.getPrecioUnitario(), 5,
+								RoundingMode.DOWN).divide(ONEHUNDRED);
+						articulo.setPorcentajePrecioVenta(porcentaje);
 					}
-
-					/* Cargo el tipo de iva seleccionado */
-					TipoIva ti = new TipoIva();
-					ti.setTipoIVA(tipoIvaSeleccionado);
-					articulo.setTipoIva(ti);
-
-					/* Cargo el precio de venta según corresponda */
-					/*
-					 * Si no se carga nada, se asume el mismo que el precio
-					 * público
-					 */
-					if (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0
-							&& articulo.getPorcentajePrecioVenta().compareTo(
-									BigDecimal.ZERO) == 0) {
+				}
+				
+				/*
+				 * Si no se carga nada, se asume el mismo que el precio
+				 * público.
+				 * Si se carga un porcentaje sobre el precio público, se
+				 * calcula el precio de venta a partir de ese porcentaje.
+				 */
+				if (this.radioPrecioVenta.compareTo("%") == 0){
+					if (articulo.getPorcentajePrecioVenta().compareTo(BigDecimal.ZERO) == 0) {
 						articulo.setPrecioVenta(articulo.getPrecioUnitario());
 						articulo.setPorcentajePrecioVenta(BigDecimal.ONE);
 					}
-					/* Si se carga precio de venta, se calcula el porcentaje */
-					if (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) != 0
-							&& articulo.getPorcentajePrecioVenta().compareTo(
-									BigDecimal.ZERO) == 0) {
-						BigDecimal porcentaje = articulo.getPrecioVenta()
-								.subtract(articulo.getPrecioUnitario());
-						porcentaje.multiply(new BigDecimal(100));
-						porcentaje.divide(articulo.getPrecioUnitario(), 5,
-								RoundingMode.DOWN);
-						articulo.setPorcentajePrecioVenta(porcentaje);
-					}
-					/*
-					 * Si se carga un porcentaje sobre el precio público, se
-					 * calcula
-					 */
-					if (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0
-							&& articulo.getPorcentajePrecioVenta().compareTo(
-									BigDecimal.ZERO) != 0) {
+					else{
 						articulo.setPrecioVenta(articulo.getPrecioUnitario()
-								.multiply(
-										articulo.getPorcentajePrecioVenta()
-												.add(new BigDecimal(1))));
-					}
-
-					/* Cargo el usuario que realiza el alta */
-					articulo.setUsuario(this.instanciaSistema
-							.obtenerUsuarioLogueado());
-
-					/*
-					 * Llamo a la logica para que se de de alta el articulo en
-					 * el sistema y en caso de error lo muestro
-					 */
-					this.instanciaSistema.altaArticulo(articulo);
-					// si todo bien aviso y vacio el formulario
-					context.addMessage(null, new FacesMessage(
-							FacesMessage.SEVERITY_INFO,
-							Excepciones.MENSAJE_OK_ALTA, ""));
-					this.articulo = new Articulo();
-					this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
-					this.proveedor = 0;
-					this.codigoIdentificador = 0;
-					this.tipoIvaSeleccionado = 0;
-				} catch (Excepciones e) {
-					if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
-						context.addMessage(null, new FacesMessage(
-								FacesMessage.SEVERITY_WARN, e.getMessage(), ""));
-					} else {
-						context.addMessage(
-								null,
-								new FacesMessage(FacesMessage.SEVERITY_ERROR, e
-										.getMessage(), ""));
+								.multiply(articulo.getPorcentajePrecioVenta()));
 					}
 				}
-			} else {
-				context.addMessage(
-						null,
-						new FacesMessage(
-								FacesMessage.SEVERITY_ERROR,
-								"No puede cargar Precio de venta y Porcentaje de venta al mismo tiempo.",
-								""));
+
+				/* Cargo el usuario que realiza el alta */
+				articulo.setUsuario(this.instanciaSistema
+						.obtenerUsuarioLogueado());
+
+				/*
+				 * Llamo a la logica para que se de de alta el articulo en
+				 * el sistema y en caso de error lo muestro
+				 */
+				this.instanciaSistema.altaArticulo(articulo);
+				// si todo bien aviso y vacio el formulario
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_INFO,
+						Excepciones.MENSAJE_OK_ALTA, ""));
+				this.articulo = new Articulo();
+				this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
+				this.proveedor = 0;
+				this.codigoIdentificador = 0;
+				this.tipoIvaSeleccionado = 0;
+			} catch (Excepciones e) {
+				if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
+					context.addMessage(null, new FacesMessage(
+							FacesMessage.SEVERITY_WARN, e.getMessage(), ""));
+				} else if (e.getErrorCode() == Excepciones.USUARIO_NO_TIENE_PERMISOS) {
+					context.addMessage(null, new FacesMessage(
+							FacesMessage.SEVERITY_WARN, e.getMessage(), ""));
+				} else {
+					context.addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, e
+									.getMessage(), ""));
+				}
 			}
 		} else {
 			context.addMessage(null, new FacesMessage(
@@ -761,12 +537,6 @@ public class StockBean implements Serializable {
 				.getViewRoot().getViewId());
 		context.setViewRoot(viewRoot);
 		context.renderResponse(); // Optional
-	}
-
-	public StockBean() {
-
-		this.noEsMedicamento = true;
-
 	}
 
 	public void cargarMarcas() {
@@ -859,190 +629,6 @@ public class StockBean implements Serializable {
 		}
 	}
 
-	public void buscarArticulos() {
-		resBusqueda = new ArrayList<DTBusquedaArticulo>();
-
-		if (busqueda.equals("")) {
-			return;
-		}
-
-		try {
-			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);
-			if (resBusqueda != null && resBusqueda.size() > 0) {
-				nuevoStock = new long[resBusqueda.size()];
-				for (int i = 0; i < resBusqueda.size(); i++) {
-					nuevoStock[i] = resBusqueda.get(i).getStock();
-				}
-			}
-			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
-		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public String getHideElement() {
-		return hideElement;
-	}
-
-	public void setHideElement(String hideElement) {
-		this.hideElement = hideElement;
-	}
-
-	public String onFlowProcess(FlowEvent event) {
-		return event.getNewStep();
-	}
-
-	public void buscarArticulosDesarme() {
-		resBusquedaDesarme = new ArrayList<DTBusquedaArticulo>();
-
-		if (busquedaDesarme.equals("")) {
-			return;
-		}
-
-		try {
-			resBusquedaDesarme = this.instanciaSistema
-					.buscarArticulos(busquedaDesarme);
-		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void confirmarCambioStock() {
-		FacesContext contexto = FacesContext.getCurrentInstance();
-		try {
-			if (motivo.trim().isEmpty()) {
-				contexto.addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"Debe ingresar un motivo.", ""));
-			} else {
-				int cambios = 0;
-				for (int i = 0; i < resBusqueda.size(); i++) {
-					if (resBusqueda.get(i).getStock() != nuevoStock[i]) {
-						cambios++;
-					}
-				}
-
-				if (cambios > 0) {
-
-//					long[] ids = new long[cambios];
-//					long[] stocks = new long[cambios];
-//					int j = 0;
-
-					for (int i = 0; i < resBusqueda.size(); i++) {
-						
-						long actualStock = resBusqueda.get(i).getStock();
-						if (actualStock != nuevoStock[i]) {
-//							ids[j] = resBusqueda.get(i).getIdArticulo();
-//							stocks[j] = nuevoStock[i];
-//							j++;
-							
-							
-							
-							//Comparo para generar el registro del movimiento de stock 
-							if (actualStock < nuevoStock[i]) {
-								
-								this.instanciaSistema.modificarStock(resBusqueda.get(i).getIdArticulo(),
-										nuevoStock[i], nuevoStock[i]-actualStock, tipoMovimientoDeStock.aumentoStock, motivo);
-							} else {
-								
-								this.instanciaSistema.modificarStock(resBusqueda.get(i).getIdArticulo(),
-										nuevoStock[i], actualStock-nuevoStock[i], tipoMovimientoDeStock.bajaStock, motivo);
-							}
-							
-//							is.modificarStock(resBusqueda.get(i).getIdArticulo(), nuevoStock[i]);
-						}
-					}
-					
-//					IStock is = FabricaLogica.getIStock();
-//					is.modificarStock(ids, stocks);
-
-					contexto.addMessage(null, new FacesMessage(
-							FacesMessage.SEVERITY_INFO,
-							"Cambio de stock realizado con éxito.", ""));
-
-					resBusqueda = new ArrayList<DTBusquedaArticulo>();
-					motivo = "";
-					busqueda = "";
-				} else {
-					contexto.addMessage(null, new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							"No hay cambios ingresados.", ""));
-
-				}
-			}
-		} catch (Excepciones ex){ 
-			
-			contexto.addMessage(
-					null,
-					new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							ex.getMessage(),
-							""));
-		} catch (Exception e) {
-			contexto.addMessage(
-					null,
-					new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							"Error al ingresar cambio. Intente nuevamente",
-							""));
-		}
-	}
-
-	public void confirmarDesarme() {
-		FacesContext contexto = FacesContext.getCurrentInstance();
-		try {
-			if (nuevoStockSeleccionado >= articuloSeleccionado.getStock()) {
-				contexto.addMessage(
-						null,
-						new FacesMessage(
-								FacesMessage.SEVERITY_ERROR,
-								"El nuevo stock del artículo origen debe ser menor al actual.",
-								""));
-			} else if (nuevoStockDesarme <= articuloParaDesarme.getStock()) {
-				contexto.addMessage(
-						null,
-						new FacesMessage(
-								FacesMessage.SEVERITY_ERROR,
-								"El nuevo stock del artículo destino debe ser mayor al actual.",
-								""));
-			} else {
-//				IStock is = FabricaLogica.getIStock();
-//				is.modificarStock(articuloSeleccionado.getIdArticulo(),
-//						articuloParaDesarme.getIdArticulo(),
-//						nuevoStockSeleccionado, nuevoStockDesarme);
-				
-				this.instanciaSistema.modificarStock(articuloSeleccionado.getIdArticulo(), nuevoStockSeleccionado, 
-						articuloSeleccionado.getStock() - nuevoStockSeleccionado, tipoMovimientoDeStock.desarmeStock, motivo);
-				
-				this.instanciaSistema.modificarStock(articuloParaDesarme.getIdArticulo(), nuevoStockDesarme, 
-						nuevoStockDesarme - articuloParaDesarme.getStock(), tipoMovimientoDeStock.desarmeStock, motivo);
-				
-
-				contexto.addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_INFO,
-						"Desarme realizado con éxito.", ""));
-			}
-		} catch (Excepciones ex){ 
-			
-			contexto.addMessage(
-					null,
-					new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							ex.getMessage(),
-							""));
-		}catch (Exception e) {
-			e.printStackTrace();
-			contexto.addMessage(
-					null,
-					new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							"Error al ingresar cambio. Intente nuevamente",
-							""));
-		}
-	}
-
 	public void setISistema(ISistema s) {
 		this.instanciaSistema = s;
 
@@ -1069,5 +655,10 @@ public class StockBean implements Serializable {
 			cargarTiposIva();
 		}
 	}
-
+	
+	public StockBean() {
+		this.noEsMedicamento = true;
+		this.radioPrecioVenta = "$";
+	}
+	
 }

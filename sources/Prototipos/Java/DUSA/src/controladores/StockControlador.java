@@ -49,7 +49,7 @@ public class StockControlador implements IStock {
 				&& (FabricaPersistencia.getStockPersistencia()
 						.existeArticulo(articulo.getDescripcion()))) {
 			throw (new Excepciones(Excepciones.MENSAJE_ART_DUPLICADO,
-					Excepciones.ERROR_DATOS));
+					Excepciones.ADVERTENCIA_DATOS));
 		}
 		FabricaPersistencia.getStockPersistencia().persistirArticulo(articulo);
 	}

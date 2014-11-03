@@ -38,10 +38,12 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public void altaArticulo(Articulo articulo) throws Excepciones {
-		//if (user.tienePermiso(casoDeUso.altaArticulo))
-		FabricaLogica.getIStock().altaArticulo(articulo);
-		//else
-		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		if (user.tienePermiso(casoDeUso.altaArticulo)){
+			FabricaLogica.getIStock().altaArticulo(articulo);
+		}
+		else{
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		}
 
 	}
 
