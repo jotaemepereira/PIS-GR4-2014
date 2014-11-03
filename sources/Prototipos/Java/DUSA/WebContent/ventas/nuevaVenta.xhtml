@@ -45,6 +45,8 @@
 			<p:hotkey bind="Ctrl+return" update="panel msgs" actionListener="#{ventaBean.facturarVenta}"/>
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/ventas.xhtml" />
+			#{loginBean.redirectIfNotLoggedIn()}
+        	#{proveedoresBean.setISistema(loginBean.instanciaSistema)}
 			<p:focus></p:focus>
 			
 			<div class="vpanel_right">
@@ -80,12 +82,14 @@
 													<h:panelGrid columns="3" style="width:100%" class="listaLineaVentas">
 														<h:outputText value=" #{venta2.articulo.descripcion}" />
 														<h:outputText value="$ #{venta2.articulo.precioVenta}" />
-														<h:outputText value=" #{venta2.descuentoPrecio}" />
+														<h:outputText value=" desc : (%#{venta2.descuento})" />
 
 														<h:outputText value=" #{venta2.articulo.presentacion}" />
 														<p:inputText id="cantidad" value="#{venta2.cantidad}" style="width:40px;">
 															<p:ajax listener="#{ventaBean.strTotal()}"
 																update="GridVentas2 :form1:total" process="@this" />
+															<p:ajax listener="#{ventaBean.strIva()}"
+																update="GridVentas2 :form1:iva" process="@this" />
 															<p:ajax listener="#{ventaBean.strSubTotal()}"
 																update="GridVentas2 :form1:subTotal" process="@this" />
 															<p:ajax listener="#{ventaBean.strDescuentoPrecio2()}"
@@ -127,6 +131,18 @@
 														<td style="font-weight: bold;">SubTotal</td>
 														<td><h:outputText id="subTotal"
 																value=" #{ventaBean.strSubTotal()}"></h:outputText></td>
+													</tr>
+												</table>
+												<div class="clearBoth"></div>
+											</div>
+											<div>
+												<table
+													style="float: right; text-align: right; width: 250px;">
+													<tr>
+														<td style="font-weight: bold;">Iva  </td>
+														<td><h:outputText id="iva"
+																value=" #{ventaBean.strIva()}">
+															</h:outputText></td>
 													</tr>
 												</table>
 												<div class="clearBoth"></div>

@@ -1,5 +1,7 @@
 package beans;
 
+import interfaces.ISistema;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -34,6 +36,9 @@ public class VentaBean implements Serializable {
 	/**
 	 * 
 	 */
+	
+	private ISistema instanciaSistema;
+	
 	private static final long serialVersionUID = 1L;
 	private BigDecimal precioVenta = new BigDecimal(0);
 	private String descripcionBusqueda;
@@ -165,26 +170,14 @@ public class VentaBean implements Serializable {
 				venta.setLineas(lineasVenta2);
 				venta.setTotalIvaBasico(new BigDecimal(0));
 				venta.setTotalIvaMinimo(new BigDecimal(0));
-				// TODO Agarrar el usuario logueado
+				// Agarrar el usuario logueado
 				Usuario usr = new Usuario();
-				usr.setNombre("Admin");
+				usr = instanciaSistema.obtenerUsuarioLogueado();
 				venta.setUsuario(usr);
+				
 				// TODO ver como se elige la forma de pago.
 				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO.toString());
 				venta.setCantidadLineas(lineasVenta2.size());
-
-				Iterator<LineaVenta> it = lineasVenta2.iterator();
-				while (it.hasNext()) {
-					LineaVenta lv = it.next();
-					if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.BASICO) {
-						venta.setTotalIvaBasico(venta.getTotalIvaBasico().add(
-								lv.getIva()));
-					} else if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.MINIMO) {
-						venta.setTotalIvaMinimo(venta.getTotalIvaMinimo().add(
-								lv.getIva()));
-					}
-
-				}
 
 				venta.setEstadoVenta(String
 						.valueOf(Enumerados.EstadoVenta.PERDIDA)); // estado X
@@ -237,26 +230,13 @@ public class VentaBean implements Serializable {
 				venta.setLineas(lineasVenta2);
 				venta.setTotalIvaBasico(new BigDecimal(0));
 				venta.setTotalIvaMinimo(new BigDecimal(0));
-				// TODO Agarrar el usuario logueado
+				// Agarrar el usuario logueado
 				Usuario usr = new Usuario();
-				usr.setNombre("Admin");
+				usr = instanciaSistema.obtenerUsuarioLogueado();
 				venta.setUsuario(usr);
 				// TODO ver como se elige la forma de pago.
 				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO.toString());
 				venta.setCantidadLineas(lineasVenta2.size());
-
-				Iterator<LineaVenta> it = lineasVenta2.iterator();
-				while (it.hasNext()) {
-					LineaVenta lv = it.next();
-					if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.BASICO) {
-						venta.setTotalIvaBasico(venta.getTotalIvaBasico().add(
-								lv.getIva()));
-					} else if (lv.getIndicadorFacturacion() == Enumerados.indicadoresFacturacion.MINIMO) {
-						venta.setTotalIvaMinimo(venta.getTotalIvaMinimo().add(
-								lv.getIva()));
-					}
-
-				}
 
 				venta.setEstadoVenta(String
 						.valueOf(Enumerados.EstadoVenta.PENDIENTE)); // estado p
@@ -309,6 +289,9 @@ public class VentaBean implements Serializable {
 		e.setProductoId(v.getProductId());
 		e.setDescripcionOferta("Falta ver este tema");
 		e.setDescuentoPrecio(v.getDescuentoPrecio());
+		e.setIva(v.getIva());
+		e.setIndicadorFacturacion(v.getIndicadorFacturacion());
+		
 
 		Articulo a = new Articulo();
 		a.setPrecioVenta(v.getPrecioVenta());
@@ -321,6 +304,38 @@ public class VentaBean implements Serializable {
 
 		lineasVenta2.add(e);
 		lineasVenta.remove(v);
+	}
+	
+	public String strIva(){
+		
+		BigDecimal totIva = new BigDecimal(0);
+		Iterator<LineaVenta> it = lineasVenta2.iterator();
+		while (it.hasNext()) {
+			LineaVenta v = it.next();
+			// calculo lo que tengo que restarle al precio segun el valor del IVA
+			BigDecimal iva = (v.getArticulo().getPrecioVenta().multiply(v
+					.getIva())).divide(new BigDecimal(100));
+
+			// calculo para IVA del 10%
+			if (v.getIva().equals(new BigDecimal(22)) ) {
+				
+				venta.setMontoNetoGravadoIvaBasico(v.getPrecio().subtract(iva));
+				venta.setMontoTributoIvaBasico(iva);
+				venta.setTotalIvaBasico(venta.getTotalIvaBasico().add(iva) );
+			}
+			// calculo para IVA del 22%
+			if (v.getIva().equals(new BigDecimal(10)) ) {
+				
+				venta.setMontoNetoGravadoIvaMinimo(v.getPrecio().subtract(iva));
+				venta.setMontoTributoIvaMinimo(iva);
+				venta.setTotalIvaMinimo(venta.getTotalIvaMinimo().add(iva) );
+			}
+
+			// sumo los totales restandole los IVA correspondientes a
+			// cada uno y los multiplico por las cantidades
+			totIva = totIva.add(iva).multiply(new BigDecimal (v.getCantidad() ) );
+		}
+		return totIva.toString();
 	}
 
 	public String strTotal() {
@@ -360,8 +375,14 @@ public class VentaBean implements Serializable {
 		Iterator<LineaVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
 			LineaVenta v = it.next();
-			total = total.add((v.getArticulo()).getPrecioVenta().multiply(
-					new BigDecimal(v.getCantidad())));
+			
+			// calculo lo que tengo que restarle al precio segun el valor del
+			// IVA
+			BigDecimal iva = (v.getArticulo().getPrecioVenta().multiply(v
+					.getIva())).divide(new BigDecimal(100));
+						
+			total = total.add( ( (v.getArticulo()).getPrecioVenta().subtract(iva) ).multiply( new BigDecimal( v.getCantidad() ) ) );
+			
 		}
 		venta.setMontoTotal(total);
 		return total.toString();
