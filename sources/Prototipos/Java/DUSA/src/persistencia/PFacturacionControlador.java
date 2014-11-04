@@ -112,7 +112,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				lv.setArticulo(a);
 
 				lv.setPrecio(rs.getBigDecimal("sale_price"));
-				if (lv.getPrecio() == null){
+				if (lv.getPrecio() == null) {
 					lv.setPrecio(new BigDecimal(0));
 				}
 				lv.setCantidad(rs.getInt("quantity"));
@@ -120,11 +120,11 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				lv.setRecetaBlanca(rs.getBoolean("white_recipe"));
 				lv.setRecetaNaranja(rs.getBoolean("orange_recipe"));
 				lv.setRecetaVerde(rs.getBoolean("green_recipe"));
-				if (lv.getDescuento() == null){
+				if (lv.getDescuento() == null) {
 					lv.setDescuento(new BigDecimal(0));
 				}
 				v.getLineas().add(lv);
-				
+
 				v.setCantidadLineas(v.getCantidadLineas() + 1);
 			}
 			return ret;
@@ -143,7 +143,8 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		try {
 			String sqlUpdate = "UPDATE sales SET sale_status = '"
 					+ Enumerados.EstadoVenta.CANCELADA + "'  WHERE sale_id = "
-					+ ventaId;
+					+ ventaId + " AND sale_status = '"
+					+ Enumerados.EstadoVenta.PENDIENTE + "'";
 			st.executeUpdate(sqlUpdate);
 		} catch (Exception e) {
 			throw e;
@@ -152,7 +153,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			con.close();
 		}
 	}
-	
+
 	@Override
 	public Venta facturarVenta(long ventaId) throws Exception {
 		Connection con = Conexion.getConnection();
@@ -162,8 +163,15 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 
 			String sqlUpdate = "UPDATE sales SET sale_status = '"
 					+ Enumerados.EstadoVenta.FACTURADA + "'  WHERE sale_id = "
-					+ ventaId;
-			st.executeUpdate(sqlUpdate);
+					+ ventaId + " " + "AND sale_status = '"
+					+ Enumerados.EstadoVenta.PENDIENTE + "'";
+			int modQty = st.executeUpdate(sqlUpdate);
+
+			if (modQty == 0) {
+				// Si no hay modificadas, alguien facturó esta venta con
+				// anterioridad.
+				return null;
+			}
 
 			String sqlQuery = "SELECT * FROM sales s "
 					+ "INNER JOIN sale_details sd ON s.sale_id = sd.sale_id "
@@ -253,8 +261,9 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				v.getLineas().add(lv);
 				v.setCantidadLineas(v.getCantidadLineas() + 1);
 			}
-			for (LineaVenta linea : v.getLineas()){
-				sqlUpdate = "UPDATE products SET stock = stock - " + linea.getCantidad();
+			for (LineaVenta linea : v.getLineas()) {
+				sqlUpdate = "UPDATE products SET stock = stock - "
+						+ linea.getCantidad();
 				sqlUpdate += " WHERE product_id = " + linea.getProductoId();
 				st.executeUpdate(sqlUpdate);
 			}
@@ -307,47 +316,48 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	 * @author Guille
 	 */
 	@Override
-	public List<Long> getIdArticulosEnPeriodo(java.util.Date desde, java.util.Date hasta) throws Excepciones{
-		
+	public List<Long> getIdArticulosEnPeriodo(java.util.Date desde,
+			java.util.Date hasta) throws Excepciones {
+
 		Connection con = null;
 		PreparedStatement stmt = null;
 		List<Long> articulos = new ArrayList<Long>();
-		
+
 		try {
-			
+
 			con = Conexion.getConnection();
-			String sql = "SELECT distinct p.product_id " + 
-							"FROM sale_details sd " +
-								"INNER JOIN products_suppliers ps ON sd.product_id = ps.product_id " +
-								"INNER JOIN products p ON p.product_id = sd.product_id " +
-								  "WHERE ps.supplier_id = ? AND " +
-								  		"p.status = ? AND " +
-								  		"sd.sale_id in " + "(SELECT sale_id FROM sales s " 
-															+ "WHERE s.sale_status = ? "
-																+ "AND s.sale_date BETWEEN ? AND ?);";
+			String sql = "SELECT distinct p.product_id "
+					+ "FROM sale_details sd "
+					+ "INNER JOIN products_suppliers ps ON sd.product_id = ps.product_id "
+					+ "INNER JOIN products p ON p.product_id = sd.product_id "
+					+ "WHERE ps.supplier_id = ? AND " + "p.status = ? AND "
+					+ "sd.sale_id in " + "(SELECT sale_id FROM sales s "
+					+ "WHERE s.sale_status = ? "
+					+ "AND s.sale_date BETWEEN ? AND ?);";
 			stmt = con.prepareStatement(sql);
-			stmt.setInt		(1, Enumerados.infoDUSA.proveedorID);
-			stmt.setBoolean	(2, true);
-			stmt.setString	(3, String.valueOf(Enumerados.EstadoVenta.FACTURADA));
+			stmt.setInt(1, Enumerados.infoDUSA.proveedorID);
+			stmt.setBoolean(2, true);
+			stmt.setString(3, String.valueOf(Enumerados.EstadoVenta.FACTURADA));
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(desde);
 			stmt.setTimestamp(4, new Timestamp(cal.getTimeInMillis()));
 			cal.setTime(hasta);
 			stmt.setTimestamp(5, new Timestamp(cal.getTimeInMillis()));
-//			stmt.setDate(4, desde);
-//			stmt.setDate(5, hasta);
+			// stmt.setDate(4, desde);
+			// stmt.setDate(5, hasta);
 			ResultSet rs = stmt.executeQuery();
-			
+
 			while (rs.next()) {
-				articulos.add(new Long(rs.getLong("product_id"))); 
+				articulos.add(new Long(rs.getLong("product_id")));
 			}
-			
+
 			stmt.close();
 			con.close();
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
-			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
 		}
 		return articulos;
 	}
@@ -356,18 +366,19 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	 * @author Guille
 	 */
 	@Override
-	public int cantidadVendidaEnPeriodo(Long idArticulo, java.util.Date desde, java.util.Date hasta) throws Excepciones {
-		
+	public int cantidadVendidaEnPeriodo(Long idArticulo, java.util.Date desde,
+			java.util.Date hasta) throws Excepciones {
+
 		int cantidadVendida = 0;
 		try {
-			
+
 			Connection con = Conexion.getConnection();
-			
-			String sql = "SELECT sum(quantity) as total " + 
-							"FROM sales s INNER JOIN sale_details sd " + 
-									"ON s.sale_id = sd.sale_id " +
-							"WHERE sd.product_id = ? and s.sale_status = ? and s.sale_date BETWEEN ? and ? " +
-							"GROUP BY product_id;";
+
+			String sql = "SELECT sum(quantity) as total "
+					+ "FROM sales s INNER JOIN sale_details sd "
+					+ "ON s.sale_id = sd.sale_id "
+					+ "WHERE sd.product_id = ? and s.sale_status = ? and s.sale_date BETWEEN ? and ? "
+					+ "GROUP BY product_id;";
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setLong(1, idArticulo.longValue());
 			stmt.setString(2, String.valueOf(Enumerados.EstadoVenta.FACTURADA));
@@ -377,108 +388,108 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			cal.setTime(hasta);
 			stmt.setTimestamp(4, new Timestamp(cal.getTimeInMillis()));
 			ResultSet rs = stmt.executeQuery();
-			
-			//Obtengo la cantidad total
+
+			// Obtengo la cantidad total
 			while (rs.next()) {
-				cantidadVendida = rs.getInt("total"); 
+				cantidadVendida = rs.getInt("total");
 			}
-			
+
 			stmt.close();
 			con.close();
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
-			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
 		}
-		
+
 		return cantidadVendida;
 	}
 
 	@Override
 	public void persistirVenta(Venta v) throws Excepciones {
 		PreparedStatement stmt = null;
-		
-		String query = "INSERT INTO SALES " +
-						"(CLIENT_ID, USERNAME, SALE_DATE, SALE_STATUS, SALE_DGI_TYPE, SERIAL, PAYMENT_TYPE, NOT_TAXED_AMOUNT, TAXED_MINIMUM_NET_AMOUNT, TAXED_BASIC_NET_AMOUNT, MINIMUM_TAX_TOTAL, BASIC_TAX_TOTAL,"
-						+ " TOTAL_AMOUNT, IVA_WITHHELD_AMOUNT, IRAE_WITHHELD_AMOUNT, NOT_BILLABLE_AMOUNT, TAXED_MINIMUM_AMOUNT, TAXED_BASIC_AMOUNT, TOTAL, DETAIL_QUANTITY)" +
-						" VALUES " +
-						" (?, ?, LOCALTIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING SALE_ID;";
+
+		String query = "INSERT INTO SALES "
+				+ "(CLIENT_ID, USERNAME, SALE_DATE, SALE_STATUS, SALE_DGI_TYPE, SERIAL, PAYMENT_TYPE, NOT_TAXED_AMOUNT, TAXED_MINIMUM_NET_AMOUNT, TAXED_BASIC_NET_AMOUNT, MINIMUM_TAX_TOTAL, BASIC_TAX_TOTAL,"
+				+ " TOTAL_AMOUNT, IVA_WITHHELD_AMOUNT, IRAE_WITHHELD_AMOUNT, NOT_BILLABLE_AMOUNT, TAXED_MINIMUM_AMOUNT, TAXED_BASIC_AMOUNT, TOTAL, DETAIL_QUANTITY)"
+				+ " VALUES "
+				+ " (?, ?, LOCALTIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING SALE_ID;";
 		Connection c;
-		
+
 		try {
 			c = Conexion.getConnection();
 			c.setAutoCommit(false);
-			try{
-			stmt = c.prepareStatement(query);
-			if (v.getClienteId() != 0){
-				stmt.setInt(1, v.getClienteId());//Null
-			}else{
-				stmt.setNull(1, java.sql.Types.INTEGER);
-			}				
-			stmt.setString(2, v.getUsuario().getNombre());//Not Null
-			stmt.setString(3, v.getEstadoVenta());//Not Null
-			stmt.setInt(4, v.getTipoDgi());//Null
-			stmt.setString(5, v.getSerial());//Null
-			stmt.setString(6, v.getFormaDePago());//Not Null
-			stmt.setBigDecimal(7, v.getMontoNoGravado());//Null
-			stmt.setBigDecimal(8, v.getMontoNetoGravadoIvaMinimo());//Null
-			stmt.setBigDecimal(9, v.getMontoNetoGravadoIvaBasico());//Null
-			stmt.setBigDecimal(10, v.getTotalIvaMinimo());//Null
-			stmt.setBigDecimal(11, v.getTotalIvaBasico());//Null
-			stmt.setBigDecimal(12, v.getMontoTotal());//Null
-			stmt.setBigDecimal(13, v.getMontoRetenidoIVA());//Null
-			stmt.setBigDecimal(14, v.getMontoRetenidoIRAE());//Null
-			stmt.setBigDecimal(15, v.getMontoNoFacturable());//Null
-			stmt.setBigDecimal(16, v.getMontoTributoIvaMinimo());//Null
-			stmt.setBigDecimal(17, v.getMontoTributoIvaBasico());//Null
-			stmt.setBigDecimal(18, v.getMontoTotalAPagar());//Not Null
-			stmt.setInt(19, v.getCantidadLineas());//Not Null
-			
-			ResultSet rs = stmt.executeQuery();
-			//Obtengo la clave de la nueva venta creada
-			long key = 0;
-			while (rs.next()){
-				key = rs.getLong(1);
-			}
-			
-			//Agrego las lineas de la venta
-			for (LineaVenta lv : v.getLineas()){
-				query = "INSERT INTO SALE_DETAILS " +
-						"(SALE_ID, SALE_DGI_TYPE, LINE, PRODUCT_ID, SALE_PRICE, QUANTITY, DISCOUNT, OFFER_DESCRIPTION, WHITE_RECIPE, GREEN_RECIPE, ORANGE_RECIPE) " +
-						"VALUES " +
-						"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			try {
 				stmt = c.prepareStatement(query);
-				stmt.setLong(1, key);//Not Null
-				stmt.setInt(2, v.getTipoDgi());//Null
-				stmt.setInt(3, lv.getLinea());//Not Null
-				stmt.setLong(4, lv.getProductoId());//Not Null
-				stmt.setBigDecimal(5, lv.getPrecio());//Not Null
-				stmt.setInt(6, lv.getCantidad());//Not Null
-				stmt.setBigDecimal(7, lv.getDescuento());//Null
-				stmt.setString(8, lv.getDescripcionOferta());//Null
-				stmt.setBoolean(9, lv.isRecetaBlanca());//Null
-				stmt.setBoolean(10, lv.isRecetaVerde());//Null
-				stmt.setBoolean(11, lv.isRecetaNaranja());//Null
-				stmt.executeUpdate();
-			}
-			
-			//Commiteo todo y cierro conexion
-			c.commit();
-			stmt.close();
-			c.close();
-			}catch (Exception e){
-				//Hago rollback de las cosas y lanzo excepcion
+				if (v.getClienteId() != 0) {
+					stmt.setInt(1, v.getClienteId());// Null
+				} else {
+					stmt.setNull(1, java.sql.Types.INTEGER);
+				}
+				stmt.setString(2, v.getUsuario().getNombre());// Not Null
+				stmt.setString(3, v.getEstadoVenta());// Not Null
+				stmt.setInt(4, v.getTipoDgi());// Null
+				stmt.setString(5, v.getSerial());// Null
+				stmt.setString(6, v.getFormaDePago());// Not Null
+				stmt.setBigDecimal(7, v.getMontoNoGravado());// Null
+				stmt.setBigDecimal(8, v.getMontoNetoGravadoIvaMinimo());// Null
+				stmt.setBigDecimal(9, v.getMontoNetoGravadoIvaBasico());// Null
+				stmt.setBigDecimal(10, v.getTotalIvaMinimo());// Null
+				stmt.setBigDecimal(11, v.getTotalIvaBasico());// Null
+				stmt.setBigDecimal(12, v.getMontoTotal());// Null
+				stmt.setBigDecimal(13, v.getMontoRetenidoIVA());// Null
+				stmt.setBigDecimal(14, v.getMontoRetenidoIRAE());// Null
+				stmt.setBigDecimal(15, v.getMontoNoFacturable());// Null
+				stmt.setBigDecimal(16, v.getMontoTributoIvaMinimo());// Null
+				stmt.setBigDecimal(17, v.getMontoTributoIvaBasico());// Null
+				stmt.setBigDecimal(18, v.getMontoTotalAPagar());// Not Null
+				stmt.setInt(19, v.getCantidadLineas());// Not Null
+
+				ResultSet rs = stmt.executeQuery();
+				// Obtengo la clave de la nueva venta creada
+				long key = 0;
+				while (rs.next()) {
+					key = rs.getLong(1);
+				}
+
+				// Agrego las lineas de la venta
+				for (LineaVenta lv : v.getLineas()) {
+					query = "INSERT INTO SALE_DETAILS "
+							+ "(SALE_ID, SALE_DGI_TYPE, LINE, PRODUCT_ID, SALE_PRICE, QUANTITY, DISCOUNT, OFFER_DESCRIPTION, WHITE_RECIPE, GREEN_RECIPE, ORANGE_RECIPE) "
+							+ "VALUES " + "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+					stmt = c.prepareStatement(query);
+					stmt.setLong(1, key);// Not Null
+					stmt.setInt(2, v.getTipoDgi());// Null
+					stmt.setInt(3, lv.getLinea());// Not Null
+					stmt.setLong(4, lv.getProductoId());// Not Null
+					stmt.setBigDecimal(5, lv.getPrecio());// Not Null
+					stmt.setInt(6, lv.getCantidad());// Not Null
+					stmt.setBigDecimal(7, lv.getDescuento());// Null
+					stmt.setString(8, lv.getDescripcionOferta());// Null
+					stmt.setBoolean(9, lv.isRecetaBlanca());// Null
+					stmt.setBoolean(10, lv.isRecetaVerde());// Null
+					stmt.setBoolean(11, lv.isRecetaNaranja());// Null
+					stmt.executeUpdate();
+				}
+
+				// Commiteo todo y cierro conexion
+				c.commit();
+				stmt.close();
+				c.close();
+			} catch (Exception e) {
+				// Hago rollback de las cosas y lanzo excepcion
 				c.rollback();
-				e.printStackTrace();				
-				throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+				e.printStackTrace();
+				throw (new Excepciones("Error sistema",
+						Excepciones.ERROR_SISTEMA));
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
-		
+
 	}
-		
 
 }

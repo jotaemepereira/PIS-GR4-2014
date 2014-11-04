@@ -1,6 +1,7 @@
 package beans;
 
 import interfaces.IFacturacion;
+import interfaces.ISistema;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,6 +13,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.context.RequestContext;
+
 import model.Enumerados;
 import model.LineaVenta;
 import model.Venta;
@@ -22,6 +25,8 @@ import controladores.FabricaLogica;
 @ViewScoped
 public class FacturacionBean implements Serializable {
 
+	private ISistema instanciaSistema;
+	
 	private List<Venta> ventas;
 	private Venta ventaSeleccionada;
 	private boolean[] lineasCheck;
@@ -63,6 +68,7 @@ public class FacturacionBean implements Serializable {
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
 								Excepciones.MENSAJE_FACTURADA_OK, ""));
 				ventas = ifact.listarVentasPendientes();
+				RequestContext.getCurrentInstance().execute("PF('dlg2').hide()");
 			} else {
 				FacesContext.getCurrentInstance().addMessage(
 						null,
@@ -74,6 +80,7 @@ public class FacturacionBean implements Serializable {
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							Excepciones.MENSAJE_ERROR_SISTEMA, ""));
+ 
 		}
 	}
 
@@ -152,6 +159,14 @@ public class FacturacionBean implements Serializable {
 
 	public void setLineasCheck(boolean[] lineasCheck) {
 		this.lineasCheck = lineasCheck;
+	}
+
+	public ISistema getInstanciaSistema() {
+		return instanciaSistema;
+	}
+
+	public void setInstanciaSistema(ISistema instanciaSistema) {
+		this.instanciaSistema = instanciaSistema;
 	}
 
 }
