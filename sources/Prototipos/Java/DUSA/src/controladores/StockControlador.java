@@ -370,4 +370,9 @@ public class StockControlador implements IStock {
 		return getDatosArticulosBuscados(encontrados);
 	}
 
+	@Override
+	public Articulo obtenerArticulo(int idArticulo) throws Excepciones {
+		return FabricaPersistencia.getStockPersistencia().obtenerArticulo(idArticulo);
+	}
+
 }

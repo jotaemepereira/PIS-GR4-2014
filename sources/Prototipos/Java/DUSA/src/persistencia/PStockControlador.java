@@ -1377,5 +1377,147 @@ public class PStockControlador implements IStockPersistencia {
 		}	
 		return cambios;
 	}
+
+	@Override
+	public Articulo obtenerArticulo(int idArticulo) throws Excepciones {
+		Articulo articulo = null;
+		Map<Integer, DTProveedor> proveedores = null;
+		long[] drogas = null;
+		long[] accionesTer = null;
+		PreparedStatement stmt = null;
+		String query = "SELECT * "
+				+ "FROM products p "
+				+ "WHERE p.product_id = ?;";
+		try {
+			Connection c = Conexion.getConnection();
+			c.setAutoCommit(false);
+			stmt = c.prepareStatement(query,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			stmt.setLong(1, idArticulo);
+			ResultSet rs = stmt.executeQuery();			
+			while (rs.next()) {
+				
+				articulo = new Articulo();
 	
+				articulo.setIdArticulo(rs.getLong("product_id"));
+				String aux = rs.getString("product_type");
+				if (aux != null) {
+					articulo.setTipoArticulo(aux.charAt(0));
+				}
+				articulo.setDescripcion(rs.getString("description"));
+				articulo.setClave1(rs.getString("key1"));
+				articulo.setClave2(rs.getString("key2"));
+				articulo.setClave3(rs.getString("key3"));
+				articulo.setEsPsicofarmaco(rs.getBoolean("is_psychotropic"));
+				articulo.setEsEstupefaciente(rs.getBoolean("is_narcotic"));
+				articulo.setEsHeladera(rs.getBoolean("is_refrigerator"));
+				aux = rs.getString("sale_code");
+				if (aux != null) {
+					articulo.setCodigoVenta(aux.charAt(0));
+				}
+				aux = rs.getString("authorization_type");
+				if (aux != null) {
+					articulo.setTipoAutorizacion(aux.charAt(0));
+				}
+				articulo.setPrecioUnitario(rs.getBigDecimal("unit_price"));
+				articulo.setPrecioVenta(rs.getBigDecimal("sale_price"));
+				articulo.setPorcentajePrecioVenta(rs
+						.getBigDecimal("sale_price_porcentage"));
+				articulo.setCostoLista(rs.getBigDecimal("list_cost"));
+				articulo.setCostoOferta(rs.getBigDecimal("offer_cost"));
+				articulo.setUltimoCosto(rs.getBigDecimal("last_cost"));
+				articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
+				int auxTipoIva = rs.getInt("TAX_TYPE_ID");
+				if (auxTipoIva != 0) {
+					articulo.getTipoIva().setTipoIVA(auxTipoIva);
+				}
+				articulo.setCodigoBarras(rs.getString("barcode"));
+				Timestamp timestamp = rs.getTimestamp("nearest_due_date");
+				if (timestamp != null) {
+	
+					articulo.setVencimientoMasCercano(new java.util.Date(
+							timestamp.getTime()));
+				}
+				articulo.setStock(rs.getLong("stock"));
+				articulo.setStockMinimo(rs.getLong("minimum_stock"));
+				articulo.setStatus(rs.getBoolean("status"));
+			}			
+			
+			//Cargo los proveedores
+			proveedores = new HashMap<Integer, DTProveedor>();
+			query = "SELECT s.supplier_id, ps.product_number, s.comercialname "
+					+ "FROM products_suppliers ps "
+					+ "JOIN suppliers s ON ps.supplier_id = s.supplier_id "
+					+ "WHERE ps.product_id = ?;";
+			stmt = c.prepareStatement(query);
+			stmt.setLong(1, idArticulo);
+			rs = stmt.executeQuery();
+			while (rs.next()) {
+				DTProveedor nuevo = new DTProveedor();
+				nuevo.setIdProveedor(rs.getInt("supplier_id"));
+				nuevo.setCodigoIdentificador(rs.getLong("product_number"));
+				nuevo.setNombreComercial(rs.getString("comercialname"));
+				proveedores.put(nuevo.getIdProveedor(), nuevo);				
+			}
+			articulo.setProveedores(proveedores);
+			
+			//Cargo las drogas
+			query = "SELECT pd.drug_id "
+					+ "FROM product_drugs pd "
+					+ "WHERE pd.product_id = ?;";
+			stmt = c.prepareStatement(query);
+			stmt.setLong(1, idArticulo);
+			rs = stmt.executeQuery();
+			drogas = new long[getRowCount(rs)];
+			int i = 0;
+			while (rs.next()) {
+				drogas[i] = rs.getLong("drug_id");
+				i++;
+			}
+			articulo.setDrogas(drogas);
+			
+			//Cargo las acciones terapeuticas
+			query = "SELECT pta.therapeutic_action_id "
+					+ "FROM product_therap_actions pta "
+					+ "WHERE pta.product_id = ?;";
+			stmt = c.prepareStatement(query);
+			stmt.setLong(1, idArticulo);
+			rs = stmt.executeQuery();
+			accionesTer = new long[getRowCount(rs)];
+			i = 0;
+			while (rs.next()) {
+				accionesTer[i] = rs.getLong("therapeutic_action_id");
+				i++;
+			}
+			articulo.setAccionesTer(accionesTer);
+			
+			c.commit();
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+		return articulo;
+	}
+	
+	private int getRowCount(ResultSet resultSet) {
+	    if (resultSet == null) {
+	        return 0;
+	    }
+	    try {
+	        resultSet.last();
+	        return resultSet.getRow();
+	    } catch (SQLException exp) {
+	        exp.printStackTrace();
+	    } finally {
+	        try {
+	            resultSet.beforeFirst();
+	        } catch (SQLException exp) {
+	            exp.printStackTrace();
+	        }
+	    }
+	    return 0;
+	}
 }

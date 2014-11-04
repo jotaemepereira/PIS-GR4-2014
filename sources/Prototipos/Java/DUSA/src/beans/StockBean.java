@@ -48,7 +48,7 @@ import datatypes.DTTipoArticulo;
 public class StockBean implements Serializable {
 
 	private static final BigDecimal ONEHUNDRED = new BigDecimal(100);
-	
+
 	private ISistema instanciaSistema;
 
 	private static final long serialVersionUID = 1L;
@@ -344,6 +344,27 @@ public class StockBean implements Serializable {
 	}
 
 	/**
+	 * Manejo del componente wizard en modificarArticulo.xhtml
+	 * 
+	 * @param event
+	 * @return
+	 */
+	public String onFlowProcess(FlowEvent event) {
+		//cargarArticuloParaModificacion();
+		return event.getNewStep();
+	}
+
+	private void cargarArticuloParaModificacion() {
+		try {
+			this.articulo = this.instanciaSistema
+					.obtenerArticulo(articuloSeleccionado.getIdArticulo());
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * @return the resBusqueda
 	 */
 	public List<DTBusquedaArticulo> getResBusqueda() {
@@ -366,13 +387,13 @@ public class StockBean implements Serializable {
 		}
 
 		try {
-			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);			
+			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);
 			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
 		} catch (Excepciones e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void agregarProveedor() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (proveedor != 0) {
@@ -433,14 +454,13 @@ public class StockBean implements Serializable {
 		if (!proveedoresSeleccionados.isEmpty()) {
 			try {
 				/* Cargo los proveedores seleccionados en el articulo */
-				Iterator<DTProveedor> i = proveedoresSeleccionados
-						.iterator();
+				Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
 				while (i.hasNext()) {
 					DTProveedor next = i.next();
 					DTProveedor p = new DTProveedor();
 					p.setIdProveedor(next.getIdProveedor());
-					p.setNombreComercial(proveedores.get(
-							next.getIdProveedor()).getNombreComercial());
+					p.setNombreComercial(proveedores.get(next.getIdProveedor())
+							.getNombreComercial());
 					p.setCodigoIdentificador(next.getCodigoIdentificador());
 					this.articulo.agregarProveedor(p);
 				}
@@ -451,36 +471,36 @@ public class StockBean implements Serializable {
 				articulo.setTipoIva(ti);
 
 				/* Cargo el precio de venta según corresponda */
-				
+
 				/*
-				 * Si no se carga nada, se asume el mismo que el precio
-				 * público.
+				 * Si no se carga nada, se asume el mismo que el precio público.
 				 * Si se carga precio de venta, se calcula el porcentaje.
 				 */
-				if (this.radioPrecioVenta.compareTo("$") == 0){
-					if (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0){
+				if (this.radioPrecioVenta.compareTo("$") == 0) {
+					if (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0) {
 						articulo.setPrecioVenta(articulo.getPrecioUnitario());
 						articulo.setPorcentajePrecioVenta(BigDecimal.ONE);
-					}else{
-						BigDecimal porcentaje = articulo.getPrecioVenta()
-								.multiply(ONEHUNDRED).divide(articulo.getPrecioUnitario(), 5,
-								RoundingMode.DOWN).divide(ONEHUNDRED);
+					} else {
+						BigDecimal porcentaje = articulo
+								.getPrecioVenta()
+								.multiply(ONEHUNDRED)
+								.divide(articulo.getPrecioUnitario(), 5,
+										RoundingMode.DOWN).divide(ONEHUNDRED);
 						articulo.setPorcentajePrecioVenta(porcentaje);
 					}
 				}
-				
+
 				/*
-				 * Si no se carga nada, se asume el mismo que el precio
-				 * público.
-				 * Si se carga un porcentaje sobre el precio público, se
-				 * calcula el precio de venta a partir de ese porcentaje.
+				 * Si no se carga nada, se asume el mismo que el precio público.
+				 * Si se carga un porcentaje sobre el precio público, se calcula
+				 * el precio de venta a partir de ese porcentaje.
 				 */
-				if (this.radioPrecioVenta.compareTo("%") == 0){
-					if (articulo.getPorcentajePrecioVenta().compareTo(BigDecimal.ZERO) == 0) {
+				if (this.radioPrecioVenta.compareTo("%") == 0) {
+					if (articulo.getPorcentajePrecioVenta().compareTo(
+							BigDecimal.ZERO) == 0) {
 						articulo.setPrecioVenta(articulo.getPrecioUnitario());
 						articulo.setPorcentajePrecioVenta(BigDecimal.ONE);
-					}
-					else{
+					} else {
 						articulo.setPrecioVenta(articulo.getPrecioUnitario()
 								.multiply(articulo.getPorcentajePrecioVenta()));
 					}
@@ -491,8 +511,8 @@ public class StockBean implements Serializable {
 						.obtenerUsuarioLogueado());
 
 				/*
-				 * Llamo a la logica para que se de de alta el articulo en
-				 * el sistema y en caso de error lo muestro
+				 * Llamo a la logica para que se de de alta el articulo en el
+				 * sistema y en caso de error lo muestro
 				 */
 				this.instanciaSistema.altaArticulo(articulo);
 				// si todo bien aviso y vacio el formulario
@@ -512,10 +532,8 @@ public class StockBean implements Serializable {
 					context.addMessage(null, new FacesMessage(
 							FacesMessage.SEVERITY_WARN, e.getMessage(), ""));
 				} else {
-					context.addMessage(
-							null,
-							new FacesMessage(FacesMessage.SEVERITY_ERROR, e
-									.getMessage(), ""));
+					context.addMessage(null, new FacesMessage(
+							FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 				}
 			}
 		} else {
@@ -655,10 +673,10 @@ public class StockBean implements Serializable {
 			cargarTiposIva();
 		}
 	}
-	
+
 	public StockBean() {
 		this.noEsMedicamento = true;
 		this.radioPrecioVenta = "$";
 	}
-	
+
 }

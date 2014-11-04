@@ -263,4 +263,15 @@ public interface ISistema {
 	 */
 	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones;
 
+	/**
+	 * Devuelve un artículo con todos sus datos, sus proveedores, drogas y acciones terapéuticas.
+	 * @param idArticulo
+	 * 			- Identificador del artículo.
+	 * @return Articulo
+	 * 			- Entidad de modelo con los datos del artículo de id idArticulo. 
+	 * @throws Excepciones
+	 * @author José Aguerre
+	 */
+	public Articulo obtenerArticulo(int idArticulo) throws Excepciones;
+
 }

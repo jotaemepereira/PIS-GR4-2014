@@ -227,4 +227,9 @@ public class SistemaControlador implements ISistema {
 		return FabricaLogica.getInstanciaCompras().obtenerFacturasDUSA();
 	}
 
+	@Override
+	public Articulo obtenerArticulo(int idArticulo) throws Excepciones {
+		return FabricaLogica.getIStock().obtenerArticulo(idArticulo);
+	}
+
 }
