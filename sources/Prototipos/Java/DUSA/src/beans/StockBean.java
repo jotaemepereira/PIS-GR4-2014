@@ -29,6 +29,7 @@ import controladores.FabricaSistema;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
+import model.Enumerados;
 import model.Enumerados.tipoMovimientoDeStock;
 import model.TipoIva;
 import model.Usuario;
@@ -350,7 +351,9 @@ public class StockBean implements Serializable {
 	 * @return
 	 */
 	public String onFlowProcess(FlowEvent event) {
-		//cargarArticuloParaModificacion();
+		if (event.getNewStep().equals("tabModificacion")){ 
+			cargarArticuloParaModificacion();
+		}
 		return event.getNewStep();
 	}
 
@@ -358,6 +361,8 @@ public class StockBean implements Serializable {
 		try {
 			this.articulo = this.instanciaSistema
 					.obtenerArticulo(articuloSeleccionado.getIdArticulo());
+			this.proveedoresSeleccionados = new ArrayList<DTProveedor>(articulo.getProveedores().values());
+			this.noEsMedicamento = articulo.getTipoArticulo() != Enumerados.tipoArticulo.MEDICAMENTO;
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

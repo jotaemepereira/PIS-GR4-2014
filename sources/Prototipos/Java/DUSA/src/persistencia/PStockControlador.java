@@ -1391,7 +1391,7 @@ public class PStockControlador implements IStockPersistencia {
 		try {
 			Connection c = Conexion.getConnection();
 			c.setAutoCommit(false);
-			stmt = c.prepareStatement(query,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			stmt = c.prepareStatement(query);
 			stmt.setLong(1, idArticulo);
 			ResultSet rs = stmt.executeQuery();			
 			while (rs.next()) {
@@ -1428,7 +1428,9 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
 				int auxTipoIva = rs.getInt("TAX_TYPE_ID");
 				if (auxTipoIva != 0) {
-					articulo.getTipoIva().setTipoIVA(auxTipoIva);
+					TipoIva ti = new TipoIva();
+					ti.setTipoIVA(auxTipoIva);
+					articulo.setTipoIva(ti);;
 				}
 				articulo.setCodigoBarras(rs.getString("barcode"));
 				Timestamp timestamp = rs.getTimestamp("nearest_due_date");
@@ -1464,7 +1466,7 @@ public class PStockControlador implements IStockPersistencia {
 			query = "SELECT pd.drug_id "
 					+ "FROM product_drugs pd "
 					+ "WHERE pd.product_id = ?;";
-			stmt = c.prepareStatement(query);
+			stmt = c.prepareStatement(query,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			stmt.setLong(1, idArticulo);
 			rs = stmt.executeQuery();
 			drogas = new long[getRowCount(rs)];
@@ -1479,7 +1481,7 @@ public class PStockControlador implements IStockPersistencia {
 			query = "SELECT pta.therapeutic_action_id "
 					+ "FROM product_therap_actions pta "
 					+ "WHERE pta.product_id = ?;";
-			stmt = c.prepareStatement(query);
+			stmt = c.prepareStatement(query,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			stmt.setLong(1, idArticulo);
 			rs = stmt.executeQuery();
 			accionesTer = new long[getRowCount(rs)];
