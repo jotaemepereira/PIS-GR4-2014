@@ -219,6 +219,8 @@ public interface IStockPersistencia {
 	public List <Cambio> obtenerCambios(List <Articulo> arts) throws Excepciones;
 
 	boolean existeArticulo(String descripcion) throws Excepciones;
+	
+	
 
 
 }

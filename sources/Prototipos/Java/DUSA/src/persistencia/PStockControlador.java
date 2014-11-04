@@ -1086,7 +1086,7 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public void modificarArticulo(Articulo articulo) throws Excepciones {
+	public void modificarArticulo(Articulo articulo) throws Excepciones {          
 		NamedParameterStatement stmt = null;
 
 		String query = "UPDATE PRODUCTS SET ";
@@ -1361,22 +1361,21 @@ public class PStockControlador implements IStockPersistencia {
 			
 			Articulo art = it.next();
 			if (this.existeArticulo(art.getDescripcion())){
-				//PROBAR CON EL ID
-				Articulo artAnt = this.obtenerArticulo(art.getDescripcion());
-				cambios.add(new Cambio(art,artAnt));
-				this.modificarArticulo(art);
+				//VER SI NO ES CON LA DESCRIPCION
+				Articulo artAnt = this.obtenerArticuloConId(art.getIdArticulo());
+				// si el precio unitario disminuyo o fue dado de baja se agrega a los cambios;
+				if (artAnt.getPrecioUnitario().compareTo(art.getPrecioUnitario() )  == 1  || 
+						(artAnt.isStatus()==true && art.isStatus()==false)) {
+					cambios.add(new Cambio(art,artAnt));
+					this.modificarArticulo(art);
+				}
+				
 			}
 			else{
 				this.persistirArticulo(art);
 			}
 		}	
 		return cambios;
-	}
-	
-	
-		
-		private Articulo obtenerArticulo(String descripcion){
-		return null;
 	}
 	
 }
