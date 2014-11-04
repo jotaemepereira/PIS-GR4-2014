@@ -214,7 +214,7 @@
 
 														<h:outputText value=" #{venta.presentacion}" />
 														<p:outputPanel style="padding: 0; margin: 0;">
-														<p:outputLabel for="descuento" value="Desc.(%)" />
+														<p:outputLabel for="descuento" value="Descuento (%):" />
 														<p:inputText id="descuento" value="#{venta.descuento}"
 															style="width:50%">
 															<p:ajax listener="#{ventaBean.strDescuentoPrecio()}"
@@ -233,7 +233,7 @@
 
 														<h:outputText value=" #{venta.principioActivo}" />
 														<h:outputText id="descuentoPrecio"
-															value="#{venta.descuentoPrecio}">
+															value="precio con descuento: #{venta.descuentoPrecio}">
 														</h:outputText>
 														<p:outputPanel rendered="#{venta.isRecetaNaranja()}"
 															style="padding: 0; margin: 0;">

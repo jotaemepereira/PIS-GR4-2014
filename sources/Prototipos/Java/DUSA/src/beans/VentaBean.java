@@ -59,9 +59,17 @@ public class VentaBean implements Serializable {
 	public VentaBean() {
 
 		try {
-
-			ventaFacturacion = (this.instanciaSistema.obtenerUsuarioLogueado()
-					.tienePermiso(Enumerados.casoDeUso.facturarVentaPendiente));
+			// me fijo que tenga el permiso para facturar y ademas que este en
+			// modo 1 o en modo 2 para habilitar el modo ventaFacturacion y que
+			// pueda facturar directo desde la venta
+			ventaFacturacion = ( (this.instanciaSistema.obtenerUsuarioLogueado()
+					.tienePermiso(Enumerados.casoDeUso.facturarVentaPendiente)) && ( (Integer
+					.parseInt(FacesContext.getCurrentInstance()
+							.getExternalContext()
+							.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.basica) || (Integer
+					.parseInt(FacesContext.getCurrentInstance()
+							.getExternalContext()
+							.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.controlada) ) );
 
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
@@ -136,9 +144,22 @@ public class VentaBean implements Serializable {
 		Iterator<DTVenta> it = lineasVenta.iterator();
 		while (it.hasNext()) {
 			DTVenta v = it.next();
-
-			BigDecimal x = (v.getPrecioVenta().multiply(v.getDescuento()))
-					.divide(new BigDecimal(100));
+			BigDecimal x = new BigDecimal(0);
+			
+			if (  (v.getDescuento().compareTo(new BigDecimal(101)) == -1) && (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)   ){
+				
+				x = (v.getPrecioVenta().multiply(v.getDescuento()))
+						.divide(new BigDecimal(100));
+			}else {
+				FacesContext
+						.getCurrentInstance()
+						.addMessage(
+								null,
+								new FacesMessage(
+										FacesMessage.SEVERITY_ERROR,
+										"el descuento ingresado debe ser un numero entre 0 y 100",
+										""));
+			}
 
 			v.setDescuentoPrecio("$"
 					+ v.getPrecioVenta().subtract(x).toString() + "(" + "%"
@@ -148,25 +169,41 @@ public class VentaBean implements Serializable {
 
 	}
 
+	
+	//calculo el total del precio de un articulo
 	public void strDescuentoPrecio2() {
 
 		Iterator<LineaVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
 			LineaVenta v = it.next();
-
-			BigDecimal x = (v.getArticulo().getPrecioVenta().multiply(v
-					.getDescuento())).divide(new BigDecimal(100));
-
+			
 			BigDecimal n = new BigDecimal(0);
-			// calculo descuento por receta blanca 1 del 25%
-			if (v.getDescuentoReceta().equals("25")) {
-				n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
-						25))).divide(new BigDecimal(100));
-			}
-			// calculo descuento por receta blanca 2 del 40%
-			if (v.getDescuentoReceta().equals("40")) {
-				n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
-						30))).divide(new BigDecimal(100));
+			BigDecimal x = new BigDecimal(0);
+			
+			if (  (v.getDescuento().compareTo(new BigDecimal(101)) == -1) && (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)   ){
+				
+				x = (v.getArticulo().getPrecioVenta().multiply(v
+						.getDescuento())).divide(new BigDecimal(100));
+				// calculo descuento por receta blanca 1 del 25%
+				if (v.getDescuentoReceta().equals("25")) {
+					n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
+							25))).divide(new BigDecimal(100));
+				}
+				// calculo descuento por receta blanca 2 del 40%
+				if (v.getDescuentoReceta().equals("40")) {
+					n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
+							30))).divide(new BigDecimal(100));
+				}
+			}else {
+
+				FacesContext
+						.getCurrentInstance()
+						.addMessage(
+								null,
+								new FacesMessage(
+										FacesMessage.SEVERITY_ERROR,
+										"el descuento ingresado debe ser un numero entre 0 y 100",
+										""));
 			}
 
 			v.setTotalPrecioLinea("$"
@@ -330,24 +367,25 @@ public class VentaBean implements Serializable {
 																		// venta
 																		// pendiente
 				FabricaSistema.getISistema().registrarNuevaVenta(venta);
-				
-				//la venta ya esta guardada en el sistema y ahora se factura:
-				
+
+				// la venta ya esta guardada en el sistema y ahora se factura:
+
 				IFacturacion ifact = FabricaLogica.getIFacturacion();
-				//de todas las ventas pendientes obtengo la de mayor Id que 
-				//fue la ultima ingresada en el sistema.
-				//TODO revisar esto si esta bien asi o si hay alguna otra forma de obtener el id. 
+				// de todas las ventas pendientes obtengo la de mayor Id que
+				// fue la ultima ingresada en el sistema.
+				// TODO revisar esto si esta bien asi o si hay alguna otra forma
+				// de obtener el id.
 				List<Venta> ventas = ifact.listarVentasPendientes();
 				Iterator<Venta> it = ventas.iterator();
 				long maxId = 0;
 				while (it.hasNext()) {
-					
+
 					long vId = it.next().getVentaId();
-					if(vId > maxId){
+					if (vId > maxId) {
 						maxId = vId;
 					}
 				}
-				
+
 				ifact.facturarVenta(maxId);
 
 				FacesContext.getCurrentInstance().addMessage(
@@ -380,7 +418,8 @@ public class VentaBean implements Serializable {
 	}
 
 	public void agregarLineaVenta(DTVenta v) {
-		// pasa del DTVenta a una LineaVenta los datos.
+
+		// pasar del DTVenta a una LineaVenta los datos.
 		v.setCantidad(1);
 		v.setDescuentoReceta("");
 		LineaVenta e = new LineaVenta();
@@ -397,6 +436,7 @@ public class VentaBean implements Serializable {
 		e.setRecetaNaranja(v.isRecetaNaranja());
 		e.setRecetaVerde(v.isRecetaVerde());
 		e.setProductoId(v.getProductId());
+		//TODO ver el tema de descripcion oferta:
 		e.setDescripcionOferta("Falta ver este tema");
 		e.setDescuentoPrecio(v.getDescuentoPrecio());
 		e.setIva(v.getIva());
@@ -410,8 +450,29 @@ public class VentaBean implements Serializable {
 		a.setPresentacion(v.getPresentacion());
 		a.setIdArticulo(v.getProductId());
 		e.setArticulo(a);
-
-		lineasVenta2.add(e);
+		
+		//controlo que el articulo no este ingresado ya en la venta:
+		if (!lineasVenta2.isEmpty()){
+			Iterator<LineaVenta> it = lineasVenta2.iterator();
+			boolean salir = true;
+			boolean encontre = false;
+			while (it.hasNext() && (salir)) {
+				LineaVenta lv = it.next();
+				
+				if (lv.getProductoId() == e.getProductoId()) {
+					salir = false;
+					encontre = true;
+					lv.setCantidad(lv.getCantidad() + 1);
+				}
+			}
+			if (!encontre) {
+				lineasVenta2.add(e);
+			}
+			
+		}else{
+			lineasVenta2.add(e);
+		}
+		
 		lineasVenta.remove(v);
 	}
 
@@ -453,23 +514,39 @@ public class VentaBean implements Serializable {
 		Iterator<LineaVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
 			LineaVenta v = it.next();
-			// calculo lo que tengo que restarle al precio segun el descuento
-			// seleccionado:
-			BigDecimal x = (v.getArticulo().getPrecioVenta().multiply(v
-					.getDescuento())).divide(new BigDecimal(100));
-
+			
 			BigDecimal n = new BigDecimal(0);
-			// calculo descuento por receta blanca 1 del 25%
-			if (v.getDescuentoReceta().equals("25")) {
-				n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
-						25))).divide(new BigDecimal(100));
-			}
-			// calculo descuento por receta blanca 2 del 40%
-			if (v.getDescuentoReceta().equals("40")) {
-				n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
-						30))).divide(new BigDecimal(100));
-			}
+			BigDecimal x = new BigDecimal(0);
+			
+			if (  (v.getDescuento().compareTo(new BigDecimal(101)) == -1) && (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)   ){
+				
+				// calculo lo que tengo que restarle al precio segun el descuento
+				// seleccionado:
+				x = (v.getArticulo().getPrecioVenta().multiply(v
+						.getDescuento())).divide(new BigDecimal(100));
 
+				// calculo descuento por receta blanca 1 del 25%
+				if (v.getDescuentoReceta().equals("25")) {
+					n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
+							25))).divide(new BigDecimal(100));
+				}
+				// calculo descuento por receta blanca 2 del 40%
+				if (v.getDescuentoReceta().equals("40")) {
+					n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
+							30))).divide(new BigDecimal(100));
+				}else {
+
+					FacesContext
+							.getCurrentInstance()
+							.addMessage(
+									null,
+									new FacesMessage(
+											FacesMessage.SEVERITY_ERROR,
+											"el descuento ingresado debe ser un numero entre 0 y 100",
+											""));
+				}
+				
+			}
 			// sumo los totales restandole los descuentos correspondientes a
 			// cada uno y los multiplico por las cantidades
 			total = total.add(((v.getArticulo().getPrecioVenta().subtract(x))
@@ -485,7 +562,6 @@ public class VentaBean implements Serializable {
 		Iterator<LineaVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
 			LineaVenta v = it.next();
-
 			// calculo lo que tengo que restarle al precio segun el valor del
 			// IVA
 			BigDecimal iva = (v.getArticulo().getPrecioVenta().multiply(v
