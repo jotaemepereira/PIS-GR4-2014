@@ -13,6 +13,7 @@ import datatypes.DTProveedor;
 import datatypes.DTTiposDGI;
 import datatypes.DTVenta;
 import model.AccionTer;
+import model.Actividad;
 import model.Articulo;
 import model.Droga;
 import model.Orden;
@@ -31,9 +32,10 @@ public class SistemaControlador implements ISistema {
 	@Override
 	public void altaProveedor(Proveedor proveedor) throws Excepciones{
 		// TODO: chequeo permisos del usuario
-		//if (user.tienePermiso(casoDeUso.altaProveedor))
+		//if (user.tienePermiso(casoDeUso.altaProveedor{
 		FabricaLogica.getInstanciaProveedores().altaProveedor(proveedor);
-		//else
+		//FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(new Actividad(user.getOperacion(casoDeUso.altaProveedor),user.getUsuarioId()));
+		//}else
 		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 	}
 
