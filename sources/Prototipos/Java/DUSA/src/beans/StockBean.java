@@ -55,9 +55,13 @@ public class StockBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Articulo articulo = new Articulo();
 	private boolean noEsMedicamento;
-	private int tipoIvaSeleccionado;
 	private String radioPrecioVenta;
-
+	
+	//Modificación
+	private boolean modificacion;
+	private Articulo articuloSinCambios;
+	private List<DTProveedor> nuevosProveedores = new ArrayList<DTProveedor>();
+	 
 	// Proveedores
 	private int proveedor;
 	private long codigoIdentificador;
@@ -81,22 +85,17 @@ public class StockBean implements Serializable {
 	private List<DTFormasVenta> formasVenta = new ArrayList<DTFormasVenta>();
 	private List<DTTipoArticulo> tiposArticulo = new ArrayList<DTTipoArticulo>();
 	private List<TipoIva> tiposIVA;
+	private int tipoIvaSeleccionado;
 	private List<DTLineaPedido> pedidos = new ArrayList<DTLineaPedido>();
 	private String message;
 	private String messageClass;
-	private Boolean disableDesdeUltimoPedido = false;
-	private Boolean disablePrediccionDePedido = false;
 
 	// Busqueda de artículos
 	private String busqueda = "";
 	private List<DTBusquedaArticulo> resBusqueda = new ArrayList<DTBusquedaArticulo>();
 
 	//
-	private DTBusquedaArticulo articuloSeleccionado;
-	private int tipoMotivo;
-	private String motivo;
-	private String busquedaDesarme = "";
-	private List<DTBusquedaArticulo> resBusquedaDesarme = new ArrayList<DTBusquedaArticulo>();
+	private DTBusquedaArticulo articuloSeleccionado;	
 
 	public DTBusquedaArticulo getArticuloSeleccionado() {
 		return articuloSeleccionado;
@@ -104,39 +103,6 @@ public class StockBean implements Serializable {
 
 	public void setArticuloSeleccionado(DTBusquedaArticulo articuloSeleccionado) {
 		this.articuloSeleccionado = articuloSeleccionado;
-	}
-
-	public int getTipoMotivo() {
-		return tipoMotivo;
-	}
-
-	public void setTipoMotivo(int tipoMotivo) {
-		this.tipoMotivo = tipoMotivo;
-	}
-
-	public String getMotivo() {
-		return motivo;
-	}
-
-	public void setMotivo(String motivo) {
-		this.motivo = motivo;
-	}
-
-	public String getBusquedaDesarme() {
-		return busquedaDesarme;
-	}
-
-	public void setBusquedaDesarme(String busquedaDesarme) {
-		this.busquedaDesarme = busquedaDesarme;
-	}
-
-	public List<DTBusquedaArticulo> getResBusquedaDesarme() {
-		return resBusquedaDesarme;
-	}
-
-	public void setResBusquedaDesarme(
-			List<DTBusquedaArticulo> resBusquedaDesarme) {
-		this.resBusquedaDesarme = resBusquedaDesarme;
 	}
 
 	public List<DTLineaPedido> getPedidos() {
@@ -177,6 +143,30 @@ public class StockBean implements Serializable {
 
 	public void setRadioPrecioVenta(String radioPrecioVenta) {
 		this.radioPrecioVenta = radioPrecioVenta;
+	}
+
+	public boolean isModificacion() {
+		return modificacion;
+	}
+
+	public void setModificacion(boolean modificacion) {
+		this.modificacion = modificacion;
+	}
+
+	public Articulo getArticuloAModificar() {
+		return articuloSinCambios;
+	}
+
+	public void setArticuloAModificar(Articulo articuloAModificar) {
+		this.articuloSinCambios = articuloAModificar;
+	}
+
+	public List<DTProveedor> getNuevosProveedores() {
+		return nuevosProveedores;
+	}
+
+	public void setNuevosProveedores(List<DTProveedor> nuevosProveedores) {
+		this.nuevosProveedores = nuevosProveedores;
 	}
 
 	public int getProveedor() {
@@ -304,22 +294,6 @@ public class StockBean implements Serializable {
 		this.codigoIdentificador = codigoIdentificador;
 	}
 
-	public Boolean getDisableDesdeUltimoPedido() {
-		return disableDesdeUltimoPedido;
-	}
-
-	public void setDisableDesdeUltimoPedido(Boolean disableDesdeUltimoPedido) {
-		this.disableDesdeUltimoPedido = disableDesdeUltimoPedido;
-	}
-
-	public Boolean getDisablePrediccionDePedido() {
-		return disablePrediccionDePedido;
-	}
-
-	public void setDisablePrediccionDePedido(Boolean disablePrediccionDePedido) {
-		this.disablePrediccionDePedido = disablePrediccionDePedido;
-	}
-
 	public String getMessage() {
 		return message;
 	}
@@ -352,6 +326,7 @@ public class StockBean implements Serializable {
 	 */
 	public String onFlowProcess(FlowEvent event) {
 		if (event.getNewStep().equals("tabModificacion")){ 
+			this.modificacion = true;
 			cargarArticuloParaModificacion();
 		}
 		return event.getNewStep();
@@ -361,6 +336,7 @@ public class StockBean implements Serializable {
 		try {
 			this.articulo = this.instanciaSistema
 					.obtenerArticulo(articuloSeleccionado.getIdArticulo());
+			this.articuloSinCambios = new Articulo(articulo);
 			this.proveedoresSeleccionados = new ArrayList<DTProveedor>(articulo.getProveedores().values());
 			this.noEsMedicamento = articulo.getTipoArticulo() != Enumerados.tipoArticulo.MEDICAMENTO;
 		} catch (Excepciones e) {
