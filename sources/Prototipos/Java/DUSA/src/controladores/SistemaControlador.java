@@ -12,8 +12,10 @@ import datatypes.DTProveedor;
 import datatypes.DTTiposDGI;
 import datatypes.DTVenta;
 import model.AccionTer;
+import model.Actividad;
 import model.Articulo;
 import model.Droga;
+import model.Operacion;
 import model.Orden;
 import model.Pedido;
 import model.Enumerados.casoDeUso;
@@ -30,9 +32,38 @@ public class SistemaControlador implements ISistema {
 	@Override
 	public void altaProveedor(Proveedor proveedor) throws Excepciones{
 		
-		if (user.tienePermiso(casoDeUso.altaProveedor))
-			FabricaLogica.getInstanciaProveedores().altaProveedor(proveedor);
-		else
+		if (user.tienePermiso(casoDeUso.altaProveedor)){
+			
+			try {
+				
+				FabricaLogica.getInstanciaProveedores().altaProveedor(proveedor);
+				//Registro actividad del usuario
+				
+				Operacion operacion = new Operacion();
+				operacion.setId(casoDeUso.altaProveedor.ordinal());
+				operacion.setNombre(casoDeUso.altaArticulo.toString());
+				
+				Actividad act = new Actividad(operacion, user.getUsuarioId());
+				
+				FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+			} catch (Excepciones e) {
+				// TODO: handle exception
+				
+				if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
+					//Dado que es una advertencia, la actividad fue efectuada y se debe persistir.
+					
+					Operacion operacion = new Operacion();
+					operacion.setId(casoDeUso.altaProveedor.ordinal());
+					operacion.setNombre(casoDeUso.altaArticulo.toString());
+					
+					Actividad act = new Actividad(operacion, user.getUsuarioId());
+					
+					FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+				}
+				
+				throw e;
+			}
+		}else
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 	}
 
