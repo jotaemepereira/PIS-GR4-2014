@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -105,7 +106,7 @@ public interface IStock {
 	 * @author Victoria Diaz
 	 */
 	
-	public void actualizarStock() throws Excepciones;
+	
 
 	public List<DTVenta> buscarArticulosVenta(String busqueda)
 			throws Excepciones;
@@ -188,5 +189,14 @@ public interface IStock {
 	 * @author José Aguerre
 	 */
 	public Articulo obtenerArticulo(int idArticulo) throws Excepciones;
+	
+	/**
+	 * Se dispara automaticamente, busca los articulos de dusa que sufrieron cambios en 
+	 * un periodo de tiempo se chequea el tipo de cambios se actualiza la base de datos 
+	 * y se envia un mail a los administradores del sistema informando de los cambios 
+	 * @param fecha
+	 * @throws Excepciones
+	 */
+	public void actualizarStock(Date fecha) throws Excepciones;
 	
 }

@@ -1,6 +1,7 @@
 package controladores;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -57,15 +58,15 @@ public class SistemaControlador implements ISistema {
 
 	}
 
-	public void actualizarStock() {
-		System.out.println("actualizarStock");
-		try {
-			FabricaLogica.getIStock().actualizarStock();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	public void actualizarStock(Date fecha) {
+//		System.out.println("actualizarStock");
+//		try {
+//			FabricaLogica.getIStock().actualizarStock(fecha);
+//		}
+//		catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones {

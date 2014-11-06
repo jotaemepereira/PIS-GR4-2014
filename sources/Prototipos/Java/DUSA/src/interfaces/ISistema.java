@@ -1,6 +1,7 @@
 package interfaces;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,6 @@ import model.Venta;
 
 public interface ISistema {
 	
-	public void actualizarStock() throws Exception;
 	
 	public void altaProveedor(Proveedor proveedor) throws Excepciones;
 
@@ -273,5 +273,7 @@ public interface ISistema {
 	 * @author José Aguerre
 	 */
 	public Articulo obtenerArticulo(int idArticulo) throws Excepciones;
+	
+//	public void actualizarStock(Date fecha) throws Exception;
 
 }
