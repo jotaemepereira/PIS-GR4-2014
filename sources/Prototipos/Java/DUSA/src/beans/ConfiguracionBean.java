@@ -12,6 +12,8 @@ import javax.faces.context.FacesContext;
 @ApplicationScoped
 public class ConfiguracionBean implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private String rutaLogo;
 	//@ManagedProperty("#{loginBean.nomUsuario}")
     //private LoginBean nomUsuario;

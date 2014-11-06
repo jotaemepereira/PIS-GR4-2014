@@ -68,7 +68,8 @@ public class LoginBean implements Serializable {
 		if (instanciaSistema != null) { 
 			if ((instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarProveedor))
 					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaProveedor))
-					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarProveedor))) {
+					//TODO: Se comenta buscarProveedor ya que aun no se encuentra implementado
+					/*|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarProveedor))*/) {
 				return ""; 
 			}
 			else return "display : none"; }

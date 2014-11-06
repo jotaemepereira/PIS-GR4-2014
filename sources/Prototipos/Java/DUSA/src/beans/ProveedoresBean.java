@@ -254,9 +254,7 @@ public class ProveedoresBean implements Serializable {
 			proveedor.setMarcaOlab(marcaOlab);
 			
 			/* Cargo el usuario que realiza el alta */
-			// TODO traer el usuario logueado del bean de sesión
-			Usuario usr = new Usuario();
-			usr.setNombre("Admin");
+			Usuario usr = this.instanciaSistema.obtenerUsuarioLogueado();;
 			proveedor.setUsuario(usr);
 			
 		} catch (Excepciones e1) {

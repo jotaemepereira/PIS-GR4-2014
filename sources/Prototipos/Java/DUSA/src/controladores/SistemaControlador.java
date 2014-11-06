@@ -29,11 +29,11 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public void altaProveedor(Proveedor proveedor) throws Excepciones{
-		// TODO: chequeo permisos del usuario
-		//if (user.tienePermiso(casoDeUso.altaProveedor))
-		FabricaLogica.getInstanciaProveedores().altaProveedor(proveedor);
-		//else
-		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		
+		if (user.tienePermiso(casoDeUso.altaProveedor))
+			FabricaLogica.getInstanciaProveedores().altaProveedor(proveedor);
+		else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 	}
 
 	@Override
