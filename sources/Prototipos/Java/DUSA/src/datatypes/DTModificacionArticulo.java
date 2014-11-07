@@ -1,5 +1,6 @@
 package datatypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.Articulo;
@@ -13,6 +14,12 @@ public class DTModificacionArticulo {
 	private long[] drogasABorrar;
 	private long[] accionesTerNuevas;
 	private long[] accionesTerABorrar;
+	
+	public DTModificacionArticulo(){
+		this.proveedoresNuevos = new ArrayList<DTProveedor>();
+		this.proveedoresConCambios = new ArrayList<DTProveedor>();
+		this.proveedoresABorrar = new ArrayList<DTProveedor>();		
+	}
 	
 	public Articulo getArticulo() {
 		return articulo;
