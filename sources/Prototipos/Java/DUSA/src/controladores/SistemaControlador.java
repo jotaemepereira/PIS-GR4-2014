@@ -257,5 +257,50 @@ public class SistemaControlador implements ISistema {
 	public Articulo obtenerArticulo(int idArticulo) throws Excepciones {
 		return FabricaLogica.getIStock().obtenerArticulo(idArticulo);
 	}
+	
+	@Override
+	public List<Venta> listarVentasPendientes() throws Excepciones {
+		
+		List<Venta> vPendientes = null;
+		if (user.tienePermiso(casoDeUso.listarVentasPendientes)) {
+			
+			vPendientes = FabricaLogica.getIFacturacion().listarVentasPendientes();
+		} else {
+			
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		}
+		
+		return vPendientes;
+	}
+	
+	@Override
+	public void facturarVentaPendiente(long idVenta) throws Excepciones {
+		
+		if (user.tienePermiso(casoDeUso.facturarVentaPendiente)) {
+			
+			FabricaLogica.getIFacturacion().facturarVenta(idVenta);
+			
+			Operacion operacion = user.getOperacion(casoDeUso.facturarVentaPendiente);
+			Actividad act = new Actividad(operacion, user.getUsuarioId());
+			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+		} else {
+			
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		}
+	}
+	
+	@Override
+	public void cancelarVentaPendiente(long idVenta) throws Excepciones {
+	
+		if (user.tienePermiso(casoDeUso.cancelarVentaPendiente)) {
+			
+			FabricaLogica.getIFacturacion().facturarVenta(idVenta);
+		} else {
+			
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		}
+		
+	}
 
 }

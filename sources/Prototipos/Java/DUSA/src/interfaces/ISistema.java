@@ -275,5 +275,27 @@ public interface ISistema {
 	public Articulo obtenerArticulo(int idArticulo) throws Excepciones;
 	
 //	public void actualizarStock(Date fecha) throws Exception;
-
+	/**
+	 * Se obtiene una lista de ventas pendientes de facturacion
+	 * @author Seba
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Venta> listarVentasPendientes() throws Excepciones;
+	
+	/**
+	 * Se realiza la facturacion, con la baja de stock correspondiente, de la venta con id "idVenta"
+	 * @author Seba
+	 * @param idVenta
+	 * @throws Excepciones
+	 */
+	public void facturarVentaPendiente(long idVenta) throws Excepciones;
+	
+	/**
+	 * Se cancela la venta pendiente con id "idVenta" 
+	 * @author Seba
+	 * @param venta
+	 * @throws Excepciones
+	 */
+	public void cancelarVentaPendiente(long idVenta) throws Excepciones;
 }

@@ -26,255 +26,277 @@ import interfaces.IFacturacionPersistencia;
 public class PFacturacionControlador implements IFacturacionPersistencia {
 
 	@Override
-	public List<Venta> listarVentasPendientes() throws Exception {
-		Connection con = Conexion.getConnection();
-		Statement st = con.createStatement();
+	public List<Venta> listarVentasPendientes() throws Excepciones {
+		
 		try {
-			List<Venta> ret = new ArrayList<Venta>();
+			Connection con = Conexion.getConnection();
+			Statement st = con.createStatement();
+			try {
+				List<Venta> ret = new ArrayList<Venta>();
 
-			String sqlQuery = "SELECT * FROM sales s "
-					+ "INNER JOIN sale_details sd ON s.sale_id = sd.sale_id "
-					+ "INNER JOIN products p ON p.product_id = sd.product_id "
-					+ "INNER JOIN users u ON s.username = u.username "
-					+ "LEFT JOIN clients c ON s.client_id = c.client_id "
-					+ "WHERE s.sale_status = '"
-					+ Enumerados.EstadoVenta.PENDIENTE + "'";
-			ResultSet rs = st.executeQuery(sqlQuery);
+				String sqlQuery = "SELECT * FROM sales s "
+						+ "INNER JOIN sale_details sd ON s.sale_id = sd.sale_id "
+						+ "INNER JOIN products p ON p.product_id = sd.product_id "
+						+ "INNER JOIN users u ON s.username = u.username "
+						+ "LEFT JOIN clients c ON s.client_id = c.client_id "
+						+ "WHERE s.sale_status = '"
+						+ Enumerados.EstadoVenta.PENDIENTE + "'";
+				ResultSet rs = st.executeQuery(sqlQuery);
 
-			Venta v = null;
-			Cliente c = null;
-			Usuario u = null;
-			LineaVenta lv = null;
-			Articulo a = null;
-			while (rs.next()) {
-				if (v == null || rs.getLong("sale_id") != v.getVentaId()) {
-					v = new Venta();
-					u = new Usuario();
-					c = new Cliente();
+				Venta v = null;
+				Cliente c = null;
+				Usuario u = null;
+				LineaVenta lv = null;
+				Articulo a = null;
+				while (rs.next()) {
+					if (v == null || rs.getLong("sale_id") != v.getVentaId()) {
+						v = new Venta();
+						u = new Usuario();
+						c = new Cliente();
 
-					v.setVentaId(rs.getLong("sale_id"));
+						v.setVentaId(rs.getLong("sale_id"));
 
-					v.setClienteId(rs.getInt("client_id"));
-					c.setClientId(rs.getInt("client_id"));
-					c.setApellido(rs.getString("surname"));
-					c.setDireccion(rs.getString("client_address"));
-					c.setNombre(rs.getString("client_name"));
-					c.setTelefono(rs.getString("phone"));
-					c.setUltimaModificacion(rs.getDate("last_modified"));
+						v.setClienteId(rs.getInt("client_id"));
+						c.setClientId(rs.getInt("client_id"));
+						c.setApellido(rs.getString("surname"));
+						c.setDireccion(rs.getString("client_address"));
+						c.setNombre(rs.getString("client_name"));
+						c.setTelefono(rs.getString("phone"));
+						c.setUltimaModificacion(rs.getDate("last_modified"));
 
-					v.setUsuarioId(rs.getInt("user_id"));
-					u.setUsuarioId(rs.getInt("user_id"));
-					u.setEstado(rs.getBoolean("status"));
-					u.setNombre(rs.getString("username"));
-					u.setPwd_hash(rs.getString("pwd_hash"));
+						v.setUsuarioId(rs.getInt("user_id"));
+						u.setUsuarioId(rs.getInt("user_id"));
+						u.setEstado(rs.getBoolean("status"));
+						u.setNombre(rs.getString("username"));
+						u.setPwd_hash(rs.getString("pwd_hash"));
 
-					v.setFechaVenta(rs.getTimestamp("sale_date"));
-					v.setEstadoVenta(rs.getString("sale_status"));
-					v.setTipoDgi(rs.getInt("sale_dgi_type"));
-					v.setSerial(rs.getString("serial"));
-					v.setFormaDePago(rs.getString("payment_type"));
-					v.setMontoNoGravado(rs.getBigDecimal("not_taxed_amount"));
-					v.setMontoNetoGravadoIvaMinimo(rs
-							.getBigDecimal("taxed_minimum_net_amount"));
-					v.setMontoNetoGravadoIvaBasico(rs
-							.getBigDecimal("taxed_basic_net_amount"));
-					v.setTotalIvaMinimo(rs.getBigDecimal("minimum_tax_total"));
-					v.setTotalIvaBasico(rs.getBigDecimal("basic_tax_total"));
-					v.setMontoTotal(rs.getBigDecimal("total_amount"));
-					v.setMontoRetenidoIVA(rs
-							.getBigDecimal("iva_withheld_amount"));
-					v.setMontoRetenidoIRAE(rs
-							.getBigDecimal("irae_withheld_amount"));
-					v.setMontoNoFacturable(rs
-							.getBigDecimal("not_billable_amount"));
-					v.setMontoTributoIvaMinimo(rs
-							.getBigDecimal("taxed_minimum_amount"));
-					v.setMontoTributoIvaBasico(rs
-							.getBigDecimal("taxed_basic_amount"));
-					v.setMontoTotalAPagar(rs.getBigDecimal("total"));
+						v.setFechaVenta(rs.getTimestamp("sale_date"));
+						v.setEstadoVenta(rs.getString("sale_status"));
+						v.setTipoDgi(rs.getInt("sale_dgi_type"));
+						v.setSerial(rs.getString("serial"));
+						v.setFormaDePago(rs.getString("payment_type"));
+						v.setMontoNoGravado(rs.getBigDecimal("not_taxed_amount"));
+						v.setMontoNetoGravadoIvaMinimo(rs
+								.getBigDecimal("taxed_minimum_net_amount"));
+						v.setMontoNetoGravadoIvaBasico(rs
+								.getBigDecimal("taxed_basic_net_amount"));
+						v.setTotalIvaMinimo(rs.getBigDecimal("minimum_tax_total"));
+						v.setTotalIvaBasico(rs.getBigDecimal("basic_tax_total"));
+						v.setMontoTotal(rs.getBigDecimal("total_amount"));
+						v.setMontoRetenidoIVA(rs
+								.getBigDecimal("iva_withheld_amount"));
+						v.setMontoRetenidoIRAE(rs
+								.getBigDecimal("irae_withheld_amount"));
+						v.setMontoNoFacturable(rs
+								.getBigDecimal("not_billable_amount"));
+						v.setMontoTributoIvaMinimo(rs
+								.getBigDecimal("taxed_minimum_amount"));
+						v.setMontoTributoIvaBasico(rs
+								.getBigDecimal("taxed_basic_amount"));
+						v.setMontoTotalAPagar(rs.getBigDecimal("total"));
 
-					v.setCantidadLineas(0);
-					v.setLineas(new ArrayList<LineaVenta>());
+						v.setCantidadLineas(0);
+						v.setLineas(new ArrayList<LineaVenta>());
 
-					v.setUsuario(u);
-					v.setCliente(c);
+						v.setUsuario(u);
+						v.setCliente(c);
 
-					ret.add(v);
+						ret.add(v);
+					}
+
+					lv = new LineaVenta();
+					lv.setVentaId(rs.getLong("sale_id"));
+					lv.setLinea(rs.getInt("line"));
+					lv.setProductoId(rs.getLong("product_id"));
+					a = new Articulo();
+					a.setDescripcion(rs.getString("description"));
+					a.setPresentacion(rs.getString("presentation"));
+					lv.setArticulo(a);
+
+					lv.setPrecio(rs.getBigDecimal("sale_price"));
+					if (lv.getPrecio() == null) {
+						lv.setPrecio(new BigDecimal(0));
+					}
+					lv.setCantidad(rs.getInt("quantity"));
+					lv.setDescuento(rs.getBigDecimal("discount"));
+					lv.setRecetaBlanca(rs.getBoolean("white_recipe"));
+					lv.setRecetaNaranja(rs.getBoolean("orange_recipe"));
+					lv.setRecetaVerde(rs.getBoolean("green_recipe"));
+					if (lv.getDescuento() == null) {
+						lv.setDescuento(new BigDecimal(0));
+					}
+					v.getLineas().add(lv);
+
+					v.setCantidadLineas(v.getCantidadLineas() + 1);
 				}
-
-				lv = new LineaVenta();
-				lv.setVentaId(rs.getLong("sale_id"));
-				lv.setLinea(rs.getInt("line"));
-				lv.setProductoId(rs.getLong("product_id"));
-				a = new Articulo();
-				a.setDescripcion(rs.getString("description"));
-				a.setPresentacion(rs.getString("presentation"));
-				lv.setArticulo(a);
-
-				lv.setPrecio(rs.getBigDecimal("sale_price"));
-				if (lv.getPrecio() == null) {
-					lv.setPrecio(new BigDecimal(0));
-				}
-				lv.setCantidad(rs.getInt("quantity"));
-				lv.setDescuento(rs.getBigDecimal("discount"));
-				lv.setRecetaBlanca(rs.getBoolean("white_recipe"));
-				lv.setRecetaNaranja(rs.getBoolean("orange_recipe"));
-				lv.setRecetaVerde(rs.getBoolean("green_recipe"));
-				if (lv.getDescuento() == null) {
-					lv.setDescuento(new BigDecimal(0));
-				}
-				v.getLineas().add(lv);
-
-				v.setCantidadLineas(v.getCantidadLineas() + 1);
+				return ret;
+			} catch (Exception e) {
+				
+				e.printStackTrace();
+				throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+			} finally {
+				st.close();
+				con.close();
 			}
-			return ret;
 		} catch (Exception e) {
-			throw e;
-		} finally {
-			st.close();
-			con.close();
+			
+			e.printStackTrace();
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
 		}
 	}
 
 	@Override
-	public void cancelarVenta(long ventaId) throws Exception {
-		Connection con = Conexion.getConnection();
-		Statement st = con.createStatement();
+	public void cancelarVenta(long ventaId) throws Excepciones {
 		try {
-			String sqlUpdate = "UPDATE sales SET sale_status = '"
-					+ Enumerados.EstadoVenta.CANCELADA + "'  WHERE sale_id = "
-					+ ventaId + " AND sale_status = '"
-					+ Enumerados.EstadoVenta.PENDIENTE + "'";
-			st.executeUpdate(sqlUpdate);
-		} catch (Exception e) {
-			throw e;
-		} finally {
-			st.close();
-			con.close();
-		}
-	}
-
-	@Override
-	public Venta facturarVenta(long ventaId) throws Exception {
-		Connection con = Conexion.getConnection();
-		con.setAutoCommit(false);
-		Statement st = con.createStatement();
-		try {
-
-			String sqlUpdate = "UPDATE sales SET sale_status = '"
-					+ Enumerados.EstadoVenta.FACTURADA + "'  WHERE sale_id = "
-					+ ventaId + " " + "AND sale_status = '"
-					+ Enumerados.EstadoVenta.PENDIENTE + "'";
-			int modQty = st.executeUpdate(sqlUpdate);
-
-			if (modQty == 0) {
-				// Si no hay modificadas, alguien facturó esta venta con
-				// anterioridad.
-				return null;
-			}
-
-			String sqlQuery = "SELECT * FROM sales s "
-					+ "INNER JOIN sale_details sd ON s.sale_id = sd.sale_id "
-					+ "INNER JOIN products p ON p.product_id = sd.product_id "
-					+ "INNER JOIN users u ON s.username = u.username "
-					+ "LEFT JOIN clients c ON s.client_id = c.client_id "
-					+ "WHERE s.sale_id = " + ventaId;
-			ResultSet rs = st.executeQuery(sqlQuery);
-
-			Venta v = null;
-			Cliente c = null;
-			Usuario u = null;
-			LineaVenta lv = null;
-			Articulo a = null;
-			boolean first = true;
-			while (rs.next()) {
-				if (first) {
-					first = false;
-					v = new Venta();
-					u = new Usuario();
-					c = new Cliente();
-
-					v.setVentaId(rs.getLong("sale_id"));
-
-					v.setClienteId(rs.getInt("client_id"));
-					c.setClientId(rs.getInt("client_id"));
-					c.setApellido(rs.getString("surname"));
-					c.setDireccion(rs.getString("client_address"));
-					c.setNombre(rs.getString("client_name"));
-					c.setTelefono(rs.getString("phone"));
-					c.setUltimaModificacion(rs.getDate("last_modified"));
-
-					v.setUsuarioId(rs.getInt("user_id"));
-					u.setUsuarioId(rs.getInt("user_id"));
-					u.setEstado(rs.getBoolean("status"));
-					u.setNombre(rs.getString("username"));
-					u.setPwd_hash(rs.getString("pwd_hash"));
-
-					v.setFechaVenta(rs.getDate("sale_date"));
-					v.setEstadoVenta(rs.getString("sale_status"));
-					v.setTipoDgi(rs.getInt("sale_dgi_type"));
-					v.setSerial(rs.getString("serial"));
-					v.setFormaDePago(rs.getString("payment_type"));
-					v.setMontoNoGravado(rs.getBigDecimal("not_taxed_amount"));
-					v.setMontoNetoGravadoIvaMinimo(rs
-							.getBigDecimal("taxed_minimum_net_amount"));
-					v.setMontoNetoGravadoIvaBasico(rs
-							.getBigDecimal("taxed_basic_net_amount"));
-					v.setTotalIvaMinimo(rs.getBigDecimal("minimum_tax_total"));
-					v.setTotalIvaBasico(rs.getBigDecimal("basic_tax_total"));
-					v.setMontoTotal(rs.getBigDecimal("total_amount"));
-					v.setMontoRetenidoIVA(rs
-							.getBigDecimal("iva_withheld_amount"));
-					v.setMontoRetenidoIRAE(rs
-							.getBigDecimal("irae_withheld_amount"));
-					v.setMontoNoFacturable(rs
-							.getBigDecimal("not_billable_amount"));
-					v.setMontoTributoIvaMinimo(rs
-							.getBigDecimal("taxed_minimum_amount"));
-					v.setMontoTributoIvaBasico(rs
-							.getBigDecimal("taxed_basic_amount"));
-					v.setMontoTotalAPagar(rs.getBigDecimal("total"));
-
-					v.setCantidadLineas(0);
-					v.setLineas(new ArrayList<LineaVenta>());
-
-					v.setUsuario(u);
-					v.setCliente(c);
-
-				}
-
-				lv = new LineaVenta();
-				lv.setVentaId(rs.getLong("sale_id"));
-				lv.setLinea(rs.getInt("line"));
-				lv.setProductoId(rs.getLong("product_id"));
-				a = new Articulo();
-				a.setDescripcion(rs.getString("description"));
-				// TODO: Agregar presentacion
-				lv.setArticulo(a);
-
-				lv.setPrecio(rs.getBigDecimal("sale_price"));
-				lv.setCantidad(rs.getInt("quantity"));
-				lv.setDescuento(rs.getBigDecimal("discount"));
-				lv.setRecetaBlanca(rs.getBoolean("white_recipe"));
-				lv.setRecetaNaranja(rs.getBoolean("orange_recipe"));
-				lv.setRecetaVerde(rs.getBoolean("green_recipe"));
-				v.getLineas().add(lv);
-				v.setCantidadLineas(v.getCantidadLineas() + 1);
-			}
-			for (LineaVenta linea : v.getLineas()) {
-				sqlUpdate = "UPDATE products SET stock = stock - "
-						+ linea.getCantidad();
-				sqlUpdate += " WHERE product_id = " + linea.getProductoId();
+			Connection con = Conexion.getConnection();
+			Statement st = con.createStatement();
+			try {
+				String sqlUpdate = "UPDATE sales SET sale_status = '"
+						+ Enumerados.EstadoVenta.CANCELADA + "'  WHERE sale_id = "
+						+ ventaId + " AND sale_status = '"
+						+ Enumerados.EstadoVenta.PENDIENTE + "'";
 				st.executeUpdate(sqlUpdate);
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				st.close();
+				con.close();
 			}
-			con.commit();
-			return v;
 		} catch (Exception e) {
-			con.rollback();
-			throw e;
-		} finally {
-			st.close();
-			con.close();
+			
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+		}
+	}
+
+	@Override
+	public Venta facturarVenta(long ventaId) throws Excepciones {
+		
+		try {
+			Connection con = Conexion.getConnection();
+			con.setAutoCommit(false);
+			Statement st = con.createStatement();
+			try {
+
+				String sqlUpdate = "UPDATE sales SET sale_status = '"
+						+ Enumerados.EstadoVenta.FACTURADA + "'  WHERE sale_id = "
+						+ ventaId + " " + "AND sale_status = '"
+						+ Enumerados.EstadoVenta.PENDIENTE + "'";
+				int modQty = st.executeUpdate(sqlUpdate);
+
+				if (modQty == 0) {
+					// Si no hay modificadas, alguien facturó esta venta con
+					// anterioridad.
+					return null;
+				}
+
+				String sqlQuery = "SELECT * FROM sales s "
+						+ "INNER JOIN sale_details sd ON s.sale_id = sd.sale_id "
+						+ "INNER JOIN products p ON p.product_id = sd.product_id "
+						+ "INNER JOIN users u ON s.username = u.username "
+						+ "LEFT JOIN clients c ON s.client_id = c.client_id "
+						+ "WHERE s.sale_id = " + ventaId;
+				ResultSet rs = st.executeQuery(sqlQuery);
+
+				Venta v = null;
+				Cliente c = null;
+				Usuario u = null;
+				LineaVenta lv = null;
+				Articulo a = null;
+				boolean first = true;
+				while (rs.next()) {
+					if (first) {
+						first = false;
+						v = new Venta();
+						u = new Usuario();
+						c = new Cliente();
+
+						v.setVentaId(rs.getLong("sale_id"));
+
+						v.setClienteId(rs.getInt("client_id"));
+						c.setClientId(rs.getInt("client_id"));
+						c.setApellido(rs.getString("surname"));
+						c.setDireccion(rs.getString("client_address"));
+						c.setNombre(rs.getString("client_name"));
+						c.setTelefono(rs.getString("phone"));
+						c.setUltimaModificacion(rs.getDate("last_modified"));
+
+						v.setUsuarioId(rs.getInt("user_id"));
+						u.setUsuarioId(rs.getInt("user_id"));
+						u.setEstado(rs.getBoolean("status"));
+						u.setNombre(rs.getString("username"));
+						u.setPwd_hash(rs.getString("pwd_hash"));
+
+						v.setFechaVenta(rs.getDate("sale_date"));
+						v.setEstadoVenta(rs.getString("sale_status"));
+						v.setTipoDgi(rs.getInt("sale_dgi_type"));
+						v.setSerial(rs.getString("serial"));
+						v.setFormaDePago(rs.getString("payment_type"));
+						v.setMontoNoGravado(rs.getBigDecimal("not_taxed_amount"));
+						v.setMontoNetoGravadoIvaMinimo(rs
+								.getBigDecimal("taxed_minimum_net_amount"));
+						v.setMontoNetoGravadoIvaBasico(rs
+								.getBigDecimal("taxed_basic_net_amount"));
+						v.setTotalIvaMinimo(rs.getBigDecimal("minimum_tax_total"));
+						v.setTotalIvaBasico(rs.getBigDecimal("basic_tax_total"));
+						v.setMontoTotal(rs.getBigDecimal("total_amount"));
+						v.setMontoRetenidoIVA(rs
+								.getBigDecimal("iva_withheld_amount"));
+						v.setMontoRetenidoIRAE(rs
+								.getBigDecimal("irae_withheld_amount"));
+						v.setMontoNoFacturable(rs
+								.getBigDecimal("not_billable_amount"));
+						v.setMontoTributoIvaMinimo(rs
+								.getBigDecimal("taxed_minimum_amount"));
+						v.setMontoTributoIvaBasico(rs
+								.getBigDecimal("taxed_basic_amount"));
+						v.setMontoTotalAPagar(rs.getBigDecimal("total"));
+
+						v.setCantidadLineas(0);
+						v.setLineas(new ArrayList<LineaVenta>());
+
+						v.setUsuario(u);
+						v.setCliente(c);
+
+					}
+
+					lv = new LineaVenta();
+					lv.setVentaId(rs.getLong("sale_id"));
+					lv.setLinea(rs.getInt("line"));
+					lv.setProductoId(rs.getLong("product_id"));
+					a = new Articulo();
+					a.setDescripcion(rs.getString("description"));
+					// TODO: Agregar presentacion
+					lv.setArticulo(a);
+
+					lv.setPrecio(rs.getBigDecimal("sale_price"));
+					lv.setCantidad(rs.getInt("quantity"));
+					lv.setDescuento(rs.getBigDecimal("discount"));
+					lv.setRecetaBlanca(rs.getBoolean("white_recipe"));
+					lv.setRecetaNaranja(rs.getBoolean("orange_recipe"));
+					lv.setRecetaVerde(rs.getBoolean("green_recipe"));
+					v.getLineas().add(lv);
+					v.setCantidadLineas(v.getCantidadLineas() + 1);
+				}
+				for (LineaVenta linea : v.getLineas()) {
+					sqlUpdate = "UPDATE products SET stock = stock - "
+							+ linea.getCantidad();
+					sqlUpdate += " WHERE product_id = " + linea.getProductoId();
+					st.executeUpdate(sqlUpdate);
+				}
+				con.commit();
+				return v;
+			} catch (Exception e) {
+				con.rollback();
+				throw e;
+			} finally {
+				st.close();
+				con.close();
+			}
+			
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
 		}
 	}
 
