@@ -40,24 +40,17 @@ public class SistemaControlador implements ISistema {
 				FabricaLogica.getInstanciaProveedores().altaProveedor(proveedor);
 				//Registro actividad del usuario
 				
-				Operacion operacion = new Operacion();
-				operacion.setId(casoDeUso.altaProveedor.ordinal());
-				operacion.setNombre(casoDeUso.altaArticulo.toString());
-				
+				Operacion operacion = user.getOperacion(casoDeUso.altaProveedor);
 				Actividad act = new Actividad(operacion, user.getUsuarioId());
 				
 				FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
-				//FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(new Actividad(user.getOperacion(casoDeUso.altaProveedor),user.getUsuarioId()));
 			} catch (Excepciones e) {
 				// TODO: handle exception
 				
 				if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
 					//Dado que es una advertencia, la actividad fue efectuada y se debe persistir.
 					
-					Operacion operacion = new Operacion();
-					operacion.setId(casoDeUso.altaProveedor.ordinal());
-					operacion.setNombre(casoDeUso.altaArticulo.toString());
-					
+					Operacion operacion = user.getOperacion(casoDeUso.altaProveedor);
 					Actividad act = new Actividad(operacion, user.getUsuarioId());
 					
 					FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
