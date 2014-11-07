@@ -1,6 +1,7 @@
 package interfaces;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,6 @@ import model.Venta;
 
 public interface ISistema {
 	
-	public void actualizarStock() throws Exception;
 	
 	public void altaProveedor(Proveedor proveedor) throws Excepciones;
 
@@ -262,5 +262,18 @@ public interface ISistema {
 	 * @author Victoria Díaz
 	 */
 	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones;
+
+	/**
+	 * Devuelve un artículo con todos sus datos, sus proveedores, drogas y acciones terapéuticas.
+	 * @param idArticulo
+	 * 			- Identificador del artículo.
+	 * @return Articulo
+	 * 			- Entidad de modelo con los datos del artículo de id idArticulo. 
+	 * @throws Excepciones
+	 * @author José Aguerre
+	 */
+	public Articulo obtenerArticulo(int idArticulo) throws Excepciones;
+	
+//	public void actualizarStock(Date fecha) throws Exception;
 
 }

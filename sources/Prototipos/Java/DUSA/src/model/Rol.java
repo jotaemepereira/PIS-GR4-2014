@@ -41,5 +41,15 @@ public class Rol {
 		}
 		return false;
 	}
+	public Operacion getOperacion(casoDeUso cu){
+		Iterator<Operacion> it = this.operaciones.iterator();
+		while (it.hasNext()){
+			Operacion op = it.next();
+			if (op.getNombre().equalsIgnoreCase(cu.toString()))
+				return op;
+		}
+		return null;
+		
+	}
 
 }

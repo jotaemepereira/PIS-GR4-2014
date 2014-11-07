@@ -22,8 +22,7 @@
 		<h:form id="form1">
 			<p:growl id="messages" showDetail="true" globalOnly="true" />
 			<ui:include src="../cabezal.xhtml" />
-			<ui:include src="../menuVertical/ventas.xhtml" />
-
+			<ui:include src="../menuVertical/ventas.xhtml" />	
 			<div class="vpanel_right">
 				<div class="wrapper">
 					<div class="panel panel-default" id="panel">
@@ -145,12 +144,12 @@
 					<p:commandButton style="margin-right: 45px;"
 						actionListener="#{facturacionBean.facturar()}"
 						styleClass="btn btn-default pull-right"
-						oncomplete="PF('dlg2').hide()" update=":form1" value="Facturar"
+						update=":form1" value="Facturar"
 						title="Facturar">
 					</p:commandButton>
 					<p:commandButton actionListener="#{facturacionBean.cancelar()}"
 						styleClass="btn btn-default pull-right"
-						oncomplete="PF('dlg2').hide()" update=":form1" value="Cancelar"
+						oncomplete="PF('dlg2').hide()" update=":form1" value="Cancelar factura"
 						title="Facturar">
 					</p:commandButton>
 				</div>

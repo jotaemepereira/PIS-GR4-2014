@@ -1,6 +1,7 @@
 package controladores;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,7 @@ public class SistemaControlador implements ISistema {
 				Actividad act = new Actividad(operacion, user.getUsuarioId());
 				
 				FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+				//FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(new Actividad(user.getOperacion(casoDeUso.altaProveedor),user.getUsuarioId()));
 			} catch (Excepciones e) {
 				// TODO: handle exception
 				
@@ -88,15 +90,15 @@ public class SistemaControlador implements ISistema {
 
 	}
 
-	public void actualizarStock() {
-		System.out.println("actualizarStock");
-		try {
-			FabricaLogica.getIStock().actualizarStock();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	public void actualizarStock(Date fecha) {
+//		System.out.println("actualizarStock");
+//		try {
+//			FabricaLogica.getIStock().actualizarStock(fecha);
+//		}
+//		catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones {
@@ -256,6 +258,11 @@ public class SistemaControlador implements ISistema {
 	@Override
 	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
 		return FabricaLogica.getInstanciaCompras().obtenerFacturasDUSA();
+	}
+
+	@Override
+	public Articulo obtenerArticulo(int idArticulo) throws Excepciones {
+		return FabricaLogica.getIStock().obtenerArticulo(idArticulo);
 	}
 
 }
