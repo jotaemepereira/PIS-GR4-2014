@@ -84,7 +84,6 @@
 														<h:outputText value="$ #{venta2.articulo.precioVenta}" />
 														<h:outputText value=" desc : (%#{venta2.descuento})" />
 
-														<h:outputText value=" #{venta2.articulo.presentacion}" />
 														<p:inputText id="cantidad" value="#{venta2.cantidad}" style="width:40px;">
 															<p:ajax listener="#{ventaBean.strTotal()}"
 																update="GridVentas2 :form1:total" process="@this" />
@@ -97,7 +96,6 @@
 														</p:inputText>
 														
 														
-														<h:outputText value=" " rendered="#{!venta2.isRecetaBlanca()}" />
 														<p:outputPanel rendered="#{venta2.isRecetaBlanca()}" 
 															style=" padding: 0; margin: 0;">
 															<p:outputLabel for="receta" value="Desc. receta:"
@@ -203,58 +201,27 @@
 														styleClass="tablaBusqueda">
 
 														<h:outputText value="#{venta.descripcion}" />
+														<h:outputText value=" #{venta.laboratorio}" />
 														<h:outputText value="precio: $#{venta.precioVenta}" />
-														<p:outputPanel rendered="#{venta.isRecetaVerde()}"
-															style="padding: 0; margin: 0;">
-															<img src="../Images/receta_verde.png" />
-														</p:outputPanel>
-														<h:outputText value=" " rendered="#{!venta.isRecetaVerde()}" />
 														<h:outputText value="stock:#{venta.stock}" />
 
-
-														<h:outputText value=" #{venta.presentacion}" />
-														<p:outputPanel style="padding: 0; margin: 0;">
-														<p:outputLabel for="descuento" value="Descuento (%):" />
-														<p:inputText id="descuento" value="#{venta.descuento}"
-															style="width:50%">
-															<p:ajax listener="#{ventaBean.strDescuentoPrecio()}"
-																update="@form" process="@this" />
-														</p:inputText>
-														</p:outputPanel>
-														<p:outputPanel 
-															style="padding: 0; margin: 0;">
-															<p:selectBooleanCheckbox value="#{venta.recetaBlanca}">
-																<f:ajax event="change" execute="@this" />
-															</p:selectBooleanCheckbox>
-															<img src="../Images/receta_blanca.png" />
-														</p:outputPanel>
-														<h:outputText value="" />
-
-
-														<h:outputText value=" #{venta.principioActivo}" />
-														<h:outputText id="descuentoPrecio"
-															value="precio con descuento: #{venta.descuentoPrecio}">
-														</h:outputText>
-														<p:outputPanel rendered="#{venta.isRecetaNaranja()}"
-															style="padding: 0; margin: 0;">
-															<img src="../Images/receta_naranja.png" />
-														</p:outputPanel>
-														<h:outputText value=" " rendered="#{!venta.isRecetaNaranja()}" />
-														<p:commandButton value="Agregar" id="ajax2" update="@form"
-															actionListener="#{ventaBean.agregarLineaVenta(venta)}"
-															process="@this" styleClass="ui-priority-primary" />
-
-
-														<h:outputText value=" #{venta.laboratorio}" />
+														<p:commandButton update="GridVentas :ventaDetail"
+															oncomplete="PF('ventaDialog').show()" icon="ui-icon-search" ajax="true"
+															title="Ver Detalle">
+															<f:setPropertyActionListener value="#{venta}"
+																target="#{ventaBean.articuloSeleccionado}" />
+														</p:commandButton>
 
 													</h:panelGrid>
 												</p:panel>
 											</p:dataGrid>
 
 										</div>
+
 										<div style="clear: both;"></div>
 									</div>
 								</h:panelGroup>
+								
 							</div>
 						</div>
 					</div>
@@ -272,7 +239,70 @@
 				</f:facet>
 			</p:ajaxStatus>
 		</h:form>
-	</h:body>
 
+		<p:dialog header="Informacion Producto" widgetVar="ventaDialog"
+			global="true" modal="true" showEffect="fade" hideEffect="fade"
+			resizable="false">
+			<p:outputPanel id="ventaDetail">
+				<p:panelGrid columns="2" style="width:100%">
+
+					<p:inputText id="canti"
+						value="#{ventaBean.articuloSeleccionado.cantidad}"
+						style="width:40px;">
+					</p:inputText>
+					<p:outputPanel style="padding: 0; margin: 0;">
+					<p:outputPanel >
+						<p:selectBooleanCheckbox
+							value="#{ventaBean.articuloSeleccionado.recetaBlanca}">
+							<f:ajax event="change" execute="@this" />
+						</p:selectBooleanCheckbox>
+						<img src="../Images/receta_blanca.png" />
+					</p:outputPanel>
+					<p:outputPanel
+						rendered="#{ventaBean.articuloSeleccionado.isRecetaVerde()}">
+						<img src="../Images/receta_verde.png" />
+					</p:outputPanel>
+					<p:outputPanel
+						rendered="#{ventaBean.articuloSeleccionado.isRecetaNaranja()}">
+						<img src="../Images/receta_naranja.png" />
+					</p:outputPanel>
+					</p:outputPanel>
+
+					<p:outputPanel style=" padding: 0; margin: 0;">
+						<p:outputLabel for="descImportantes" value="Desc:"
+							style="width:100%" />
+						<p:selectOneMenu id="descImportantes"
+							value="#{ventaBean.articuloSeleccionado.descuentoPrecio}"
+							style="width:100%">
+							<f:selectItem itemLabel="5% descuento" itemValue="5" />
+							<f:selectItem itemLabel="10% descuento" itemValue="10" />
+							<f:selectItem itemLabel="15% descuento" itemValue="15" />
+							<p:ajax listener="#{ventaBean.strTotal()}"
+								update=" form1:total" process="@this" />
+						</p:selectOneMenu>
+					</p:outputPanel>
+					
+
+					<p:outputPanel style=" padding: 0; margin: 0;">
+						<p:outputLabel for="descuentoo" value="Descuento manual (%) :"
+							style="width:100%" />
+						<p:inputText id="descuentoo"
+							value="#{ventaBean.articuloSeleccionado.descuento}"
+							style="width:50%">
+						</p:inputText>
+					</p:outputPanel>
+					
+
+				</p:panelGrid>
+				<p:commandButton value="Agregar" id="ajax11" update=":form1"
+					actionListener="#{ventaBean.agregarLineaVenta(ventaBean.articuloSeleccionado)}"
+					process="@this" styleClass="btn btn-default pull-right"
+					oncomplete="PF('ventaDialog').hide()" icon="ui-icon-check">
+				</p:commandButton>
+			</p:outputPanel>
+		</p:dialog>
+
+
+	</h:body>
 </f:view>
 </html>
