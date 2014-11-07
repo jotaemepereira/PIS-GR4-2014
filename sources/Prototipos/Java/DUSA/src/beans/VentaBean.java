@@ -209,6 +209,10 @@ public class VentaBean implements Serializable {
 		}
 
 	}
+	
+	public void eliminarLineaVenta(LineaVenta lv){
+			lineasVenta2.remove(lv);			
+	}
 
 	public void agregarVentaPerdida() {
 
@@ -515,7 +519,7 @@ public class VentaBean implements Serializable {
 			BigDecimal n = new BigDecimal(0);
 			BigDecimal x = new BigDecimal(0);
 			
-//			if(!v.getDescuentoPrecio().isEmpty()){
+//			if(!(v.getDescuentoPrecio().isEmpty())){
 //				if(v.getDescuentoPrecio().equals("5") ){
 //					v.setDescuento(new BigDecimal(5));
 //				}else if(v.getDescuentoPrecio().equals("10") ){

@@ -64,7 +64,55 @@
 								<h:panelGroup layout="block" id="panel">
 									<div class="row">
 										<!-- <div style="float: left; width: 25%; min-width: 300px;">  -->
-										<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="margin-bottom:10px">
+										<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" style="margin-bottom:10px">
+
+											<div class="row"
+												style="padding-left: 15px; margin-bottom: 5px">
+												<p:inputText id="descripcion2"
+													style="vertical-align: 8px; margin-right: 5px;"
+													value="#{ventaBean.descripcionBusqueda}"
+													placeholder="Buscar Articulo..."
+													styleClass="col-xs-9 col-sm-10 col-md-11 col-lg-11" />
+												<p:commandButton value="" id="ajax3" update="GridVentas"
+													icon="ui-icon-search" style="width: 35px; height: 31px;"
+													actionListener="#{ventaBean.buscarArticulos}"
+													styleClass="ui-priority-primary col-xs-3 col-sm-2 col-md-1 col-lg-1 " />
+											</div>
+
+											<p:dataTable id="GridVentas" var="venta"
+												value="#{ventaBean.lineasVenta}" rowIndexVar="index">
+												
+												<p:column headerText="Descripcion"
+													style="text-align: center;">
+													<h:outputText value="#{venta.descripcion}" />
+												</p:column>
+												<p:column headerText="Laboratorio"
+													style="text-align: center;">
+													<h:outputText value=" #{venta.laboratorio}" />
+												</p:column>
+												<p:column headerText="Precio"
+													style="text-align: center;">
+													<h:outputText value="precio: $#{venta.precioVenta}" />
+												</p:column>
+												<p:column headerText="Stock"
+													style="text-align: center;">
+													<h:outputText value="stock:#{venta.stock}" />
+												</p:column>
+												<p:column headerText=" "
+													style="text-align: center;">
+													<p:commandButton update="GridVentas :ventaDetail"
+														oncomplete="PF('ventaDialog').show()"
+														icon="ui-icon-search" ajax="true" title="Ver Detalle">
+														<f:setPropertyActionListener value="#{venta}"
+															target="#{ventaBean.articuloSeleccionado}" />
+													</p:commandButton>
+												</p:column>
+											</p:dataTable>
+
+										</div>
+										<!-- 		<div
+											style="float: left; width: 70%; margin-left: 25px; min-width: 500px;"> -->
+										<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
 
 											<div style="margin-bottom: 2px">
 												<p:inputText id="codigoLector"
@@ -72,57 +120,53 @@
 													value="#{ventaBean.codigoBusqueda}"
 													placeholder="Codigo Articulo...">
 													<p:ajax listener="#{ventaBean.buscarArticuloLector()}"
-																update="@form" process="@this" />
+														update="@form" process="@this" />
 												</p:inputText>
 											</div>
 
-											<p:dataGrid var="venta2" value="#{ventaBean.lineasVenta2}"
-												columns="1" layout="grid" rows="20" id="GridVentas2">
-												<p:panel style="text-align:center">
-													<h:panelGrid columns="3" style="width:100%" class="listaLineaVentas">
-														<h:outputText value=" #{venta2.articulo.descripcion}" />
-														<h:outputText value="$ #{venta2.articulo.precioVenta}" />
-														<h:outputText value=" desc : (%#{venta2.descuento})" />
+											<p:dataTable id="GridVentas2" var="venta2"
+												value="#{ventaBean.lineasVenta2}" rowIndexVar="index">
 
-														<p:inputText id="cantidad" value="#{venta2.cantidad}" style="width:40px;">
-															<p:ajax listener="#{ventaBean.strTotal()}"
-																update="GridVentas2 :form1:total" process="@this" />
-															<p:ajax listener="#{ventaBean.strIva()}"
-																update="GridVentas2 :form1:iva" process="@this" />
-															<p:ajax listener="#{ventaBean.strSubTotal()}"
-																update="GridVentas2 :form1:subTotal" process="@this" />
-															<p:ajax listener="#{ventaBean.strDescuentoPrecio2()}"
-																update="@form" process="@this" />
-														</p:inputText>
-														
-														
-														<p:outputPanel rendered="#{venta2.isRecetaBlanca()}" 
-															style=" padding: 0; margin: 0;">
-															<p:outputLabel for="receta" value="Desc. receta:"
-																style="width:100%" />
-															<p:selectOneMenu id="receta"
-																value="#{venta2.descuentoReceta}" style="width:110%">
-																<f:selectItem itemLabel="sin descuento" itemValue="" />
-																<f:selectItem itemLabel="40% descuento" itemValue="40" />
-																<f:selectItem itemLabel="25% descuento" itemValue="25" />
-																<p:ajax listener="#{ventaBean.strTotal()}"
-																	update="GridVentas2 :form1:total" process="@this" />
-																<p:ajax listener="#{ventaBean.strDescuentoPrecio2()}"
-																	update="@form" process="@this" />
-															</p:selectOneMenu>
-														</p:outputPanel>
+												<p:column headerText="Cantidad" style="text-align: center;">
+													<p:inputText id="cantidad" value="#{venta2.cantidad}"
+														style="width:40px;">
+														<p:ajax listener="#{ventaBean.strTotal()}"
+															update="GridVentas2 :form1:total" process="@this" />
+														<p:ajax listener="#{ventaBean.strIva()}"
+															update="GridVentas2 :form1:iva" process="@this" />
+														<p:ajax listener="#{ventaBean.strSubTotal()}"
+															update="GridVentas2 :form1:subTotal" process="@this" />
+														<p:ajax listener="#{ventaBean.strDescuentoPrecio2()}"
+															update="@form" process="@this" />
+													</p:inputText>
+												</p:column>
+												<p:column headerText="Descripcion"
+													style="text-align: center;">
+													<h:outputText value=" #{venta2.articulo.descripcion}" />
+												</p:column>
+												<p:column headerText="Laboratorio"
+													style="text-align: center;">
+													<h:outputText value=" #{venta.laboratorio}" />
+												</p:column>
+												<p:column headerText="Precio" style="text-align: center;">
+													<h:outputText value="$ #{venta2.articulo.precioVenta}" />
+												</p:column>
+												<p:column headerText="Precio Descuento"
+													style="text-align: center;">
+													<h:outputText value=" desc : (%#{venta2.descuento})" />
+												</p:column>
+												
+													<p:column headerText=" " style="text-align: center;">
+													<p:commandButton value="Eliminar" id="ajax6"
+														update="GridVentas2 :form1" icon="ui-icon-cancel"
+														actionListener="#{ventaBean.eliminarLineaVenta(venta2)}"
+														process="@this" styleClass="ui-priority-primary">
+													</p:commandButton>
+												</p:column>
+											
+											</p:dataTable>
 
-														<p:outputPanel style=" padding: 0; margin: 0;">
-															<p:outputLabel for="totalPrecioLinea" value="Total precio articulos:"
-																style="width:100%" />
-															<h:outputText id="totalPrecioLinea"
-																value="#{venta2.totalPrecioLinea}">
-															</h:outputText>
-														</p:outputPanel>
 
-													</h:panelGrid>
-												</p:panel>
-											</p:dataGrid>
 											<div>
 												<table
 													style="float: right; text-align: right; width: 250px;">
@@ -138,7 +182,7 @@
 												<table
 													style="float: right; text-align: right; width: 250px;">
 													<tr>
-														<td style="font-weight: bold;">Iva  </td>
+														<td style="font-weight: bold;">Iva</td>
 														<td><h:outputText id="iva"
 																value=" #{ventaBean.strIva()}">
 															</h:outputText></td>
@@ -158,15 +202,15 @@
 												</table>
 												<div class="clearBoth"></div>
 											</div>
-											<div style="margin-top: 20px; text-align: right;" >
-												<p:commandButton value="Enviar a facturar" id="ajax2" rendered="#{!ventaBean.ventaFacturacion}"
-													update="@form"
+											<div style="margin-top: 20px; text-align: right;">
+												<p:commandButton value="Enviar a facturar" id="ajax2"
+													rendered="#{!ventaBean.ventaFacturacion}" update="@form"
 													actionListener="#{ventaBean.facturarVenta()}"
 													process="@this" styleClass="ui-priority-primary" />
 											</div>
-											<div style="margin-top: 20px; text-align: right;" >
-												<p:commandButton value="Facturar" id="ajax1" rendered="#{!ventaBean.ventaFacturacion}"
-													update="@form"
+											<div style="margin-top: 20px; text-align: right;">
+												<p:commandButton value="Facturar" id="ajax1"
+													rendered="#{!ventaBean.ventaFacturacion}" update="@form"
 													actionListener="#{ventaBean.facturarVentaDirecto()}"
 													process="@this" styleClass="ui-priority-primary" />
 											</div>
@@ -176,45 +220,9 @@
 													actionListener="#{ventaBean.agregarVentaPerdida()}"
 													process="@this" styleClass="ui-priority-primary" />
 											</div>
-										</div>
-										<!-- 		<div
-											style="float: left; width: 70%; margin-left: 25px; min-width: 500px;"> -->
-										<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 
-											<div class="row" style="padding-left:15px; margin-bottom:5px">
-												<p:inputText id="descripcion2"
-													style="vertical-align: 8px; margin-right: 5px;"
-													value="#{ventaBean.descripcionBusqueda}"
-													placeholder="Buscar Articulo..." 
-													styleClass="col-xs-9 col-sm-10 col-md-11 col-lg-11"
-													/>
-												<p:commandButton value="" id="ajax3" update="GridVentas"
-													icon="ui-icon-search" style="width: 35px; height: 31px;"
-													actionListener="#{ventaBean.buscarArticulos}"
-													styleClass="ui-priority-primary col-xs-3 col-sm-2 col-md-1 col-lg-1 " />
-											</div>
-											<p:dataGrid var="venta" value="#{ventaBean.lineasVenta}"
-												columns="1" layout="grid" rows="12" paginator="true"
-												id="GridVentas">
-												<p:panel style="text-align:center">
-													<h:panelGrid columns="4" style="width:100%"
-														styleClass="tablaBusqueda">
 
-														<h:outputText value="#{venta.descripcion}" />
-														<h:outputText value=" #{venta.laboratorio}" />
-														<h:outputText value="precio: $#{venta.precioVenta}" />
-														<h:outputText value="stock:#{venta.stock}" />
 
-														<p:commandButton update="GridVentas :ventaDetail"
-															oncomplete="PF('ventaDialog').show()" icon="ui-icon-search" ajax="true"
-															title="Ver Detalle">
-															<f:setPropertyActionListener value="#{venta}"
-																target="#{ventaBean.articuloSeleccionado}" />
-														</p:commandButton>
-
-													</h:panelGrid>
-												</p:panel>
-											</p:dataGrid>
 
 										</div>
 
@@ -246,7 +254,7 @@
 			<p:outputPanel id="ventaDetail">
 				<p:panelGrid columns="2" style="width:100%">
 
-					<p:inputText id="canti"
+					<p:inputText id="cant"
 						value="#{ventaBean.articuloSeleccionado.cantidad}"
 						style="width:40px;">
 					</p:inputText>
@@ -291,8 +299,6 @@
 							style="width:50%">
 						</p:inputText>
 					</p:outputPanel>
-					
-
 				</p:panelGrid>
 				<p:commandButton value="Agregar" id="ajax11" update=":form1"
 					actionListener="#{ventaBean.agregarLineaVenta(ventaBean.articuloSeleccionado)}"
