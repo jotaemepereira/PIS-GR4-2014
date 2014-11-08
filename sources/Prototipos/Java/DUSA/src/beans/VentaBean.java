@@ -509,7 +509,47 @@ public class VentaBean implements Serializable {
 		}
 		return totIva.toString();
 	}
+	
+	public void cancelarVenta(){
+		
+		lineasVenta2 = new ArrayList<LineaVenta>();
+		lineasVenta = new ArrayList<DTVenta>();
+		
+	}
+	
+	public String strDescuentos(){
+		
+		BigDecimal total = new BigDecimal(0);
+		Iterator<LineaVenta> it = lineasVenta2.iterator();
+		while (it.hasNext()) {
+			LineaVenta v = it.next();
+			BigDecimal x = new BigDecimal(0);
+			
+			if ((v.getDescuento().compareTo(new BigDecimal(101)) == -1)
+					&& (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)) {
 
+				// calculo lo que tengo que restarle al precio segun el
+				// descuento
+				// seleccionado:
+				x = (v.getArticulo().getPrecioVenta()
+						.multiply(v.getDescuento()))
+						.divide(new BigDecimal(100));	
+			} else {
+
+				FacesContext
+						.getCurrentInstance()
+						.addMessage(
+								null,
+								new FacesMessage(
+										FacesMessage.SEVERITY_ERROR,
+										"el descuento ingresado debe ser un numero entre 0 y 100",
+										""));
+			}
+			total = total.add( x.multiply(new BigDecimal( v.getCantidad() ) ) );	
+		}
+		return total.toString();
+	}
+	
 	public String strTotal() {
 		BigDecimal total = new BigDecimal(0);
 		Iterator<LineaVenta> it = lineasVenta2.iterator();
