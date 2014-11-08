@@ -49,7 +49,7 @@ public class StockControlador implements IStock {
 				&& (FabricaPersistencia.getStockPersistencia()
 						.existeArticulo(articulo.getDescripcion()))) {
 			throw (new Excepciones(Excepciones.MENSAJE_ART_DUPLICADO,
-					Excepciones.ERROR_DATOS));
+					Excepciones.ADVERTENCIA_DATOS));
 		}
 		FabricaPersistencia.getStockPersistencia().persistirArticulo(articulo);
 	}
@@ -237,7 +237,7 @@ public class StockControlador implements IStock {
 
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
-		// grabarTiposIVA();
+		//grabarTiposIVA();
 		return FabricaPersistencia.getStockPersistencia()
 				.obtenerAccionesTerapeuticas();
 	}
@@ -279,32 +279,22 @@ public class StockControlador implements IStock {
 		return articulos;
 	}
 
-	public void actualizarStock() throws Excepciones {
+	public void actualizarStock(Date fecha) throws Excepciones {
 		System.out.println("actualizarStock controlador");
-		Calendar calendario = Calendar.getInstance();
-		calendario.add(Calendar.DAY_OF_MONTH, -36);
-		calendario.add(Calendar.DAY_OF_WEEK, -2);
-		java.util.Date fecha = calendario.getTime();
-		List<Articulo> articulos = FabricaServicios.getIServicios()
-				.obtenerActualizacionDeStock(fecha);
+//		Calendar calendario = Calendar.getInstance();
+//		calendario.add(Calendar.DAY_OF_MONTH, -36);
+//		calendario.add(Calendar.DAY_OF_WEEK, -2);
+//		java.util.Date fecha = calendario.getTime();
 
-		// Se tendrian que recorrer todos los articulos y checkear si el
-		// artículo ya existe o no
-		// En caso de que exista, se actualiza el precio y el estado del
-		// artículo
-		// Caso contrario, el artículo es nuevo y se almacena en la base de
-		// datos.
-
-		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
-		for (Articulo a : articulos) {
-			sp.persistirArticulo(a);
+		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
+		List<Cambio> cambios = FabricaPersistencia.getStockPersistencia().obtenerCambios(articulos);
+		
+		String contenido = new String();
+		Iterator<Cambio> it = cambios.iterator();
+		while (it.hasNext()){
+			contenido.concat(it.next().toString());
 		}
-	}                      
-	List <Cambio> actualizarStock(Timestamp ultAct) throws Excepciones{
-		IServicio serv = FabricaServicios.getIServicios();
-		List<Articulo> arts = serv.obtenerActualizacionDeStock(ultAct);
-		IStockPersistencia sp = FabricaPersistencia.getStockPersistencia();
-		List<Cambio> cambios =sp.actualizarStock(arts);
+			
 		IUsuarioPersistencia iup = FabricaPersistencia.getInstanciaUsuaruiPersistencia();
 		List <String> admins = iup.getAdminisMails();
 		Mail m = new Mail();
@@ -319,10 +309,12 @@ public class StockControlador implements IStock {
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}
-		return cambios;
 		                
-	}
+	
          
+
+	}                      
+
 	@Override
 	public List<TipoIva> obtenerTiposIva() throws Excepciones {
 		return FabricaPersistencia.getStockPersistencia().obtenerTiposIva();
@@ -378,5 +370,20 @@ public class StockControlador implements IStock {
 
 		return getDatosArticulosBuscados(encontrados);
 	}
+
+	@Override
+	public Articulo obtenerArticulo(int idArticulo) throws Excepciones {
+		return FabricaPersistencia.getStockPersistencia().obtenerArticulo(idArticulo);
+	}
+
+	@Override
+	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor)
+			throws Excepciones {
+		// TODO Auto-generated method stub
+		return FabricaPersistencia.getStockPersistencia().
+				obtenerArticulosDelProveedor(idProveedor);
+		
+	}
+	
 
 }

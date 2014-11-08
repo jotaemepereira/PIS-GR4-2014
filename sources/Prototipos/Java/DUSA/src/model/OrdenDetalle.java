@@ -2,7 +2,9 @@ package model;
 
 import java.math.BigDecimal;
 
+import uy.com.dusa.ws.DataLineaComprobante;
 import controladores.Excepciones;
+import controladores.FabricaPersistencia;
 
 public class OrdenDetalle {
 	private long idOrden;
@@ -14,6 +16,26 @@ public class OrdenDetalle {
 	private String descripcionOferta;
 	private int indicadorDeFacturacion;
 	private long productId;
+	
+	public OrdenDetalle() {}
+	
+	public OrdenDetalle(DataLineaComprobante linea) throws Excepciones{
+		this.numeroLinea = linea.getNumeroLinea();
+    	this.numeroArticulo = linea.getNumeroArticulo();
+    	this.cantidad = linea.getCantidad();
+    	this.precioUnitario = linea.getPrecioUnitario();
+    	this.descuento = (linea.getDescuento() != null) ? linea.getDescuento() : new BigDecimal(0);
+    	this.descripcionOferta = linea.getDescripcionOferta();
+    	this.indicadorDeFacturacion = linea.getIndicadorDeFacturacion();
+    	
+    	// Obtengo los id todos juntos de los articulos de la factura
+    	try {
+			FabricaPersistencia.getInstanciaComprasPersistencia().getDatosArticulo(this);
+		} catch (Excepciones e) {
+			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+		}
+	}
 
 	public long getIdOrden() {
 		return idOrden;

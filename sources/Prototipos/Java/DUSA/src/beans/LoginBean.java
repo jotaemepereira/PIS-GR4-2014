@@ -1,6 +1,7 @@
 package beans;
 
 import interfaces.ISistema;
+
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -12,6 +13,8 @@ import javax.faces.context.FacesContext;
 import controladores.Excepciones;
 import controladores.FabricaSistema;
 import model.Enumerados;
+import model.Usuario;
+import model.Enumerados.casoDeUso;
 
 /**
  * @author santiago, juan
@@ -68,7 +71,8 @@ public class LoginBean implements Serializable {
 		if (instanciaSistema != null) { 
 			if ((instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarProveedor))
 					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.altaProveedor))
-					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarProveedor))) {
+					//TODO: Se comenta buscarProveedor ya que aun no se encuentra implementado
+					/*|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.buscarProveedor))*/) {
 				return ""; 
 			}
 			else return "display : none"; }
@@ -365,6 +369,26 @@ public class LoginBean implements Serializable {
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error al cargar la página.", ""));
 		}
+	}
+	
+	public String indexVentasPorPermisos() {
+		
+		/*Por defecto se va a busqueda de articulo*/
+		String paginaIndex = "../stock/busquedaArticulo.jsf";
+		
+		if (this.instanciaSistema != null) {
+			
+			Usuario user = this.instanciaSistema.obtenerUsuarioLogueado();
+			if (user.tienePermiso(casoDeUso.registrarNuevaVenta)){
+
+				paginaIndex = "../ventas/nuevaVenta.jsf";
+			} else if (user.tienePermiso(casoDeUso.facturarVentaPendiente)) {
+				
+				paginaIndex = "../ventas/facturacion.jsf";
+			}  
+		}
+		
+		return paginaIndex;
 	}
 
 	public LoginBean() {

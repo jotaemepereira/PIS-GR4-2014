@@ -16,7 +16,7 @@ import uy.com.dusa.ws.DataLineaComprobante;
 public class DTComprobanteFactura {
 	
 	private int idProveedor;
-	private int idOrden;
+	private long idOrden;
 	private int tipoCFE;
     private String serieCFE;
     private long numeroCFE;
@@ -43,36 +43,6 @@ public class DTComprobanteFactura {
     private BigDecimal subtotalProdctos = new BigDecimal(0);
     
     public DTComprobanteFactura(){}
-    
-    public DTComprobanteFactura(DataComprobante comprobante){
-    	this.idProveedor = 1;
-    	this.tipoCFE = comprobante.getTipoCFE();
-    	this.serieCFE = comprobante.getSerieCFE();
-    	this.numeroCFE = comprobante.getNumeroCFE();
-    	this.fechaComprobante = comprobante.getFechaComprobante().toGregorianCalendar().getTime();
-    	this.formaDePago = comprobante.getFormaDePago().name();
-    	this.ordenDeCompra = comprobante.getOrdenDeCompra();
-    	this.montoNoGravado = comprobante.getMontoNoGravado();
-    	this.montoNetoGravadoIvaMinimo = comprobante.getMontoNetoGravadoIvaMinimo();
-    	this.montoNetoGravadoIvaBasico = comprobante.getMontoNetoGravadoIvaBasico();
-    	this.totalIvaMinimo = comprobante.getTotalIvaMinimo();
-    	this.totalIvaBasico = comprobante.getTotalIvaBasico();
-    	this.montoTotal = comprobante.getMontoTotal();
-    	this.montoRetenidoIVA = comprobante.getMontoRetenidoIVA();
-    	this.montoRetenidoIRAE = comprobante.getMontoRetenidoIRAE();
-    	this.montoNoFacturable = comprobante.getMontoNoFacturable();
-    	this.montoTotalAPagar = comprobante.getMontoTotalAPagar();
-    	this.montoTributoIvaMinimo = comprobante.getMontoTributoIvaMinimo();
-    	this.montoTributoIvaBasico = comprobante.getMontoTributoIvaBasico();
-    	
-    	Iterator<DataLineaComprobante> it = comprobante.getDetalle().iterator();
-    	while (it.hasNext()) {
-			DataLineaComprobante dataLineaComprobante = (DataLineaComprobante) it
-					.next();
-			this.detalle.add(new DTLineaFacturaCompra(dataLineaComprobante));
-		}
-    	
-    }
     
 	public int getTipoCFE() {
 		return tipoCFE;
@@ -194,10 +164,10 @@ public class DTComprobanteFactura {
 	public void setFormaDePago(String formaDePago) {
 		this.formaDePago = formaDePago;
 	}
-	public int getIdOrden() {
+	public long getIdOrden() {
 		return idOrden;
 	}
-	public void setIdOrden(int idOrden) {
+	public void setIdOrden(long idOrden) {
 		this.idOrden = idOrden;
 	}
 	public int getIdProveedor() {

@@ -26,6 +26,16 @@ public class Usuario {
 		}
 		return false;
 	}
+	public Operacion getOperacion(casoDeUso cu){
+		Iterator<Rol> it = this.roles.iterator();
+		while (it.hasNext()){
+			Rol r = it.next();
+			if (r.tienePermiso(cu))
+				return r.getOperacion(cu);
+		}
+		return null;
+		
+	}
 	public void setUsuarioId(int usuarioId) {
 		this.usuarioId = usuarioId;
 	}

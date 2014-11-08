@@ -72,6 +72,46 @@ public class Articulo {
 	private long[] accionesTer;
 	private boolean accionesTerModificado;
 	
+	public Articulo(Articulo articulo) {
+		this.accionesTer = articulo.accionesTer;
+		this.clave1 = articulo.clave1;
+		this.clave2 = articulo.clave2;
+		this.clave3 = articulo.clave3;
+		this.codigoBarras = articulo.codigoBarras;
+		this.codigoVenta = articulo.codigoVenta;
+		this.costoLista = articulo.costoLista;
+		this.costoOferta = articulo.costoOferta;
+		this.costoPromedio = articulo.costoPromedio;
+		this.descripcion = articulo.descripcion;
+		this.drogas = articulo.drogas;
+		this.esEstupefaciente = articulo.esEstupefaciente;
+		this.esHeladera = articulo.esHeladera;
+		this.esPsicofarmaco = articulo.esPsicofarmaco;
+		this.fechaUltimaModificacion = articulo.fechaUltimaModificacion;
+		this.fechaUltimoPrecio = articulo.fechaUltimoPrecio;
+		this.idArticulo = articulo.idArticulo;
+		this.idMarca = articulo.idMarca;
+		this.numero = articulo.numero;
+		this.porcentajePrecioVenta = articulo.porcentajePrecioVenta;
+		this.precioUnitario = articulo.precioUnitario;
+		this.precioVenta = articulo.precioVenta;
+		this.presentacion = articulo.presentacion;
+		this.proveedores = new HashMap<Integer, DTProveedor>(articulo.proveedores);
+		this.status = articulo.status;
+		this.stock = articulo.stock;
+		this.stockMinimo = articulo.stockMinimo;
+		this.tipoArticulo = articulo.tipoArticulo;
+		this.tipoAutorizacion = articulo.tipoAutorizacion;
+		this.tipoIva = new TipoIva();
+		this.tipoIva.setTipoIVA(articulo.tipoIva.getTipoIVA());
+		this.ultimoCosto = articulo.ultimoCosto;
+		this.usuario = new Usuario();
+		this.usuario.setNombre(articulo.getUsuario().getNombre());
+		this.vencimientoMasCercano = articulo.vencimientoMasCercano;
+	}
+	public Articulo() {
+
+	}
 	public long getIdArticulo() {
 		return idArticulo;
 	}

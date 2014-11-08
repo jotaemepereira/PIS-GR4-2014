@@ -8,11 +8,11 @@ import datatypes.DTVenta;
 
 public interface IFacturacion {
 	
-	public List<Venta> listarVentasPendientes() throws Exception;
+	public List<Venta> listarVentasPendientes() throws Excepciones;
 	
-	public void facturarVenta(long venta) throws Exception;
+	public void facturarVenta(long venta) throws Excepciones;
 	
-	public void cancelarVenta(long venta) throws Exception;
+	public void cancelarVenta(long venta) throws Excepciones;
 	
 	public void registrarNuevaVenta(Venta v)
 			throws Excepciones;

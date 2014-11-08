@@ -10,11 +10,11 @@ import model.Venta;
 
 public interface IFacturacionPersistencia {
 	
-	public List<Venta> listarVentasPendientes() throws Exception;
+	public List<Venta> listarVentasPendientes() throws Excepciones;
 
-	public Venta facturarVenta(long ventaId) throws Exception;
+	public Venta facturarVenta(long ventaId) throws Excepciones;
 	
-	public void cancelarVenta(long ventaId) throws Exception;
+	public void cancelarVenta(long ventaId) throws Excepciones;
 	
 	public void marcarVentaFacturada(long ventaId) throws Exception;
 

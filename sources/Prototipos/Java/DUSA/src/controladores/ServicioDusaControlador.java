@@ -22,6 +22,7 @@ import uy.com.dusa.ws.MensajeError;
 import uy.com.dusa.ws.PedidoFormaDePago;
 import uy.com.dusa.ws.ResultGetComprobante;
 import uy.com.dusa.ws.ResultGetComprobantes;
+import uy.com.dusa.ws.ResultGetStock;
 import uy.com.dusa.ws.ResultRealizarPedido;
 import uy.com.dusa.ws.WSConsultaComprobantes;
 import uy.com.dusa.ws.WSConsultaComprobantesService;
@@ -33,6 +34,7 @@ import model.Articulo;
 import model.Enumerados;
 import model.Enumerados.TipoFormaDePago;
 import model.LineaPedido;
+import model.Orden;
 import model.Pedido;
 import model.TipoIva;
 import model.Usuario;
@@ -161,7 +163,6 @@ public class ServicioDusaControlador implements IServicio {
 			for (DataInfoProducto dp: dataArticulos) {
 				articulos.add(transformarArticulo(dp));
 			}
-			
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -204,9 +205,7 @@ public class ServicioDusaControlador implements IServicio {
 	}
 
 	@Override
-	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
-		Map<Long, DTComprobanteFactura> comprobantes = new HashMap<Long, DTComprobanteFactura>();
-		
+	public void obtenerFacturasDUSA() throws Excepciones {
 		try {
 			WSConsultaComprobantes wscomprobantes = new WSConsultaComprobantesService().getWSConsultaComprobantesPort();
 			GregorianCalendar gCalendar = new GregorianCalendar(2014, 8, 15);
@@ -224,14 +223,18 @@ public class ServicioDusaControlador implements IServicio {
 			while (it.hasNext()) {
 				DataComprobante dataComprobante = (DataComprobante) it.next();
 				
-				comprobantes.put(dataComprobante.getOrdenDeCompra(), new DTComprobanteFactura(dataComprobante));
+				Orden orden = new Orden(dataComprobante, false);
+				if(orden.getDetalle() != null){ // Todos los productos estaban en el sistema
+					FabricaPersistencia.getInstanciaComprasPersistencia().ingresarFacturaCompra(orden);
+				}else{
+					System.out.println("ORDEN SIN PRODUCTO");
+				}
+				
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Excepciones(Excepciones.MENSAJE_ERROR_CONEXION_WS, Excepciones.ERROR_SIN_CONEXION);
 		}
-		
-		return comprobantes;
 	}
 }

@@ -13,13 +13,14 @@ public class Actividad {
 	 */
 	
 	private long userId;
+	private String userName;
 	private long opId;
 	private String opName;
 	
-	public Actividad(Operacion op, long userId){
+	public Actividad(Operacion op, String userName){
 		this.opId = op.getId();
 		this.opName = op.getNombre();
-		this.userId = userId;
+		this.userName = userName;
 	}
 
 	public long getUserId() {
@@ -28,6 +29,14 @@ public class Actividad {
 
 	public void setUserId(long userId) {
 		this.userId = userId;
+	}
+	
+	public String getUserName() {
+		return userName;
+	}
+	
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public long getOpId() {

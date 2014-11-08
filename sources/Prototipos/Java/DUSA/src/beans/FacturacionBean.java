@@ -1,6 +1,6 @@
 package beans;
 
-import interfaces.IFacturacion;
+import interfaces.ISistema;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,33 +12,56 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.context.RequestContext;
+
 import model.Enumerados;
 import model.LineaVenta;
 import model.Venta;
 import controladores.Excepciones;
-import controladores.FabricaLogica;
 
 @ManagedBean
 @ViewScoped
 public class FacturacionBean implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2007052022183720826L;
+
+	private ISistema instanciaSistema;
+	
 	private List<Venta> ventas;
 	private Venta ventaSeleccionada;
 	private boolean[] lineasCheck;
 	private boolean facturacionControlada = false;
 	
-	public FacturacionBean() {
-		try {
-			facturacionControlada = (Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext()
-					.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.controlada);
+	/**
+	 * Utilizado en el xhtml por el loginBean
+	 * @param s
+	 */
+	public void setISistema(ISistema s){
+		
+		this.instanciaSistema = s;
+		if (this.instanciaSistema != null) {
 			
-			IFacturacion ifact = FabricaLogica.getIFacturacion();
-			ventas = ifact.listarVentasPendientes();
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							Excepciones.MENSAJE_ERROR_SISTEMA, ""));
+			try {
+				facturacionControlada = (Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext()
+						.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.controlada);
+				
+				ventas = this.instanciaSistema.listarVentasPendientes();
+			} catch (Excepciones e) {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								e.getMessage(), ""));
+			} catch (Exception ex) {
+				
+				ex.printStackTrace();
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								ex.getMessage(), ""));
+			}
 		}
 	}
 
@@ -55,38 +78,45 @@ public class FacturacionBean implements Serializable {
 
 			if (allCheck) {
 
-				IFacturacion ifact = FabricaLogica.getIFacturacion();
-				ifact.facturarVenta(ventaSeleccionada.getVentaId());
+				this.instanciaSistema.facturarVentaPendiente(ventaSeleccionada.getVentaId());
 
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
 								Excepciones.MENSAJE_FACTURADA_OK, ""));
-				ventas = ifact.listarVentasPendientes();
+				ventas = this.instanciaSistema.listarVentasPendientes();
+				RequestContext.getCurrentInstance().execute("PF('dlg2').hide()");
 			} else {
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR,
 								Excepciones.MENSAJE_NO_CORROBORADO_OK, ""));
 			}
+		} catch (Excepciones ex) {
+			//Se notifica del error ocurrido en el sistema
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							ex.getMessage(), ""));
+ 
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							Excepciones.MENSAJE_ERROR_SISTEMA, ""));
+ 
 		}
 	}
 
 	public void cancelar() {
 		try {
-			IFacturacion ifact = FabricaLogica.getIFacturacion();
-			ifact.cancelarVenta(ventaSeleccionada.getVentaId());
+			this.instanciaSistema.cancelarVentaPendiente(ventaSeleccionada.getVentaId());
 
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_INFO,
 							Excepciones.MENSAJE_CANCELADA_OK, ""));
-			ventas = ifact.listarVentasPendientes();
+			ventas = this.instanciaSistema.listarVentasPendientes();
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
@@ -152,6 +182,14 @@ public class FacturacionBean implements Serializable {
 
 	public void setLineasCheck(boolean[] lineasCheck) {
 		this.lineasCheck = lineasCheck;
+	}
+
+	public ISistema getInstanciaSistema() {
+		return instanciaSistema;
+	}
+
+	public void setInstanciaSistema(ISistema instanciaSistema) {
+		this.instanciaSistema = instanciaSistema;
 	}
 
 }

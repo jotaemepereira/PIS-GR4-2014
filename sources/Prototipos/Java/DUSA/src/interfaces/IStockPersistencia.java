@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import sun.print.resources.serviceui;
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
@@ -11,6 +12,7 @@ import datatypes.DTProveedor;
 import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
+import model.Cambio;
 import model.Droga;
 import model.LineaPedido;
 import model.OrdenDetalle;
@@ -61,7 +63,6 @@ public interface IStockPersistencia {
 	 * @throws Excepciones
 	 */
 	public void persistirPedido(Pedido p) throws Excepciones;
-	public boolean existeArticulo(String descripcion) throws Excepciones;
 	
 	/**
 	 * función encargada de realizar la busqueda en solr
@@ -191,20 +192,6 @@ public interface IStockPersistencia {
 	 * @throws Excepciones
 	 */
 	public void modificarStock(long[] idsArticulo, long[] nuevosValores) throws Exception;
-	
-	/**
-	 * Persiste el movimiento de stock del articulo 'articuloID' realizado por el usuario 'usuario' 
-	 * 
-	 * @author Guille
-	 * @param usuario
-	 * @param productoID
-	 * @param cantidad Cantidad relacionada al tipo de movimiento
-	 * @param char tipoMovimientoDeStock indicando si es un aumento, baja o desarme de stock
-	 * @param motivo Motivo del cambio de stock
-	 * @see model.Enumerados.tipoMovimientoDeStock
-	 * @throws Exception
-	 */
-	public void movimientoStock(String usuario, long aticuloID, long cantidad, char tipoMovimiento, String motivo) throws Exception;
 
 	/**
 	 * Aumenta el valor del stock segun lo comprado
@@ -214,4 +201,40 @@ public interface IStockPersistencia {
 	 * @author Victoria Díaz
 	 */
 	public void actualizarStockCompra(List<OrdenDetalle> detalles) throws Excepciones;
+
+	/**
+	 * Persiste el movimiento de stock del articulo 'articuloID' realizado por el usuario 'usuario' 
+	 * 
+	 * @param usuario
+	 * @param aticuloID
+	 * @param cantidad Cantidad relacionada al tipo de movimiento
+	 * @param tipoMovimiento tipoMovimientoDeStock indicando si es un aumento, baja o desarme de stock
+	 * @param motivo Motivo del cambio de stock
+	 * @throws Exception
+	 * @author Guille
+	 * @see model.Enumerados.tipoMovimientoDeStock
+	 */
+	public void movimientoStock(String usuario, long aticuloID, long cantidad, char tipoMovimiento, String motivo) throws Exception;
+
+	public List <Cambio> obtenerCambios(List <Articulo> arts) throws Excepciones;
+
+	boolean existeArticulo(String descripcion) throws Excepciones;
+
+	/**
+	 * Devuelve un artículo con todos sus datos, sus proveedores, drogas y acciones terapéuticas.
+	 * @param idArticulo
+	 * 			- Identificador del artículo.
+	 * @return Articulo
+	 * 			- Entidad de modelo con los datos del artículo de id idArticulo. 
+	 * @throws Excepciones
+	 * @author José Aguerre
+	 */
+	public Articulo obtenerArticulo(int idArticulo) throws Excepciones;
+	
+	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
+	
+	
+
+
 }
+
