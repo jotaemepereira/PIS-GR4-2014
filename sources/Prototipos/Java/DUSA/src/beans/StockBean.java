@@ -41,6 +41,7 @@ import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTTipoArticulo;
 
@@ -60,7 +61,7 @@ public class StockBean implements Serializable {
 	//Modificación
 	private boolean modificacion;
 	private Articulo articuloSinCambios;
-	private List<DTProveedor> nuevosProveedores = new ArrayList<DTProveedor>();
+	private DTModificacionArticulo articuloModificado;	
 	 
 	// Proveedores
 	private int proveedor;
@@ -94,8 +95,9 @@ public class StockBean implements Serializable {
 	private String busqueda = "";
 	private List<DTBusquedaArticulo> resBusqueda = new ArrayList<DTBusquedaArticulo>();
 
-	//
-	private DTBusquedaArticulo articuloSeleccionado;	
+	//Para las selecciones de las tablas
+	private DTBusquedaArticulo articuloSeleccionado;
+	private DTProveedor proveedorSeleccionado;
 
 	public DTBusquedaArticulo getArticuloSeleccionado() {
 		return articuloSeleccionado;
@@ -103,6 +105,14 @@ public class StockBean implements Serializable {
 
 	public void setArticuloSeleccionado(DTBusquedaArticulo articuloSeleccionado) {
 		this.articuloSeleccionado = articuloSeleccionado;
+	}
+
+	public DTProveedor getProveedorSeleccionado() {
+		return proveedorSeleccionado;
+	}
+
+	public void setProveedorSeleccionado(DTProveedor proveedorSeleccionado) {
+		this.proveedorSeleccionado = proveedorSeleccionado;
 	}
 
 	public List<DTLineaPedido> getPedidos() {
@@ -159,14 +169,6 @@ public class StockBean implements Serializable {
 
 	public void setArticuloAModificar(Articulo articuloAModificar) {
 		this.articuloSinCambios = articuloAModificar;
-	}
-
-	public List<DTProveedor> getNuevosProveedores() {
-		return nuevosProveedores;
-	}
-
-	public void setNuevosProveedores(List<DTProveedor> nuevosProveedores) {
-		this.nuevosProveedores = nuevosProveedores;
 	}
 
 	public int getProveedor() {
@@ -326,7 +328,7 @@ public class StockBean implements Serializable {
 	 */
 	public String onFlowProcess(FlowEvent event) {
 		if (event.getNewStep().equals("tabModificacion")){ 
-			this.modificacion = true;
+			this.modificacion = true;			
 			cargarArticuloParaModificacion();
 		}
 		return event.getNewStep();
@@ -337,6 +339,7 @@ public class StockBean implements Serializable {
 			this.articulo = this.instanciaSistema
 					.obtenerArticulo(articuloSeleccionado.getIdArticulo());
 			this.articuloSinCambios = new Articulo(articulo);
+			this.articuloModificado = new DTModificacionArticulo();
 			this.proveedoresSeleccionados = new ArrayList<DTProveedor>(articulo.getProveedores().values());
 			this.noEsMedicamento = articulo.getTipoArticulo() != Enumerados.tipoArticulo.MEDICAMENTO;
 		} catch (Excepciones e) {
@@ -389,6 +392,12 @@ public class StockBean implements Serializable {
 								.getNombreComercial());
 						p.setCodigoIdentificador(codigoIdentificador);
 						this.proveedoresSeleccionados.add(p);
+						
+						//Si estoy modificando, lo cargo en la lista de nuevos proveedores del articulo modificado.
+						if (modificacion){
+							this.articuloModificado.getProveedoresNuevos().add(p);
+						}
+						
 						this.proveedor = 0;
 						this.codigoIdentificador = 0;
 					} else {
@@ -408,6 +417,21 @@ public class StockBean implements Serializable {
 						FacesMessage.SEVERITY_WARN,
 						"Ya seleccionó el proveedor.", ""));
 			}
+		} else {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_WARN,
+					"Debe seleccionar un proveedor.", ""));
+		}
+	}
+	
+	public void eliminarProveedor(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (proveedorSeleccionado != null){
+			//Si estoy modificando, lo cargo a la lista de proveedoresABorrar del articulo modificado.
+			if (modificacion){
+				this.articuloModificado.getProveedoresABorrar().add(proveedorSeleccionado);
+			}
+			this.proveedoresSeleccionados.remove(proveedorSeleccionado);
 		} else {
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_WARN,
@@ -525,6 +549,21 @@ public class StockBean implements Serializable {
 	}
 
 	public void cancelarAltaArticulo() {
+		refresh();
+	}
+	
+	public void modificarArticulo(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (!proveedoresSeleccionados.isEmpty()) {
+			this.articuloModificado.setArticulo(articulo);		
+		} else {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Debe seleccionar al menos un proveedor", ""));
+		}
+	}
+	
+	public void cancelarModificarArticulo(){
 		refresh();
 	}
 

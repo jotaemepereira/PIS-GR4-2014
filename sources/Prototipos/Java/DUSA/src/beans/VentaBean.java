@@ -50,6 +50,7 @@ public class VentaBean implements Serializable {
 	private List<DTVenta> lineasVenta = new ArrayList<DTVenta>();
 	private List<LineaVenta> lineasVenta2 = new ArrayList<LineaVenta>();
 	private List<LineaVenta> lineasVentaPerdidas = new ArrayList<LineaVenta>();
+	private DTVenta articuloSeleccionado = new DTVenta();
 	private String strDescuento = "";
 	private boolean descuentoReceta1 = false;
 	private boolean descuentoReceta2 = false;
@@ -87,13 +88,6 @@ public class VentaBean implements Serializable {
 			lineasVenta = FabricaSistema.getISistema().buscarArticulosVenta(
 					descripcionBusqueda);
 
-			Iterator<DTVenta> it = lineasVenta.iterator();
-			while (it.hasNext()) {
-				DTVenta dtVenta = (DTVenta) it.next();
-				System.out.println("precio " + dtVenta.getPrecioVenta());
-				dtVenta.setDescuentoPrecio("$"
-						+ dtVenta.getPrecioVenta().toString() + "(%0)");
-			}
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -214,6 +208,10 @@ public class VentaBean implements Serializable {
 
 		}
 
+	}
+	
+	public void eliminarLineaVenta(LineaVenta lv){
+			lineasVenta2.remove(lv);			
 	}
 
 	public void agregarVentaPerdida() {
@@ -420,7 +418,9 @@ public class VentaBean implements Serializable {
 	public void agregarLineaVenta(DTVenta v) {
 
 		// pasar del DTVenta a una LineaVenta los datos.
-		v.setCantidad(1);
+		if (v.getCantidad()==0){
+			v.setCantidad(1);
+		}
 		v.setDescuentoReceta("");
 		LineaVenta e = new LineaVenta();
 		e.setTotalPrecioLinea("$"
@@ -439,6 +439,7 @@ public class VentaBean implements Serializable {
 		//TODO ver el tema de descripcion oferta:
 		e.setDescripcionOferta("Falta ver este tema");
 		e.setDescuentoPrecio(v.getDescuentoPrecio());
+		e.setDescuentoPrecio(articuloSeleccionado.getDescuentoPrecio());
 		e.setIva(v.getIva());
 		e.setIndicadorFacturacion(v.getIndicadorFacturacion());
 
@@ -518,6 +519,17 @@ public class VentaBean implements Serializable {
 			BigDecimal n = new BigDecimal(0);
 			BigDecimal x = new BigDecimal(0);
 			
+//			if(!(v.getDescuentoPrecio().isEmpty())){
+//				if(v.getDescuentoPrecio().equals("5") ){
+//					v.setDescuento(new BigDecimal(5));
+//				}else if(v.getDescuentoPrecio().equals("10") ){
+//					v.setDescuento(new BigDecimal(10));
+//				}else if(v.getDescuentoPrecio().equals("15") ){
+//					v.setDescuento(new BigDecimal(15));
+//				}
+//			}
+			
+			
 			if (  (v.getDescuento().compareTo(new BigDecimal(101)) == -1) && (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)   ){
 				
 				// calculo lo que tengo que restarle al precio segun el descuento
@@ -534,6 +546,7 @@ public class VentaBean implements Serializable {
 				if (v.getDescuentoReceta().equals("40")) {
 					n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
 							30))).divide(new BigDecimal(100));
+				}
 				}else {
 
 					FacesContext
@@ -546,7 +559,6 @@ public class VentaBean implements Serializable {
 											""));
 				}
 				
-			}
 			// sumo los totales restandole los descuentos correspondientes a
 			// cada uno y los multiplico por las cantidades
 			total = total.add(((v.getArticulo().getPrecioVenta().subtract(x))
@@ -662,6 +674,14 @@ public class VentaBean implements Serializable {
 
 	public void setVentaFacturacion(boolean ventaFacturacion) {
 		this.ventaFacturacion = ventaFacturacion;
+	}
+
+	public DTVenta getArticuloSeleccionado() {
+		return articuloSeleccionado;
+	}
+
+	public void setArticuloSeleccionado(DTVenta articuloSeleccionado) {
+		this.articuloSeleccionado = articuloSeleccionado;
 	}
 
 }
