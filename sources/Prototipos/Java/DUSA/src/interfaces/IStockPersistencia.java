@@ -231,6 +231,8 @@ public interface IStockPersistencia {
 	 */
 	public Articulo obtenerArticulo(int idArticulo) throws Excepciones;
 	
+	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
+	
 	
 
 

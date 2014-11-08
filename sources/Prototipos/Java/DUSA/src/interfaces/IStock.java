@@ -199,4 +199,6 @@ public interface IStock {
 	 */
 	public void actualizarStock(Date fecha) throws Excepciones;
 	
+	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
+	
 }
