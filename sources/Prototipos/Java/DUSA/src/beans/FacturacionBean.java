@@ -23,6 +23,11 @@ import controladores.Excepciones;
 @ViewScoped
 public class FacturacionBean implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2007052022183720826L;
+
 	private ISistema instanciaSistema;
 	
 	private List<Venta> ventas;
@@ -30,17 +35,33 @@ public class FacturacionBean implements Serializable {
 	private boolean[] lineasCheck;
 	private boolean facturacionControlada = false;
 	
-	public FacturacionBean() {
-		try {
-			facturacionControlada = (Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext()
-					.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.controlada);
+	/**
+	 * Utilizado en el xhtml por el loginBean
+	 * @param s
+	 */
+	public void setISistema(ISistema s){
+		
+		this.instanciaSistema = s;
+		if (this.instanciaSistema != null) {
 			
-			ventas = this.instanciaSistema.listarVentasPendientes();
-		} catch (Excepciones e) {
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							e.getMessage(), ""));
+			try {
+				facturacionControlada = (Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext()
+						.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.controlada);
+				
+				ventas = this.instanciaSistema.listarVentasPendientes();
+			} catch (Excepciones e) {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								e.getMessage(), ""));
+			} catch (Exception ex) {
+				
+				ex.printStackTrace();
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								ex.getMessage(), ""));
+			}
 		}
 	}
 
@@ -169,11 +190,6 @@ public class FacturacionBean implements Serializable {
 
 	public void setInstanciaSistema(ISistema instanciaSistema) {
 		this.instanciaSistema = instanciaSistema;
-	}
-	
-	public void setISistema(ISistema s){
-		
-		this.instanciaSistema = s;
 	}
 
 }
