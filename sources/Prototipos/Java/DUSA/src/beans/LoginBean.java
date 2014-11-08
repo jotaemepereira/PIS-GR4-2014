@@ -379,13 +379,13 @@ public class LoginBean implements Serializable {
 		if (this.instanciaSistema != null) {
 			
 			Usuario user = this.instanciaSistema.obtenerUsuarioLogueado();
-			if (user.tienePermiso(casoDeUso.facturarVentaPendiente)) {
-				
-				paginaIndex = "../ventas/facturacion.jsf";
-			} else if (user.tienePermiso(casoDeUso.registrarNuevaVenta)){
+			if (user.tienePermiso(casoDeUso.registrarNuevaVenta)){
 
 				paginaIndex = "../ventas/nuevaVenta.jsf";
-			}
+			} else if (user.tienePermiso(casoDeUso.facturarVentaPendiente)) {
+				
+				paginaIndex = "../ventas/facturacion.jsf";
+			}  
 		}
 		
 		return paginaIndex;

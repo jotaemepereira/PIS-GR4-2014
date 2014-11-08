@@ -167,8 +167,8 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 	public void registrarActividad(Actividad act)throws Excepciones{
 		PreparedStatement stmt = null;
 		String query = "INSERT INTO USER_ACTIVITY "+ 
-				"(USER_ID, OPERATION_ID, OPERATION_NAME, LOG_DATE) " +
-				"VALUES (  " + act.getUserId() + " , "+ act.getOpId() +" , '"+ act.getOpName() +"' , " + "LOCALTIMESTAMP );" ;
+				"(USERNAME, OPERATION_ID, OPERATION_NAME, LOG_DATE) " +
+				"VALUES (  '" + act.getUserName() + "' , "+ act.getOpId() +" , '"+ act.getOpName() +"' , " + "LOCALTIMESTAMP );" ;
 
 		try {
 			Connection c = Conexion.getConnection();			

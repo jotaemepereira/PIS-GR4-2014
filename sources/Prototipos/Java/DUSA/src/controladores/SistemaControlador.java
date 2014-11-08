@@ -41,7 +41,7 @@ public class SistemaControlador implements ISistema {
 				//Registro actividad del usuario
 				
 				Operacion operacion = user.getOperacion(casoDeUso.altaProveedor);
-				Actividad act = new Actividad(operacion, user.getUsuarioId());
+				Actividad act = new Actividad(operacion, user.getNombre());
 				
 				FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
 			} catch (Excepciones e) {
@@ -51,7 +51,7 @@ public class SistemaControlador implements ISistema {
 					//Dado que es una advertencia, la actividad fue efectuada y se debe persistir.
 					
 					Operacion operacion = user.getOperacion(casoDeUso.altaProveedor);
-					Actividad act = new Actividad(operacion, user.getUsuarioId());
+					Actividad act = new Actividad(operacion, user.getNombre());
 					
 					FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
 				}
@@ -281,7 +281,7 @@ public class SistemaControlador implements ISistema {
 			FabricaLogica.getIFacturacion().facturarVenta(idVenta);
 			
 			Operacion operacion = user.getOperacion(casoDeUso.facturarVentaPendiente);
-			Actividad act = new Actividad(operacion, user.getUsuarioId());
+			Actividad act = new Actividad(operacion, user.getNombre());
 			
 			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
 		} else {
