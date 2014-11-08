@@ -42,6 +42,7 @@ import model.LineaPedido;
 import model.OrdenDetalle;
 import model.Pedido;
 import model.TipoIva;
+import model.Usuario;
 import interfaces.IStockPersistencia;
 
 public class PStockControlador implements IStockPersistencia {
@@ -1441,6 +1442,9 @@ public class PStockControlador implements IStockPersistencia {
 				}
 				articulo.setStock(rs.getLong("stock"));
 				articulo.setStockMinimo(rs.getLong("minimum_stock"));
+				Usuario usr = new Usuario();
+				usr.setNombre(rs.getString("username"));
+				articulo.setUsuario(usr);
 				articulo.setStatus(rs.getBoolean("status"));
 			}			
 			

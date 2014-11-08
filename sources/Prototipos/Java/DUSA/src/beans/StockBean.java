@@ -41,6 +41,7 @@ import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTTipoArticulo;
 
@@ -55,9 +56,13 @@ public class StockBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Articulo articulo = new Articulo();
 	private boolean noEsMedicamento;
-	private int tipoIvaSeleccionado;
 	private String radioPrecioVenta;
-
+	
+	//Modificación
+	private boolean modificacion;
+	private Articulo articuloSinCambios;
+	private DTModificacionArticulo articuloModificado;	
+	 
 	// Proveedores
 	private int proveedor;
 	private long codigoIdentificador;
@@ -81,22 +86,18 @@ public class StockBean implements Serializable {
 	private List<DTFormasVenta> formasVenta = new ArrayList<DTFormasVenta>();
 	private List<DTTipoArticulo> tiposArticulo = new ArrayList<DTTipoArticulo>();
 	private List<TipoIva> tiposIVA;
+	private int tipoIvaSeleccionado;
 	private List<DTLineaPedido> pedidos = new ArrayList<DTLineaPedido>();
 	private String message;
 	private String messageClass;
-	private Boolean disableDesdeUltimoPedido = false;
-	private Boolean disablePrediccionDePedido = false;
 
 	// Busqueda de artículos
 	private String busqueda = "";
 	private List<DTBusquedaArticulo> resBusqueda = new ArrayList<DTBusquedaArticulo>();
 
-	//
+	//Para las selecciones de las tablas
 	private DTBusquedaArticulo articuloSeleccionado;
-	private int tipoMotivo;
-	private String motivo;
-	private String busquedaDesarme = "";
-	private List<DTBusquedaArticulo> resBusquedaDesarme = new ArrayList<DTBusquedaArticulo>();
+	private DTProveedor proveedorSeleccionado;
 
 	public DTBusquedaArticulo getArticuloSeleccionado() {
 		return articuloSeleccionado;
@@ -106,37 +107,12 @@ public class StockBean implements Serializable {
 		this.articuloSeleccionado = articuloSeleccionado;
 	}
 
-	public int getTipoMotivo() {
-		return tipoMotivo;
+	public DTProveedor getProveedorSeleccionado() {
+		return proveedorSeleccionado;
 	}
 
-	public void setTipoMotivo(int tipoMotivo) {
-		this.tipoMotivo = tipoMotivo;
-	}
-
-	public String getMotivo() {
-		return motivo;
-	}
-
-	public void setMotivo(String motivo) {
-		this.motivo = motivo;
-	}
-
-	public String getBusquedaDesarme() {
-		return busquedaDesarme;
-	}
-
-	public void setBusquedaDesarme(String busquedaDesarme) {
-		this.busquedaDesarme = busquedaDesarme;
-	}
-
-	public List<DTBusquedaArticulo> getResBusquedaDesarme() {
-		return resBusquedaDesarme;
-	}
-
-	public void setResBusquedaDesarme(
-			List<DTBusquedaArticulo> resBusquedaDesarme) {
-		this.resBusquedaDesarme = resBusquedaDesarme;
+	public void setProveedorSeleccionado(DTProveedor proveedorSeleccionado) {
+		this.proveedorSeleccionado = proveedorSeleccionado;
 	}
 
 	public List<DTLineaPedido> getPedidos() {
@@ -177,6 +153,22 @@ public class StockBean implements Serializable {
 
 	public void setRadioPrecioVenta(String radioPrecioVenta) {
 		this.radioPrecioVenta = radioPrecioVenta;
+	}
+
+	public boolean isModificacion() {
+		return modificacion;
+	}
+
+	public void setModificacion(boolean modificacion) {
+		this.modificacion = modificacion;
+	}
+
+	public Articulo getArticuloAModificar() {
+		return articuloSinCambios;
+	}
+
+	public void setArticuloAModificar(Articulo articuloAModificar) {
+		this.articuloSinCambios = articuloAModificar;
 	}
 
 	public int getProveedor() {
@@ -304,22 +296,6 @@ public class StockBean implements Serializable {
 		this.codigoIdentificador = codigoIdentificador;
 	}
 
-	public Boolean getDisableDesdeUltimoPedido() {
-		return disableDesdeUltimoPedido;
-	}
-
-	public void setDisableDesdeUltimoPedido(Boolean disableDesdeUltimoPedido) {
-		this.disableDesdeUltimoPedido = disableDesdeUltimoPedido;
-	}
-
-	public Boolean getDisablePrediccionDePedido() {
-		return disablePrediccionDePedido;
-	}
-
-	public void setDisablePrediccionDePedido(Boolean disablePrediccionDePedido) {
-		this.disablePrediccionDePedido = disablePrediccionDePedido;
-	}
-
 	public String getMessage() {
 		return message;
 	}
@@ -352,6 +328,7 @@ public class StockBean implements Serializable {
 	 */
 	public String onFlowProcess(FlowEvent event) {
 		if (event.getNewStep().equals("tabModificacion")){ 
+			this.modificacion = true;			
 			cargarArticuloParaModificacion();
 		}
 		return event.getNewStep();
@@ -361,6 +338,8 @@ public class StockBean implements Serializable {
 		try {
 			this.articulo = this.instanciaSistema
 					.obtenerArticulo(articuloSeleccionado.getIdArticulo());
+			this.articuloSinCambios = new Articulo(articulo);
+			this.articuloModificado = new DTModificacionArticulo();
 			this.proveedoresSeleccionados = new ArrayList<DTProveedor>(articulo.getProveedores().values());
 			this.noEsMedicamento = articulo.getTipoArticulo() != Enumerados.tipoArticulo.MEDICAMENTO;
 		} catch (Excepciones e) {
@@ -413,6 +392,12 @@ public class StockBean implements Serializable {
 								.getNombreComercial());
 						p.setCodigoIdentificador(codigoIdentificador);
 						this.proveedoresSeleccionados.add(p);
+						
+						//Si estoy modificando, lo cargo en la lista de nuevos proveedores del articulo modificado.
+						if (modificacion){
+							this.articuloModificado.getProveedoresNuevos().add(p);
+						}
+						
 						this.proveedor = 0;
 						this.codigoIdentificador = 0;
 					} else {
@@ -432,6 +417,21 @@ public class StockBean implements Serializable {
 						FacesMessage.SEVERITY_WARN,
 						"Ya seleccionó el proveedor.", ""));
 			}
+		} else {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_WARN,
+					"Debe seleccionar un proveedor.", ""));
+		}
+	}
+	
+	public void eliminarProveedor(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (proveedorSeleccionado != null){
+			//Si estoy modificando, lo cargo a la lista de proveedoresABorrar del articulo modificado.
+			if (modificacion){
+				this.articuloModificado.getProveedoresABorrar().add(proveedorSeleccionado);
+			}
+			this.proveedoresSeleccionados.remove(proveedorSeleccionado);
 		} else {
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_WARN,
@@ -549,6 +549,21 @@ public class StockBean implements Serializable {
 	}
 
 	public void cancelarAltaArticulo() {
+		refresh();
+	}
+	
+	public void modificarArticulo(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (!proveedoresSeleccionados.isEmpty()) {
+			this.articuloModificado.setArticulo(articulo);		
+		} else {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Debe seleccionar al menos un proveedor", ""));
+		}
+	}
+	
+	public void cancelarModificarArticulo(){
 		refresh();
 	}
 
