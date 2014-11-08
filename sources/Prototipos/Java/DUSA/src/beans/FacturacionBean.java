@@ -170,5 +170,10 @@ public class FacturacionBean implements Serializable {
 	public void setInstanciaSistema(ISistema instanciaSistema) {
 		this.instanciaSistema = instanciaSistema;
 	}
+	
+	public void setISistema(ISistema s){
+		
+		this.instanciaSistema = s;
+	}
 
 }
