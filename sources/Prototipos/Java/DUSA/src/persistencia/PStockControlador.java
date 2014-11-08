@@ -1531,6 +1531,8 @@ public class PStockControlador implements IStockPersistencia {
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor)
 			throws Excepciones {
 		// TODO Auto-generated method stub
+		
+		
 		return null;
 	}
 }
