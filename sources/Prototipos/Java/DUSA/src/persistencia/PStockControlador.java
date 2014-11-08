@@ -1526,4 +1526,11 @@ public class PStockControlador implements IStockPersistencia {
 	    }
 	    return 0;
 	}
+
+	@Override
+	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor)
+			throws Excepciones {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
