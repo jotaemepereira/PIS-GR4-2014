@@ -15,6 +15,7 @@ import model.*;
 public interface IServicio {
 	
 	/**
+	 * Se realiza el pedido a DUSA.
 	 * @author Guille
 	 * @param p Pedido 
 	 */
