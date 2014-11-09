@@ -197,17 +197,17 @@
 												</tr>
 												<tr>
 													<td>Nuevo stock:</td>
-													<td><p:inputText
+													<td><p:inputMask mask="?999999999999999999"
 															value="#{modificarStockBean.nuevoStockSeleccionado}"
 															style="width: 50px; margin-right: 10px;">
 															<f:ajax event="change" execute="@this" />
-														</p:inputText></td>
+														</p:inputMask></td>
 													<td>Nuevo stock:</td>
-													<td><p:inputText
+													<td><p:inputMask mask="?999999999999999999"
 															value="#{modificarStockBean.nuevoStockDesarme}"
 															style="width: 50px;">
 															<f:ajax event="change" execute="@this" />
-														</p:inputText></td>
+														</p:inputMask></td>
 												</tr>
 												<tr>
 													<td>Motivo:</td>

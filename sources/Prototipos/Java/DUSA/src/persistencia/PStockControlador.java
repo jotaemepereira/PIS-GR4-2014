@@ -1562,4 +1562,11 @@ public class PStockControlador implements IStockPersistencia {
 		
 		return returnArticulos;
 	}
+
+	@Override
+	public void modificarPreciosDeArticulo(Map<Long, Integer> preciosModificados)
+			throws Excepciones {
+		// TODO Auto-generated method stub
+		
+	}
 }
