@@ -10,7 +10,7 @@ public interface IFacturacion {
 	
 	public List<Venta> listarVentasPendientes() throws Excepciones;
 	
-	public void facturarVenta(long venta) throws Excepciones;
+	public boolean facturarVenta(long venta) throws Excepciones;
 	
 	public void cancelarVenta(long venta) throws Excepciones;
 	
@@ -24,5 +24,14 @@ public interface IFacturacion {
 	 * @throws Excepciones
 	 * @author Ignacio Rodriguez
 	 */
-	
+
+	void facturarVenta(Venta v) throws Excepciones;
+	/**
+	 * factura en el sistema la venta v
+	 * @param v 
+	 * 			- venta a registrar
+	 * 
+	 * @throws Excepciones
+	 * @author Ignacio Rodriguez
+	 */
 }

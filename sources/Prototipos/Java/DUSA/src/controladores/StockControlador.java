@@ -237,7 +237,7 @@ public class StockControlador implements IStock {
 
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
-		//grabarTiposIVA();
+		grabarTiposIVA();
 		return FabricaPersistencia.getStockPersistencia()
 				.obtenerAccionesTerapeuticas();
 	}
