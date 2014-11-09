@@ -1,6 +1,7 @@
 package controladores;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import datatypes.DTProveedor;
 import uy.com.dusa.ws.DataComprobante;
 import uy.com.dusa.ws.DataIVA;
 import uy.com.dusa.ws.DataInfoProducto;
+import uy.com.dusa.ws.DataLineaComprobante;
 import uy.com.dusa.ws.DataLineaPedidoSimple;
 import uy.com.dusa.ws.DataPedidoSimple;
 import uy.com.dusa.ws.MensajeError;
@@ -35,6 +37,7 @@ import model.Enumerados;
 import model.Enumerados.TipoFormaDePago;
 import model.LineaPedido;
 import model.Orden;
+import model.OrdenDetalle;
 import model.Pedido;
 import model.TipoIva;
 import model.Usuario;
@@ -94,7 +97,7 @@ public class ServicioDusaControlador implements IServicio {
 		
 		//TODO ver que pasa con esto Jaguerre
 		TipoIva tipoIva = new TipoIva();
-		tipoIva.setTipoIVA(52);
+		tipoIva.setTipoIVA('3');
 		articulo.setTipoIva(tipoIva);
 		Usuario usr = new Usuario();
 		usr.setNombre("Admin");
@@ -171,6 +174,23 @@ public class ServicioDusaControlador implements IServicio {
 	}
 	
 	@Override
+	public Articulo obtenerArticulo(int nroArticulo) {
+		System.out.println("obtenerActualizacionDeStock");
+		Articulo articulo = new Articulo();
+		WSConsultaStock servicio = getServicioStock();
+		try {
+			DataInfoProducto articuloWS =
+					servicio.getStock(userTest, passTest, nroArticulo).getProducto();
+			
+			articulo = transformarArticulo(articuloWS);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return articulo;
+	}
+	
+	@Override
 	public List<Articulo> obtenerArticulos() {
 		List<Articulo> articulos = new ArrayList<Articulo>();
 		return articulos;	
@@ -193,7 +213,7 @@ public class ServicioDusaControlador implements IServicio {
 
 	private TipoIva transformarTipoIVA(DataIVA di) {
 		TipoIva ret = new TipoIva();
-		ret.setTipoIVA(di.getTipoIVA());
+		ret.setTipoIVA((char)(short)di.getTipoIVA());
 		ret.setDescripcion(di.getDescripcion());
 		ret.setTipoTasa(di.getTipoTasa());
 		ret.setIndicadorFacturacion(di.getIndicadorFacturacion());
@@ -203,38 +223,115 @@ public class ServicioDusaControlador implements IServicio {
 		ret.setResguardoIRAE(di.getResguardoIRAE());		
 		return ret;
 	}
+	
+	private Orden transformarOrden(DataComprobante comprobante) throws Excepciones{
+		Orden orden = new Orden();
+		
+		// seteo los datos básicos de la órden
+		orden.setIdProveedor(1);
+    	orden.setTipoCFE(comprobante.getTipoCFE());
+    	orden.setSerieCFE(comprobante.getSerieCFE());
+    	orden.setNumeroCFE(comprobante.getNumeroCFE());
+    	orden.setFechaComprobante(comprobante.getFechaComprobante().toGregorianCalendar().getTime());
+    	orden.setFormaDePago(comprobante.getFormaDePago().name());
+    	orden.setOrdenDeCompra(comprobante.getOrdenDeCompra());
+    	orden.setMontoNoGravado(comprobante.getMontoNoGravado());
+    	orden.setMontoNetoGravadoIvaMinimo(comprobante.getMontoNetoGravadoIvaMinimo());
+    	orden.setMontoNetoGravadoIvaBasico(comprobante.getMontoNetoGravadoIvaBasico());
+    	orden.setTotalIvaMinimo(comprobante.getTotalIvaMinimo());
+    	orden.setTotalIvaBasico(comprobante.getTotalIvaBasico());
+    	orden.setMontoTotal(comprobante.getMontoTotal());
+    	orden.setMontoRetenidoIVA(comprobante.getMontoRetenidoIVA());
+    	orden.setMontoRetenidoIRAE(comprobante.getMontoRetenidoIRAE());
+    	orden.setMontoNoFacturable(comprobante.getMontoNoFacturable());
+    	orden.setMontoTotalAPagar(comprobante.getMontoTotalAPagar());
+    	orden.setMontoTributoIvaMinimo(comprobante.getMontoTributoIvaMinimo());
+    	orden.setMontoTributoIvaBasico(comprobante.getMontoTributoIvaBasico());
+    	orden.setProcesada(false);
+    	orden.setCantidadLineas(comprobante.getCantidadLineas());
+    	
+    	// Obtengo todos los detalles de la factura 
+    	Iterator<DataLineaComprobante> it = comprobante.getDetalle().iterator();
+    	while (it.hasNext()) {
+			DataLineaComprobante linea = (DataLineaComprobante) it
+					.next();
+			OrdenDetalle detalle = new OrdenDetalle();
+			
+			detalle.setNumeroLinea(linea.getNumeroLinea());
+	    	detalle.setNumeroArticulo(linea.getNumeroArticulo());
+	    	detalle.setCantidad(linea.getCantidad());
+	    	detalle.setPrecioUnitario(linea.getPrecioUnitario());
+	    	detalle.setDescuento((linea.getDescuento() != null) ? linea.getDescuento() : new BigDecimal(0));
+	    	detalle.setDescripcionOferta(linea.getDescripcionOferta());
+	    	detalle.setIndicadorDeFacturacion(linea.getIndicadorDeFacturacion());
+	    	
+	    	// Obtengo los id todos juntos de los articulos de la factura
+	    	try {
+				FabricaPersistencia.getInstanciaComprasPersistencia().getDatosArticulo(detalle);
+				
+				/* En caso que el artículo no exista en el sitema, lo busco en el ws de stock, lo persisto
+				 * y luego obtengo el identificador del mismo
+				 */
+				if(detalle.getProductId() == 0){
+					FabricaPersistencia.getStockPersistencia().persistirArticulo(obtenerArticulo(detalle.getNumeroArticulo()));
+					FabricaPersistencia.getInstanciaComprasPersistencia().getDatosArticulo(detalle);
+				}
+			} catch (Excepciones e) {
+				e.printStackTrace();
+				throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
+			}
+
+	    	orden.getDetalle().add(detalle);
+		}
+		
+		return orden;
+	}
 
 	@Override
 	public void obtenerFacturasDUSA() throws Excepciones {
+		List<DataComprobante> listComprobantes = new ArrayList<DataComprobante>();
 		try {
+			Date ultimaFactura = FabricaPersistencia.getInstanciaComprasPersistencia().getFechaUltimaFacturaDUSA();
+			
 			WSConsultaComprobantes wscomprobantes = new WSConsultaComprobantesService().getWSConsultaComprobantesPort();
-			GregorianCalendar gCalendar = new GregorianCalendar(2014, 8, 15);
-
-			//gCalendar.setTime(fecha);
+			ResultGetComprobantes resComprobantes = null;
+			
+			Calendar c = Calendar.getInstance(); 
+			c.add(Calendar.DAY_OF_YEAR, -50);  
+			Date date = c.getTime();
+			
+			GregorianCalendar gCalendar = new GregorianCalendar();
+			if(ultimaFactura != null){
+				gCalendar.setTime(ultimaFactura);
+			}else{
+				gCalendar.setTime(date);
+			}
+			
+			
+			System.out.println("FACTURAS DESDE FECHA " + date);
+			
 			XMLGregorianCalendar  fechaXML = DatatypeFactory.newInstance().
 					newXMLGregorianCalendar(gCalendar);
-			ResultGetComprobantes resComprobantes = wscomprobantes.getComprobantesDesdeFecha(userTest, passTest, fechaXML);
+			resComprobantes = wscomprobantes.getComprobantesDesdeFecha(userTest, passTest, fechaXML);
 			
-			List<DataComprobante> listComprobantes = resComprobantes.getComprobantes();
+			listComprobantes = resComprobantes.getComprobantes();
 			System.out.println("SE ENCONTRAROR CANT COMPROBANTES: " + listComprobantes.size());
-			
-			Iterator<DataComprobante> it = listComprobantes.iterator();
-			
-			while (it.hasNext()) {
-				DataComprobante dataComprobante = (DataComprobante) it.next();
-				
-				Orden orden = new Orden(dataComprobante, false);
-				if(orden.getDetalle() != null){ // Todos los productos estaban en el sistema
-					FabricaPersistencia.getInstanciaComprasPersistencia().ingresarFacturaCompra(orden);
-				}else{
-					System.out.println("ORDEN SIN PRODUCTO");
-				}
-				
-			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new Excepciones(Excepciones.MENSAJE_ERROR_CONEXION_WS, Excepciones.ERROR_SIN_CONEXION);
+			//throw new Excepciones(Excepciones.MENSAJE_ERROR_CONEXION_WS, Excepciones.ERROR_SIN_CONEXION);
+		}
+		
+		// Para cada factura obtenida, la guardo en la base de datos como pendiente	
+		Iterator<DataComprobante> it = listComprobantes.iterator();
+		
+		while (it.hasNext()) {
+			DataComprobante dataComprobante = (DataComprobante) it.next();
+			
+			Orden orden = transformarOrden(dataComprobante);
+			
+			FabricaPersistencia.getInstanciaComprasPersistencia().ingresarFacturaCompra(orden);
+			
 		}
 	}
 }

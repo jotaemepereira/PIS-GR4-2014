@@ -1,22 +1,23 @@
 package controladores;
 
-import java.sql.Date;
-import java.util.List;
 import java.util.Map;
 
 import datatypes.DTComprobanteFactura;
-import datatypes.DTFormasVenta;
 import datatypes.DTTiposDGI;
 import interfaces.ICompras;
-import model.LineaPedido;
-import model.LineaVenta;
 import model.Orden;
 
 public class ComprasControlador implements ICompras {
 
 	@Override
 	public void ingresarFacturaCompra(Orden orden) throws Excepciones {
-		FabricaPersistencia.getInstanciaComprasPersistencia().ingresarFacturaCompra(orden);
+		if(orden.getOrdenDeCompra() == 0){ // En el caso de una compra manual ingreso la factura
+			FabricaPersistencia.getInstanciaComprasPersistencia().ingresarFacturaCompra(orden); 
+		}else{ // En el caso de una factura de DUSA, paso la factura a procesada
+			FabricaPersistencia.getInstanciaComprasPersistencia().actualizarFacturaCompraDUSA(orden);
+		}
+		
+		// Actualizo el stock de todos los artículos en la compra
 		FabricaPersistencia.getStockPersistencia().actualizarStockCompra(orden.getDetalle());
 	}
 
@@ -27,7 +28,10 @@ public class ComprasControlador implements ICompras {
 
 	@Override
 	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
+		// Primero traigo facturas nuevas que pueden haber en el sistema
 		FabricaServicios.getIServicios().obtenerFacturasDUSA();
+
+		// Luego, obtengo todas las facturas pendientes en la base de datos (incluyendo las nuevas)
 		return FabricaPersistencia.getInstanciaComprasPersistencia().obtenerFacturasPendientes();
 	}
 	

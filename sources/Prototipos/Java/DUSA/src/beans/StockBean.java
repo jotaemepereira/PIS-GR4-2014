@@ -86,10 +86,7 @@ public class StockBean implements Serializable {
 	private List<DTFormasVenta> formasVenta = new ArrayList<DTFormasVenta>();
 	private List<DTTipoArticulo> tiposArticulo = new ArrayList<DTTipoArticulo>();
 	private List<TipoIva> tiposIVA;
-	private int tipoIvaSeleccionado;
-	private List<DTLineaPedido> pedidos = new ArrayList<DTLineaPedido>();
-	private String message;
-	private String messageClass;
+	private char tipoIvaSeleccionado;
 
 	// Busqueda de artículos
 	private String busqueda = "";
@@ -99,6 +96,407 @@ public class StockBean implements Serializable {
 	private DTBusquedaArticulo articuloSeleccionado;
 	private DTProveedor proveedorSeleccionado;
 
+	/* Operaciones para Alta de Artículo */
+	
+	public void altaArticulo() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (!proveedoresSeleccionados.isEmpty()) {
+			try {
+				/* Cargo los proveedores seleccionados en el articulo */
+				Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
+				while (i.hasNext()) {
+					DTProveedor next = i.next();
+					DTProveedor p = new DTProveedor();
+					p.setIdProveedor(next.getIdProveedor());
+					p.setNombreComercial(proveedores.get(next.getIdProveedor())
+							.getNombreComercial());
+					p.setCodigoIdentificador(next.getCodigoIdentificador());
+					this.articulo.agregarProveedor(p);
+				}
+
+				/* Cargo el tipo de iva seleccionado */
+				TipoIva ti = new TipoIva();
+				ti.setTipoIVA(tipoIvaSeleccionado);
+				articulo.setTipoIva(ti);
+
+				/* Cargo el precio de venta según corresponda */
+
+				/*
+				 * Si no se carga nada, se asume el mismo que el precio público.
+				 * Si se carga precio de venta, se calcula el porcentaje.
+				 */
+				if (this.radioPrecioVenta.compareTo("$") == 0) {
+					if (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0) {
+						articulo.setPrecioVenta(articulo.getPrecioUnitario());
+						articulo.setPorcentajePrecioVenta(BigDecimal.ONE);
+					} else {
+						BigDecimal porcentaje = articulo
+								.getPrecioVenta()
+								.multiply(ONEHUNDRED)
+								.divide(articulo.getPrecioUnitario(), 5,
+										RoundingMode.DOWN).divide(ONEHUNDRED);
+						articulo.setPorcentajePrecioVenta(porcentaje);
+					}
+				}
+
+				/*
+				 * Si no se carga nada, se asume el mismo que el precio público.
+				 * Si se carga un porcentaje sobre el precio público, se calcula
+				 * el precio de venta a partir de ese porcentaje.
+				 */
+				if (this.radioPrecioVenta.compareTo("%") == 0) {
+					if (articulo.getPorcentajePrecioVenta().compareTo(
+							BigDecimal.ZERO) == 0) {
+						articulo.setPrecioVenta(articulo.getPrecioUnitario());
+						articulo.setPorcentajePrecioVenta(BigDecimal.ONE);
+					} else {
+						articulo.setPrecioVenta(articulo.getPrecioUnitario()
+								.multiply(articulo.getPorcentajePrecioVenta()));
+					}
+				}
+
+				/* Cargo el usuario que realiza el alta */
+				articulo.setUsuario(this.instanciaSistema
+						.obtenerUsuarioLogueado());
+
+				/*
+				 * Llamo a la logica para que se de de alta el articulo en el
+				 * sistema y en caso de error lo muestro
+				 */
+				this.instanciaSistema.altaArticulo(articulo);
+				// si todo bien aviso y vacio el formulario
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_INFO,
+						Excepciones.MENSAJE_OK_ALTA, ""));
+				this.articulo = new Articulo();
+				this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
+				this.proveedor = 0;
+				this.codigoIdentificador = 0;
+				this.tipoIvaSeleccionado = 0;
+			} catch (Excepciones e) {
+				if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
+					context.addMessage(null, new FacesMessage(
+							FacesMessage.SEVERITY_WARN, e.getMessage(), ""));
+				} else if (e.getErrorCode() == Excepciones.USUARIO_NO_TIENE_PERMISOS) {
+					context.addMessage(null, new FacesMessage(
+							FacesMessage.SEVERITY_WARN, e.getMessage(), ""));
+				} else {
+					context.addMessage(null, new FacesMessage(
+							FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+				}
+			}
+		} else {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Debe seleccionar al menos un proveedor", ""));
+		}
+	}
+
+	public void cancelarAltaArticulo() {
+		refresh();
+	}
+	
+	/* Fin Operaciones para Alta de Artículo
+	
+	
+	/* Operaciones para Modificación de Artículo */
+	
+	public void modificarArticulo(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (!proveedoresSeleccionados.isEmpty()) {
+			this.articuloModificado.setArticulo(articulo);
+		} else {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"Debe seleccionar al menos un proveedor", ""));
+		}
+	}
+	
+	public void cancelarModificarArticulo(){
+		refresh();
+	}	
+	
+	/* Manejo del componente wizard en modificarArticulo.xhtml */
+	public String onFlowProcess(FlowEvent event) {
+		if (event.getNewStep().equals("tabModificacion")){ 
+			this.modificacion = true;			
+			cargarArticuloParaModificacion();
+		}
+		return event.getNewStep();
+	}
+
+	private void cargarArticuloParaModificacion() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		try {
+			this.articulo = this.instanciaSistema
+					.obtenerArticulo(articuloSeleccionado.getIdArticulo());
+			this.articuloSinCambios = new Articulo(articulo);
+			this.articuloModificado = new DTModificacionArticulo();
+			this.proveedoresSeleccionados = new ArrayList<DTProveedor>(articulo.getProveedores().values());
+			this.noEsMedicamento = articulo.getTipoArticulo() != Enumerados.tipoArticulo.MEDICAMENTO;
+		} catch (Excepciones e) {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+		}
+	}
+
+	/* Manejo de la búsqueda */
+	
+	/**
+	 * @return the resBusqueda
+	 */
+	public List<DTBusquedaArticulo> getResBusqueda() {
+		return resBusqueda;
+	}
+
+	/**
+	 * @param resBusqueda
+	 *            the resBusqueda to set
+	 */
+	public void setResBusqueda(List<DTBusquedaArticulo> resBusqueda) {
+		this.resBusqueda = resBusqueda;
+	}
+
+	public void buscarArticulos() {
+		resBusqueda = new ArrayList<DTBusquedaArticulo>();
+
+		if (busqueda.equals("")) {
+			return;
+		}
+
+		try {
+			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);
+			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
+		} catch (Excepciones e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/* Fin Operaciones para Modificación de Artículo */
+
+	/* Operaciones de la tabla de proveedores tanto para el Alta como la Modificación */
+	
+	public void agregarProveedor() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (proveedor != 0) {
+			if (!existeProveedor(proveedor)) {
+				try {
+					if (codigoIdentificador == 0
+							|| !existeCodigoParaProveedor(proveedor,
+									codigoIdentificador)) {
+						DTProveedor p = new DTProveedor();
+						p.setIdProveedor(proveedor);
+						p.setNombreComercial(proveedores.get(proveedor)
+								.getNombreComercial());
+						p.setCodigoIdentificador(codigoIdentificador);
+						this.proveedoresSeleccionados.add(p);
+						
+						//Si estoy modificando, lo cargo en la lista de nuevos proveedores del articulo modificado.
+						if (modificacion){
+							this.articuloModificado.getProveedoresNuevos().add(p);
+						}
+						
+						this.proveedor = 0;
+						this.codigoIdentificador = 0;
+					} else {
+						context.addMessage(
+								null,
+								new FacesMessage(
+										FacesMessage.SEVERITY_WARN,
+										"Ya existe un artículo con ese código para el proveedor seleccionado.",
+										""));
+					}
+				} catch (Excepciones e) {
+					context.addMessage(null, new FacesMessage(
+							FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+				}
+			} else {
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_WARN,
+						"Ya seleccionó el proveedor.", ""));
+			}
+		} else {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_WARN,
+					"Debe seleccionar un proveedor.", ""));
+		}
+	}
+	
+	public void eliminarProveedor(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (proveedorSeleccionado != null){
+			//Si estoy modificando, lo cargo a la lista de proveedoresABorrar del articulo modificado.
+			if (modificacion){
+				this.articuloModificado.getProveedoresABorrar().add(proveedorSeleccionado);
+			}
+			this.proveedoresSeleccionados.remove(proveedorSeleccionado);
+		} else {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_WARN,
+					"Debe seleccionar un proveedor.", ""));
+		}
+	}
+
+	private boolean existeCodigoParaProveedor(long idProveedor,
+			long codigoIdentificador) throws Excepciones {
+		return this.instanciaSistema.existeCodigoParaProveedor(idProveedor,
+				codigoIdentificador);
+	}
+
+	private boolean existeProveedor(int proveedor) {
+		boolean ret = false;
+		Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
+		while (i.hasNext() && !ret) {
+			ret = proveedor == i.next().getIdProveedor();
+		}
+		return ret;
+	}
+
+	/* Fin Operaciones de la tabla de proveedores */	
+
+	/* Reseteo de formulario */
+	
+	public void refresh() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		Application application = context.getApplication();
+		ViewHandler viewHandler = application.getViewHandler();
+		UIViewRoot viewRoot = viewHandler.createView(context, context
+				.getViewRoot().getViewId());
+		context.setViewRoot(viewRoot);
+		context.renderResponse(); // Optional
+	}
+
+	/* Loaders */
+	
+	public void cargarMarcas() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		try {
+			this.listaMarcas = this.instanciaSistema.obtenerMarcas();
+		} catch (Excepciones e) {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+		}
+	}
+
+	public void cargarProveedores() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		try {
+			this.proveedores = this.instanciaSistema.obtenerProveedores();
+			this.listaProveedores = new ArrayList<DTProveedor>(
+					this.proveedores.values());
+		} catch (Excepciones e) {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+		}
+	}
+
+	public void cargarDrogas() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		try {
+			this.listaDrogas = this.instanciaSistema.obtenerDrogas();
+		} catch (Excepciones e) {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+		}
+	}
+
+	public void cargarAccionesTerapeuticas() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		try {
+			this.listaAccionesTer = this.instanciaSistema
+					.obtenerAccionesTerapeuticas();
+		} catch (Excepciones e) {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+		}
+	}
+
+	public void cargarTiposArticulo() {
+		DTTipoArticulo ta = new DTTipoArticulo();
+		ta.setTipoArticulo(model.Enumerados.tipoArticulo.MEDICAMENTO);
+		ta.setDescripcion("Medicamento");
+		tiposArticulo.add(ta);
+		ta = new DTTipoArticulo();
+		ta.setTipoArticulo(model.Enumerados.tipoArticulo.PERFUMERIA);
+		ta.setDescripcion("Perfumería");
+		tiposArticulo.add(ta);
+		ta = new DTTipoArticulo();
+		ta.setTipoArticulo(model.Enumerados.tipoArticulo.OTROS);
+		ta.setDescripcion("Otros");
+		tiposArticulo.add(ta);
+	}
+
+	public void tipoArticuloChange() {
+		if (articulo.getTipoArticulo() == model.Enumerados.tipoArticulo.MEDICAMENTO) {
+			this.noEsMedicamento = false;
+		} else {
+			this.noEsMedicamento = true;
+		}
+	}
+
+	public void cargarFormasVenta() {
+		DTFormasVenta fv = new DTFormasVenta();
+		fv.setFormaVenta(model.Enumerados.formasVenta.ventaLibre);
+		fv.setDescripcion("Venta libre");
+		formasVenta.add(fv);
+		fv = new DTFormasVenta();
+		fv.setFormaVenta(model.Enumerados.formasVenta.controlado);
+		fv.setDescripcion("Controlado");
+		formasVenta.add(fv);
+		fv = new DTFormasVenta();
+		fv.setFormaVenta(model.Enumerados.formasVenta.bajoReceta);
+		fv.setDescripcion("Bajo receta");
+		formasVenta.add(fv);
+		fv = new DTFormasVenta();
+		fv.setFormaVenta(model.Enumerados.formasVenta.controlMedico);
+		fv.setDescripcion("Control médico");
+		formasVenta.add(fv);
+	}
+
+	public void cargarTiposIva() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		try {
+			this.tiposIVA = this.instanciaSistema.obtenerTiposIva();
+		} catch (Excepciones e) {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+		}
+	}	
+
+	/* Fin Loaders */
+	
+	public void setISistema(ISistema s) {
+		this.instanciaSistema = s;
+
+		if (this.instanciaSistema != null) {
+			// Cargo las marcas de la base de datos
+			cargarMarcas();
+
+			// Cargo los proveedores de la base de datos
+			cargarProveedores();
+
+			// Cargo las drogas de la base de datos
+			cargarDrogas();
+
+			// Cargo las acciones terapéuticas de la base de datos
+			cargarAccionesTerapeuticas();
+
+			// Cargo tipos de articulo para el combo
+			cargarTiposArticulo();
+
+			// Cargo formas de venta para el combo
+			cargarFormasVenta();
+
+			// Cargo tipos de iva para el combo
+			cargarTiposIva();
+		}
+	}
+	
+	public StockBean() {
+		this.noEsMedicamento = true;
+		this.radioPrecioVenta = "$";
+	}
+	
 	public DTBusquedaArticulo getArticuloSeleccionado() {
 		return articuloSeleccionado;
 	}
@@ -113,14 +511,6 @@ public class StockBean implements Serializable {
 
 	public void setProveedorSeleccionado(DTProveedor proveedorSeleccionado) {
 		this.proveedorSeleccionado = proveedorSeleccionado;
-	}
-
-	public List<DTLineaPedido> getPedidos() {
-		return pedidos;
-	}
-
-	public void setPedidos(List<DTLineaPedido> pedidos) {
-		this.pedidos = pedidos;
 	}
 
 	public Articulo getArticulo() {
@@ -139,11 +529,11 @@ public class StockBean implements Serializable {
 		this.noEsMedicamento = noEsMedicamento;
 	}
 
-	public int getTipoIvaSeleccionado() {
+	public char getTipoIvaSeleccionado() {
 		return tipoIvaSeleccionado;
 	}
 
-	public void setTipoIvaSeleccionado(int tipoIvaSeleccionado) {
+	public void setTipoIvaSeleccionado(char tipoIvaSeleccionado) {
 		this.tipoIvaSeleccionado = tipoIvaSeleccionado;
 	}
 
@@ -296,22 +686,6 @@ public class StockBean implements Serializable {
 		this.codigoIdentificador = codigoIdentificador;
 	}
 
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public String getMessageClass() {
-		return messageClass;
-	}
-
-	public void setMessageClass(String messageClass) {
-		this.messageClass = messageClass;
-	}
-
 	public String getBusqueda() {
 		return busqueda;
 	}
@@ -319,384 +693,4 @@ public class StockBean implements Serializable {
 	public void setBusqueda(String busqueda) {
 		this.busqueda = busqueda;
 	}
-
-	/**
-	 * Manejo del componente wizard en modificarArticulo.xhtml
-	 * 
-	 * @param event
-	 * @return
-	 */
-	public String onFlowProcess(FlowEvent event) {
-		if (event.getNewStep().equals("tabModificacion")){ 
-			this.modificacion = true;			
-			cargarArticuloParaModificacion();
-		}
-		return event.getNewStep();
-	}
-
-	private void cargarArticuloParaModificacion() {
-		try {
-			this.articulo = this.instanciaSistema
-					.obtenerArticulo(articuloSeleccionado.getIdArticulo());
-			this.articuloSinCambios = new Articulo(articulo);
-			this.articuloModificado = new DTModificacionArticulo();
-			this.proveedoresSeleccionados = new ArrayList<DTProveedor>(articulo.getProveedores().values());
-			this.noEsMedicamento = articulo.getTipoArticulo() != Enumerados.tipoArticulo.MEDICAMENTO;
-		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * @return the resBusqueda
-	 */
-	public List<DTBusquedaArticulo> getResBusqueda() {
-		return resBusqueda;
-	}
-
-	/**
-	 * @param resBusqueda
-	 *            the resBusqueda to set
-	 */
-	public void setResBusqueda(List<DTBusquedaArticulo> resBusqueda) {
-		this.resBusqueda = resBusqueda;
-	}
-
-	public void buscarArticulos() {
-		resBusqueda = new ArrayList<DTBusquedaArticulo>();
-
-		if (busqueda.equals("")) {
-			return;
-		}
-
-		try {
-			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);
-			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
-		} catch (Excepciones e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void agregarProveedor() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		if (proveedor != 0) {
-			if (!existeProveedor(proveedor)) {
-				try {
-					if (codigoIdentificador == 0
-							|| !existeCodigoParaProveedor(proveedor,
-									codigoIdentificador)) {
-						DTProveedor p = new DTProveedor();
-						p.setIdProveedor(proveedor);
-						p.setNombreComercial(proveedores.get(proveedor)
-								.getNombreComercial());
-						p.setCodigoIdentificador(codigoIdentificador);
-						this.proveedoresSeleccionados.add(p);
-						
-						//Si estoy modificando, lo cargo en la lista de nuevos proveedores del articulo modificado.
-						if (modificacion){
-							this.articuloModificado.getProveedoresNuevos().add(p);
-						}
-						
-						this.proveedor = 0;
-						this.codigoIdentificador = 0;
-					} else {
-						context.addMessage(
-								null,
-								new FacesMessage(
-										FacesMessage.SEVERITY_WARN,
-										"Ya existe un artículo con ese código para el proveedor seleccionado.",
-										""));
-					}
-				} catch (Excepciones e) {
-					context.addMessage(null, new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-				}
-			} else {
-				context.addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_WARN,
-						"Ya seleccionó el proveedor.", ""));
-			}
-		} else {
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_WARN,
-					"Debe seleccionar un proveedor.", ""));
-		}
-	}
-	
-	public void eliminarProveedor(){
-		FacesContext context = FacesContext.getCurrentInstance();
-		if (proveedorSeleccionado != null){
-			//Si estoy modificando, lo cargo a la lista de proveedoresABorrar del articulo modificado.
-			if (modificacion){
-				this.articuloModificado.getProveedoresABorrar().add(proveedorSeleccionado);
-			}
-			this.proveedoresSeleccionados.remove(proveedorSeleccionado);
-		} else {
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_WARN,
-					"Debe seleccionar un proveedor.", ""));
-		}
-	}
-
-	private boolean existeCodigoParaProveedor(long idProveedor,
-			long codigoIdentificador) throws Excepciones {
-		return this.instanciaSistema.existeCodigoParaProveedor(idProveedor,
-				codigoIdentificador);
-	}
-
-	private boolean existeProveedor(int proveedor) {
-		boolean ret = false;
-		Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
-		while (i.hasNext() && !ret) {
-			ret = proveedor == i.next().getIdProveedor();
-		}
-		return ret;
-	}
-
-	public void altaArticulo() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		if (!proveedoresSeleccionados.isEmpty()) {
-			try {
-				/* Cargo los proveedores seleccionados en el articulo */
-				Iterator<DTProveedor> i = proveedoresSeleccionados.iterator();
-				while (i.hasNext()) {
-					DTProveedor next = i.next();
-					DTProveedor p = new DTProveedor();
-					p.setIdProveedor(next.getIdProveedor());
-					p.setNombreComercial(proveedores.get(next.getIdProveedor())
-							.getNombreComercial());
-					p.setCodigoIdentificador(next.getCodigoIdentificador());
-					this.articulo.agregarProveedor(p);
-				}
-
-				/* Cargo el tipo de iva seleccionado */
-				TipoIva ti = new TipoIva();
-				ti.setTipoIVA(tipoIvaSeleccionado);
-				articulo.setTipoIva(ti);
-
-				/* Cargo el precio de venta según corresponda */
-
-				/*
-				 * Si no se carga nada, se asume el mismo que el precio público.
-				 * Si se carga precio de venta, se calcula el porcentaje.
-				 */
-				if (this.radioPrecioVenta.compareTo("$") == 0) {
-					if (articulo.getPrecioVenta().compareTo(BigDecimal.ZERO) == 0) {
-						articulo.setPrecioVenta(articulo.getPrecioUnitario());
-						articulo.setPorcentajePrecioVenta(BigDecimal.ONE);
-					} else {
-						BigDecimal porcentaje = articulo
-								.getPrecioVenta()
-								.multiply(ONEHUNDRED)
-								.divide(articulo.getPrecioUnitario(), 5,
-										RoundingMode.DOWN).divide(ONEHUNDRED);
-						articulo.setPorcentajePrecioVenta(porcentaje);
-					}
-				}
-
-				/*
-				 * Si no se carga nada, se asume el mismo que el precio público.
-				 * Si se carga un porcentaje sobre el precio público, se calcula
-				 * el precio de venta a partir de ese porcentaje.
-				 */
-				if (this.radioPrecioVenta.compareTo("%") == 0) {
-					if (articulo.getPorcentajePrecioVenta().compareTo(
-							BigDecimal.ZERO) == 0) {
-						articulo.setPrecioVenta(articulo.getPrecioUnitario());
-						articulo.setPorcentajePrecioVenta(BigDecimal.ONE);
-					} else {
-						articulo.setPrecioVenta(articulo.getPrecioUnitario()
-								.multiply(articulo.getPorcentajePrecioVenta()));
-					}
-				}
-
-				/* Cargo el usuario que realiza el alta */
-				articulo.setUsuario(this.instanciaSistema
-						.obtenerUsuarioLogueado());
-
-				/*
-				 * Llamo a la logica para que se de de alta el articulo en el
-				 * sistema y en caso de error lo muestro
-				 */
-				this.instanciaSistema.altaArticulo(articulo);
-				// si todo bien aviso y vacio el formulario
-				context.addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_INFO,
-						Excepciones.MENSAJE_OK_ALTA, ""));
-				this.articulo = new Articulo();
-				this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
-				this.proveedor = 0;
-				this.codigoIdentificador = 0;
-				this.tipoIvaSeleccionado = 0;
-			} catch (Excepciones e) {
-				if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
-					context.addMessage(null, new FacesMessage(
-							FacesMessage.SEVERITY_WARN, e.getMessage(), ""));
-				} else if (e.getErrorCode() == Excepciones.USUARIO_NO_TIENE_PERMISOS) {
-					context.addMessage(null, new FacesMessage(
-							FacesMessage.SEVERITY_WARN, e.getMessage(), ""));
-				} else {
-					context.addMessage(null, new FacesMessage(
-							FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-				}
-			}
-		} else {
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					"Debe seleccionar al menos un proveedor", ""));
-		}
-	}
-
-	public void cancelarAltaArticulo() {
-		refresh();
-	}
-	
-	public void modificarArticulo(){
-		FacesContext context = FacesContext.getCurrentInstance();
-		if (!proveedoresSeleccionados.isEmpty()) {
-			this.articuloModificado.setArticulo(articulo);		
-		} else {
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					"Debe seleccionar al menos un proveedor", ""));
-		}
-	}
-	
-	public void cancelarModificarArticulo(){
-		refresh();
-	}
-
-	public void refresh() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		Application application = context.getApplication();
-		ViewHandler viewHandler = application.getViewHandler();
-		UIViewRoot viewRoot = viewHandler.createView(context, context
-				.getViewRoot().getViewId());
-		context.setViewRoot(viewRoot);
-		context.renderResponse(); // Optional
-	}
-
-	public void cargarMarcas() {
-		try {
-			this.listaMarcas = this.instanciaSistema.obtenerMarcas();
-		} catch (Excepciones e) {
-			this.message = e.getMessage();
-			this.messageClass = "alert alert-danger";
-		}
-	}
-
-	public void cargarProveedores() {
-		try {
-			this.proveedores = this.instanciaSistema.obtenerProveedores();
-			this.listaProveedores = new ArrayList<DTProveedor>(
-					this.proveedores.values());
-		} catch (Excepciones e) {
-			this.message = e.getMessage();
-			this.messageClass = "alert alert-danger";
-		}
-	}
-
-	public void cargarDrogas() {
-		try {
-			this.listaDrogas = this.instanciaSistema.obtenerDrogas();
-		} catch (Excepciones e) {
-			this.message = e.getMessage();
-			this.messageClass = "alert alert-danger";
-		}
-	}
-
-	public void cargarAccionesTerapeuticas() {
-		try {
-			this.listaAccionesTer = this.instanciaSistema
-					.obtenerAccionesTerapeuticas();
-		} catch (Excepciones e) {
-			this.message = e.getMessage();
-			this.messageClass = "alert alert-danger";
-		}
-	}
-
-	public void cargarTiposArticulo() {
-		DTTipoArticulo ta = new DTTipoArticulo();
-		ta.setTipoArticulo(model.Enumerados.tipoArticulo.MEDICAMENTO);
-		ta.setDescripcion("Medicamento");
-		tiposArticulo.add(ta);
-		ta = new DTTipoArticulo();
-		ta.setTipoArticulo(model.Enumerados.tipoArticulo.PERFUMERIA);
-		ta.setDescripcion("Perfumería");
-		tiposArticulo.add(ta);
-		ta = new DTTipoArticulo();
-		ta.setTipoArticulo(model.Enumerados.tipoArticulo.OTROS);
-		ta.setDescripcion("Otros");
-		tiposArticulo.add(ta);
-	}
-
-	public void tipoArticuloChange() {
-		if (articulo.getTipoArticulo() == model.Enumerados.tipoArticulo.MEDICAMENTO) {
-			this.noEsMedicamento = false;
-		} else {
-			this.noEsMedicamento = true;
-		}
-	}
-
-	public void cargarFormasVenta() {
-		DTFormasVenta fv = new DTFormasVenta();
-		fv.setFormaVenta(model.Enumerados.formasVenta.ventaLibre);
-		fv.setDescripcion("Venta libre");
-		formasVenta.add(fv);
-		fv = new DTFormasVenta();
-		fv.setFormaVenta(model.Enumerados.formasVenta.controlado);
-		fv.setDescripcion("Controlado");
-		formasVenta.add(fv);
-		fv = new DTFormasVenta();
-		fv.setFormaVenta(model.Enumerados.formasVenta.bajoReceta);
-		fv.setDescripcion("Bajo receta");
-		formasVenta.add(fv);
-		fv = new DTFormasVenta();
-		fv.setFormaVenta(model.Enumerados.formasVenta.controlMedico);
-		fv.setDescripcion("Control médico");
-		formasVenta.add(fv);
-	}
-
-	public void cargarTiposIva() {
-		try {
-			this.tiposIVA = this.instanciaSistema.obtenerTiposIva();
-		} catch (Excepciones e) {
-			this.message = e.getMessage();
-			this.messageClass = "alert alert-danger";
-		}
-	}
-
-	public void setISistema(ISistema s) {
-		this.instanciaSistema = s;
-
-		if (this.instanciaSistema != null) {
-			// Cargo las marcas de la base de datos
-			cargarMarcas();
-
-			// Cargo los proveedores de la base de datos
-			cargarProveedores();
-
-			// Cargo las drogas de la base de datos
-			cargarDrogas();
-
-			// Cargo las acciones terapéuticas de la base de datos
-			cargarAccionesTerapeuticas();
-
-			// Cargo tipos de articulo para el combo
-			cargarTiposArticulo();
-
-			// Cargo formas de venta para el combo
-			cargarFormasVenta();
-
-			// Cargo tipos de iva para el combo
-			cargarTiposIva();
-		}
-	}
-
-	public StockBean() {
-		this.noEsMedicamento = true;
-		this.radioPrecioVenta = "$";
-	}
-
 }

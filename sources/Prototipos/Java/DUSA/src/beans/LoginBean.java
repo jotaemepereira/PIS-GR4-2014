@@ -347,7 +347,7 @@ public class LoginBean implements Serializable {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("../login.jsf");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error al cargar la página.", ""));
 		}
 	}
 

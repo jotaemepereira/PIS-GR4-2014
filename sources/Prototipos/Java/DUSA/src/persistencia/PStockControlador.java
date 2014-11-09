@@ -345,7 +345,7 @@ public class PStockControlador implements IStockPersistencia {
 				+ regexpBusqueda + " BARCODE:" + regexpBusqueda + " DROGAS: "
 				+ regexpBusqueda + " PRESENTATION: " + regexpBusqueda
 				+ " ACCIONES_TERAPEUTICAS: " + regexpBusqueda + " MARCA: "
-				+ regexpBusqueda + " SUPPLIER_DATA: " + "#" + busqueda + "*");
+				+ regexpBusqueda + " SUPPLIER_DATA: " + "*" + busqueda);
 		parameters.set("wt", "json");
 		parameters
 				.set("fl",
@@ -929,7 +929,7 @@ public class PStockControlador implements IStockPersistencia {
 			ret = new ArrayList<TipoIva>();
 			while (rs.next()) {
 				TipoIva nuevo = new TipoIva();
-				nuevo.setTipoIVA(rs.getInt("tax_type_id"));
+				nuevo.setTipoIVA(rs.getString("tax_type_id").charAt(0));
 				nuevo.setDescripcion(rs.getString("description"));
 				ret.add(nuevo);
 			}
@@ -954,7 +954,7 @@ public class PStockControlador implements IStockPersistencia {
 						+ "IVA_VALUE, TAX_VALUE, IVA_VOUCHER, IRAE_VOUCHER, STATUS) VALUES "
 						+ " (?, ?, ?, ?, ?, ?, ?, ?, TRUE);";
 				stmt = c.prepareStatement(query);
-				stmt.setInt(1, t.getTipoIVA());
+				stmt.setString(1, String.valueOf(t.getTipoIVA()));
 				stmt.setString(2, t.getDescripcion());
 				stmt.setInt(3, t.getTipoTasa());
 				stmt.setInt(4, t.getIndicadorFacturacion());
@@ -1427,7 +1427,7 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setCostoOferta(rs.getBigDecimal("offer_cost"));
 				articulo.setUltimoCosto(rs.getBigDecimal("last_cost"));
 				articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
-				int auxTipoIva = rs.getInt("TAX_TYPE_ID");
+				char auxTipoIva = rs.getString("TAX_TYPE_ID").charAt(0);
 				if (auxTipoIva != 0) {
 					TipoIva ti = new TipoIva();
 					ti.setTipoIVA(auxTipoIva);
@@ -1530,7 +1530,36 @@ public class PStockControlador implements IStockPersistencia {
 	@Override
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor)
 			throws Excepciones {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO Traer todos los articulos del proveedor
+		PreparedStatement stmt = null;
+		List<Integer> listaArticulos;
+		try {
+			Connection c = Conexion.getConnection();
+			String  query = "SELECT * FROM products_suppliers "
+					+ "WHERE supplier_id = ?";
+			stmt = c.prepareStatement(query);
+			stmt.setString(1, Long.toString(idProveedor));
+			ResultSet rs = stmt.executeQuery();
+			// Obtengo los productos que vende ese proveedor 
+			// y los guardo en una lista de integers
+			listaArticulos = new ArrayList<Integer>();
+			while (rs.next()) {
+				listaArticulos.add(rs.getInt("product_id"));
+			}
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+		
+		List<Articulo> returnArticulos = new ArrayList<Articulo>();
+		// Obtengo los articulos desde la función obtenerArticulo
+		for (int item : listaArticulos) {
+			returnArticulos.add(obtenerArticulo(item));
+		}
+		
+		return returnArticulos;
 	}
 }
