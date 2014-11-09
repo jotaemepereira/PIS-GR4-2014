@@ -105,8 +105,9 @@
 									</div>
 									<p:commandButton
 										actionListener="#{modificarStockBean.confirmarCambioStock()}"
-										styleClass="btn btn-success" oncomplete="PF('dlg2').hide()"
-										update=":form1" value="Confirmar" title="Facturar">
+										styleClass="btn btn-success"
+										update=":form1" value="Confirmar">
+										<!-- oncomplete="PF('dlg2').hide()" -->
 									</p:commandButton>
 								</div>
 							</h:panelGroup>
