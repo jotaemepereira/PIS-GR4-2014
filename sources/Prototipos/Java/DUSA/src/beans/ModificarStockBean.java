@@ -4,6 +4,7 @@ import interfaces.ISistema;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -180,6 +181,16 @@ public class ModificarStockBean implements Serializable{
 		try {
 			resBusquedaDesarme = this.instanciaSistema
 					.buscarArticulos(busquedaDesarme);
+			
+			for (Iterator<DTBusquedaArticulo> iterator = resBusquedaDesarme.iterator(); iterator.hasNext();) {
+				DTBusquedaArticulo art = (DTBusquedaArticulo) iterator.next();
+				
+				if (art.getIdArticulo() == this.articuloSeleccionado.getIdArticulo()) {
+					
+					iterator.remove();
+				}
+				
+			}
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
