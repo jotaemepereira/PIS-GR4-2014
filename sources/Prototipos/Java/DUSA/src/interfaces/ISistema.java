@@ -157,7 +157,7 @@ public interface ISistema {
 	 *             conectarse o comunicarse con la base)
 	 * @author José Aguerre
 	 */
-	public void registrarNuevaVenta(Venta v)
+	public long registrarNuevaVenta(Venta v)
 			throws Excepciones;
 
 	/**

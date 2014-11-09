@@ -429,7 +429,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	}
 
 	@Override
-	public void persistirVenta(Venta v) throws Excepciones {
+	public long persistirVenta(Venta v) throws Excepciones {
 		PreparedStatement stmt = null;
 
 		String query = "INSERT INTO SALES "
@@ -499,6 +499,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				c.commit();
 				stmt.close();
 				c.close();
+				return key;
 			} catch (Exception e) {
 				// Hago rollback de las cosas y lanzo excepcion
 				c.rollback();
