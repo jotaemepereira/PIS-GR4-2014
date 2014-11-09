@@ -14,7 +14,7 @@ public interface IFacturacion {
 	
 	public void cancelarVenta(long venta) throws Excepciones;
 	
-	public void registrarNuevaVenta(Venta v)
+	public long registrarNuevaVenta(Venta v)
 			throws Excepciones;
 	/**
 	 * Registra en el sistema la venta v

@@ -74,11 +74,11 @@ public class FacturacionControlador implements IFacturacion {
 	}
 
 	@Override
-	public void registrarNuevaVenta(Venta v) throws Excepciones {
+	public long registrarNuevaVenta(Venta v) throws Excepciones {
 		// TODO Auto-generated method stub
 		IFacturacionPersistencia pf = FabricaPersistencia
 				.getInstanciaFacturacionPersistencia();
-		pf.persistirVenta(v);
+		return pf.persistirVenta(v);
 
 	}
 }
