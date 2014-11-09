@@ -35,9 +35,6 @@ import datatypes.DTVenta;
 @ViewScoped
 public class VentaBean implements Serializable {
 
-	/**
-	 * 
-	 */
 
 	private ISistema instanciaSistema;
 
@@ -57,26 +54,36 @@ public class VentaBean implements Serializable {
 
 	private boolean ventaFacturacion = false;
 
-	public VentaBean() {
+	
+	
+	/**
+	 * Utilizado en el xhtml por el loginBean
+	 * @param s
+	 */
+	public void setISistema(ISistema s) {
 
-		try {
-			// me fijo que tenga el permiso para facturar y ademas que este en
-			// modo 1 o en modo 2 para habilitar el modo ventaFacturacion y que
-			// pueda facturar directo desde la venta
-			ventaFacturacion = ( (this.instanciaSistema.obtenerUsuarioLogueado()
-					.tienePermiso(Enumerados.casoDeUso.facturarVentaPendiente)) && ( (Integer
-					.parseInt(FacesContext.getCurrentInstance()
-							.getExternalContext()
-							.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.basica) || (Integer
-					.parseInt(FacesContext.getCurrentInstance()
-							.getExternalContext()
-							.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.controlada) ) );
+		this.instanciaSistema = s;
+		if (this.instanciaSistema != null) {
+			
+			try {
+				// me fijo que tenga el permiso para facturar y ademas que este en
+				// modo 1 o en modo 2 para habilitar el modo ventaFacturacion y que
+				// pueda facturar directo desde la venta
+				ventaFacturacion = ( (this.instanciaSistema.obtenerUsuarioLogueado()
+						.tienePermiso(Enumerados.casoDeUso.facturarVentaPendiente)) && ( (Integer
+						.parseInt(FacesContext.getCurrentInstance()
+								.getExternalContext()
+								.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.basica) || (Integer
+						.parseInt(FacesContext.getCurrentInstance()
+								.getExternalContext()
+								.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.controlada) ) );
 
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							Excepciones.MENSAJE_ERROR_SISTEMA, ""));
+			} catch (Exception e) {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								Excepciones.MENSAJE_ERROR_SISTEMA, ""));
+			}
 		}
 	}
 
@@ -111,23 +118,14 @@ public class VentaBean implements Serializable {
 			Iterator<DTVenta> it = lv.iterator();
 			while (it.hasNext()) {
 				DTVenta dtVenta = (DTVenta) it.next();
-				agregarLineaVenta(dtVenta);
+				articuloSeleccionado = dtVenta;
+				agregarLineaVenta();
 			}
 
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		/**
-		 * // Probando con el Database.java para agregar a mano un codigo,
-		 * simulando el lector de codigo de barras : Database DB =
-		 * Database.getInstance(); List<DTVenta> list = DB.getVentas();
-		 * Iterator<DTVenta> it = list.iterator(); while (it.hasNext()) {
-		 * DTVenta v = it.next(); if (!(codigoBusqueda.isEmpty()) &&
-		 * v.getCodigoBarras().contains(codigoBusqueda)) { agregarLineaVenta(v);
-		 * } }
-		 **/
 
 	}
 
@@ -274,15 +272,6 @@ public class VentaBean implements Serializable {
 
 	public void facturarVenta() {
 
-		// esto no va es solo para cargar articulos para prueba //
-		// try {
-		// FabricaSistema.getISistema().actualizarStock();
-		// } catch (Exception e1) {
-		// // TODO Auto-generated catch block
-		// e1.printStackTrace();
-		// }
-		// ////////////////////////////////////////////////////////
-
 		if (!lineasVenta2.isEmpty()) {
 
 			try {
@@ -292,9 +281,8 @@ public class VentaBean implements Serializable {
 				venta.setTotalIvaMinimo(new BigDecimal(0));
 				// Agarrar el usuario logueado
 				Usuario usr = new Usuario();
-				// usr = this.instanciaSistema.obtenerUsuarioLogueado();
-				// TODO
-				usr.setNombre("Admin");
+				usr = this.instanciaSistema.obtenerUsuarioLogueado();
+				//usr.setNombre("Admin");
 				venta.setUsuario(usr);
 				// TODO ver como se elige la forma de pago.
 				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO
@@ -348,10 +336,9 @@ public class VentaBean implements Serializable {
 				venta.setTotalIvaBasico(new BigDecimal(0));
 				venta.setTotalIvaMinimo(new BigDecimal(0));
 				// Agarrar el usuario logueado
-				// TODO
 				Usuario usr = new Usuario();
-				// usr = this.instanciaSistema.obtenerUsuarioLogueado();
-				usr.setNombre("Admin");
+				usr = this.instanciaSistema.obtenerUsuarioLogueado();
+				//usr.setNombre("Admin");
 				venta.setUsuario(usr);
 				// TODO ver como se elige la forma de pago.
 				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO
@@ -369,6 +356,7 @@ public class VentaBean implements Serializable {
 				// la venta ya esta guardada en el sistema y ahora se factura:
 
 				IFacturacion ifact = FabricaLogica.getIFacturacion();
+				
 				// de todas las ventas pendientes obtengo la de mayor Id que
 				// fue la ultima ingresada en el sistema.
 				// TODO revisar esto si esta bien asi o si hay alguna otra forma
@@ -415,41 +403,41 @@ public class VentaBean implements Serializable {
 
 	}
 
-	public void agregarLineaVenta(DTVenta v) {
+	public void agregarLineaVenta() {
 
 		// pasar del DTVenta a una LineaVenta los datos.
-		if (v.getCantidad()==0){
-			v.setCantidad(1);
+		if (articuloSeleccionado.getCantidad()==0){
+			articuloSeleccionado.setCantidad(1);
 		}
-		v.setDescuentoReceta("");
+		articuloSeleccionado.setDescuentoReceta("");
 		LineaVenta e = new LineaVenta();
 		e.setTotalPrecioLinea("$"
-				+ (v.getPrecioVenta().subtract((v.getPrecioVenta().multiply(v
+				+ (articuloSeleccionado.getPrecioVenta().subtract((articuloSeleccionado.getPrecioVenta().multiply(articuloSeleccionado
 						.getDescuento())).divide(new BigDecimal(100))))
 						.toString());
 		e.setLinea(lineasVenta2.size() + 1);
-		e.setDescuentoReceta(v.getDescuentoReceta());
-		e.setPrecio(v.getPrecioVenta());
-		e.setCantidad(v.getCantidad());
-		e.setDescuento(v.getDescuento());
-		e.setRecetaBlanca(v.isRecetaBlanca());
-		e.setRecetaNaranja(v.isRecetaNaranja());
-		e.setRecetaVerde(v.isRecetaVerde());
-		e.setProductoId(v.getProductId());
+		e.setDescuentoReceta(articuloSeleccionado.getDescuentoReceta());
+		e.setPrecio(articuloSeleccionado.getPrecioVenta());
+		e.setCantidad(articuloSeleccionado.getCantidad());
+		e.setDescuento(articuloSeleccionado.getDescuento());
+		e.setRecetaBlanca(articuloSeleccionado.isRecetaBlanca());
+		e.setRecetaNaranja(articuloSeleccionado.isRecetaNaranja());
+		e.setRecetaVerde(articuloSeleccionado.isRecetaVerde());
+		e.setProductoId(articuloSeleccionado.getProductId());
 		//TODO ver el tema de descripcion oferta:
-		e.setDescripcionOferta("Falta ver este tema");
-		e.setDescuentoPrecio(v.getDescuentoPrecio());
+		e.setDescripcionOferta("Falta ver esto");
 		e.setDescuentoPrecio(articuloSeleccionado.getDescuentoPrecio());
-		e.setIva(v.getIva());
-		e.setIndicadorFacturacion(v.getIndicadorFacturacion());
+		e.setDescuentoPrecio(articuloSeleccionado.getDescuentoPrecio());
+		e.setIva(articuloSeleccionado.getIva());
+		e.setIndicadorFacturacion(articuloSeleccionado.getIndicadorFacturacion());
 
 		Articulo a = new Articulo();
-		a.setPrecioVenta(v.getPrecioVenta());
-		a.setDescripcion(v.getDescripcion());
-		a.setCodigoBarras(v.getCodigoBarras());
-		a.setStock(v.getStock());
-		a.setPresentacion(v.getPresentacion());
-		a.setIdArticulo(v.getProductId());
+		a.setPrecioVenta(articuloSeleccionado.getPrecioVenta());
+		a.setDescripcion(articuloSeleccionado.getDescripcion());
+		a.setCodigoBarras(articuloSeleccionado.getCodigoBarras());
+		a.setStock(articuloSeleccionado.getStock());
+		a.setPresentacion(articuloSeleccionado.getPresentacion());
+		a.setIdArticulo(articuloSeleccionado.getProductId());
 		e.setArticulo(a);
 		
 		//controlo que el articulo no este ingresado ya en la venta:
@@ -474,7 +462,7 @@ public class VentaBean implements Serializable {
 			lineasVenta2.add(e);
 		}
 		
-		lineasVenta.remove(v);
+		lineasVenta.remove(articuloSeleccionado);
 	}
 
 	public String strIva() {
@@ -528,7 +516,7 @@ public class VentaBean implements Serializable {
 			if ((v.getDescuento().compareTo(new BigDecimal(101)) == -1)
 					&& (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)) {
 
-				// calculo lo que tengo que restarle al precio segun el
+				// calculo lo que tendría que restarle al precio segun el
 				// descuento
 				// seleccionado:
 				x = (v.getArticulo().getPrecioVenta()

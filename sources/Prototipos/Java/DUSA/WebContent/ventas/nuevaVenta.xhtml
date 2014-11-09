@@ -46,8 +46,7 @@
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/ventas.xhtml" />
 			#{loginBean.redirectIfNotLoggedIn()}
-        	#{proveedoresBean.setISistema(loginBean.instanciaSistema)}
-			<p:focus></p:focus>
+        	#{ventaBean.setISistema(loginBean.instanciaSistema)}
 			
 			<div class="vpanel_right">
 				<div class="wrapper">
@@ -219,10 +218,10 @@
 													actionListener="#{ventaBean.facturarVenta()}"
 													process="@this" styleClass="ui-priority-primary" />
 												<p:commandButton value="Facturar" id="ajax1"
-													rendered="#{!ventaBean.ventaFacturacion}" update="@form"
+													rendered="#{ventaBean.ventaFacturacion}" update="@form"
 													actionListener="#{ventaBean.facturarVentaDirecto()}"
 													process="@this" styleClass="ui-priority-primary" />
-												<p:commandButton value="Enviar Venta Perdida" id="ajax4"
+												<p:commandButton value="Venta Perdida" id="ajax4"
 													update="@form"
 													actionListener="#{ventaBean.agregarVentaPerdida()}"
 													process="@this" styleClass="ui-priority-primary" />
@@ -312,9 +311,9 @@
 						</p:inputText>
 					</p:outputPanel>
 				</p:panelGrid>
-				<p:commandButton value="Agregar" id="ajax11" update=":form1"
-					actionListener="#{ventaBean.agregarLineaVenta(ventaBean.articuloSeleccionado)}"
-					process="@this" styleClass="btn btn-default pull-right"
+				<p:commandButton value="Agregar" update=":form1"
+					actionListener="#{ventaBean.agregarLineaVenta()}"
+					process="@this,descuentoo,cant,descImportantes" styleClass="btn btn-default pull-right"
 					oncomplete="PF('ventaDialog').hide()" icon="ui-icon-check">
 				</p:commandButton>
 			</p:outputPanel>
