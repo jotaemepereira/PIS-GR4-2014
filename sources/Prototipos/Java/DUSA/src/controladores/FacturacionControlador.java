@@ -40,6 +40,27 @@ public class FacturacionControlador implements IFacturacion {
 			}
 		}
 	}
+	
+	@Override
+	public void facturarVenta(Venta v) throws Excepciones {
+		IFacturacionPersistencia ifp = FabricaPersistencia
+				.getInstanciaFacturacionPersistencia();
+
+		// Obtengo venta pendiente y la marco como facturada
+		Venta venta = ifp.facturarVenta(v.getVentaId());
+
+		if (venta != null) {
+			// Creo factura
+			try {
+				
+				XMLUtil.jaxbObjectToXML(venta);
+			} catch (Exception e) {
+				
+				e.printStackTrace();
+				throw new Excepciones(Excepciones.MENSAJE_ERROR_IMPRESION_FACTURA, Excepciones.ERROR_SISTEMA);
+			}
+		}
+	}
 
 	@Override
 	public void cancelarVenta(long ventaId) throws Excepciones {

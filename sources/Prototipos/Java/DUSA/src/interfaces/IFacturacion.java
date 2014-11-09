@@ -24,5 +24,14 @@ public interface IFacturacion {
 	 * @throws Excepciones
 	 * @author Ignacio Rodriguez
 	 */
-	
+
+	void facturarVenta(Venta v) throws Excepciones;
+	/**
+	 * factura en el sistema la venta v
+	 * @param v 
+	 * 			- venta a registrar
+	 * 
+	 * @throws Excepciones
+	 * @author Ignacio Rodriguez
+	 */
 }

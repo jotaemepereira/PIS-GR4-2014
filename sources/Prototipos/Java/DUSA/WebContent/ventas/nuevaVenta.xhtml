@@ -109,8 +109,7 @@
 											</p:dataTable>
 
 										</div>
-										<!-- 		<div
-											style="float: left; width: 70%; margin-left: 25px; min-width: 500px;"> -->
+
 										<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
 
 											<div style="margin-bottom: 2px">
@@ -152,7 +151,7 @@
 												</p:column>
 												<p:column headerText="Precio Descuento"
 													style="text-align: center;">
-													<h:outputText value="%#{venta2.descuento}" />
+													<h:outputText value="#{venta2.totalPrecioLinea}" />
 												</p:column>
 												
 													<p:column headerText=" " style="text-align: center;">
@@ -291,7 +290,7 @@
 						<p:outputLabel for="descImportantes" value="Descuento:"
 							style="width:100%" />
 						<p:selectOneMenu id="descImportantes"
-							value="#{ventaBean.articuloSeleccionado.descuentoPrecio}"
+							value="#{ventaBean.strDescuento}"
 							style="width:50%">
 							<f:selectItem itemLabel="ninguno" itemValue="0" />
 							<f:selectItem itemLabel="5% descuento" itemValue="5" />
@@ -303,9 +302,9 @@
 					</p:outputPanel>
 					
 					<p:outputPanel style=" padding: 0; margin: 0;">
-						<p:outputLabel for="descuentoo" value="Descuento manual (%) :"
+						<p:outputLabel for="descuento" value="Descuento manual (%) :"
 							style="width:100%" />
-						<p:inputText id="descuentoo"
+						<p:inputText id="descuento"
 							value="#{ventaBean.articuloSeleccionado.descuento}"
 							style="width:50%">
 						</p:inputText>
@@ -313,7 +312,7 @@
 				</p:panelGrid>
 				<p:commandButton value="Agregar" update=":form1"
 					actionListener="#{ventaBean.agregarLineaVenta()}"
-					process="@this,descuentoo,cant,descImportantes" styleClass="btn btn-default pull-right"
+					process="@this,descuento,cant,descImportantes" styleClass="btn btn-default pull-right"
 					oncomplete="PF('ventaDialog').hide()" icon="ui-icon-check">
 				</p:commandButton>
 			</p:outputPanel>

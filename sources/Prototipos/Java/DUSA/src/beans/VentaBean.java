@@ -49,8 +49,6 @@ public class VentaBean implements Serializable {
 	private List<LineaVenta> lineasVentaPerdidas = new ArrayList<LineaVenta>();
 	private DTVenta articuloSeleccionado = new DTVenta();
 	private String strDescuento = "";
-	private boolean descuentoReceta1 = false;
-	private boolean descuentoReceta2 = false;
 
 	private boolean ventaFacturacion = false;
 
@@ -130,17 +128,17 @@ public class VentaBean implements Serializable {
 	}
 
 	// para calcular el precio con el descuento a poner cuando lista los
-	// articulos en la busqueda:
+	// articulos en la venta:
 	public void strDescuentoPrecio() {
 
-		Iterator<DTVenta> it = lineasVenta.iterator();
+		Iterator<LineaVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
-			DTVenta v = it.next();
+			LineaVenta v = it.next();
 			BigDecimal x = new BigDecimal(0);
 			
 			if (  (v.getDescuento().compareTo(new BigDecimal(101)) == -1) && (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)   ){
 				
-				x = (v.getPrecioVenta().multiply(v.getDescuento()))
+				x = (v.getPrecio().multiply(v.getDescuento()))
 						.divide(new BigDecimal(100));
 			}else {
 				FacesContext
@@ -154,7 +152,7 @@ public class VentaBean implements Serializable {
 			}
 
 			v.setDescuentoPrecio("$"
-					+ v.getPrecioVenta().subtract(x).toString() + "(" + "%"
+					+ v.getPrecio().subtract(x).toString() + "(" + "%"
 					+ v.getDescuento().toString() + ")");
 
 		}
@@ -168,24 +166,13 @@ public class VentaBean implements Serializable {
 		Iterator<LineaVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
 			LineaVenta v = it.next();
-			
-			BigDecimal n = new BigDecimal(0);
 			BigDecimal x = new BigDecimal(0);
 			
 			if (  (v.getDescuento().compareTo(new BigDecimal(101)) == -1) && (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)   ){
 				
 				x = (v.getArticulo().getPrecioVenta().multiply(v
 						.getDescuento())).divide(new BigDecimal(100));
-				// calculo descuento por receta blanca 1 del 25%
-				if (v.getDescuentoReceta().equals("25")) {
-					n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
-							25))).divide(new BigDecimal(100));
-				}
-				// calculo descuento por receta blanca 2 del 40%
-				if (v.getDescuentoReceta().equals("40")) {
-					n = (v.getArticulo().getPrecioVenta().multiply(new BigDecimal(
-							30))).divide(new BigDecimal(100));
-				}
+				
 			}else {
 
 				FacesContext
@@ -199,10 +186,8 @@ public class VentaBean implements Serializable {
 			}
 
 			v.setTotalPrecioLinea("$"
-					+ (v.getArticulo().getPrecioVenta().subtract(x))
-							.subtract(n)
-							.multiply(new BigDecimal(v.getCantidad()))
-							.toString());
+					+ (v.getArticulo().getPrecioVenta().subtract(x)).toString() + "(" + "%"
+					+ v.getDescuento().toString() + ")" );
 
 		}
 
@@ -223,9 +208,7 @@ public class VentaBean implements Serializable {
 				venta.setTotalIvaMinimo(new BigDecimal(0));
 				// Agarrar el usuario logueado
 				Usuario usr = new Usuario();
-				// TODO
-				usr.setNombre("Admin");
-				// usr = this.instanciaSistema.obtenerUsuarioLogueado();
+				usr = this.instanciaSistema.obtenerUsuarioLogueado();
 				venta.setUsuario(usr);
 
 				// TODO ver como se elige la forma de pago.
@@ -282,7 +265,6 @@ public class VentaBean implements Serializable {
 				// Agarrar el usuario logueado
 				Usuario usr = new Usuario();
 				usr = this.instanciaSistema.obtenerUsuarioLogueado();
-				//usr.setNombre("Admin");
 				venta.setUsuario(usr);
 				// TODO ver como se elige la forma de pago.
 				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO
@@ -338,7 +320,6 @@ public class VentaBean implements Serializable {
 				// Agarrar el usuario logueado
 				Usuario usr = new Usuario();
 				usr = this.instanciaSistema.obtenerUsuarioLogueado();
-				//usr.setNombre("Admin");
 				venta.setUsuario(usr);
 				// TODO ver como se elige la forma de pago.
 				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO
@@ -357,22 +338,7 @@ public class VentaBean implements Serializable {
 
 				IFacturacion ifact = FabricaLogica.getIFacturacion();
 				
-				// de todas las ventas pendientes obtengo la de mayor Id que
-				// fue la ultima ingresada en el sistema.
-				// TODO revisar esto si esta bien asi o si hay alguna otra forma
-				// de obtener el id.
-				List<Venta> ventas = ifact.listarVentasPendientes();
-				Iterator<Venta> it = ventas.iterator();
-				long maxId = 0;
-				while (it.hasNext()) {
-
-					long vId = it.next().getVentaId();
-					if (vId > maxId) {
-						maxId = vId;
-					}
-				}
-
-				ifact.facturarVenta(maxId);
+				ifact.facturarVenta(venta);
 
 				FacesContext.getCurrentInstance().addMessage(
 						null,
@@ -414,7 +380,7 @@ public class VentaBean implements Serializable {
 		e.setTotalPrecioLinea("$"
 				+ (articuloSeleccionado.getPrecioVenta().subtract((articuloSeleccionado.getPrecioVenta().multiply(articuloSeleccionado
 						.getDescuento())).divide(new BigDecimal(100))))
-						.toString());
+						.toString() + "(%" + articuloSeleccionado.getDescuento() + ")" ) ;
 		e.setLinea(lineasVenta2.size() + 1);
 		e.setDescuentoReceta(articuloSeleccionado.getDescuentoReceta());
 		e.setPrecio(articuloSeleccionado.getPrecioVenta());
@@ -427,7 +393,7 @@ public class VentaBean implements Serializable {
 		//TODO ver el tema de descripcion oferta:
 		e.setDescripcionOferta("Falta ver esto");
 		e.setDescuentoPrecio(articuloSeleccionado.getDescuentoPrecio());
-		e.setDescuentoPrecio(articuloSeleccionado.getDescuentoPrecio());
+		e.setDescuentoPrecio(strDescuento);
 		e.setIva(articuloSeleccionado.getIva());
 		e.setIndicadorFacturacion(articuloSeleccionado.getIndicadorFacturacion());
 
@@ -662,22 +628,6 @@ public class VentaBean implements Serializable {
 
 	public void setStrDescuento(String strDescuento) {
 		this.strDescuento = strDescuento;
-	}
-
-	public boolean isDescuentoReceta1() {
-		return descuentoReceta1;
-	}
-
-	public void setDescuentoReceta1(boolean descuentoReceta1) {
-		this.descuentoReceta1 = descuentoReceta1;
-	}
-
-	public boolean isDescuentoReceta2() {
-		return descuentoReceta2;
-	}
-
-	public void setDescuentoReceta2(boolean descuentoReceta2) {
-		this.descuentoReceta2 = descuentoReceta2;
 	}
 
 	public String getCodigoBusqueda() {
