@@ -36,6 +36,17 @@ public class Enumerados {
 	    generarEstadistica,
 	    iniciarSesion,
 	    cerrarSesion,
+	    actualizarStock,
+	    existeCodigoProveedor,
+	    ingresarFacturaCompra,
+	    obtenerAccTerapeuticas,
+	    obtenerDrogas,
+	    obtenerFacturasDUSA,
+	    obtenerMarcas,
+	    obtenerProveedores,
+	    obtenerTiposDGI,
+	    obtenerTiposIva,
+	    obtenerUsuarioLogueado
 	}
 	/**
 	 * Informacion básica del proveedor DUSA para uso de distintos casos de uso. 

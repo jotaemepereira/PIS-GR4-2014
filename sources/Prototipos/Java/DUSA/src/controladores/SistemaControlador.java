@@ -75,12 +75,11 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public Map<Integer, DTProveedor> obtenerProveedores() throws Excepciones {
-		//*este caso de uso no aparece con el mismo nombre en el acta
-		//if (user.tienePermiso(casoDeUso.buscarProveedor))
-		return FabricaLogica.getInstanciaProveedores().obtenerProveedores();
-		//else
-		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
-
+		
+		if (user.tienePermiso(casoDeUso.obtenerProveedores))
+			return FabricaLogica.getInstanciaProveedores().obtenerProveedores();
+		else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 	}
 
 //	public void actualizarStock(Date fecha) {
@@ -146,14 +145,20 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public List<Droga> obtenerDrogas() throws Excepciones {
-		// NO ESTA EN EL ACTA 
-		return FabricaLogica.getIStock().obtenerDrogas();
+		
+		if (user.tienePermiso(casoDeUso.obtenerDrogas)) 
+			return FabricaLogica.getIStock().obtenerDrogas();
+		 else 
+			 throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
 	}
 
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
-		// NO ESTA EN ELACTA
-		return FabricaLogica.getIStock().obtenerAccionesTerapeuticas();
+		
+		if (user.tienePermiso(casoDeUso.obtenerDrogas)) 
+			return FabricaLogica.getIStock().obtenerAccionesTerapeuticas();
+		 else 
+			 throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
 	}   
 	@Override
 	public void iniciarSesion(String nombreUsuario, String contrasenia) throws Excepciones{
@@ -177,14 +182,32 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public List<DTProveedor> obtenerMarcas() throws Excepciones {
-		// NO ESTA EN EL ACTA 
-		return FabricaLogica.getInstanciaProveedores().obtenerMarcas();
+
+		List<DTProveedor> marcas = null;
+		if (user.tienePermiso(casoDeUso.obtenerMarcas)) {
+			
+			marcas = FabricaLogica.getInstanciaProveedores().obtenerMarcas();
+		} else {
+			
+			throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
+		}
+		
+		return marcas;
 	}
 
 	@Override
-	public boolean existeCodigoParaProveedor(long idProveedor,
-			long codigoIdentificador) throws Excepciones {
-		return FabricaLogica.getInstanciaProveedores().existeCodigoParaProveedor(idProveedor,codigoIdentificador);
+	public boolean existeCodigoParaProveedor(long idProveedor, long codigoIdentificador) throws Excepciones {
+		
+		boolean existe = false;
+		if (user.tienePermiso(casoDeUso.existeCodigoProveedor)) {
+			
+			existe = FabricaLogica.getInstanciaProveedores().existeCodigoParaProveedor(idProveedor,codigoIdentificador);
+		} else {
+			
+			throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
+		}
+		
+		return existe;
 	}
 
 	@Override
@@ -200,15 +223,17 @@ public class SistemaControlador implements ISistema {
 	@Override
 	public List<TipoIva> obtenerTiposIva() throws Excepciones {
 		//actualizarStock();
-		return FabricaLogica.getIStock().obtenerTiposIva();
+		if (user.tienePermiso(casoDeUso.obtenerTiposIva))
+			return FabricaLogica.getIStock().obtenerTiposIva();
+		else
+			throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
 
 	}
 
 	@Override
 	public Usuario obtenerUsuarioLogueado() {
-		// TODO Auto-generated method stub
+		
 		return user;
-
 	}
 	
 	@Override
