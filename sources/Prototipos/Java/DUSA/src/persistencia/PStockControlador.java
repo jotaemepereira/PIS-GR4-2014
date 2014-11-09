@@ -345,7 +345,7 @@ public class PStockControlador implements IStockPersistencia {
 				+ regexpBusqueda + " BARCODE:" + regexpBusqueda + " DROGAS: "
 				+ regexpBusqueda + " PRESENTATION: " + regexpBusqueda
 				+ " ACCIONES_TERAPEUTICAS: " + regexpBusqueda + " MARCA: "
-				+ regexpBusqueda + " SUPPLIER_DATA: " + "#" + busqueda + "*");
+				+ regexpBusqueda + " SUPPLIER_DATA: " + "*" + busqueda);
 		parameters.set("wt", "json");
 		parameters
 				.set("fl",
