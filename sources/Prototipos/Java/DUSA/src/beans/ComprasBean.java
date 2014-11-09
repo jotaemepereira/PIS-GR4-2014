@@ -400,6 +400,7 @@ public class ComprasBean implements Serializable {
 		}
 
 		try {
+			System.out.println("PROVEEDOR: " + factura.getIdProveedor());
 			if (factura.getIdProveedor() != 0) {
 				busquedaArticulos = this.instanciaSistema.buscarArticulos(
 						busqueda, this.proveedorSeleccionado);
