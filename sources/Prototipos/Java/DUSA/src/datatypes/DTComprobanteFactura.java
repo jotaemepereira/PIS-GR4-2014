@@ -19,7 +19,7 @@ public class DTComprobanteFactura {
 	private long idOrden;
 	private int tipoCFE;
     private String serieCFE;
-    private long numeroCFE;
+    private int numeroCFE;
     private Date fechaComprobante;
     private String formaDePago;
     private long ordenDeCompra;
@@ -56,10 +56,10 @@ public class DTComprobanteFactura {
 	public void setSerieCFE(String serieCFE) {
 		this.serieCFE = serieCFE;
 	}
-	public long getNumeroCFE() {
+	public int getNumeroCFE() {
 		return numeroCFE;
 	}
-	public void setNumeroCFE(long numeroCFE) {
+	public void setNumeroCFE(int numeroCFE) {
 		this.numeroCFE = numeroCFE;
 	}
 	public long getOrdenDeCompra() {

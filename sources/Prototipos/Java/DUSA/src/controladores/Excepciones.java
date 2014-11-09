@@ -43,6 +43,10 @@ public class Excepciones extends Exception {
 	public static String MENSAJE_CANCELADA_OK					= "Se venta ha sido cancelada correctamente.";
 	public static String MENSAJE_NO_CORROBORADO_OK				= "Debe corroborar todos los items de la venta.";
 	
+	//Mensaje de ingresar compra
+	public static String MENSAJE_ERROR_TOTAL					= "El total de la factura no puede ser 0";
+	public static String MENSAJE_DETALLE_VACIO					= "Es necesario ingresar al menos un artículo.";
+	public static String MENSAJE_FACTURA_DUPLICADA				= "Ya existe en el sistema una factura con el mismo tipo, serie y numero";
 	public Excepciones(String message, int errorCode){
         super(message);
         this.errorCode = errorCode;
