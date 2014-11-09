@@ -232,9 +232,9 @@ public interface IStockPersistencia {
 	public Articulo obtenerArticulo(int idArticulo) throws Excepciones;
 	
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
-	
-	public void modificarPreciosDeArticulos(
-			Map<Long, Integer> preciosModificados);
+
+	public void modificarPreciosDeArticulo(Map<Long, Integer> preciosModificados)
+			throws Excepciones;
 
 }
 
