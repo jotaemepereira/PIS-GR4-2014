@@ -12,8 +12,10 @@ public class ComprasControlador implements ICompras {
 	@Override
 	public void ingresarFacturaCompra(Orden orden) throws Excepciones {
 		if(orden.getOrdenDeCompra() == 0){ // En el caso de una compra manual ingreso la factura
+			System.out.println("MANUAL");
 			FabricaPersistencia.getInstanciaComprasPersistencia().ingresarFacturaCompra(orden); 
 		}else{ // En el caso de una factura de DUSA, paso la factura a procesada
+			System.out.println("DUSA");
 			FabricaPersistencia.getInstanciaComprasPersistencia().actualizarFacturaCompraDUSA(orden);
 		}
 		

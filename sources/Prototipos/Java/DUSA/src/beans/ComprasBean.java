@@ -212,6 +212,7 @@ public class ComprasBean implements Serializable {
 
 	public void facturaAutomaticaDUSA() {
 		try {
+			proveedorSeleccionado = 1;
 			mapFacturasDUSA = this.instanciaSistema.obtenerFacturasDUSA();
 			this.facturasDUSA = new ArrayList<DTComprobanteFactura>(
 					mapFacturasDUSA.values());
@@ -232,6 +233,7 @@ public class ComprasBean implements Serializable {
 
 	public void seleccionFacturaDUSA() {
 		factura = mapFacturasDUSA.get(ordenDeCompraDUSA);
+		proveedorSeleccionado = 1;
 	}
 
 	public void cancelarIngresarCompra() {
@@ -304,7 +306,12 @@ public class ComprasBean implements Serializable {
 			orden.setDetalle(detalles);
 			orden.setFechaComprobante(factura.getFechaComprobante());
 			orden.setFormaDePago(factura.getFormaDePago());
-			orden.setIdProveedor(factura.getIdProveedor());
+			if(factura.getOrdenDeCompra() == 0){
+				orden.setIdProveedor(factura.getIdProveedor());
+			}else{
+				orden.setIdOrden(factura.getIdOrden());
+				orden.setIdProveedor(1);
+			}
 			orden.setMontoNetoGravadoIvaBasico(factura
 					.getMontoNetoGravadoIvaBasico());
 			orden.setMontoNetoGravadoIvaMinimo(factura
