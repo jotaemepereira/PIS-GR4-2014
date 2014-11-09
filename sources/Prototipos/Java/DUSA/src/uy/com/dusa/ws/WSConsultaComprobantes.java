@@ -20,10 +20,34 @@ import javax.xml.ws.ResponseWrapper;
  */
 @WebService(name = "WSConsultaComprobantes", targetNamespace = "http://ws.dusa.com.uy/")
 @XmlSeeAlso({
-    ComprobanteObjectFactory.class
+    ObjectFactory.class
 })
 public interface WSConsultaComprobantes {
 
+
+    /**
+     * 
+     * @param usuario
+     * @param hasta
+     * @param password
+     * @param desde
+     * @return
+     *     returns uy.com.dusa.ws.ResultGetComprobantes
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getComprobantesEntreFechas", targetNamespace = "http://ws.dusa.com.uy/", className = "uy.com.dusa.ws.GetComprobantesEntreFechas")
+    @ResponseWrapper(localName = "getComprobantesEntreFechasResponse", targetNamespace = "http://ws.dusa.com.uy/", className = "uy.com.dusa.ws.GetComprobantesEntreFechasResponse")
+    @Action(input = "http://ws.dusa.com.uy/WSConsultaComprobantes/getComprobantesEntreFechasRequest", output = "http://ws.dusa.com.uy/WSConsultaComprobantes/getComprobantesEntreFechasResponse")
+    public ResultGetComprobantes getComprobantesEntreFechas(
+        @WebParam(name = "usuario", targetNamespace = "")
+        String usuario,
+        @WebParam(name = "password", targetNamespace = "")
+        String password,
+        @WebParam(name = "desde", targetNamespace = "")
+        XMLGregorianCalendar desde,
+        @WebParam(name = "hasta", targetNamespace = "")
+        XMLGregorianCalendar hasta);
 
     /**
      * 
@@ -99,29 +123,5 @@ public interface WSConsultaComprobantes {
         String password,
         @WebParam(name = "desde", targetNamespace = "")
         XMLGregorianCalendar desde);
-
-    /**
-     * 
-     * @param usuario
-     * @param hasta
-     * @param password
-     * @param desde
-     * @return
-     *     returns uy.com.dusa.ws.ResultGetComprobantes
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getComprobantesEntreFechas", targetNamespace = "http://ws.dusa.com.uy/", className = "uy.com.dusa.ws.GetComprobantesEntreFechas")
-    @ResponseWrapper(localName = "getComprobantesEntreFechasResponse", targetNamespace = "http://ws.dusa.com.uy/", className = "uy.com.dusa.ws.GetComprobantesEntreFechasResponse")
-    @Action(input = "http://ws.dusa.com.uy/WSConsultaComprobantes/getComprobantesEntreFechasRequest", output = "http://ws.dusa.com.uy/WSConsultaComprobantes/getComprobantesEntreFechasResponse")
-    public ResultGetComprobantes getComprobantesEntreFechas(
-        @WebParam(name = "usuario", targetNamespace = "")
-        String usuario,
-        @WebParam(name = "password", targetNamespace = "")
-        String password,
-        @WebParam(name = "desde", targetNamespace = "")
-        XMLGregorianCalendar desde,
-        @WebParam(name = "hasta", targetNamespace = "")
-        XMLGregorianCalendar hasta);
 
 }
