@@ -274,18 +274,17 @@ public class SistemaControlador implements ISistema {
 	}
 	
 	@Override
-	public void facturarVentaPendiente(long idVenta) throws Excepciones {
-		
+	public boolean facturarVentaPendiente(long idVenta) throws Excepciones {
 		if (user.tienePermiso(casoDeUso.facturarVentaPendiente)) {
 			
-			FabricaLogica.getIFacturacion().facturarVenta(idVenta);
+			boolean ret = FabricaLogica.getIFacturacion().facturarVenta(idVenta);
 			
 			Operacion operacion = user.getOperacion(casoDeUso.facturarVentaPendiente);
 			Actividad act = new Actividad(operacion, user.getNombre());
 			
 			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+			return ret;
 		} else {
-			
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		}
 	}

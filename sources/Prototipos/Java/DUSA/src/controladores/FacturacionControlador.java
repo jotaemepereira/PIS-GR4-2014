@@ -14,36 +14,38 @@ public class FacturacionControlador implements IFacturacion {
 
 	@Override
 	public List<Venta> listarVentasPendientes() throws Excepciones {
-		
+
 		IFacturacionPersistencia ifp = FabricaPersistencia
 				.getInstanciaFacturacionPersistencia();
 		return ifp.listarVentasPendientes();
 	}
 
 	@Override
-	public void facturarVenta(long ventaId) throws Excepciones {
+	public boolean facturarVenta(long ventaId) throws Excepciones {
 		IFacturacionPersistencia ifp = FabricaPersistencia
 				.getInstanciaFacturacionPersistencia();
 
 		// Obtengo venta pendiente y la marco como facturada
 		Venta venta = ifp.facturarVenta(ventaId);
 
-		if (venta != null) {
-			// Creo factura
-			try {
-				
-				XMLUtil.jaxbObjectToXML(venta);
-			} catch (Exception e) {
-				
-				e.printStackTrace();
-				throw new Excepciones(Excepciones.MENSAJE_ERROR_IMPRESION_FACTURA, Excepciones.ERROR_SISTEMA);
-			}
+		if (venta == null) {
+			return false;
 		}
+		// Creo factura
+		try {
+			XMLUtil.jaxbObjectToXML(venta);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_IMPRESION_FACTURA,
+					Excepciones.ERROR_SISTEMA);
+		}
+		return true;
 	}
 
 	@Override
 	public void cancelarVenta(long ventaId) throws Excepciones {
-		
+
 		IFacturacionPersistencia ifp = FabricaPersistencia
 				.getInstanciaFacturacionPersistencia();
 

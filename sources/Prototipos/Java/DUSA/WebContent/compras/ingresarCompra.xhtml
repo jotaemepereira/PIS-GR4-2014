@@ -46,15 +46,17 @@
 .ui-selectonemenu-filter-container {
 	width: 100% !important;
 }
+
 </style>
 	</h:head>
 	<h:body>
 		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
 		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
 		<h:form id="form1">
-			<!-- <p:hotkey bind="Ctrl+return" update="panel msgs" actionListener=""/> -->
+			<p:hotkey bind="Ctrl+return" update="panel msgs"
+				actionListener="${comprasBean.ingresarCompra}" />
 			<ui:include src="../cabezal.xhtml" />
-			<ui:include src="../menuVertical/stock.xhtml" />
+			<ui:include src="../menuVertical/compras.xhtml" />
 			#{loginBean.redirectIfNotLoggedIn()}
         	#{comprasBean.setISistema(loginBean.instanciaSistema)}
 			<p:focus></p:focus>
@@ -66,7 +68,9 @@
 						</div>
 						<p:messages id="msgs" />
 
-						<!-- <p:remoteCommand name="altaProveedor" update="panel msgs" actionListener=""/> -->
+						<p:remoteCommand name="ingresarCompra" update="panel msgs"
+							actionListener="${comprasBean.ingresarCompra}" />
+
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
 								<div class="container-fluid">
@@ -75,18 +79,22 @@
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
 											style="text-align: center;">
 											<p:commandButton id="btn1" value="Ingreso manual"
-												update="btn1 btn2 show-hide"
+												update="btn1 btn2 show-hide msgs"
 												actionListener="${comprasBean.ingresoManual}"
 												styleClass="btn btn-default" style="margin:0 2% 10px 0;"
 												disabled="${comprasBean.disableBotones}" process="@this"
 												oncomplete="actualizarBotones();" />
 											<p:commandButton id="btn2"
 												value="Cargar factura automática D.U.S.A."
-												update="btn1 btn2 show-hide" ajax="true"
+												update="btn1 btn2 show-hide msgs" ajax="true"
 												actionListener="${comprasBean.facturaAutomaticaDUSA}"
 												styleClass="btn btn-default" style="margin:0 0 10px 0;"
 												disabled="${comprasBean.disableBotones}" process="@this"
 												oncomplete="actualizarBotones();" />
+											<span data-toggle="tooltip"
+												title="Para obtener las últimas facturas es necesario tener conexión a intertnet."
+												class="glyphicon glyphicon-question-sign"
+												style="margin-left: 1%;" />
 										</div>
 									</div>
 
@@ -153,7 +161,7 @@
 													filterMatchMode="contains" required="true"
 													style="width: 100%"
 													disabled="${comprasBean.facturaAutomatica}"
-													requiredMessage="Para continuar complete todos los campos obligatorios">
+													requiredMessage="Para continuar complete el tipo de factura">
 													<p:ajax event="change" update=":form1:serieCFE"
 														listener="#{comprasBean.cambioTipoCFE}" />
 													<f:selectItem itemLabel="Seleccione un tipo de factura"
@@ -173,10 +181,9 @@
 											<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
 												<p:outputLabel value="Numero factura: *" />
 												<p:inputText value="${comprasBean.factura.numeroCFE}"
-													style="width: 100%" required="true"
-													styleClass="form-control"
-													disabled="${comprasBean.facturaAutomatica}"
-													requiredMessage="Para continuar complete todos los campos obligatorios" />
+													style="width: 100%" styleClass="form-control"
+													disabled="${comprasBean.facturaAutomatica}" required="true"
+													requiredMessage="Para continuar complete el número de factura" />
 											</div>
 
 											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"></div>
@@ -186,12 +193,12 @@
 												<p:calendar value="${comprasBean.factura.fechaComprobante}"
 													styleClass="calendario"
 													disabled="${comprasBean.facturaAutomatica}" required="true"
-													requiredMessage="Para continuar complete todos los campos obligatorios"
+													requiredMessage="Para continuar complete la fecha de la factura"
 													maxdate="{comprasBean.hoy}" />
 											</div>
 										</div>
 
-										<!--       TABLA DE LA COMPRA     -->
+										<!--       TABLA DE ARTICULOS DE LA COMPRA     -->
 										<div class="row" style="margin-bottom: 1%;">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<p:dataTable var="detalle" id="tablePedido"
@@ -254,6 +261,7 @@
 											</div>
 										</div>
 
+										<!--   SUBTOTAL DE LOS ARTICULOS  -->
 										<div class="row">
 											<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9"></div>
 											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
@@ -277,9 +285,14 @@
 													title="Para mejorar la búsqueda, seleccione un proveedor."
 													class="glyphicon glyphicon-question-sign"
 													style="float: right; margin-left: 1%;" />
+												<span data-toggle="tooltip"
+													title="Atajo: Ctrl+a"
+													class="glyphicon glyphicon-question-sign"
+													style="float: right; margin-left: 1%;" />
 												<p:commandButton value="Agregar artículo"
 													onclick="PF('dialogArticulo').show();"
-													styleClass="btn btn-default" style="float:right"
+													styleClass="btn btn-default agregarArticulo"
+													style="float:right"
 													actionListener="${comprasBean.saveProveedor}"
 													process=":form1:proveedores @this"
 													disabled="${comprasBean.facturaAutomatica}" />
@@ -530,7 +543,8 @@
 						<p:commandButton value="Buscar" update="tableBusqueda"
 							actionListener="#{comprasBean.buscarArticulos}"
 							styleClass="btn btn-success btnBuscar" ajax="true"
-							process="busqueda @this" tabindex="-1" />
+							process="busqueda @this" tabindex="-1" 
+							onsuccess="$('.tableBusqueda').find('button').first().trigger('focus')" />
 					</div>
 				</div>
 
@@ -539,7 +553,8 @@
 						<p:dataTable var="articuloBusqueda" id="tableBusqueda"
 							value="#{comprasBean.busquedaArticulos}"
 							emptyMessage="No se encontraron artículos"
-							style="overflow-y:scroll; height: 75vh">
+							style="overflow-y:scroll; height: 75vh"
+							styleClass="tableBusqueda">
 							<div class="row">
 								<p:column headerText="Artículo"
 									styleClass="col-xs-2 col-sm-2 col-md-2 col-lg-2"
@@ -590,8 +605,7 @@
 							<p:column headerText="Artículo"
 								styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6"
 								style="text-align:center">
-								<h:outputText
-									value="#{articulo.descripcion}" />
+								<h:outputText value="#{articulo.descripcion}" />
 							</p:column>
 
 							<p:column headerText="Costo lista"
@@ -599,7 +613,7 @@
 								style="text-align:center">
 								<h:outputText value="#{articulo.costoListaArticulo}" />
 							</p:column>
-							
+
 							<p:column headerText="Costo unitario"
 								styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3"
 								style="text-align:center">

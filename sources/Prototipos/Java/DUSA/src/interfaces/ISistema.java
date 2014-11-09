@@ -289,7 +289,7 @@ public interface ISistema {
 	 * @param idVenta
 	 * @throws Excepciones
 	 */
-	public void facturarVentaPendiente(long idVenta) throws Excepciones;
+	public boolean facturarVentaPendiente(long idVenta) throws Excepciones;
 	
 	/**
 	 * Se cancela la venta pendiente con id "idVenta" 
