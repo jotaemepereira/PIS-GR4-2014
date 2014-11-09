@@ -1568,9 +1568,9 @@ public class PStockControlador implements IStockPersistencia {
 			throws Excepciones {
 		// TODO Auto-generated method stub
 		PreparedStatement stmt = null;
-		try {
+		/*try {
 			Connection c = Conexion.getConnection();
-			for (Map.Entry<long, int> entry : map.entrySet())
+			for (Map.Entry<Long, Integer> entry : map.entrySet())
 			{
 			    System.out.println(entry.getKey() + "/" + entry.getValue());
 			}
@@ -1592,6 +1592,6 @@ public class PStockControlador implements IStockPersistencia {
 		} catch (Exception e) {
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
-		}
+		} */
 	}
 }
