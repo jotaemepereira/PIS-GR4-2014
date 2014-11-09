@@ -22,7 +22,7 @@ import javax.xml.namespace.QName;
  * 
  */
 @XmlRegistry
-public class ObjectFactory {
+public class PedidoObjectFactory {
 
     private final static QName _RealizarPedidoSimpleResponse_QNAME = new QName("http://ws.dusa.com.uy/", "realizarPedidoSimpleResponse");
     private final static QName _RealizarPedidoSimple_QNAME = new QName("http://ws.dusa.com.uy/", "realizarPedidoSimple");
@@ -31,7 +31,7 @@ public class ObjectFactory {
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: uy.com.dusa.ws
      * 
      */
-    public ObjectFactory() {
+    public PedidoObjectFactory() {
     }
 
     /**

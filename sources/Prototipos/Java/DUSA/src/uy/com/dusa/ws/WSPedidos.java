@@ -19,7 +19,7 @@ import javax.xml.ws.ResponseWrapper;
  */
 @WebService(name = "WSPedidos", targetNamespace = "http://ws.dusa.com.uy/")
 @XmlSeeAlso({
-    ObjectFactory.class
+    PedidoObjectFactory.class
 })
 public interface WSPedidos {
 
