@@ -10,7 +10,7 @@ public interface IFacturacion {
 	
 	public List<Venta> listarVentasPendientes() throws Excepciones;
 	
-	public void facturarVenta(long venta) throws Excepciones;
+	public boolean facturarVenta(long venta) throws Excepciones;
 	
 	public void cancelarVenta(long venta) throws Excepciones;
 	
