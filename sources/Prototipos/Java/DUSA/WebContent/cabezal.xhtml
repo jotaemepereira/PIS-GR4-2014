@@ -15,8 +15,8 @@
 			<div class="collapse navbar-collapse"
 				id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
-					<li style="#{loginBean.getNuevaCompraRet()}"><a href="../compras/ingresarCompra.jsf"><i class="fa fa-calculator fa-3x"></i>
-							Compras </a></li>
+					<li style=""><a href=""><i class="fa fa-calculator fa-3x"></i>
+							Caja </a></li>
 					<li style="#{loginBean.getStockPermiso()}"><a href="../stock/busquedaArticulo.jsf"><i
 							class="fa fa-cubes fa-3x"></i> Stock</a></li>
 					<li style="#{loginBean.getVentasPermiso()}"><a href="#{loginBean.indexVentasPorPermisos()}"><i
@@ -24,6 +24,8 @@
 					<li style="#{loginBean.getClientesPermiso()}"><a href="#"><i class="fa fa-users fa-3x"></i> Clientes</a></li>
 					<li style="#{loginBean.getProveedoresPermiso()}"><a href="../proveedores/altaProveedor.jsf"><i
 							class="fa fa-truck fa-3x"></i> Proveedores</a></li>
+					<li style="#{loginBean.getNuevaCompraRet()}"><a href="../compras/ingresarCompra.jsf"><i class="fa fa-calculator fa-3x"></i>
+							Compras </a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="login"><h:outputLabel id="logged_user">
