@@ -46,8 +46,7 @@
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/ventas.xhtml" />
 			#{loginBean.redirectIfNotLoggedIn()}
-        	#{proveedoresBean.setISistema(loginBean.instanciaSistema)}
-			<p:focus></p:focus>
+        	#{ventaBean.setISistema(loginBean.instanciaSistema)}
 			
 			<div class="vpanel_right">
 				<div class="wrapper">
@@ -153,7 +152,7 @@
 												</p:column>
 												<p:column headerText="Precio Descuento"
 													style="text-align: center;">
-													<h:outputText value=" desc : (%#{venta2.descuento})" />
+													<h:outputText value="%#{venta2.descuento}" />
 												</p:column>
 												
 													<p:column headerText=" " style="text-align: center;">
@@ -166,23 +165,21 @@
 											
 											</p:dataTable>
 
-
 											<div>
 												<table
-													style="float: right; text-align: right; width: 250px;">
+													style="float: left; text-align: left; width: 250px;">
 													<tr>
-														<td style="font-weight: bold;">SubTotal</td>
+														<td style="font-weight: bold;">SubTotal:</td>
 														<td><h:outputText id="subTotal"
 																value=" #{ventaBean.strSubTotal()}"></h:outputText></td>
 													</tr>
 												</table>
-												<div class="clearBoth"></div>
 											</div>
 											<div>
 												<table
-													style="float: right; text-align: right; width: 250px;">
+													style="float: left; text-align: left; width: 250px;">
 													<tr>
-														<td style="font-weight: bold;">Iva</td>
+														<td style="font-weight: bold;">Iva:</td>
 														<td><h:outputText id="iva"
 																value=" #{ventaBean.strIva()}">
 															</h:outputText></td>
@@ -192,9 +189,21 @@
 											</div>
 											<div>
 												<table
-													style="float: right; text-align: right; width: 250px;">
+													style="float: left; text-align: left; width: 250px;">
 													<tr>
-														<td style="font-weight: bold;">Total</td>
+														<td style="font-weight: bold;">Descuentos:</td>
+														<td><h:outputText id="descuentos"
+																value=" #{ventaBean.strDescuentos()}">
+															</h:outputText></td>
+													</tr>
+												</table>
+												<div class="clearBoth"></div>
+											</div>
+											<div>
+												<table
+													style="float: left; text-align: left; width: 250px;">
+													<tr>
+														<td style="font-weight: bold;">Total:</td>
 														<td><h:outputText id="total"
 																value=" #{ventaBean.strTotal()}">
 															</h:outputText></td>
@@ -202,27 +211,25 @@
 												</table>
 												<div class="clearBoth"></div>
 											</div>
+											
 											<div style="margin-top: 20px; text-align: right;">
 												<p:commandButton value="Enviar a facturar" id="ajax2"
 													rendered="#{!ventaBean.ventaFacturacion}" update="@form"
 													actionListener="#{ventaBean.facturarVenta()}"
 													process="@this" styleClass="ui-priority-primary" />
-											</div>
-											<div style="margin-top: 20px; text-align: right;">
 												<p:commandButton value="Facturar" id="ajax1"
-													rendered="#{!ventaBean.ventaFacturacion}" update="@form"
+													rendered="#{ventaBean.ventaFacturacion}" update="@form"
 													actionListener="#{ventaBean.facturarVentaDirecto()}"
 													process="@this" styleClass="ui-priority-primary" />
-											</div>
-											<div style="margin-top: 30px; text-align: right;">
-												<p:commandButton value="Enviar Venta Perdida" id="ajax4"
+												<p:commandButton value="Venta Perdida" id="ajax4"
 													update="@form"
 													actionListener="#{ventaBean.agregarVentaPerdida()}"
 													process="@this" styleClass="ui-priority-primary" />
+													<p:commandButton value="Cancelar" id="ajax11"
+													update="@form"
+													actionListener="#{ventaBean.cancelarVenta()}"
+													process="@this" styleClass="ui-priority-primary" />
 											</div>
-
-
-
 
 										</div>
 
@@ -252,13 +259,17 @@
 			global="true" modal="true" showEffect="fade" hideEffect="fade"
 			resizable="false">
 			<p:outputPanel id="ventaDetail">
-				<p:panelGrid columns="2" style="width:100%">
-
+				<p:panelGrid columns="2" style="width:80%">
+				
+					<p:outputPanel style="padding: 0; margin: 0;">
+					<p:outputLabel for="cant" value="Cantidad:"
+							style="width:100%" />
 					<p:inputText id="cant"
 						value="#{ventaBean.articuloSeleccionado.cantidad}"
-						style="width:40px;">
+						style="width:40%;">
 					</p:inputText>
-					<p:outputPanel style="padding: 0; margin: 0;">
+					</p:outputPanel>
+					<p:outputPanel style="padding: 0; margin: 0; text-align: right; width:50%;">
 					<p:outputPanel >
 						<p:selectBooleanCheckbox
 							value="#{ventaBean.articuloSeleccionado.recetaBlanca}">
@@ -277,11 +288,12 @@
 					</p:outputPanel>
 
 					<p:outputPanel style=" padding: 0; margin: 0;">
-						<p:outputLabel for="descImportantes" value="Desc:"
+						<p:outputLabel for="descImportantes" value="Descuento:"
 							style="width:100%" />
 						<p:selectOneMenu id="descImportantes"
 							value="#{ventaBean.articuloSeleccionado.descuentoPrecio}"
-							style="width:100%">
+							style="width:50%">
+							<f:selectItem itemLabel="ninguno" itemValue="0" />
 							<f:selectItem itemLabel="5% descuento" itemValue="5" />
 							<f:selectItem itemLabel="10% descuento" itemValue="10" />
 							<f:selectItem itemLabel="15% descuento" itemValue="15" />
@@ -290,7 +302,6 @@
 						</p:selectOneMenu>
 					</p:outputPanel>
 					
-
 					<p:outputPanel style=" padding: 0; margin: 0;">
 						<p:outputLabel for="descuentoo" value="Descuento manual (%) :"
 							style="width:100%" />
@@ -300,14 +311,13 @@
 						</p:inputText>
 					</p:outputPanel>
 				</p:panelGrid>
-				<p:commandButton value="Agregar" id="ajax11" update=":form1"
-					actionListener="#{ventaBean.agregarLineaVenta(ventaBean.articuloSeleccionado)}"
-					process="@this" styleClass="btn btn-default pull-right"
+				<p:commandButton value="Agregar" update=":form1"
+					actionListener="#{ventaBean.agregarLineaVenta()}"
+					process="@this,descuentoo,cant,descImportantes" styleClass="btn btn-default pull-right"
 					oncomplete="PF('ventaDialog').hide()" icon="ui-icon-check">
 				</p:commandButton>
 			</p:outputPanel>
 		</p:dialog>
-
 
 	</h:body>
 </f:view>

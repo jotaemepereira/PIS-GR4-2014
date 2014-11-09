@@ -1526,4 +1526,40 @@ public class PStockControlador implements IStockPersistencia {
 	    }
 	    return 0;
 	}
+
+	@Override
+	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor)
+			throws Excepciones {
+		// TODO Traer todos los articulos del proveedor
+		PreparedStatement stmt = null;
+		List<Integer> listaArticulos;
+		try {
+			Connection c = Conexion.getConnection();
+			String  query = "SELECT * FROM products_suppliers "
+					+ "WHERE supplier_id = ?";
+			stmt = c.prepareStatement(query);
+			stmt.setString(1, Long.toString(idProveedor));
+			ResultSet rs = stmt.executeQuery();
+			// Obtengo los productos que vende ese proveedor 
+			// y los guardo en una lista de integers
+			listaArticulos = new ArrayList<Integer>();
+			while (rs.next()) {
+				listaArticulos.add(rs.getInt("product_id"));
+			}
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+		
+		List<Articulo> returnArticulos = new ArrayList<Articulo>();
+		// Obtengo los articulos desde la función obtenerArticulo
+		for (int item : listaArticulos) {
+			returnArticulos.add(obtenerArticulo(item));
+		}
+		
+		return returnArticulos;
+	}
 }

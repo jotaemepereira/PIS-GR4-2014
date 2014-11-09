@@ -42,6 +42,7 @@ public class Excepciones extends Exception {
 	public static String MENSAJE_FACTURADA_OK					= "Se facturó la venta correctamente.";
 	public static String MENSAJE_CANCELADA_OK					= "Se venta ha sido cancelada correctamente.";
 	public static String MENSAJE_NO_CORROBORADO_OK				= "Debe corroborar todos los items de la venta.";
+	public static String MENSAJE_ERROR_IMPRESION_FACTURA		= "Ha ocurrido un error durante la impresión de la factura.";
 	
 	//Mensaje de ingresar compra
 	public static String MENSAJE_ERROR_TOTAL					= "El total de la factura no puede ser 0";

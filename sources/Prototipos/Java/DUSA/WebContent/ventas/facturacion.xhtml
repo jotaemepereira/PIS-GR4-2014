@@ -22,13 +22,16 @@
 		<h:form id="form1">
 			<p:growl id="messages" showDetail="true" globalOnly="true" />
 			<ui:include src="../cabezal.xhtml" />
-			<ui:include src="../menuVertical/ventas.xhtml" />	
+			<ui:include src="../menuVertical/ventas.xhtml" />
+			#{loginBean.redirectIfNotLoggedIn()}
+        	#{facturacionBean.setISistema(loginBean.instanciaSistema)}	
 			<div class="vpanel_right">
 				<div class="wrapper">
 					<div class="panel panel-default" id="panel">
 						<div class="panel-heading">
 							<h3 class="panel-title">Facturación</h3>
 						</div>
+						<!-- <p:messages id="msgs" /> -->
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
 								<div class="container-fluid">

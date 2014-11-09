@@ -376,4 +376,14 @@ public class StockControlador implements IStock {
 		return FabricaPersistencia.getStockPersistencia().obtenerArticulo(idArticulo);
 	}
 
+	@Override
+	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor)
+			throws Excepciones {
+		// TODO Auto-generated method stub
+		return FabricaPersistencia.getStockPersistencia().
+				obtenerArticulosDelProveedor(idProveedor);
+		
+	}
+	
+
 }

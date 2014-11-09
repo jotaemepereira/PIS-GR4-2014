@@ -19,7 +19,7 @@
 							Caja </a></li>
 					<li style="#{loginBean.getStockPermiso()}"><a href="../stock/busquedaArticulo.jsf"><i
 							class="fa fa-cubes fa-3x"></i> Stock</a></li>
-					<li style="#{loginBean.getVentasPermiso()}"><a href="../ventas/facturacion.jsf"><i
+					<li style="#{loginBean.getVentasPermiso()}"><a href="#{loginBean.indexVentasPorPermisos()}"><i
 							class="fa fa-shopping-cart fa-3x"></i> Ventas</a></li>
 					<li style="#{loginBean.getClientesPermiso()}"><a href="#"><i class="fa fa-users fa-3x"></i> Clientes</a></li>
 					<li style="#{loginBean.getProveedoresPermiso()}"><a href="../proveedores/altaProveedor.jsf"><i
