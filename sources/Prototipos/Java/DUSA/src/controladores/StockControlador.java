@@ -384,6 +384,15 @@ public class StockControlador implements IStock {
 				obtenerArticulosDelProveedor(idProveedor);
 		
 	}
+
+	@Override
+	public void modificarPreciodeArticulos(Map<Long, Integer> preciosModificados)
+			throws Excepciones {
+		// TODO Auto-generated method stub
+		FabricaPersistencia.getStockPersistencia().
+			modificarPreciosDeArticulos(preciosModificados);
+		
+	}
 	
 
 }
