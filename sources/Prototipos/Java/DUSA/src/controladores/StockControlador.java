@@ -237,7 +237,7 @@ public class StockControlador implements IStock {
 
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
-		grabarTiposIVA();
+		//grabarTiposIVA();
 		return FabricaPersistencia.getStockPersistencia()
 				.obtenerAccionesTerapeuticas();
 	}
@@ -382,6 +382,15 @@ public class StockControlador implements IStock {
 		// TODO Auto-generated method stub
 		return FabricaPersistencia.getStockPersistencia().
 				obtenerArticulosDelProveedor(idProveedor);
+		
+	}
+
+	@Override
+	public void modificarPreciodeArticulos(Map<Long, Integer> preciosModificados)
+			throws Excepciones {
+		// TODO Auto-generated method stub
+		FabricaPersistencia.getStockPersistencia().
+			modificarPreciosDeArticulos(preciosModificados);
 		
 	}
 	

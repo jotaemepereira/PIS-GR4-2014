@@ -201,4 +201,6 @@ public interface IStock {
 	
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
 	
+	public void modificarPreciodeArticulos(Map<Long, Integer> preciosModificados) throws Excepciones;
+	
 }

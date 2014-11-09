@@ -102,7 +102,7 @@
 									<h:panelGroup id="show-hide" layout="block"
 										class="${comprasBean.hideTable}">
 										<div class="row ${comprasBean.selectFacturaDUSA}"
-											style="margin-bottom: 1%; text-align: center;">
+											style="margin-bottom: 1%;">
 											<!--      SELECT DE ORDENES DE COMPRA EN EL CASO DE FACTURA AUTOMATICA DUSA -->
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<p:outputLabel value="Órdenes de compra DUSA: *" />
@@ -111,7 +111,8 @@
 													filterMatchMode="contains" required="false"
 													style="width:100%" styleClass="selFacturas">
 													<p:ajax event="change" update="panel"
-														listener="#{comprasBean.seleccionFacturaDUSA}" />
+														listener="#{comprasBean.seleccionFacturaDUSA}"
+														oncomplete="actualizarBotones();" />
 													<f:selectItem itemLabel="Seleccione una factura"
 														itemValue="#{null}" />
 													<f:selectItems value="${comprasBean.facturasDUSA}" var="m"
