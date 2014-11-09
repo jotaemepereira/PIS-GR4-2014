@@ -929,7 +929,7 @@ public class PStockControlador implements IStockPersistencia {
 			ret = new ArrayList<TipoIva>();
 			while (rs.next()) {
 				TipoIva nuevo = new TipoIva();
-				nuevo.setTipoIVA(rs.getInt("tax_type_id"));
+				nuevo.setTipoIVA(rs.getString("tax_type_id").charAt(0));
 				nuevo.setDescripcion(rs.getString("description"));
 				ret.add(nuevo);
 			}
@@ -954,7 +954,7 @@ public class PStockControlador implements IStockPersistencia {
 						+ "IVA_VALUE, TAX_VALUE, IVA_VOUCHER, IRAE_VOUCHER, STATUS) VALUES "
 						+ " (?, ?, ?, ?, ?, ?, ?, ?, TRUE);";
 				stmt = c.prepareStatement(query);
-				stmt.setInt(1, t.getTipoIVA());
+				stmt.setString(1, String.valueOf(t.getTipoIVA()));
 				stmt.setString(2, t.getDescripcion());
 				stmt.setInt(3, t.getTipoTasa());
 				stmt.setInt(4, t.getIndicadorFacturacion());
@@ -1427,7 +1427,7 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setCostoOferta(rs.getBigDecimal("offer_cost"));
 				articulo.setUltimoCosto(rs.getBigDecimal("last_cost"));
 				articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
-				int auxTipoIva = rs.getInt("TAX_TYPE_ID");
+				char auxTipoIva = rs.getString("TAX_TYPE_ID").charAt(0);
 				if (auxTipoIva != 0) {
 					TipoIva ti = new TipoIva();
 					ti.setTipoIVA(auxTipoIva);
