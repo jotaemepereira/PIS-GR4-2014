@@ -78,12 +78,19 @@ public class FacturacionBean implements Serializable {
 
 			if (allCheck) {
 
-				this.instanciaSistema.facturarVentaPendiente(ventaSeleccionada.getVentaId());
+				boolean ret = this.instanciaSistema.facturarVentaPendiente(ventaSeleccionada.getVentaId());
 
+				if (ret){
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
 								Excepciones.MENSAJE_FACTURADA_OK, ""));
+				} else{
+					FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR,
+									Excepciones.MENSAJE_FACTURA_FACTURADA, ""));
+				}
 				ventas = this.instanciaSistema.listarVentasPendientes();
 				RequestContext.getCurrentInstance().execute("PF('dlg2').hide()");
 			} else {
