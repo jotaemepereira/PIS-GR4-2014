@@ -3,7 +3,7 @@ package model;
 import java.math.BigDecimal;
 
 public class TipoIva {
-	private int tipoIVA;
+	private char tipoIVA;
 	private String descripcion;
 	private int tipoTasa;
 	private int indicadorFacturacion;
@@ -13,10 +13,10 @@ public class TipoIva {
 	private BigDecimal resguardoIRAE;
 	private boolean status;
 	
-	public int getTipoIVA() {
+	public char getTipoIVA() {
 		return tipoIVA;
 	}
-	public void setTipoIVA(int tipoIVA) {
+	public void setTipoIVA(char tipoIVA) {
 		this.tipoIVA = tipoIVA;
 	}
 	public String getDescripcion() {

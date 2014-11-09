@@ -97,7 +97,7 @@ public class ServicioDusaControlador implements IServicio {
 		
 		//TODO ver que pasa con esto Jaguerre
 		TipoIva tipoIva = new TipoIva();
-		tipoIva.setTipoIVA(52);
+		tipoIva.setTipoIVA('3');
 		articulo.setTipoIva(tipoIva);
 		Usuario usr = new Usuario();
 		usr.setNombre("Admin");
@@ -213,7 +213,7 @@ public class ServicioDusaControlador implements IServicio {
 
 	private TipoIva transformarTipoIVA(DataIVA di) {
 		TipoIva ret = new TipoIva();
-		ret.setTipoIVA(di.getTipoIVA());
+		ret.setTipoIVA((char)(short)di.getTipoIVA());
 		ret.setDescripcion(di.getDescripcion());
 		ret.setTipoTasa(di.getTipoTasa());
 		ret.setIndicadorFacturacion(di.getIndicadorFacturacion());

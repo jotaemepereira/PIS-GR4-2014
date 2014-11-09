@@ -50,24 +50,6 @@ public interface WSConsultaStock {
      * 
      * @param usuario
      * @param password
-     * @return
-     *     returns uy.com.dusa.ws.ResultGetLaboratorios
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getLaboratorios", targetNamespace = "http://ws.dusa.com.uy/", className = "uy.com.dusa.ws.GetLaboratorios")
-    @ResponseWrapper(localName = "getLaboratoriosResponse", targetNamespace = "http://ws.dusa.com.uy/", className = "uy.com.dusa.ws.GetLaboratoriosResponse")
-    @Action(input = "http://ws.dusa.com.uy/WSConsultaStock/getLaboratoriosRequest", output = "http://ws.dusa.com.uy/WSConsultaStock/getLaboratoriosResponse")
-    public ResultGetLaboratorios getLaboratorios(
-        @WebParam(name = "usuario", targetNamespace = "")
-        String usuario,
-        @WebParam(name = "password", targetNamespace = "")
-        String password);
-
-    /**
-     * 
-     * @param usuario
-     * @param password
      * @param desde
      * @return
      *     returns uy.com.dusa.ws.ResultGetStockUpdates
@@ -159,5 +141,23 @@ public interface WSConsultaStock {
         String password,
         @WebParam(name = "idLaboratorio", targetNamespace = "")
         String idLaboratorio);
+
+    /**
+     * 
+     * @param usuario
+     * @param password
+     * @return
+     *     returns uy.com.dusa.ws.ResultGetLaboratorios
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getLaboratorios", targetNamespace = "http://ws.dusa.com.uy/", className = "uy.com.dusa.ws.GetLaboratorios")
+    @ResponseWrapper(localName = "getLaboratoriosResponse", targetNamespace = "http://ws.dusa.com.uy/", className = "uy.com.dusa.ws.GetLaboratoriosResponse")
+    @Action(input = "http://ws.dusa.com.uy/WSConsultaStock/getLaboratoriosRequest", output = "http://ws.dusa.com.uy/WSConsultaStock/getLaboratoriosResponse")
+    public ResultGetLaboratorios getLaboratorios(
+        @WebParam(name = "usuario", targetNamespace = "")
+        String usuario,
+        @WebParam(name = "password", targetNamespace = "")
+        String password);
 
 }
