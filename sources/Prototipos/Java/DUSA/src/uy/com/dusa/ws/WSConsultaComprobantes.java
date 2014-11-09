@@ -20,7 +20,7 @@ import javax.xml.ws.ResponseWrapper;
  */
 @WebService(name = "WSConsultaComprobantes", targetNamespace = "http://ws.dusa.com.uy/")
 @XmlSeeAlso({
-    ObjectFactory.class
+    ComprobanteObjectFactory.class
 })
 public interface WSConsultaComprobantes {
 
