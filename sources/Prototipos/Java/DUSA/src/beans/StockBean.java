@@ -204,12 +204,18 @@ public class StockBean implements Serializable {
 	
 	public void modificarArticulo(){
 		FacesContext context = FacesContext.getCurrentInstance();
-		if (!proveedoresSeleccionados.isEmpty()) {
-			procesarCambios();
-		} else {
+		try {
+			if (!proveedoresSeleccionados.isEmpty()) {
+				procesarCambios();
+				instanciaSistema.modificarArticulo(articuloModificado);
+			} else {
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Debe seleccionar al menos un proveedor", ""));
+			}
+		} catch (Excepciones e){
 			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR,
-					"Debe seleccionar al menos un proveedor", ""));
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 		}
 	}
 	
@@ -418,6 +424,7 @@ public class StockBean implements Serializable {
 						//Si estoy modificando, lo cargo en la lista de nuevos proveedores del articulo modificado.
 						if (modificacion){
 							this.articuloModificado.getProveedoresNuevos().add(p);
+							this.articulo.setProveedoresModificado(true);
 						}
 						
 						this.proveedor = 0;
@@ -452,6 +459,7 @@ public class StockBean implements Serializable {
 			//Si estoy modificando, lo cargo a la lista de proveedoresABorrar del articulo modificado.
 			if (modificacion){
 				this.articuloModificado.getProveedoresABorrar().add(proveedorSeleccionado);
+				this.articulo.setProveedoresModificado(true);
 			}
 			this.proveedoresSeleccionados.remove(proveedorSeleccionado);
 		} else {

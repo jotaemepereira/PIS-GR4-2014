@@ -1171,7 +1171,7 @@ public class PStockControlador implements IStockPersistencia {
 		}
 
 		// Seteo fecha de última modificación a la actual
-		query += "LAST_MODIFIED = LOCALTIMESTAMP) ";
+		query += "LAST_MODIFIED = LOCALTIMESTAMP ";
 		query += "WHERE PRODUCT_ID = :product_id;";
 
 		Connection c;
