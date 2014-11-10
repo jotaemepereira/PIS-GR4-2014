@@ -369,6 +369,16 @@ public class StockBean implements Serializable {
 	 * campos que sufrieron cambios.
 	 */
 	private void procesarCambios() {
+		// Si el articulo deja de ser de tipo medicamento se modifican los campos correspondientes
+		// a articulos que son medicamentos
+		if (articulo.getTipoArticulo() != Enumerados.tipoArticulo.MEDICAMENTO){
+			articulo.setEsEstupefaciente(false);
+			articulo.setEsPsicofarmaco(false);
+			articulo.setCodigoVenta((char)0x00);
+			articulo.setPorcentajeDescuentoReceta(BigDecimal.ZERO);
+			articulo.setPrecioConReceta(BigDecimal.ZERO);
+		}
+		
 		articulo.setClave1Modificado(articuloSinCambios.getClave1().compareTo(
 				articulo.getClave1()) != 0);
 		articulo.setClave2Modificado(articuloSinCambios.getClave2().compareTo(
@@ -426,7 +436,8 @@ public class StockBean implements Serializable {
 						instanciaSistema.obtenerUsuarioLogueado().getNombre()) != 0);
 		articulo.setVencimientoMasCercanoModificado(articuloSinCambios
 				.getVencimientoMasCercano().compareTo(
-						articulo.getVencimientoMasCercano()) != 0);
+						articulo.getVencimientoMasCercano()) != 0);		
+		
 		// Chequeo cambios en proveedores
 		procesarProveedores();
 		// Chequeo cambios en drogas
