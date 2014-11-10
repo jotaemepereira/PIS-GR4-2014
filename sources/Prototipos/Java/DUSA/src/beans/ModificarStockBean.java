@@ -315,6 +315,17 @@ public class ModificarStockBean implements Serializable{
 						FacesMessage.SEVERITY_INFO,
 						"Desarme realizado con éxito.", ""));
 				
+				//Refresh de pagina para regresar al estado inicial
+				
+				this.articuloParaDesarme = null;
+				this.articuloSeleccionado = null;
+				this.busqueda = "";
+				this.busquedaDesarme = "";
+				this.resBusqueda.clear();
+				this.resBusquedaDesarme.clear();
+				nuevoStockSeleccionado = 0;
+				nuevoStockDesarme = 0;
+				
 				FacesContext context = FacesContext.getCurrentInstance();
 				Application application = context.getApplication();
 				ViewHandler viewHandler = application.getViewHandler();
