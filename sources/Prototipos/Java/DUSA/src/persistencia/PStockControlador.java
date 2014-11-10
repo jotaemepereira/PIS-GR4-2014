@@ -31,6 +31,7 @@ import controladores.Excepciones;
 import controladores.FabricaPersistencia;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTVenta;
 import model.AccionTer;
@@ -53,10 +54,10 @@ public class PStockControlador implements IStockPersistencia {
 
 		String query = "INSERT INTO PRODUCTS "
 				+ "(BRAND_ID, PRODUCT_TYPE, DESCRIPTION, PRESENTATION, KEY1, KEY2, KEY3, IS_PSYCHOTROPIC, IS_NARCOTIC, IS_REFRIGERATOR, SALE_CODE, AUTHORIZATION_TYPE,"
-				+ " UNIT_PRICE, SALE_PRICE, SALE_PRICE_PORCENTAGE,LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE_ID, BARCODE, LAST_PRICE_DATE"
+				+ " UNIT_PRICE, SALE_PRICE, SALE_PRICE_PORCENTAGE, RECIPE_PRICE, RECIPE_DISCOUNT, LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE_ID, BARCODE, LAST_PRICE_DATE"
 				+ ", NEAREST_DUE_DATE, STOCK, MINIMUM_STOCK, USERNAME, LAST_MODIFIED, STATUS) "
 				+ " VALUES "
-				+ " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, ?, LOCALTIMESTAMP, ?) RETURNING PRODUCT_ID;";
+				+ " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, ?, LOCALTIMESTAMP, ?) RETURNING PRODUCT_ID;";
 		Connection c;
 		try {
 			c = Conexion.getConnection();
@@ -89,25 +90,24 @@ public class PStockControlador implements IStockPersistencia {
 																			// Null
 				stmt.setBigDecimal(13, articulo.getPrecioUnitario());// Not Null
 				stmt.setBigDecimal(14, articulo.getPrecioVenta());// Not Null
-				stmt.setBigDecimal(15, articulo.getPorcentajePrecioVenta());// Not
-																			// Null
-				stmt.setBigDecimal(16, articulo.getCostoLista());// Not Null
-				stmt.setBigDecimal(17, articulo.getCostoOferta());// Null
-				stmt.setBigDecimal(18, articulo.getUltimoCosto());// Null
-				stmt.setBigDecimal(19, articulo.getCostoPromedio());// Null
+				stmt.setBigDecimal(15, articulo.getPorcentajePrecioVenta());// Not Null
+				stmt.setBigDecimal(16, articulo.getPrecioConReceta());// Null
+				stmt.setBigDecimal(17, articulo.getPorcentajeDescuentoReceta());// Null
+				stmt.setBigDecimal(18, articulo.getCostoLista());// Not Null
+				stmt.setBigDecimal(19, articulo.getCostoOferta());// Null
+				stmt.setBigDecimal(20, articulo.getUltimoCosto());// Null
+				stmt.setBigDecimal(21, articulo.getCostoPromedio());// Null
 				if (articulo.getTipoIva() != null) {
-					stmt.setString(20, String.valueOf(articulo.getTipoIva().getTipoIVA()));// Null
+					stmt.setString(22, String.valueOf(articulo.getTipoIva().getTipoIVA()));// Null
 				} else {
-					stmt.setNull(20, java.sql.Types.INTEGER);
+					stmt.setNull(22, java.sql.Types.CHAR);
 				}
-				stmt.setString(21, articulo.getCodigoBarras());// Null
-				stmt.setNull(22, java.sql.Types.TIMESTAMP);// Null Vencimiento
-															// Más Cercano
-				stmt.setLong(23, articulo.getStock());// Not Null
-				stmt.setLong(24, articulo.getStockMinimo());// Null
-				stmt.setString(25, articulo.getUsuario().getNombre());// Not
-																		// Null
-				stmt.setBoolean(26, true);// Not Null
+				stmt.setString(23, articulo.getCodigoBarras());// Null
+				stmt.setNull(24, java.sql.Types.TIMESTAMP);// Null Vencimiento Más Cercano
+				stmt.setLong(25, articulo.getStock());// Not Null
+				stmt.setLong(26, articulo.getStockMinimo());// Null
+				stmt.setString(27, articulo.getUsuario().getNombre());// Not Null
+				stmt.setBoolean(28, true);// Not Null
 
 				ResultSet rs = stmt.executeQuery();
 				// Obtengo la clave del nuevo artículo creado
@@ -1087,9 +1087,11 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public void modificarArticulo(Articulo articulo) throws Excepciones {          
+	public void modificarArticulo(DTModificacionArticulo dataArticulo) throws Excepciones {          
 		NamedParameterStatement stmt = null;
 
+		Articulo articulo = dataArticulo.getArticulo();
+		
 		String query = "UPDATE PRODUCTS SET ";
 
 		if (articulo.isIdMarcaModificado()) {
@@ -1140,6 +1142,12 @@ public class PStockControlador implements IStockPersistencia {
 		if (articulo.isPorcentajePrecioVentaModificado()) {
 			query += "SALE_PRICE_PORCENTAGE = :sale_price_porcentage, ";
 		}
+		if (articulo.isPrecioConRecetaModificado()) {
+			query += "RECIPE_PRICE = :recipe_price, ";
+		}
+		if (articulo.isPorcentajeDescuentoRecetaModificado()) {
+			query += "RECIPE_DISCOUNT = :recipe_discount, ";
+		}
 		if (articulo.isCostoListaModificado()) {
 			query += "LIST_COST = :list_cost, ";
 		}
@@ -1169,7 +1177,7 @@ public class PStockControlador implements IStockPersistencia {
 		}
 
 		// Seteo fecha de última modificación a la actual
-		query += "LAST_MODIFIED = LOCALTIMESTAMP) ";
+		query += "LAST_MODIFIED = LOCALTIMESTAMP ";
 		query += "WHERE PRODUCT_ID = :product_id;";
 
 		Connection c;
@@ -1237,6 +1245,12 @@ public class PStockControlador implements IStockPersistencia {
 					stmt.setBigDecimal("sale_price_porcentage",
 							articulo.getPorcentajePrecioVenta());
 				}
+				if (articulo.isPrecioConRecetaModificado()) {
+					stmt.setBigDecimal("recipe_price", articulo.getPrecioConReceta());
+				}
+				if (articulo.isPorcentajeDescuentoRecetaModificado()) {
+					stmt.setBigDecimal("recipe_discount", articulo.getPorcentajeDescuentoReceta());
+				}
 				if (articulo.isCostoListaModificado()) {
 					stmt.setBigDecimal("list_cost", articulo.getCostoLista());
 				}
@@ -1251,10 +1265,10 @@ public class PStockControlador implements IStockPersistencia {
 				}
 				if (articulo.isTipoIvaModificado()) {
 					if (articulo.getTipoIva() != null) {
-						stmt.setInt("tax_type_id", articulo.getTipoIva()
+						stmt.setChar("tax_type_id", articulo.getTipoIva()
 								.getTipoIVA());
 					} else {
-						stmt.setNull("tax_type_id", java.sql.Types.INTEGER);
+						stmt.setNull("tax_type_id", java.sql.Types.CHAR);
 					}
 				}
 				if (articulo.isCodigoBarrasModificado()) {
@@ -1277,50 +1291,73 @@ public class PStockControlador implements IStockPersistencia {
 
 				stmt.executeUpdate();
 
-				// TODO Guardar cambios de proveedores, drogas y acciones
-				// terapeuticas
+				PreparedStatement st = null;
 				if (articulo.isProveedoresModificado()) {
-					/*
-					 * //Para cada proveedor asociado inserto una fila en
-					 * products_suppliers List<DTProveedor> proveedores = new
-					 * ArrayList
-					 * <DTProveedor>(articulo.getProveedores().values());
-					 * Iterator<DTProveedor> i = proveedores.iterator(); while
-					 * (i.hasNext()){ DTProveedor next = i.next(); query =
-					 * "INSERT INTO PRODUCTS_SUPPLIERS " +
-					 * "(SUPPLIER_ID, PRODUCT_ID, PRODUCT_NUMBER, LINE_ID) " +
-					 * "VALUES " + "(?, ?, ?, ?)"; stmt =
-					 * c.prepareStatement(query); stmt.setInt(1,
-					 * next.getIdProveedor()); stmt.setLong(2, key);
-					 * stmt.setLong(3, next.getCodigoIdentificador());
-					 * stmt.setString(4, next.getIdLinea());
-					 * stmt.executeUpdate(); }
-					 */
+					// Elimino los proveedoresABorrar
+					query =	"DELETE FROM PRODUCTS_SUPPLIERS WHERE SUPPLIER_ID = ? AND PRODUCT_ID = ?;";
+					
+					for(DTProveedor proveedor : dataArticulo.getProveedoresABorrar()){
+						st = c.prepareStatement(query); 
+						st.setInt(1, proveedor.getIdProveedor()); 
+						st.setLong(2, articulo.getIdArticulo());
+						st.executeUpdate();
+					}
+					
+					// Modifico los proveedoresConCambios
+					//TODO
+					
+					// Agrego los proveedoresNuevos
+					query =	"INSERT INTO PRODUCTS_SUPPLIERS " +
+							"(SUPPLIER_ID, PRODUCT_ID, PRODUCT_NUMBER, LINE_ID) " +
+							"VALUES " + "(?, ?, ?, ?)";
+					
+					for(DTProveedor proveedor : dataArticulo.getProveedoresNuevos()){ 
+						st = c.prepareStatement(query); 
+						st.setInt(1, proveedor.getIdProveedor()); 
+						st.setLong(2, articulo.getIdArticulo());
+						st.setLong(3, proveedor.getCodigoIdentificador());
+						st.setString(4, proveedor.getIdLinea());
+						st.executeUpdate();
+					}
+					 
 				}
-				if (articulo.isDrogasModificado()) {
-					/*
-					 * //Para cada droga seleccionada inserto una fila en
-					 * product_drugs if (articulo.getDrogas() != null){ for(long
-					 * idDroga : articulo.getDrogas()){ query =
-					 * "INSERT INTO PRODUCT_DRUGS " + "(PRODUCT_ID, DRUG_ID) " +
-					 * "VALUES " + "(?, ?)"; stmt = c.prepareStatement(query);
-					 * stmt.setLong(1, key); stmt.setLong(2, idDroga);
-					 * stmt.executeUpdate(); } }
-					 */
-
+				if (articulo.isDrogasModificado()) {					
+					// Elimino las drogasABorrar
+					query = "DELETE FROM PRODUCT_DRUGS WHERE PRODUCT_ID = ? AND DRUG_ID = ?;";
+					for(long idDroga : dataArticulo.getDrogasABorrar()){
+						st = c.prepareStatement(query);
+						st.setLong(1, articulo.getIdArticulo());
+						st.setLong(2, idDroga);
+						st.executeUpdate();
+					}
+					// Agrego las drogasNuevas
+					query = "INSERT INTO PRODUCT_DRUGS (PRODUCT_ID, DRUG_ID) " +
+							"VALUES " + "(?, ?)"; 
+					for(long idDroga : dataArticulo.getDrogasNuevas()){ 
+						st = c.prepareStatement(query);
+						st.setLong(1, articulo.getIdArticulo()); 
+						st.setLong(2, idDroga);
+						st.executeUpdate(); 
+					}
 				}
 				if (articulo.isAccionesTerModificado()) {
-					/*
-					 * //Para cada acción terapéutica seleccionada inserto una
-					 * fila en product_therap_actions if
-					 * (articulo.getAccionesTer() != null){ for(long idAccTer :
-					 * articulo.getAccionesTer()){ query =
-					 * "INSERT INTO PRODUCT_THERAP_ACTIONS " +
-					 * "(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " + "VALUES " +
-					 * "(?, ?)"; stmt = c.prepareStatement(query);
-					 * stmt.setLong(1, key); stmt.setLong(2, idAccTer);
-					 * stmt.executeUpdate(); } }
-					 */
+					// Elimino las accionesTerABorrar
+					query = "DELETE FROM PRODUCT_THERAP_ACTIONS WHERE PRODUCT_ID = ? AND THERAPEUTIC_ACTION_ID = ?;";
+					for(long idAccionTer : dataArticulo.getAccionesTerABorrar()){
+						st = c.prepareStatement(query);
+						st.setLong(1, articulo.getIdArticulo());
+						st.setLong(2, idAccionTer);
+						st.executeUpdate();
+					}
+					// Agrego las accionesTerNuevas
+					query = "INSERT INTO PRODUCT_THERAP_ACTIONS (PRODUCT_ID, THERAPEUTIC_ACTION_ID) " +
+							"VALUES " + "(?, ?)"; 
+					for(long idAccionTer : dataArticulo.getAccionesTerNuevas()){ 
+						st = c.prepareStatement(query);
+						st.setLong(1, articulo.getIdArticulo()); 
+						st.setLong(2, idAccionTer);
+						st.executeUpdate(); 
+					}
 				}
 
 				// Commiteo todo y cierro conexion
@@ -1368,7 +1405,10 @@ public class PStockControlador implements IStockPersistencia {
 				if (artAnt.getPrecioUnitario().compareTo(art.getPrecioUnitario() )  == 1  || 
 						(artAnt.isStatus()==true && art.isStatus()==false)) {
 					cambios.add(new Cambio(art,artAnt));
-					this.modificarArticulo(art);
+					//TODO marcar las modificaciones correspondientes
+					DTModificacionArticulo dataArticulo = new DTModificacionArticulo();
+					dataArticulo.setArticulo(art);
+					this.modificarArticulo(dataArticulo);
 				}
 				
 			}
@@ -1400,11 +1440,13 @@ public class PStockControlador implements IStockPersistencia {
 				articulo = new Articulo();
 	
 				articulo.setIdArticulo(rs.getLong("product_id"));
+				articulo.setIdMarca(rs.getInt("brand_id"));
 				String aux = rs.getString("product_type");
 				if (aux != null) {
 					articulo.setTipoArticulo(aux.charAt(0));
 				}
 				articulo.setDescripcion(rs.getString("description"));
+				articulo.setPresentacion(rs.getString("presentation"));
 				articulo.setClave1(rs.getString("key1"));
 				articulo.setClave2(rs.getString("key2"));
 				articulo.setClave3(rs.getString("key3"));
@@ -1423,11 +1465,38 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setPrecioVenta(rs.getBigDecimal("sale_price"));
 				articulo.setPorcentajePrecioVenta(rs
 						.getBigDecimal("sale_price_porcentage"));
+				BigDecimal bd = rs.getBigDecimal("recipe_price");
+				if (bd != null){
+					articulo.setPrecioConReceta(bd);
+				}else{
+					articulo.setPrecioConReceta(new BigDecimal(0));
+				}
+				bd = rs.getBigDecimal("recipe_discount");
+				if (bd != null){
+					articulo.setPorcentajeDescuentoReceta(bd);
+				}else{
+					articulo.setPorcentajeDescuentoReceta(new BigDecimal(0));
+				}
 				articulo.setCostoLista(rs.getBigDecimal("list_cost"));
-				articulo.setCostoOferta(rs.getBigDecimal("offer_cost"));
-				articulo.setUltimoCosto(rs.getBigDecimal("last_cost"));
-				articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
-				char auxTipoIva = rs.getString("TAX_TYPE_ID").charAt(0);
+				bd = rs.getBigDecimal("offer_cost");
+				if (bd != null){
+					articulo.setCostoOferta(bd);
+				}else{
+					 articulo.setCostoOferta(new BigDecimal(0));
+				}
+				bd = rs.getBigDecimal("last_cost");
+				if (bd != null){
+					articulo.setUltimoCosto(bd);
+				}else{
+					articulo.setUltimoCosto(new BigDecimal(0));
+				}
+				bd = rs.getBigDecimal("avg_cost");
+				if (bd != null){
+					articulo.setCostoPromedio(bd);
+				}else{
+					articulo.setCostoPromedio(new BigDecimal(0));
+				}
+				char auxTipoIva = rs.getString("tax_type_id").charAt(0);
 				if (auxTipoIva != 0) {
 					TipoIva ti = new TipoIva();
 					ti.setTipoIVA(auxTipoIva);
@@ -1439,6 +1508,9 @@ public class PStockControlador implements IStockPersistencia {
 	
 					articulo.setVencimientoMasCercano(new java.util.Date(
 							timestamp.getTime()));
+				}else{
+					//Fecha mínima de java.util.Date (new Date(0L) = Thu Jan 01 01:00:00 GMT 1970)
+					articulo.setVencimientoMasCercano(new java.util.Date(0L));
 				}
 				articulo.setStock(rs.getLong("stock"));
 				articulo.setStockMinimo(rs.getLong("minimum_stock"));
@@ -1532,7 +1604,7 @@ public class PStockControlador implements IStockPersistencia {
 			throws Excepciones {
 		// TODO Traer todos los articulos del proveedor
 		PreparedStatement stmt = null;
-		List<Integer> listaArticulos;
+		List<Long> listaArticulos;
 		try {
 			Connection c = Conexion.getConnection();
 			String  query = "SELECT * FROM products_suppliers "
@@ -1542,9 +1614,9 @@ public class PStockControlador implements IStockPersistencia {
 			ResultSet rs = stmt.executeQuery();
 			// Obtengo los productos que vende ese proveedor 
 			// y los guardo en una lista de integers
-			listaArticulos = new ArrayList<Integer>();
+			listaArticulos = new ArrayList<Long>();
 			while (rs.next()) {
-				listaArticulos.add(rs.getInt("product_id"));
+				listaArticulos.add(rs.getLong("product_id"));
 			}
 			rs.close();
 			stmt.close();
@@ -1556,8 +1628,8 @@ public class PStockControlador implements IStockPersistencia {
 		
 		List<Articulo> returnArticulos = new ArrayList<Articulo>();
 		// Obtengo los articulos desde la función obtenerArticulo
-		for (int item : listaArticulos) {
-			returnArticulos.add(obtenerArticulo(item));
+		for (long item : listaArticulos) {
+			returnArticulos.add(obtenerArticuloConId(item));
 		}
 		
 		return returnArticulos;
@@ -1567,6 +1639,25 @@ public class PStockControlador implements IStockPersistencia {
 	public void modificarPreciosDeArticulo(Map<Long, Integer> preciosModificados)
 			throws Excepciones {
 		// TODO Auto-generated method stub
-		
+		PreparedStatement stmt = null;
+		try {
+			Connection c = Conexion.getConnection();
+			for (Map.Entry<Long, Integer> entry : preciosModificados.entrySet())
+			{
+				String  query = "UPDATE products SET sale_price = ? ";
+				query += "WHERE product_id = ?;";
+				stmt = c.prepareStatement(query);
+				stmt.setLong(1, entry.getKey());
+				stmt.setInt(2, entry.getValue());
+				
+				stmt.executeUpdate();
+				stmt.close();
+			}
+
+			c.close();
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
 	}
 }
