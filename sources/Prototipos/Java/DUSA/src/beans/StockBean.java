@@ -680,13 +680,11 @@ public class StockBean implements Serializable {
 	}
 	/* Operaciones de la tabla de proveedores tanto para el Alta como la Modificación */
 	
-=======
 	/*
 	 * Operaciones de la tabla de proveedores tanto para el Alta como la
 	 * Modificación
 	 */
 
->>>>>>> 0a041a4c9763da87c7fd24f1408e9e0d5582cb5c
 	public void agregarProveedor() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (proveedor != 0) {
