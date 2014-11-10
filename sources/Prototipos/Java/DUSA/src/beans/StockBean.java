@@ -417,8 +417,12 @@ public class StockBean implements Serializable {
 				.getPrecioUnitario().compareTo(articulo.getPrecioUnitario()) != 0);
 		articulo.setPrecioVentaModificado(articuloSinCambios.getPrecioVenta()
 				.compareTo(articulo.getPrecioVenta()) != 0);
+		if (articuloSinCambios.getPresentacion() != null){
 		articulo.setPresentacionModificado(articuloSinCambios.getPresentacion()
 				.compareTo(articulo.getPresentacion()) != 0);
+		}else{
+			articulo.setPresentacionModificado(true);
+		}
 		articulo.setStockMinimoModificado(articuloSinCambios.getStockMinimo() != articulo
 				.getStockMinimo());
 		articulo.setTipoArticuloModificado(articuloSinCambios.getTipoArticulo() != articulo
