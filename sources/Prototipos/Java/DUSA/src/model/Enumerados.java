@@ -84,6 +84,22 @@ public class Enumerados {
 		
 	}
 	
+	public class tiposIVA {
+		public static final char IVAEXENTO = '0';
+		public static final char PSICOFARMACOS = '1';
+		public static final char MEDICAMENTOS = '2';
+		public static final char IVA10 = '3';
+		public static final char IVA22 = '4';
+		public static final char IVA22IMESI = '5';
+		public static final char IVA22TRIBUTO = '6';
+	}
+	
+	public class tiposIVAParaMostrar {
+		public static final String IVAEXENTO = "I.V.A. Exento";
+		public static final String IVA10 = "I.V.A. 10%";
+		public static final String IVA22 = "I.V.A. 22%";
+	}
+	
 	public class formaDePago {
 		public static final String CONTADO = "CONTADO";
 		public static final String CREDITO = "CREDITO";
