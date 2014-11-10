@@ -1253,10 +1253,10 @@ public class PStockControlador implements IStockPersistencia {
 				}
 				if (articulo.isTipoIvaModificado()) {
 					if (articulo.getTipoIva() != null) {
-						stmt.setInt("tax_type_id", articulo.getTipoIva()
+						stmt.setChar("tax_type_id", articulo.getTipoIva()
 								.getTipoIVA());
 					} else {
-						stmt.setNull("tax_type_id", java.sql.Types.INTEGER);
+						stmt.setNull("tax_type_id", java.sql.Types.CHAR);
 					}
 				}
 				if (articulo.isCodigoBarrasModificado()) {
