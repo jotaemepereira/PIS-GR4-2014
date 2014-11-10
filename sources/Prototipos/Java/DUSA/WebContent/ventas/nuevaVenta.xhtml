@@ -285,12 +285,13 @@
 						<p:outputLabel for="descImportantes" value="Descuento:"
 							style="width:100%" />
 						<p:selectOneMenu id="descImportantes"
-							value="#{ventaBean.strDescuento}"
+							value="#{ventaBean.articuloSeleccionado.descuentoPrecio}"
 							style="width:50%">
 							<f:selectItem itemLabel="ninguno" itemValue="0" />
 							<f:selectItem itemLabel="5% descuento" itemValue="5" />
 							<f:selectItem itemLabel="10% descuento" itemValue="10" />
 							<f:selectItem itemLabel="15% descuento" itemValue="15" />
+							<f:ajax event="change" execute="@this" />
 							<p:ajax listener="#{ventaBean.strTotal()}" update=":form1:total"
 								process="@this" />
 						</p:selectOneMenu>
@@ -310,6 +311,7 @@
 					actionListener="#{ventaBean.agregarLineaVenta()}"
 					process="@this,descuento,cant,descImportantes" styleClass="btn btn-default pull-right"
 					oncomplete="PF('ventaDialog').hide()" icon="ui-icon-check">
+					
 				</p:commandButton>
 			</h:form>
 		</p:dialog>

@@ -129,39 +129,6 @@ public class VentaBean implements Serializable {
 		codigoBusqueda = "";
 	}
 
-	// para calcular el precio con el descuento a poner cuando lista los
-	// articulos en la venta:
-	public void strDescuentoPrecio() {
-
-		Iterator<LineaVenta> it = lineasVenta2.iterator();
-		while (it.hasNext()) {
-			LineaVenta v = it.next();
-			BigDecimal x = new BigDecimal(0);
-
-			if ((v.getDescuento().compareTo(new BigDecimal(101)) == -1)
-					&& (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)) {
-
-				x = (v.getPrecio().multiply(v.getDescuento()))
-						.divide(new BigDecimal(100));
-			} else {
-				FacesContext
-						.getCurrentInstance()
-						.addMessage(
-								null,
-								new FacesMessage(
-										FacesMessage.SEVERITY_ERROR,
-										"el descuento ingresado debe ser un numero entre 0 y 100",
-										""));
-			}
-
-			v.setDescuentoPrecio("$"
-					+ v.getPrecio().subtract(x).toString() + "(" + "%"
-					+ v.getDescuento().toString() + ")");
-
-		}
-
-	}
-
 	
 	//calculo el total del precio de un articulo
 	public void strDescuentoPrecio2() {
@@ -170,6 +137,7 @@ public class VentaBean implements Serializable {
 		while (it.hasNext()) {
 			LineaVenta v = it.next();
 			BigDecimal x = new BigDecimal(0);
+			BigDecimal n = new BigDecimal(0);
 
 			if ((v.getDescuento().compareTo(new BigDecimal(101)) == -1)
 					&& (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)) {
@@ -177,6 +145,24 @@ public class VentaBean implements Serializable {
 				x = (v.getArticulo().getPrecioVenta()
 						.multiply(v.getDescuento()))
 						.divide(new BigDecimal(100));
+				// calculo descuento del 5%
+				if (v.getDescuentoPrecio().equals("5")) {
+					n = (v.getArticulo().getPrecioVenta()
+							.multiply(new BigDecimal(5)))
+							.divide(new BigDecimal(100));
+				}
+				// calculo descuento del 10%
+				if (v.getDescuentoPrecio().equals("10")) {
+					n = (v.getArticulo().getPrecioVenta()
+							.multiply(new BigDecimal(10)))
+							.divide(new BigDecimal(100));
+				}
+				// calculo descuento del 15%
+				if (v.getDescuentoPrecio().equals("15")) {
+					n = (v.getArticulo().getPrecioVenta()
+							.multiply(new BigDecimal(10)))
+							.divide(new BigDecimal(100));
+				}
 				
 			} else {
 
@@ -189,10 +175,33 @@ public class VentaBean implements Serializable {
 										"el descuento ingresado debe ser un numero entre 0 y 100",
 										""));
 			}
-
-			v.setTotalPrecioLinea("$"
-					+ (v.getArticulo().getPrecioVenta().subtract(x)).toString() + "(" + "%"
-					+ v.getDescuento().toString() + ")" );
+			
+			if ( (v.getDescuento().compareTo(new BigDecimal(0)) == 0 ) && (!v.getDescuentoPrecio().equals("0") ) ) {
+				
+				v.setTotalPrecioLinea("$"
+						+ ((v.getArticulo().getPrecioVenta().subtract(x)).subtract(n)).toString() + "(" + "%"
+						+ v.getDescuentoPrecio() + ")" );
+			}
+			
+			if ( (v.getDescuento().compareTo(new BigDecimal(0)) != 0 ) && (!v.getDescuentoPrecio().equals("0") ) ) {
+				
+				v.setTotalPrecioLinea("$"
+						+ ((v.getArticulo().getPrecioVenta().subtract(x)).subtract(n)).toString() + "(" + "%"
+						+ v.getDescuentoPrecio() + " + %" + v.getDescuento().toString() + ")" );
+			}
+			
+			if ( (v.getDescuento().compareTo(new BigDecimal(0)) != 0 ) && (v.getDescuentoPrecio().equals("0") ) ) {
+				
+				v.setTotalPrecioLinea("$"
+						+ ((v.getArticulo().getPrecioVenta().subtract(x)).subtract(n)).toString() + "(" + "%"
+						+ v.getDescuento().toString() + ")" );
+			}
+			
+			if ( (v.getDescuento().compareTo(new BigDecimal(0)) == 0 ) && (v.getDescuentoPrecio().equals("0") ) ) {
+				
+				v.setTotalPrecioLinea("$"
+						+ ((v.getArticulo().getPrecioVenta().subtract(x)).subtract(n)).toString() + "(%0)" );
+			}
 
 		}
 
@@ -393,7 +402,6 @@ public class VentaBean implements Serializable {
 		//TODO ver el tema de descripcion oferta:
 		e.setDescripcionOferta("Falta ver esto");
 		e.setDescuentoPrecio(articuloSeleccionado.getDescuentoPrecio());
-		e.setDescuentoPrecio(strDescuento);
 		e.setIva(articuloSeleccionado.getIva());
 		e.setIndicadorFacturacion(articuloSeleccionado
 				.getIndicadorFacturacion());
@@ -415,9 +423,10 @@ public class VentaBean implements Serializable {
 			while (it.hasNext() && (salir)) {
 				LineaVenta lv = it.next();
 
-				if (lv.getProductoId() == e.getProductoId()  // mismo articulo
-					&& lv.getDescuento().compareTo(articuloSeleccionado.getDescuento()) == 0 // mismo descuento
-					&& lv.isRecetaBlanca() == e.isRecetaBlanca()) {
+				if ((lv.getProductoId() == e.getProductoId())  // mismo articulo
+					&& (lv.getDescuento().compareTo(e.getDescuento()) == 0) // mismo descuento
+					&& (lv.getDescuentoPrecio().equals(e.getDescuentoPrecio())) // mismo descuento de los predefinidos
+					&& (lv.isRecetaBlanca() == e.isRecetaBlanca()) ) {
 					salir = false;
 					encontre = true;
 					lv.setCantidad(lv.getCantidad() + 1);
@@ -430,7 +439,7 @@ public class VentaBean implements Serializable {
 		} else {
 			lineasVenta2.add(e);
 		}
-
+		strDescuentoPrecio2();
 		lineasVenta.remove(articuloSeleccionado);
 	}
 
@@ -481,7 +490,8 @@ public class VentaBean implements Serializable {
 		while (it.hasNext()) {
 			LineaVenta v = it.next();
 			BigDecimal x = new BigDecimal(0);
-
+			BigDecimal n = new BigDecimal(0);
+			
 			if ((v.getDescuento().compareTo(new BigDecimal(101)) == -1)
 					&& (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)) {
 
@@ -491,6 +501,24 @@ public class VentaBean implements Serializable {
 				x = (v.getArticulo().getPrecioVenta()
 						.multiply(v.getDescuento()))
 						.divide(new BigDecimal(100));
+				// calculo descuento del 5%
+				if (v.getDescuentoPrecio().equals("5")) {
+					n = (v.getArticulo().getPrecioVenta()
+							.multiply(new BigDecimal(5)))
+							.divide(new BigDecimal(100));
+				}
+				// calculo descuento del 10%
+				if (v.getDescuentoPrecio().equals("10")) {
+					n = (v.getArticulo().getPrecioVenta()
+							.multiply(new BigDecimal(10)))
+							.divide(new BigDecimal(100));
+				}
+				// calculo descuento del 15%
+				if (v.getDescuentoPrecio().equals("15")) {
+					n = (v.getArticulo().getPrecioVenta()
+							.multiply(new BigDecimal(10)))
+							.divide(new BigDecimal(100));
+				}
 			} else {
 
 				FacesContext
@@ -502,7 +530,7 @@ public class VentaBean implements Serializable {
 										"el descuento ingresado debe ser un numero entre 0 y 100",
 										""));
 			}
-			total = total.add(x.multiply(new BigDecimal(v.getCantidad())));
+			total = total.add(x.multiply(new BigDecimal(v.getCantidad()))).add(n.multiply(new BigDecimal(v.getCantidad())));
 		}
 		return total.toString();
 	}
@@ -516,16 +544,6 @@ public class VentaBean implements Serializable {
 			BigDecimal n = new BigDecimal(0);
 			BigDecimal x = new BigDecimal(0);
 
-			// if(!(v.getDescuentoPrecio().isEmpty())){
-			// if(v.getDescuentoPrecio().equals("5") ){
-			// v.setDescuento(new BigDecimal(5));
-			// }else if(v.getDescuentoPrecio().equals("10") ){
-			// v.setDescuento(new BigDecimal(10));
-			// }else if(v.getDescuentoPrecio().equals("15") ){
-			// v.setDescuento(new BigDecimal(15));
-			// }
-			// }
-
 			if ((v.getDescuento().compareTo(new BigDecimal(101)) == -1)
 					&& (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)) {
 
@@ -536,18 +554,25 @@ public class VentaBean implements Serializable {
 						.multiply(v.getDescuento()))
 						.divide(new BigDecimal(100));
 
-				// calculo descuento por receta blanca 1 del 25%
-				if (v.getDescuentoReceta().equals("25")) {
+				// calculo descuento del 5%
+				if (v.getDescuentoPrecio().equals("5")) {
 					n = (v.getArticulo().getPrecioVenta()
-							.multiply(new BigDecimal(25)))
+							.multiply(new BigDecimal(5)))
 							.divide(new BigDecimal(100));
 				}
-				// calculo descuento por receta blanca 2 del 40%
-				if (v.getDescuentoReceta().equals("40")) {
+				// calculo descuento del 10%
+				if (v.getDescuentoPrecio().equals("10")) {
 					n = (v.getArticulo().getPrecioVenta()
-							.multiply(new BigDecimal(30)))
+							.multiply(new BigDecimal(10)))
 							.divide(new BigDecimal(100));
 				}
+				// calculo descuento del 15%
+				if (v.getDescuentoPrecio().equals("15")) {
+					n = (v.getArticulo().getPrecioVenta()
+							.multiply(new BigDecimal(10)))
+							.divide(new BigDecimal(100));
+				}
+				
 			} else {
 
 				FacesContext
