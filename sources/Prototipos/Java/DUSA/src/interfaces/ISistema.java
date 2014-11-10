@@ -11,6 +11,7 @@ import datatypes.DTBusquedaArticulo;
 import datatypes.DTComprobanteFactura;
 import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTTiposDGI;
 import datatypes.DTVenta;
@@ -46,15 +47,16 @@ public interface ISistema {
 	/**
 	 * Modifica un articulo del sistema
 	 * 
-	 * @param articulo
-	 *            - Articulo
+	 * @param DTModificacionArticulo
+	 *            - Datatype que contiene el artículo y aparte listas de proveedores,
+	 *            drogas y acciones terapeuticas con las modificaciones necesarias.
 	 * @throws Excepciones
 	 *             ERROR_SISTEMA (en caso de error a la hora de
 	 *             persistir en la base de datos)
 	 * @author Jmaguerre
 	 * 
 	 */
-	public void modificarArticulo(Articulo articulo) throws Excepciones;
+	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones;
 
 	/**
 	 * Retorna todos los proveedores activos existentes en el sistema.

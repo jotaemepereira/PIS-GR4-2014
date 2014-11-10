@@ -34,6 +34,7 @@ import persistencia.PStockControlador;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProduct;
 import datatypes.DTProveedor;
 import datatypes.DTVenta;
@@ -356,7 +357,7 @@ public class StockControlador implements IStock {
 	}
 
 	@Override
-	public void modificarArticulo(Articulo articulo) throws Excepciones {
+	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones {
 		FabricaPersistencia.getStockPersistencia().modificarArticulo(articulo);
 
 	}

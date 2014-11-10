@@ -9,6 +9,7 @@ import datatypes.DTBusquedaArticulo;
 import datatypes.DTComprobanteFactura;
 import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTTiposDGI;
 import datatypes.DTVenta;
@@ -232,7 +233,7 @@ public class SistemaControlador implements ISistema {
 	}
 
 	@Override
-	public void modificarArticulo(Articulo articulo) throws Excepciones {
+	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones {
 		FabricaLogica.getIStock().modificarArticulo(articulo);
 		
 	}

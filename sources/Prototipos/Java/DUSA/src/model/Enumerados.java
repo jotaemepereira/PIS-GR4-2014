@@ -54,6 +54,16 @@ public class Enumerados {
 	    public static final char controlMedico = '4';
 	}
 	
+	public final class descuentosReceta {
+		public static final short VEINTICINCO = 1;
+		public static final short CUARENTA = 2;
+	}
+	
+	public final class descuentosRecetaDesc {
+		public static final String VEINTICINCO = "25%";
+		public static final String CUARENTA = "40%";
+	}
+	
 	public final class modoFacturacion{
 	    public static final int basica = 1;
 	    public static final int interrumpida = 2;
@@ -82,6 +92,22 @@ public class Enumerados {
 		public static final char PERFUMERIA = 'P';
 		public static final char OTROS = 'O';
 		
+	}
+	
+	public class tiposIVA {
+		public static final char IVAEXENTO = '0';
+		public static final char PSICOFARMACOS = '1';
+		public static final char MEDICAMENTOS = '2';
+		public static final char IVA10 = '3';
+		public static final char IVA22 = '4';
+		public static final char IVA22IMESI = '5';
+		public static final char IVA22TRIBUTO = '6';
+	}
+	
+	public class tiposIVAParaMostrar {
+		public static final String IVAEXENTO = "I.V.A. Exento";
+		public static final String IVA10 = "I.V.A. 10%";
+		public static final String IVA22 = "I.V.A. 22%";
 	}
 	
 	public class formaDePago {

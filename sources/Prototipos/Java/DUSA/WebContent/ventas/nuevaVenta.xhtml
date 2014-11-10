@@ -155,7 +155,7 @@
 															update="GridVentas2 :form1:iva" process="@this" />
 														<p:ajax listener="#{ventaBean.strSubTotal()}"
 															update="GridVentas2 :form1:subTotal" process="@this" />
-														<p:ajax listener="#{ventaBean.strDescuentoPrecio2()}"
+														<p:ajax listener="#{ventaBean.strDescuentoPrecio()}"
 															update="@form" process="@this" />
 													</p:inputText>
 												</p:column>
@@ -182,7 +182,7 @@
 														process="@this" styleClass="ui-priority-primary">
 													</p:commandButton>
 												</p:column>
-											
+
 											</p:dataTable>
 
 											<div>
@@ -192,14 +192,14 @@
 														<td><h:outputText id="subTotal"
 																value=" #{ventaBean.strSubTotal()}"></h:outputText></td>
 													</tr>
-											
+
 													<tr>
 														<td style="font-weight: bold;">Iva:</td>
 														<td><h:outputText id="iva"
 																value=" #{ventaBean.strIva()}">
 															</h:outputText></td>
 													</tr>
-											
+
 													<tr>
 														<td style="font-weight: bold;">Descuentos:</td>
 														<td><h:outputText id="descuentos"
@@ -317,9 +317,10 @@
 				</p:panelGrid>
 				<p:commandButton value="Agregar" update=":form1"
 					actionListener="#{ventaBean.agregarLineaVenta()}"
-					process="@this,descuento,cant,descImportantes" styleClass="btn btn-default pull-right"
+					process="@this,descuento,cant,descImportantes"
+					styleClass="btn btn-default pull-right"
 					oncomplete="PF('ventaDialog').hide()" icon="ui-icon-check">
-					
+
 				</p:commandButton>
 			</h:form>
 		</p:dialog>

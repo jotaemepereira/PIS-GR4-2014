@@ -13,6 +13,7 @@ import model.TipoIva;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProduct;
 import datatypes.DTVenta;
 
@@ -35,15 +36,16 @@ public interface IStock {
 	/**
 	 * Modifica un articulo del sistema
 	 * 
-	 * @param articulo
-	 *            - Articulo
+	 * @param DTModificacionArticulo
+	 *            - Datatype que contiene el artículo y aparte listas de proveedores,
+	 *            drogas y acciones terapeuticas con las modificaciones necesarias.
 	 * @throws Excepciones
 	 *             ERROR_SISTEMA (en caso de error a la hora de
 	 *             persistir en la base de datos)
 	 * @author Jmaguerre
 	 * 
 	 */
-	public void modificarArticulo(Articulo articulo) throws Excepciones;
+	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones;
 
 	/**
 	 * Genera un pedido de artículos de D.U.S.A. Donde la cantidad de cada
