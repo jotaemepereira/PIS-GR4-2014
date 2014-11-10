@@ -390,7 +390,7 @@ public class StockControlador implements IStock {
 			throws Excepciones {
 		// TODO Auto-generated method stub
 		FabricaPersistencia.getStockPersistencia().
-			modificarPreciosDeArticulos(preciosModificados);
+			modificarPreciosDeArticulo(preciosModificados);
 		
 	}
 	

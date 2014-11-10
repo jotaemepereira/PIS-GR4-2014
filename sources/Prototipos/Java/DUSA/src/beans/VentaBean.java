@@ -6,6 +6,7 @@ import interfaces.ISistema;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,7 +35,6 @@ import datatypes.DTVenta;
 @ManagedBean
 @ViewScoped
 public class VentaBean implements Serializable {
-
 
 	private ISistema instanciaSistema;
 
@@ -480,6 +480,7 @@ public class VentaBean implements Serializable {
 
 		lineasVenta2 = new ArrayList<LineaVenta>();
 		lineasVenta = new ArrayList<DTVenta>();
+		venta = new Venta();
 
 	}
 

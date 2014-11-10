@@ -41,6 +41,14 @@
 .ui-icon-triangle-1-s {
 	background-position: -68px -16px !important;
 }
+
+.tablaDetalleVenta {
+	margin-top: 10px;
+}
+
+.tablaDetalleVenta tr {
+	height: 25px;
+}
 </style>
 	</h:head>
 	<h:body>
@@ -62,7 +70,7 @@
 
 						<p:remoteCommand name="buscarArticulo" update="GridVentas"
 							actionListener="#{ventaBean.buscarArticulos}" />
-						<p:remoteCommand name="buscarArticuloLector" update="GridVentas2"
+						<p:remoteCommand name="buscarArticuloLector" update=":form1"
 							actionListener="#{ventaBean.buscarArticuloLector}" />
 						<div class="panel-body">
 							<div class="container-fluid">
@@ -124,6 +132,8 @@
 										<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
 
 											<div style="margin-bottom: 2px">
+												<p:remoteCommand name="buscarConLector" update="@form"
+													actionListener="#{ventaBean.buscarArticuloLector()}" />
 												<p:inputText id="codigoLector"
 													style="vertical-align: 8px; margin-right: 5px; width:100%"
 													value="#{ventaBean.codigoBusqueda}"
@@ -292,8 +302,6 @@
 							<f:selectItem itemLabel="10% descuento" itemValue="10" />
 							<f:selectItem itemLabel="15% descuento" itemValue="15" />
 							<f:ajax event="change" execute="@this" />
-							<p:ajax listener="#{ventaBean.strTotal()}" update=":form1:total"
-								process="@this" />
 						</p:selectOneMenu>
 					</p:outputPanel>
 
