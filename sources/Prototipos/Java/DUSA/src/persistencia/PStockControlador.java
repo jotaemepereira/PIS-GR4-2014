@@ -31,6 +31,7 @@ import controladores.Excepciones;
 import controladores.FabricaPersistencia;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTVenta;
 import model.AccionTer;
@@ -1086,9 +1087,11 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public void modificarArticulo(Articulo articulo) throws Excepciones {          
+	public void modificarArticulo(DTModificacionArticulo dataArticulo) throws Excepciones {          
 		NamedParameterStatement stmt = null;
 
+		Articulo articulo = dataArticulo.getArticulo();
+		
 		String query = "UPDATE PRODUCTS SET ";
 
 		if (articulo.isIdMarcaModificado()) {
@@ -1276,50 +1279,73 @@ public class PStockControlador implements IStockPersistencia {
 
 				stmt.executeUpdate();
 
-				// TODO Guardar cambios de proveedores, drogas y acciones
-				// terapeuticas
+				PreparedStatement st = null;
 				if (articulo.isProveedoresModificado()) {
-					/*
-					 * //Para cada proveedor asociado inserto una fila en
-					 * products_suppliers List<DTProveedor> proveedores = new
-					 * ArrayList
-					 * <DTProveedor>(articulo.getProveedores().values());
-					 * Iterator<DTProveedor> i = proveedores.iterator(); while
-					 * (i.hasNext()){ DTProveedor next = i.next(); query =
-					 * "INSERT INTO PRODUCTS_SUPPLIERS " +
-					 * "(SUPPLIER_ID, PRODUCT_ID, PRODUCT_NUMBER, LINE_ID) " +
-					 * "VALUES " + "(?, ?, ?, ?)"; stmt =
-					 * c.prepareStatement(query); stmt.setInt(1,
-					 * next.getIdProveedor()); stmt.setLong(2, key);
-					 * stmt.setLong(3, next.getCodigoIdentificador());
-					 * stmt.setString(4, next.getIdLinea());
-					 * stmt.executeUpdate(); }
-					 */
+					// Elimino los proveedoresABorrar
+					query =	"DELETE FROM PRODUCTS_SUPPLIERS WHERE SUPPLIER_ID = ? AND PRODUCT_ID = ?;";
+					
+					for(DTProveedor proveedor : dataArticulo.getProveedoresABorrar()){
+						st = c.prepareStatement(query); 
+						st.setInt(1, proveedor.getIdProveedor()); 
+						st.setLong(2, articulo.getIdArticulo());
+						st.executeUpdate();
+					}
+					
+					// Modifico los proveedoresConCambios
+					//TODO
+					
+					// Agrego los proveedoresNuevos
+					query =	"INSERT INTO PRODUCTS_SUPPLIERS " +
+							"(SUPPLIER_ID, PRODUCT_ID, PRODUCT_NUMBER, LINE_ID) " +
+							"VALUES " + "(?, ?, ?, ?)";
+					
+					for(DTProveedor proveedor : dataArticulo.getProveedoresNuevos()){ 
+						st = c.prepareStatement(query); 
+						st.setInt(1, proveedor.getIdProveedor()); 
+						st.setLong(2, articulo.getIdArticulo());
+						st.setLong(3, proveedor.getCodigoIdentificador());
+						st.setString(4, proveedor.getIdLinea());
+						st.executeUpdate();
+					}
+					 
 				}
-				if (articulo.isDrogasModificado()) {
-					/*
-					 * //Para cada droga seleccionada inserto una fila en
-					 * product_drugs if (articulo.getDrogas() != null){ for(long
-					 * idDroga : articulo.getDrogas()){ query =
-					 * "INSERT INTO PRODUCT_DRUGS " + "(PRODUCT_ID, DRUG_ID) " +
-					 * "VALUES " + "(?, ?)"; stmt = c.prepareStatement(query);
-					 * stmt.setLong(1, key); stmt.setLong(2, idDroga);
-					 * stmt.executeUpdate(); } }
-					 */
-
+				if (articulo.isDrogasModificado()) {					
+					// Elimino las drogasABorrar
+					query = "DELETE FROM PRODUCT_DRUGS WHERE PRODUCT_ID = ? AND DRUG_ID = ?;";
+					for(long idDroga : dataArticulo.getDrogasABorrar()){
+						st = c.prepareStatement(query);
+						st.setLong(1, articulo.getIdArticulo());
+						st.setLong(2, idDroga);
+						st.executeUpdate();
+					}
+					// Agrego las drogasNuevas
+					query = "INSERT INTO PRODUCT_DRUGS (PRODUCT_ID, DRUG_ID) " +
+							"VALUES " + "(?, ?)"; 
+					for(long idDroga : dataArticulo.getDrogasNuevas()){ 
+						st = c.prepareStatement(query);
+						st.setLong(1, articulo.getIdArticulo()); 
+						st.setLong(2, idDroga);
+						st.executeUpdate(); 
+					}
 				}
 				if (articulo.isAccionesTerModificado()) {
-					/*
-					 * //Para cada acción terapéutica seleccionada inserto una
-					 * fila en product_therap_actions if
-					 * (articulo.getAccionesTer() != null){ for(long idAccTer :
-					 * articulo.getAccionesTer()){ query =
-					 * "INSERT INTO PRODUCT_THERAP_ACTIONS " +
-					 * "(PRODUCT_ID, THERAPEUTIC_ACTION_ID) " + "VALUES " +
-					 * "(?, ?)"; stmt = c.prepareStatement(query);
-					 * stmt.setLong(1, key); stmt.setLong(2, idAccTer);
-					 * stmt.executeUpdate(); } }
-					 */
+					// Elimino las accionesTerABorrar
+					query = "DELETE FROM PRODUCT_THERAP_ACTIONS WHERE PRODUCT_ID = ? AND THERAPEUTIC_ACTION_ID = ?;";
+					for(long idAccionTer : dataArticulo.getAccionesTerABorrar()){
+						st = c.prepareStatement(query);
+						st.setLong(1, articulo.getIdArticulo());
+						st.setLong(2, idAccionTer);
+						st.executeUpdate();
+					}
+					// Agrego las accionesTerNuevas
+					query = "INSERT INTO PRODUCT_THERAP_ACTIONS (PRODUCT_ID, THERAPEUTIC_ACTION_ID) " +
+							"VALUES " + "(?, ?)"; 
+					for(long idAccionTer : dataArticulo.getAccionesTerNuevas()){ 
+						st = c.prepareStatement(query);
+						st.setLong(1, articulo.getIdArticulo()); 
+						st.setLong(2, idAccionTer);
+						st.executeUpdate(); 
+					}
 				}
 
 				// Commiteo todo y cierro conexion
@@ -1367,7 +1393,10 @@ public class PStockControlador implements IStockPersistencia {
 				if (artAnt.getPrecioUnitario().compareTo(art.getPrecioUnitario() )  == 1  || 
 						(artAnt.isStatus()==true && art.isStatus()==false)) {
 					cambios.add(new Cambio(art,artAnt));
-					this.modificarArticulo(art);
+					//TODO marcar las modificaciones correspondientes
+					DTModificacionArticulo dataArticulo = new DTModificacionArticulo();
+					dataArticulo.setArticulo(art);
+					this.modificarArticulo(dataArticulo);
 				}
 				
 			}
