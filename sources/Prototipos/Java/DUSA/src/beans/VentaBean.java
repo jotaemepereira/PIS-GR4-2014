@@ -424,9 +424,10 @@ public class VentaBean implements Serializable {
 				LineaVenta lv = it.next();
 
 				if ((lv.getProductoId() == e.getProductoId())  // mismo articulo
-					&& (lv.getDescuento().compareTo(e.getDescuento()) == 0) // mismo descuento
-					&& (lv.getDescuentoPrecio().equals(e.getDescuentoPrecio())) // mismo descuento de los predefinidos
-					&& (lv.isRecetaBlanca() == e.isRecetaBlanca()) ) {
+//					&& (lv.getDescuento().compareTo(e.getDescuento()) == 0) 
+//					&& (lv.getDescuentoPrecio().equals(e.getDescuentoPrecio())) 
+//					&& (lv.isRecetaBlanca() == e.isRecetaBlanca()) 
+					) {
 					salir = false;
 					encontre = true;
 					lv.setCantidad(lv.getCantidad() + 1);
