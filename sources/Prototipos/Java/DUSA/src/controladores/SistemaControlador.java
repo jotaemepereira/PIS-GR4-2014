@@ -173,10 +173,10 @@ public class SistemaControlador implements ISistema {
 	@Override
 	public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones {
 		System.out.println("********* BUSCAR ************** " + busqueda);
-		//if (user.tienePermiso(casoDeUso.buscarArticulo))
-		return FabricaLogica.getIStock().buscarArticulosVenta(busqueda);
-		//else
-		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		if (user.tienePermiso(casoDeUso.buscarArticulo))
+			return FabricaLogica.getIStock().buscarArticulosVenta(busqueda);
+		else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 
 	}
 
@@ -212,11 +212,11 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public long registrarNuevaVenta(Venta v) throws Excepciones {
-		//if (user.tienePermiso(casoDeUso.buscarArticulo))
-		return FabricaLogica.getIFacturacion().registrarNuevaVenta(v);
+		if (user.tienePermiso(casoDeUso.registrarNuevaVenta))
+			return FabricaLogica.getIFacturacion().registrarNuevaVenta(v);
 
-		//else
-		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 
 	}
 
