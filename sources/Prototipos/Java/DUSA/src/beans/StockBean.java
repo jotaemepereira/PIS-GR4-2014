@@ -368,50 +368,31 @@ public class StockBean implements Serializable {
 
 	/* Loaders */
 	
-	public void cargarMarcas() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		try {
-			this.listaMarcas = this.instanciaSistema.obtenerMarcas();
-		} catch (Excepciones e) {
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-		}
+	public void cargarMarcas() throws Excepciones {
+		
+		this.listaMarcas = this.instanciaSistema.obtenerMarcas();
 	}
 
-	public void cargarProveedores() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		try {
-			this.proveedores = this.instanciaSistema.obtenerProveedores();
-			this.listaProveedores = new ArrayList<DTProveedor>(
-					this.proveedores.values());
-		} catch (Excepciones e) {
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-		}
+	public void cargarProveedores() throws Excepciones {
+		
+		this.proveedores = this.instanciaSistema.obtenerProveedores();
+		this.listaProveedores = new ArrayList<DTProveedor>(
+				this.proveedores.values());
 	}
 
-	public void cargarDrogas() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		try {
-			this.listaDrogas = this.instanciaSistema.obtenerDrogas();
-		} catch (Excepciones e) {
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-		}
+	public void cargarDrogas() throws Excepciones {
+		
+		this.listaDrogas = this.instanciaSistema.obtenerDrogas();
 	}
 
-	public void cargarAccionesTerapeuticas() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		try {
-			this.listaAccionesTer = this.instanciaSistema
-					.obtenerAccionesTerapeuticas();
-		} catch (Excepciones e) {
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-		}
+	public void cargarAccionesTerapeuticas() throws Excepciones {
+		
+		this.listaAccionesTer = this.instanciaSistema
+				.obtenerAccionesTerapeuticas();
 	}
 
 	public void cargarTiposArticulo() {
+		
 		DTTipoArticulo ta = new DTTipoArticulo();
 		ta.setTipoArticulo(model.Enumerados.tipoArticulo.MEDICAMENTO);
 		ta.setDescripcion("Medicamento");
@@ -453,14 +434,9 @@ public class StockBean implements Serializable {
 		formasVenta.add(fv);
 	}
 
-	public void cargarTiposIva() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		try {
-			this.tiposIVA = this.instanciaSistema.obtenerTiposIva();
-		} catch (Excepciones e) {
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-		}
+	public void cargarTiposIva() throws Excepciones {
+		
+		this.tiposIVA = this.instanciaSistema.obtenerTiposIva();
 	}	
 
 	/* Fin Loaders */
@@ -469,26 +445,34 @@ public class StockBean implements Serializable {
 		this.instanciaSistema = s;
 
 		if (this.instanciaSistema != null) {
-			// Cargo las marcas de la base de datos
-			cargarMarcas();
+			
+			try {
+				// Cargo las marcas de la base de datos
+				cargarMarcas();
 
-			// Cargo los proveedores de la base de datos
-			cargarProveedores();
+				// Cargo los proveedores de la base de datos
+				cargarProveedores();
 
-			// Cargo las drogas de la base de datos
-			cargarDrogas();
+				// Cargo las drogas de la base de datos
+				cargarDrogas();
 
-			// Cargo las acciones terapéuticas de la base de datos
-			cargarAccionesTerapeuticas();
+				// Cargo las acciones terapéuticas de la base de datos
+				cargarAccionesTerapeuticas();
 
-			// Cargo tipos de articulo para el combo
-			cargarTiposArticulo();
+				// Cargo tipos de articulo para el combo
+				cargarTiposArticulo();
 
-			// Cargo formas de venta para el combo
-			cargarFormasVenta();
+				// Cargo formas de venta para el combo
+				cargarFormasVenta();
 
-			// Cargo tipos de iva para el combo
-			cargarTiposIva();
+				// Cargo tipos de iva para el combo
+				cargarTiposIva();
+			} catch (Excepciones ex) {
+				
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, ex.getMessage(), ""));
+			}
 		}
 	}
 	
