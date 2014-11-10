@@ -54,6 +54,16 @@ public class Enumerados {
 	    public static final char controlMedico = '4';
 	}
 	
+	public final class descuentosReceta {
+		public static final short VEINTICINCO = 1;
+		public static final short CUARENTA = 2;
+	}
+	
+	public final class descuentosRecetaDesc {
+		public static final String VEINTICINCO = "25%";
+		public static final String CUARENTA = "40%";
+	}
+	
 	public final class modoFacturacion{
 	    public static final int basica = 1;
 	    public static final int interrumpida = 2;

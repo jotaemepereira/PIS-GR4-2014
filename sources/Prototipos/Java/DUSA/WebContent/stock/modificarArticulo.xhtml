@@ -218,7 +218,7 @@
 																value="#{stockBean.articulo.tipoArticulo}"
 																required="true" requiredMessage="Dato Requerido.">
 																<p:ajax listener="#{stockBean.tipoArticuloChange}"
-																	update="drogas accionesTer psicofarmaco estupefaciente formaVenta" />
+																	update="drogas accionesTer psicofarmaco estupefaciente formaVenta descuentoReceta" />
 																<f:selectItem itemLabel="Seleccione tipo de artículo"
 																	itemValue="#{null}" noSelectionOption="true" />
 																<f:selectItems value="#{stockBean.tiposArticulo}"
@@ -528,6 +528,28 @@
 											
 											<div class="row" style="margin-bottom: 1%;">
 												<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+													<div class="row">
+														<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+															<p:outputLabel for="formaVenta" value="Forma de venta:" />
+														</div>
+													</div>
+													<div class="row">
+														<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+															<p:selectOneMenu id="formaVenta"
+																value="#{stockBean.articulo.codigoVenta}"
+																required="true" requiredMessage="Dato Requerido."
+																disabled="#{stockBean.noEsMedicamento}">
+																<f:selectItem itemLabel="Seleccione forma de venta"
+																	itemValue="#{null}" />
+																<f:selectItems value="#{stockBean.formasVenta}" var="f"
+																	itemLabel="#{f.descripcion}"
+																	itemValue="#{f.formaVenta}" />
+															</p:selectOneMenu>
+															<p:message for="formaVenta" display="text" />
+														</div>
+													</div>
+												</div>
+												<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 													<div class="row pull-right">
 														<p:radioButton id="opt2" for="radioPrecioVenta"
 															itemIndex="1" />
@@ -552,22 +574,21 @@
 												<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
 													<div class="row">
 														<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-															<p:outputLabel for="formaVenta" value="Forma de venta:" />
+															<p:outputLabel for="descuentoReceta" value="Descuento con receta:" />
 														</div>
 													</div>
 													<div class="row">
 														<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-															<p:selectOneMenu id="formaVenta"
-																value="#{stockBean.articulo.codigoVenta}"
-																required="true" requiredMessage="Dato Requerido."
+															<p:selectOneMenu id="descuentoReceta"
+																value="#{stockBean.descuentoRecetaSeleccionado}"																
 																disabled="#{stockBean.noEsMedicamento}">
-																<f:selectItem itemLabel="Seleccione forma de venta"
+																<f:selectItem itemLabel="Seleccione porcentaje"
 																	itemValue="#{null}" />
-																<f:selectItems value="#{stockBean.formasVenta}" var="f"
+																<f:selectItems value="#{stockBean.descuentosReceta}" var="f"
 																	itemLabel="#{f.descripcion}"
-																	itemValue="#{f.formaVenta}" />
+																	itemValue="#{f.tipoDescuento}" />
 															</p:selectOneMenu>
-															<p:message for="formaVenta" display="text" />
+															<p:message for="descuentoReceta" display="text" />
 														</div>
 													</div>
 												</div>

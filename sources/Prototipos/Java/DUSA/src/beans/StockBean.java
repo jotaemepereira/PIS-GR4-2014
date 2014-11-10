@@ -40,6 +40,7 @@ import model.Pedido;
 import model.Presentacion;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
+import datatypes.DTDescuentoReceta;
 import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
@@ -58,12 +59,12 @@ public class StockBean implements Serializable {
 	private Articulo articulo = new Articulo();
 	private boolean noEsMedicamento;
 	private String radioPrecioVenta;
-	
-	//Modificación
+
+	// Modificación
 	private boolean modificacion;
 	private Articulo articuloSinCambios;
-	private DTModificacionArticulo articuloModificado;	
-	 
+	private DTModificacionArticulo articuloModificado;
+
 	// Proveedores
 	private int proveedor;
 	private long codigoIdentificador;
@@ -71,10 +72,6 @@ public class StockBean implements Serializable {
 	private List<DTProveedor> listaProveedores;
 	private List<DTProveedor> listaMarcas;
 	private List<DTProveedor> proveedoresSeleccionados = new ArrayList<DTProveedor>();
-
-	// Presentaciones
-	private Presentacion presentacion = new Presentacion();
-	private List<Presentacion> presentaciones = new ArrayList<Presentacion>();
 
 	// Drogas
 	private long[] drogasSeleccionadas;
@@ -88,17 +85,19 @@ public class StockBean implements Serializable {
 	private List<DTTipoArticulo> tiposArticulo = new ArrayList<DTTipoArticulo>();
 	private List<TipoIva> tiposIVA;
 	private char tipoIvaSeleccionado;
+	private List<DTDescuentoReceta> descuentosReceta = new ArrayList<DTDescuentoReceta>();
+	private short descuentoRecetaSeleccionado;
 
 	// Busqueda de artículos
 	private String busqueda = "";
 	private List<DTBusquedaArticulo> resBusqueda = new ArrayList<DTBusquedaArticulo>();
 
-	//Para las selecciones de las tablas
+	// Para las selecciones de las tablas
 	private DTBusquedaArticulo articuloSeleccionado;
 	private DTProveedor proveedorSeleccionado;
 
 	/* Operaciones para Alta de Artículo */
-	
+
 	public void altaArticulo() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (!proveedoresSeleccionados.isEmpty()) {
@@ -117,16 +116,42 @@ public class StockBean implements Serializable {
 
 				/* Cargo el tipo de iva seleccionado */
 				TipoIva ti = new TipoIva();
-				if (articulo.getTipoArticulo() == model.Enumerados.tipoArticulo.MEDICAMENTO){
-					if (articulo.isEsEstupefaciente() || articulo.isEsPsicofarmaco()){
+				if (articulo.getTipoArticulo() == model.Enumerados.tipoArticulo.MEDICAMENTO) {
+					if (articulo.isEsEstupefaciente()
+							|| articulo.isEsPsicofarmaco()) {
 						ti.setTipoIVA(model.Enumerados.tiposIVA.PSICOFARMACOS);
-					}else{
+					} else {
 						ti.setTipoIVA(model.Enumerados.tiposIVA.MEDICAMENTOS);
 					}
-				}else{
+				} else {
 					ti.setTipoIVA(tipoIvaSeleccionado);
 				}
 				articulo.setTipoIva(ti);
+
+				/* Cargo precio con receta y descuento con receta si corresponde */
+				if (descuentoRecetaSeleccionado != 0) {
+					if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.VEINTICINCO) {
+						articulo.setPorcentajeDescuentoReceta(new BigDecimal(
+								0.25));
+						articulo.setPrecioConReceta(articulo
+								.getPrecioUnitario()
+								.multiply(
+										new BigDecimal(1).subtract(articulo
+												.getPorcentajeDescuentoReceta())));
+					}else if(descuentoRecetaSeleccionado == Enumerados.descuentosReceta.CUARENTA){
+						articulo.setPorcentajeDescuentoReceta(new BigDecimal(
+								0.40));
+						articulo.setPrecioConReceta(articulo
+								.getPrecioUnitario()
+								.multiply(
+										new BigDecimal(1).subtract(articulo
+												.getPorcentajeDescuentoReceta())));
+					}
+				}else{
+					articulo.setPorcentajeDescuentoReceta(BigDecimal.ZERO);
+					articulo.setPrecioConReceta(BigDecimal.ZERO);
+				}
+					
 
 				/* Cargo el precio de venta según corresponda */
 
@@ -182,6 +207,7 @@ public class StockBean implements Serializable {
 				this.proveedor = 0;
 				this.codigoIdentificador = 0;
 				this.tipoIvaSeleccionado = 0;
+				this.descuentoRecetaSeleccionado = 0;
 			} catch (Excepciones e) {
 				if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
 					context.addMessage(null, new FacesMessage(
@@ -204,30 +230,57 @@ public class StockBean implements Serializable {
 	public void cancelarAltaArticulo() {
 		refresh();
 	}
-	
-	/* Fin Operaciones para Alta de Artículo
-	
-	
-	/* Operaciones para Modificación de Artículo */
-	
-	public void modificarArticulo(){
+
+	/*
+	 * Fin Operaciones para Alta de Artículo
+	 * 
+	 * 
+	 * /* Operaciones para Modificación de Artículo
+	 */
+
+	public void modificarArticulo() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		try {
 			if (!proveedoresSeleccionados.isEmpty()) {
-				
+
 				/* Cargo el tipo de iva seleccionado */
 				TipoIva ti = new TipoIva();
-				if (articulo.getTipoArticulo() == model.Enumerados.tipoArticulo.MEDICAMENTO){
-					if (articulo.isEsEstupefaciente() || articulo.isEsPsicofarmaco()){
+				if (articulo.getTipoArticulo() == model.Enumerados.tipoArticulo.MEDICAMENTO) {
+					if (articulo.isEsEstupefaciente()
+							|| articulo.isEsPsicofarmaco()) {
 						ti.setTipoIVA(model.Enumerados.tiposIVA.PSICOFARMACOS);
-					}else{
+					} else {
 						ti.setTipoIVA(model.Enumerados.tiposIVA.MEDICAMENTOS);
 					}
-				}else{
+				} else {
 					ti.setTipoIVA(tipoIvaSeleccionado);
 				}
 				articulo.setTipoIva(ti);
 
+				/* Cargo precio con receta y descuento con receta si corresponde */
+				if (descuentoRecetaSeleccionado != 0) {
+					if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.VEINTICINCO) {
+						articulo.setPorcentajeDescuentoReceta(new BigDecimal(
+								0.25));
+						articulo.setPrecioConReceta(articulo
+								.getPrecioUnitario()
+								.multiply(
+										new BigDecimal(1).subtract(articulo
+												.getPorcentajeDescuentoReceta())));
+					}else if(descuentoRecetaSeleccionado == Enumerados.descuentosReceta.CUARENTA){
+						articulo.setPorcentajeDescuentoReceta(new BigDecimal(
+								0.40));
+						articulo.setPrecioConReceta(articulo
+								.getPrecioUnitario()
+								.multiply(
+										new BigDecimal(1).subtract(articulo
+												.getPorcentajeDescuentoReceta())));
+					}
+				}else{
+					articulo.setPorcentajeDescuentoReceta(BigDecimal.ZERO);
+					articulo.setPrecioConReceta(BigDecimal.ZERO);
+				}
+				
 				/* Cargo el precio de venta según corresponda */
 
 				/*
@@ -267,21 +320,32 @@ public class StockBean implements Serializable {
 				/* Cargo el usuario que realiza la modificacion */
 				articulo.setUsuario(this.instanciaSistema
 						.obtenerUsuarioLogueado());
-				
+
 				/* Proceso los cambios existentes */
 				procesarCambios();
-				
+
 				/*
-				 * Llamo a la logica para que se realice la modificacion del articulo en el
-				 * sistema y en caso de error lo muestro
+				 * Llamo a la logica para que se realice la modificacion del
+				 * articulo en el sistema y en caso de error lo muestro
 				 */
 				instanciaSistema.modificarArticulo(articuloModificado);
+				
+				// si todo bien aviso y vacio el formulario
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_INFO,
+						Excepciones.MENSAJE_OK_ALTA, ""));
+				this.articulo = new Articulo();
+				this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
+				this.proveedor = 0;
+				this.codigoIdentificador = 0;
+				this.tipoIvaSeleccionado = 0;
+				this.descuentoRecetaSeleccionado = 0;
 			} else {
 				context.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
 						"Debe seleccionar al menos un proveedor", ""));
 			}
-		} catch (Excepciones e){
+		} catch (Excepciones e) {
 			if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
 				context.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_WARN, e.getMessage(), ""));
@@ -294,174 +358,223 @@ public class StockBean implements Serializable {
 			}
 		}
 	}
-	
-	public void cancelarModificarArticulo(){
+
+	public void cancelarModificarArticulo() {
 		refresh();
 	}
-	
+
 	/**
-	 * Esta operación se encarga de procesar todos los cambios del formulario con respecto al
-	 * artículo inicial. Chequea las modificaciones y marca los campos que sufrieron cambios.
+	 * Esta operación se encarga de procesar todos los cambios del formulario
+	 * con respecto al artículo inicial. Chequea las modificaciones y marca los
+	 * campos que sufrieron cambios.
 	 */
-	private void procesarCambios(){
-		articulo.setClave1Modificado(articuloSinCambios.getClave1().compareTo(articulo.getClave1()) != 0);
-		articulo.setClave2Modificado(articuloSinCambios.getClave2().compareTo(articulo.getClave2()) != 0);
-		articulo.setClave3Modificado(articuloSinCambios.getClave3().compareTo(articulo.getClave3()) != 0);
-		articulo.setCodigoBarrasModificado(articuloSinCambios.getCodigoBarras().compareTo(articulo.getCodigoBarras()) != 0);
-		articulo.setCodigoVentaModificado(articuloSinCambios.getCodigoVenta() != articulo.getCodigoVenta());
-		articulo.setCostoListaModificado(articuloSinCambios.getCostoLista().compareTo(articulo.getCostoLista()) != 0);
-		articulo.setCostoOfertaModificado(articuloSinCambios.getCostoOferta().compareTo(articulo.getCostoOferta()) != 0);
-		articulo.setCostoPromedioModificado(articuloSinCambios.getCostoPromedio().compareTo(articulo.getCostoPromedio()) != 0);
-		articulo.setDescripcionModificado(articuloSinCambios.getDescripcion().compareTo(articulo.getDescripcion()) != 0);
-		articulo.setEsEstupefacienteModificado(articuloSinCambios.isEsEstupefaciente() != articulo.isEsEstupefaciente());
-		articulo.setEsHeladeraModificado(articuloSinCambios.isEsHeladera() != articulo.isEsHeladera());
-		articulo.setEsPsicofarmacoModificado(articuloSinCambios.isEsPsicofarmaco() != articulo.isEsPsicofarmaco());
-		articulo.setIdMarcaModificado(articuloSinCambios.getIdMarca() != articulo.getIdMarca());
-		articulo.setPorcentajeDescuentoRecetaModificado(articuloSinCambios.getPorcentajeDescuentoReceta().compareTo(articulo.getPorcentajeDescuentoReceta()) != 0);
-		articulo.setPorcentajePrecioVentaModificado(articuloSinCambios.getPorcentajePrecioVenta().compareTo(articulo.getPorcentajePrecioVenta()) != 0);
-		articulo.setPrecioConRecetaModificado(articuloSinCambios.getPrecioConReceta().compareTo(articulo.getPrecioConReceta()) != 0);
-		articulo.setPrecioUnitarioModificado(articuloSinCambios.getPrecioUnitario().compareTo(articulo.getPrecioUnitario()) != 0);
-		articulo.setPrecioVentaModificado(articuloSinCambios.getPrecioVenta().compareTo(articulo.getPrecioVenta()) != 0);
-		articulo.setPresentacionModificado(articuloSinCambios.getPresentacion().compareTo(articulo.getPresentacion()) != 0);
-		articulo.setStockMinimoModificado(articuloSinCambios.getStockMinimo() != articulo.getStockMinimo());
-		articulo.setTipoArticuloModificado(articuloSinCambios.getTipoArticulo() != articulo.getTipoArticulo());
-		articulo.setTipoAutorizacionModificado(articuloSinCambios.getTipoAutorizacion() != articulo.getTipoAutorizacion());
-		articulo.setTipoIvaModificado(articuloSinCambios.getTipoIva().getTipoIVA() != articulo.getTipoIva().getTipoIVA());
-		articulo.setUltimoCostoModificado(articuloSinCambios.getUltimoCosto().compareTo(articulo.getUltimoCosto()) != 0);
-		articulo.setUsuarioModificado(articuloSinCambios.getUsuario().getNombre().compareTo(instanciaSistema.obtenerUsuarioLogueado().getNombre()) != 0);
-		articulo.setVencimientoMasCercanoModificado(articuloSinCambios.getVencimientoMasCercano().compareTo(articulo.getVencimientoMasCercano()) != 0);
-		//Chequeo cambios en proveedores
+	private void procesarCambios() {
+		articulo.setClave1Modificado(articuloSinCambios.getClave1().compareTo(
+				articulo.getClave1()) != 0);
+		articulo.setClave2Modificado(articuloSinCambios.getClave2().compareTo(
+				articulo.getClave2()) != 0);
+		articulo.setClave3Modificado(articuloSinCambios.getClave3().compareTo(
+				articulo.getClave3()) != 0);
+		articulo.setCodigoBarrasModificado(articuloSinCambios.getCodigoBarras()
+				.compareTo(articulo.getCodigoBarras()) != 0);
+		articulo.setCodigoVentaModificado(articuloSinCambios.getCodigoVenta() != articulo
+				.getCodigoVenta());
+		articulo.setCostoListaModificado(articuloSinCambios.getCostoLista()
+				.compareTo(articulo.getCostoLista()) != 0);
+		articulo.setCostoOfertaModificado(articuloSinCambios.getCostoOferta()
+				.compareTo(articulo.getCostoOferta()) != 0);
+		articulo.setCostoPromedioModificado(articuloSinCambios
+				.getCostoPromedio().compareTo(articulo.getCostoPromedio()) != 0);
+		articulo.setDescripcionModificado(articuloSinCambios.getDescripcion()
+				.compareTo(articulo.getDescripcion()) != 0);
+		articulo.setEsEstupefacienteModificado(articuloSinCambios
+				.isEsEstupefaciente() != articulo.isEsEstupefaciente());
+		articulo.setEsHeladeraModificado(articuloSinCambios.isEsHeladera() != articulo
+				.isEsHeladera());
+		articulo.setEsPsicofarmacoModificado(articuloSinCambios
+				.isEsPsicofarmaco() != articulo.isEsPsicofarmaco());
+		articulo.setIdMarcaModificado(articuloSinCambios.getIdMarca() != articulo
+				.getIdMarca());
+		articulo.setPorcentajeDescuentoRecetaModificado(articuloSinCambios
+				.getPorcentajeDescuentoReceta().compareTo(
+						articulo.getPorcentajeDescuentoReceta()) != 0);
+		articulo.setPorcentajePrecioVentaModificado(articuloSinCambios
+				.getPorcentajePrecioVenta().compareTo(
+						articulo.getPorcentajePrecioVenta()) != 0);
+		articulo.setPrecioConRecetaModificado(articuloSinCambios
+				.getPrecioConReceta().compareTo(articulo.getPrecioConReceta()) != 0);
+		articulo.setPrecioUnitarioModificado(articuloSinCambios
+				.getPrecioUnitario().compareTo(articulo.getPrecioUnitario()) != 0);
+		articulo.setPrecioVentaModificado(articuloSinCambios.getPrecioVenta()
+				.compareTo(articulo.getPrecioVenta()) != 0);
+		articulo.setPresentacionModificado(articuloSinCambios.getPresentacion()
+				.compareTo(articulo.getPresentacion()) != 0);
+		articulo.setStockMinimoModificado(articuloSinCambios.getStockMinimo() != articulo
+				.getStockMinimo());
+		articulo.setTipoArticuloModificado(articuloSinCambios.getTipoArticulo() != articulo
+				.getTipoArticulo());
+		articulo.setTipoAutorizacionModificado(articuloSinCambios
+				.getTipoAutorizacion() != articulo.getTipoAutorizacion());
+		articulo.setTipoIvaModificado(articuloSinCambios.getTipoIva()
+				.getTipoIVA() != articulo.getTipoIva().getTipoIVA());
+		articulo.setUltimoCostoModificado(articuloSinCambios.getUltimoCosto()
+				.compareTo(articulo.getUltimoCosto()) != 0);
+		articulo.setUsuarioModificado(articuloSinCambios
+				.getUsuario()
+				.getNombre()
+				.compareTo(
+						instanciaSistema.obtenerUsuarioLogueado().getNombre()) != 0);
+		articulo.setVencimientoMasCercanoModificado(articuloSinCambios
+				.getVencimientoMasCercano().compareTo(
+						articulo.getVencimientoMasCercano()) != 0);
+		// Chequeo cambios en proveedores
 		procesarProveedores();
-		//Chequeo cambios en drogas
+		// Chequeo cambios en drogas
 		procesarDrogas();
-		//Chequeo cambios en acciones terapeuticas
+		// Chequeo cambios en acciones terapeuticas
 		procesarAccionesTer();
-		this.articuloModificado.setArticulo(articulo);	
+		this.articuloModificado.setArticulo(articulo);
 	}
-	
+
 	/**
-	 * Esta operación se encarga de chequear los cambios en los proveedores para la modificación
-	 * cargando en el articuloModificado las listas de proveedores como corresponda
+	 * Esta operación se encarga de chequear los cambios en los proveedores para
+	 * la modificación cargando en el articuloModificado las listas de
+	 * proveedores como corresponda
 	 */
-	private void procesarProveedores(){
-		//Me fijo para cada proveedor del articulo actual si el mismo ya existia
-		//en caso de no existir es un proveedor nuevo entonces lo
-		//agrego a la lista de nuevasProveedores
-		for(DTProveedor proveedor : proveedoresSeleccionados){
-			if (!articuloSinCambios.getProveedores().containsKey(proveedor.getIdProveedor())){
+	private void procesarProveedores() {
+		// Me fijo para cada proveedor del articulo actual si el mismo ya
+		// existia
+		// en caso de no existir es un proveedor nuevo entonces lo
+		// agrego a la lista de nuevasProveedores
+		for (DTProveedor proveedor : proveedoresSeleccionados) {
+			if (!articuloSinCambios.getProveedores().containsKey(
+					proveedor.getIdProveedor())) {
 				articuloModificado.getProveedoresNuevos().add(proveedor);
-				//Marco que hay cambios en los proveedores
+				// Marco que hay cambios en los proveedores
 				articulo.setProveedoresModificado(true);
 			}
 		}
-		//Me fijo para cada proveedor del articulo sin cambios si el mismo existe
-		//en el articulo actual, en caso de no existir es porque no está mas
-		//seleccionado entonces lo agrego a la lista de proveedoresABorrar
-		for(DTProveedor proveedor : articuloSinCambios.getProveedores().values()){
-			if (!proveedoresSeleccionados.contains(proveedor)){
+		// Me fijo para cada proveedor del articulo sin cambios si el mismo
+		// existe
+		// en el articulo actual, en caso de no existir es porque no está mas
+		// seleccionado entonces lo agrego a la lista de proveedoresABorrar
+		for (DTProveedor proveedor : articuloSinCambios.getProveedores()
+				.values()) {
+			if (!proveedoresSeleccionados.contains(proveedor)) {
 				articuloModificado.getProveedoresABorrar().add(proveedor);
-				//Marco que hay cambios en los proveedores
+				// Marco que hay cambios en los proveedores
 				articulo.setProveedoresModificado(true);
 			}
 		}
 	}
-	
+
 	/**
-	 * Esta operación se encarga de chequear los cambios en las drogas para la modificación
-	 * cargando en el articuloModificado los array de drogas como corresponda
+	 * Esta operación se encarga de chequear los cambios en las drogas para la
+	 * modificación cargando en el articuloModificado los array de drogas como
+	 * corresponda
 	 */
-	private void procesarDrogas(){
-		if (articulo.getTipoArticulo() == Enumerados.tipoArticulo.MEDICAMENTO){
-			//Me fijo para cada droga del articulo actual si la misma ya existia
-			//en caso de no existir es una droga nueva seleccionada entonces la
-			//agrego a la lista de nuevasDrogas
-			for(long droga : articulo.getDrogas()){
-				if (!existeIdEnArray(droga, articuloSinCambios.getDrogas())){
+	private void procesarDrogas() {
+		if (articulo.getTipoArticulo() == Enumerados.tipoArticulo.MEDICAMENTO) {
+			// Me fijo para cada droga del articulo actual si la misma ya
+			// existia
+			// en caso de no existir es una droga nueva seleccionada entonces la
+			// agrego a la lista de nuevasDrogas
+			for (long droga : articulo.getDrogas()) {
+				if (!existeIdEnArray(droga, articuloSinCambios.getDrogas())) {
 					articuloModificado.getDrogasNuevas().add(droga);
-					//Marco que hay cambios en las drogas
+					// Marco que hay cambios en las drogas
 					articulo.setDrogasModificado(true);
 				}
 			}
-			//Me fijo para cada droga del articulo sin cambios si la misma existe
-			//en el articulo actual, en caso de no existir es porque no está mas
-			//seleccionada entonces la agrego a la lista de drogasABorrar
-			for(long droga : articuloSinCambios.getDrogas()){
-				if (!existeIdEnArray(droga, articulo.getDrogas())){
+			// Me fijo para cada droga del articulo sin cambios si la misma
+			// existe
+			// en el articulo actual, en caso de no existir es porque no está
+			// mas
+			// seleccionada entonces la agrego a la lista de drogasABorrar
+			for (long droga : articuloSinCambios.getDrogas()) {
+				if (!existeIdEnArray(droga, articulo.getDrogas())) {
 					articuloModificado.getDrogasABorrar().add(droga);
-					//Marco que hay cambios en las drogas
+					// Marco que hay cambios en las drogas
 					articulo.setDrogasModificado(true);
 				}
 			}
 		}
-		//Si no es medicamento no puede tener drogas. Si tenía se sacan
+		// Si no es medicamento no puede tener drogas. Si tenía se sacan
 		else {
-			for(long droga : articuloSinCambios.getDrogas()){
+			for (long droga : articuloSinCambios.getDrogas()) {
 				articuloModificado.getDrogasABorrar().add(droga);
-				//Marco que hay cambios en las drogas
+				// Marco que hay cambios en las drogas
 				articulo.setDrogasModificado(true);
 			}
 		}
-	}	
-	
+	}
+
 	/**
-	 * Esta operación se encarga de chequear los cambios en las acciones terapeuticas para la modificación
-	 * cargando en el articuloModificado los array de drogas como corresponda
+	 * Esta operación se encarga de chequear los cambios en las acciones
+	 * terapeuticas para la modificación cargando en el articuloModificado los
+	 * array de drogas como corresponda
 	 */
-	private void procesarAccionesTer(){
-		if (articulo.getTipoArticulo() == Enumerados.tipoArticulo.MEDICAMENTO){
-			//Me fijo para cada accionTer del articulo actual si la misma ya existia
-			//en caso de no existir es una accionTer nueva seleccionada entonces la
-			//agrego a la lista de nuevasAccionesTer
-			for(long accionTer : articulo.getAccionesTer()){
-				if (!existeIdEnArray(accionTer, articuloSinCambios.getAccionesTer())){
+	private void procesarAccionesTer() {
+		if (articulo.getTipoArticulo() == Enumerados.tipoArticulo.MEDICAMENTO) {
+			// Me fijo para cada accionTer del articulo actual si la misma ya
+			// existia
+			// en caso de no existir es una accionTer nueva seleccionada
+			// entonces la
+			// agrego a la lista de nuevasAccionesTer
+			for (long accionTer : articulo.getAccionesTer()) {
+				if (!existeIdEnArray(accionTer,
+						articuloSinCambios.getAccionesTer())) {
 					articuloModificado.getAccionesTerNuevas().add(accionTer);
-					//Marco que hay cambios en las acciones terapeuticas
+					// Marco que hay cambios en las acciones terapeuticas
 					articulo.setAccionesTerModificado(true);
 				}
 			}
-			//Me fijo para cada accionTer del articulo sin cambios si la misma existe
-			//en el articulo actual, en caso de no existir es porque no está mas
-			//seleccionada entonces la agrego a la lista de accionesTerABorrar
-			for(long accionTer : articuloSinCambios.getAccionesTer()){
-				if (!existeIdEnArray(accionTer, articulo.getAccionesTer())){
+			// Me fijo para cada accionTer del articulo sin cambios si la misma
+			// existe
+			// en el articulo actual, en caso de no existir es porque no está
+			// mas
+			// seleccionada entonces la agrego a la lista de accionesTerABorrar
+			for (long accionTer : articuloSinCambios.getAccionesTer()) {
+				if (!existeIdEnArray(accionTer, articulo.getAccionesTer())) {
 					articuloModificado.getAccionesTerABorrar().add(accionTer);
-					//Marco que hay cambios en las acciones terapeuticas
+					// Marco que hay cambios en las acciones terapeuticas
 					articulo.setAccionesTerModificado(true);
 				}
 			}
 		}
-		//Si no es medicamento no puede tener acciones terapeuticas. Si tenía se sacan
-		else{
-			for(long accionTer : articuloSinCambios.getAccionesTer()){
+		// Si no es medicamento no puede tener acciones terapeuticas. Si tenía
+		// se sacan
+		else {
+			for (long accionTer : articuloSinCambios.getAccionesTer()) {
 				articuloModificado.getAccionesTerABorrar().add(accionTer);
-				//Marco que hay cambios en las acciones terapeuticas
+				// Marco que hay cambios en las acciones terapeuticas
 				articulo.setAccionesTerModificado(true);
 			}
 		}
 	}
-	
-	private boolean existeIdEnArray(long id, long[] array){
+
+	private boolean existeIdEnArray(long id, long[] array) {
 		boolean ret = false;
 		int i = 0;
 		int len = array.length;
-		while (!ret && i < len){			
+		while (!ret && i < len) {
 			ret = id == array[i];
 			i++;
-		}		
+		}
 		return ret;
 	}
-	
+
 	/* Manejo del componente wizard en modificarArticulo.xhtml */
 	public String onFlowProcess(FlowEvent event) {
-		if (event.getNewStep().equals("tabModificacion")){ 
-			if (articuloSeleccionado != null){
-				this.modificacion = true;			
+		if (event.getNewStep().equals("tabModificacion")) {
+			if (articuloSeleccionado != null) {
+				this.modificacion = true;
 				cargarArticuloParaModificacion();
 				return event.getNewStep();
-			}else{
+			} else {
 				return event.getOldStep();
 			}
-		}else{
+		} else {
 			return event.getNewStep();
 		}
 	}
@@ -471,17 +584,18 @@ public class StockBean implements Serializable {
 		try {
 			this.articulo = this.instanciaSistema
 					.obtenerArticulo(articuloSeleccionado.getIdArticulo());
-			if (articulo.getTipoIva() != null){
-				if (articulo.getTipoIva().getTipoIVA() == model.Enumerados.tiposIVA.PSICOFARMACOS || 
-						articulo.getTipoIva().getTipoIVA() == model.Enumerados.tiposIVA.MEDICAMENTOS){
+			if (articulo.getTipoIva() != null) {
+				if (articulo.getTipoIva().getTipoIVA() == model.Enumerados.tiposIVA.PSICOFARMACOS
+						|| articulo.getTipoIva().getTipoIVA() == model.Enumerados.tiposIVA.MEDICAMENTOS) {
 					tipoIvaSeleccionado = model.Enumerados.tiposIVA.IVA10;
-				}else{
+				} else {
 					tipoIvaSeleccionado = articulo.getTipoIva().getTipoIVA();
 				}
 			}
 			this.articuloSinCambios = new Articulo(articulo);
 			this.articuloModificado = new DTModificacionArticulo();
-			this.proveedoresSeleccionados = new ArrayList<DTProveedor>(articulo.getProveedores().values());
+			this.proveedoresSeleccionados = new ArrayList<DTProveedor>(articulo
+					.getProveedores().values());
 			this.noEsMedicamento = articulo.getTipoArticulo() != Enumerados.tipoArticulo.MEDICAMENTO;
 		} catch (Excepciones e) {
 			context.addMessage(null, new FacesMessage(
@@ -490,7 +604,7 @@ public class StockBean implements Serializable {
 	}
 
 	/* Manejo de la búsqueda */
-	
+
 	/**
 	 * @return the resBusqueda
 	 */
@@ -520,11 +634,14 @@ public class StockBean implements Serializable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/* Fin Operaciones para Modificación de Artículo */
 
-	/* Operaciones de la tabla de proveedores tanto para el Alta como la Modificación */
-	
+	/*
+	 * Operaciones de la tabla de proveedores tanto para el Alta como la
+	 * Modificación
+	 */
+
 	public void agregarProveedor() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (proveedor != 0) {
@@ -538,7 +655,7 @@ public class StockBean implements Serializable {
 						p.setNombreComercial(proveedores.get(proveedor)
 								.getNombreComercial());
 						p.setCodigoIdentificador(codigoIdentificador);
-						this.proveedoresSeleccionados.add(p);						
+						this.proveedoresSeleccionados.add(p);
 						this.proveedor = 0;
 						this.codigoIdentificador = 0;
 					} else {
@@ -564,10 +681,10 @@ public class StockBean implements Serializable {
 					"Debe seleccionar un proveedor.", ""));
 		}
 	}
-	
-	public void eliminarProveedor(){
+
+	public void eliminarProveedor() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		if (proveedorSeleccionado != null){
+		if (proveedorSeleccionado != null) {
 			this.proveedoresSeleccionados.remove(proveedorSeleccionado);
 		} else {
 			context.addMessage(null, new FacesMessage(
@@ -591,10 +708,10 @@ public class StockBean implements Serializable {
 		return ret;
 	}
 
-	/* Fin Operaciones de la tabla de proveedores */	
+	/* Fin Operaciones de la tabla de proveedores */
 
 	/* Reseteo de formulario */
-	
+
 	public void refresh() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		Application application = context.getApplication();
@@ -606,9 +723,9 @@ public class StockBean implements Serializable {
 	}
 
 	/* Loaders */
-	
+
 	public void cargarMarcas() {
-		if (listaMarcas.isEmpty()){
+		if (listaMarcas.isEmpty()) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			try {
 				this.listaMarcas = this.instanciaSistema.obtenerMarcas();
@@ -620,7 +737,7 @@ public class StockBean implements Serializable {
 	}
 
 	public void cargarProveedores() {
-		if (listaProveedores.isEmpty()){
+		if (listaProveedores.isEmpty()) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			try {
 				this.proveedores = this.instanciaSistema.obtenerProveedores();
@@ -634,7 +751,7 @@ public class StockBean implements Serializable {
 	}
 
 	public void cargarDrogas() {
-		if (listaDrogas.isEmpty()){
+		if (listaDrogas.isEmpty()) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			try {
 				this.listaDrogas = this.instanciaSistema.obtenerDrogas();
@@ -646,7 +763,7 @@ public class StockBean implements Serializable {
 	}
 
 	public void cargarAccionesTerapeuticas() {
-		if (listaAccionesTer.isEmpty()){
+		if (listaAccionesTer.isEmpty()) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			try {
 				this.listaAccionesTer = this.instanciaSistema
@@ -659,7 +776,7 @@ public class StockBean implements Serializable {
 	}
 
 	public void cargarTiposArticulo() {
-		if (tiposArticulo.isEmpty()){
+		if (tiposArticulo.isEmpty()) {
 			DTTipoArticulo ta = new DTTipoArticulo();
 			ta.setTipoArticulo(model.Enumerados.tipoArticulo.MEDICAMENTO);
 			ta.setDescripcion("Medicamento");
@@ -684,7 +801,7 @@ public class StockBean implements Serializable {
 	}
 
 	public void cargarFormasVenta() {
-		if (formasVenta.isEmpty()){
+		if (formasVenta.isEmpty()) {
 			DTFormasVenta fv = new DTFormasVenta();
 			fv.setFormaVenta(model.Enumerados.formasVenta.ventaLibre);
 			fv.setDescripcion("Venta libre");
@@ -704,8 +821,21 @@ public class StockBean implements Serializable {
 		}
 	}
 
+	public void cargarDescuentosReceta() {
+		if (descuentosReceta.isEmpty()) {
+			DTDescuentoReceta dr = new DTDescuentoReceta();
+			dr.setTipoDescuento(Enumerados.descuentosReceta.VEINTICINCO);
+			dr.setDescripcion(Enumerados.descuentosRecetaDesc.VEINTICINCO);
+			descuentosReceta.add(dr);
+			dr = new DTDescuentoReceta();
+			dr.setTipoDescuento(Enumerados.descuentosReceta.CUARENTA);
+			dr.setDescripcion(Enumerados.descuentosRecetaDesc.CUARENTA);
+			descuentosReceta.add(dr);
+		}
+	}
+
 	public void cargarTiposIva() {
-		if (tiposIVA.isEmpty()){
+		if (tiposIVA.isEmpty()) {
 			TipoIva ti = new TipoIva();
 			ti.setTipoIVA(model.Enumerados.tiposIVA.IVAEXENTO);
 			ti.setDescripcion(model.Enumerados.tiposIVAParaMostrar.IVAEXENTO);
@@ -719,10 +849,10 @@ public class StockBean implements Serializable {
 			ti.setDescripcion(model.Enumerados.tiposIVAParaMostrar.IVA22);
 			tiposIVA.add(ti);
 		}
-	}	
+	}
 
 	/* Fin Loaders */
-	
+
 	public void setISistema(ISistema s) {
 		this.instanciaSistema = s;
 
@@ -745,11 +875,14 @@ public class StockBean implements Serializable {
 			// Cargo formas de venta para el combo
 			cargarFormasVenta();
 
+			// Cargo descuentos con receta
+			cargarDescuentosReceta();
+
 			// Cargo tipos de iva para el combo
 			cargarTiposIva();
 		}
 	}
-	
+
 	public StockBean() {
 		this.listaAccionesTer = new ArrayList<AccionTer>();
 		this.listaDrogas = new ArrayList<Droga>();
@@ -759,7 +892,7 @@ public class StockBean implements Serializable {
 		this.noEsMedicamento = true;
 		this.radioPrecioVenta = "$";
 	}
-	
+
 	public DTBusquedaArticulo getArticuloSeleccionado() {
 		return articuloSeleccionado;
 	}
@@ -838,22 +971,6 @@ public class StockBean implements Serializable {
 
 	public void setProveedores(Map<Integer, DTProveedor> proveedores) {
 		this.proveedores = proveedores;
-	}
-
-	public Presentacion getPresentacion() {
-		return presentacion;
-	}
-
-	public void setPresentacion(Presentacion presentacion) {
-		this.presentacion = presentacion;
-	}
-
-	public List<Presentacion> getPresentaciones() {
-		return presentaciones;
-	}
-
-	public void setPresentaciones(List<Presentacion> presentaciones) {
-		this.presentaciones = presentaciones;
 	}
 
 	public long[] getDrogasSeleccionadas() {
@@ -935,6 +1052,22 @@ public class StockBean implements Serializable {
 
 	public void setTiposIVA(List<TipoIva> tiposIVA) {
 		this.tiposIVA = tiposIVA;
+	}
+
+	public List<DTDescuentoReceta> getDescuentosReceta() {
+		return descuentosReceta;
+	}
+
+	public void setDescuentosReceta(List<DTDescuentoReceta> descuentosReceta) {
+		this.descuentosReceta = descuentosReceta;
+	}
+
+	public short getDescuentoRecetaSeleccionado() {
+		return descuentoRecetaSeleccionado;
+	}
+
+	public void setDescuentoRecetaSeleccionado(short descuentoRecetaSeleccionado) {
+		this.descuentoRecetaSeleccionado = descuentoRecetaSeleccionado;
 	}
 
 	public static long getSerialversionuid() {
