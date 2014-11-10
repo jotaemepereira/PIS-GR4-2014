@@ -53,10 +53,10 @@ public class PStockControlador implements IStockPersistencia {
 
 		String query = "INSERT INTO PRODUCTS "
 				+ "(BRAND_ID, PRODUCT_TYPE, DESCRIPTION, PRESENTATION, KEY1, KEY2, KEY3, IS_PSYCHOTROPIC, IS_NARCOTIC, IS_REFRIGERATOR, SALE_CODE, AUTHORIZATION_TYPE,"
-				+ " UNIT_PRICE, SALE_PRICE, SALE_PRICE_PORCENTAGE,LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE_ID, BARCODE, LAST_PRICE_DATE"
+				+ " UNIT_PRICE, SALE_PRICE, SALE_PRICE_PORCENTAGE, RECIPE_PRICE, RECIPE_DISCOUNT, LIST_COST, OFFER_COST, LAST_COST, AVG_COST, TAX_TYPE_ID, BARCODE, LAST_PRICE_DATE"
 				+ ", NEAREST_DUE_DATE, STOCK, MINIMUM_STOCK, USERNAME, LAST_MODIFIED, STATUS) "
 				+ " VALUES "
-				+ " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, ?, LOCALTIMESTAMP, ?) RETURNING PRODUCT_ID;";
+				+ " (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, LOCALTIMESTAMP, ?, ?, ?, ?, LOCALTIMESTAMP, ?) RETURNING PRODUCT_ID;";
 		Connection c;
 		try {
 			c = Conexion.getConnection();
@@ -89,25 +89,24 @@ public class PStockControlador implements IStockPersistencia {
 																			// Null
 				stmt.setBigDecimal(13, articulo.getPrecioUnitario());// Not Null
 				stmt.setBigDecimal(14, articulo.getPrecioVenta());// Not Null
-				stmt.setBigDecimal(15, articulo.getPorcentajePrecioVenta());// Not
-																			// Null
-				stmt.setBigDecimal(16, articulo.getCostoLista());// Not Null
-				stmt.setBigDecimal(17, articulo.getCostoOferta());// Null
-				stmt.setBigDecimal(18, articulo.getUltimoCosto());// Null
-				stmt.setBigDecimal(19, articulo.getCostoPromedio());// Null
+				stmt.setBigDecimal(15, articulo.getPorcentajePrecioVenta());// Not Null
+				stmt.setBigDecimal(16, articulo.getPrecioConReceta());// Null
+				stmt.setBigDecimal(17, articulo.getPorcentajeDescuentoReceta());// Null
+				stmt.setBigDecimal(18, articulo.getCostoLista());// Not Null
+				stmt.setBigDecimal(19, articulo.getCostoOferta());// Null
+				stmt.setBigDecimal(20, articulo.getUltimoCosto());// Null
+				stmt.setBigDecimal(21, articulo.getCostoPromedio());// Null
 				if (articulo.getTipoIva() != null) {
-					stmt.setString(20, String.valueOf(articulo.getTipoIva().getTipoIVA()));// Null
+					stmt.setString(22, String.valueOf(articulo.getTipoIva().getTipoIVA()));// Null
 				} else {
-					stmt.setNull(20, java.sql.Types.INTEGER);
+					stmt.setNull(22, java.sql.Types.CHAR);
 				}
-				stmt.setString(21, articulo.getCodigoBarras());// Null
-				stmt.setNull(22, java.sql.Types.TIMESTAMP);// Null Vencimiento
-															// Más Cercano
-				stmt.setLong(23, articulo.getStock());// Not Null
-				stmt.setLong(24, articulo.getStockMinimo());// Null
-				stmt.setString(25, articulo.getUsuario().getNombre());// Not
-																		// Null
-				stmt.setBoolean(26, true);// Not Null
+				stmt.setString(23, articulo.getCodigoBarras());// Null
+				stmt.setNull(24, java.sql.Types.TIMESTAMP);// Null Vencimiento Más Cercano
+				stmt.setLong(25, articulo.getStock());// Not Null
+				stmt.setLong(26, articulo.getStockMinimo());// Null
+				stmt.setString(27, articulo.getUsuario().getNombre());// Not Null
+				stmt.setBoolean(28, true);// Not Null
 
 				ResultSet rs = stmt.executeQuery();
 				// Obtengo la clave del nuevo artículo creado
@@ -1400,11 +1399,13 @@ public class PStockControlador implements IStockPersistencia {
 				articulo = new Articulo();
 	
 				articulo.setIdArticulo(rs.getLong("product_id"));
+				articulo.setIdMarca(rs.getInt("brand_id"));
 				String aux = rs.getString("product_type");
 				if (aux != null) {
 					articulo.setTipoArticulo(aux.charAt(0));
 				}
 				articulo.setDescripcion(rs.getString("description"));
+				articulo.setPresentacion(rs.getString("presentation"));
 				articulo.setClave1(rs.getString("key1"));
 				articulo.setClave2(rs.getString("key2"));
 				articulo.setClave3(rs.getString("key3"));
@@ -1423,11 +1424,38 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setPrecioVenta(rs.getBigDecimal("sale_price"));
 				articulo.setPorcentajePrecioVenta(rs
 						.getBigDecimal("sale_price_porcentage"));
+				BigDecimal bd = rs.getBigDecimal("recipe_price");
+				if (bd != null){
+					articulo.setPrecioConReceta(bd);
+				}else{
+					articulo.setPrecioConReceta(new BigDecimal(0));
+				}
+				bd = rs.getBigDecimal("recipe_discount");
+				if (bd != null){
+					articulo.setPorcentajeDescuentoReceta(bd);
+				}else{
+					articulo.setPorcentajeDescuentoReceta(new BigDecimal(0));
+				}
 				articulo.setCostoLista(rs.getBigDecimal("list_cost"));
-				articulo.setCostoOferta(rs.getBigDecimal("offer_cost"));
-				articulo.setUltimoCosto(rs.getBigDecimal("last_cost"));
-				articulo.setCostoPromedio(rs.getBigDecimal("avg_cost"));
-				char auxTipoIva = rs.getString("TAX_TYPE_ID").charAt(0);
+				bd = rs.getBigDecimal("offer_cost");
+				if (bd != null){
+					articulo.setCostoOferta(bd);
+				}else{
+					 articulo.setCostoOferta(new BigDecimal(0));
+				}
+				bd = rs.getBigDecimal("last_cost");
+				if (bd != null){
+					articulo.setUltimoCosto(bd);
+				}else{
+					articulo.setUltimoCosto(new BigDecimal(0));
+				}
+				bd = rs.getBigDecimal("avg_cost");
+				if (bd != null){
+					articulo.setCostoPromedio(bd);
+				}else{
+					articulo.setCostoPromedio(new BigDecimal(0));
+				}
+				char auxTipoIva = rs.getString("tax_type_id").charAt(0);
 				if (auxTipoIva != 0) {
 					TipoIva ti = new TipoIva();
 					ti.setTipoIVA(auxTipoIva);
@@ -1439,6 +1467,9 @@ public class PStockControlador implements IStockPersistencia {
 	
 					articulo.setVencimientoMasCercano(new java.util.Date(
 							timestamp.getTime()));
+				}else{
+					//Fecha mínima de java.util.Date (new Date(0L) = Thu Jan 01 01:00:00 GMT 1970)
+					articulo.setVencimientoMasCercano(new java.util.Date(0L));
 				}
 				articulo.setStock(rs.getLong("stock"));
 				articulo.setStockMinimo(rs.getLong("minimum_stock"));

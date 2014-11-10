@@ -5,6 +5,7 @@ import interfaces.ISistema;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -204,7 +205,7 @@ public class StockBean implements Serializable {
 	public void modificarArticulo(){
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (!proveedoresSeleccionados.isEmpty()) {
-			this.articuloModificado.setArticulo(articulo);
+			procesarCambios();
 		} else {
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
@@ -214,7 +215,130 @@ public class StockBean implements Serializable {
 	
 	public void cancelarModificarArticulo(){
 		refresh();
+	}
+	
+	/**
+	 * Esta operación se encarga de procesar todos los cambios del formulario con respecto al
+	 * artículo inicial. Chequea las modificaciones y marca los campos que sufrieron cambios.
+	 */
+	private void procesarCambios(){
+		articulo.setClave1Modificado(articuloSinCambios.getClave1().compareTo(articulo.getClave1()) != 0);
+		articulo.setClave2Modificado(articuloSinCambios.getClave2().compareTo(articulo.getClave2()) != 0);
+		articulo.setClave3Modificado(articuloSinCambios.getClave3().compareTo(articulo.getClave3()) != 0);
+		articulo.setCodigoBarrasModificado(articuloSinCambios.getCodigoBarras().compareTo(articulo.getCodigoBarras()) != 0);
+		articulo.setCodigoVentaModificado(articuloSinCambios.getCodigoVenta() != articulo.getCodigoVenta());
+		articulo.setCostoListaModificado(articuloSinCambios.getCostoLista().compareTo(articulo.getCostoLista()) != 0);
+		articulo.setCostoOfertaModificado(articuloSinCambios.getCostoOferta().compareTo(articulo.getCostoOferta()) != 0);
+		articulo.setCostoPromedioModificado(articuloSinCambios.getCostoPromedio().compareTo(articulo.getCostoPromedio()) != 0);
+		articulo.setDescripcionModificado(articuloSinCambios.getDescripcion().compareTo(articulo.getDescripcion()) != 0);
+		articulo.setEsEstupefacienteModificado(articuloSinCambios.isEsEstupefaciente() != articulo.isEsEstupefaciente());
+		articulo.setEsHeladeraModificado(articuloSinCambios.isEsHeladera() != articulo.isEsHeladera());
+		articulo.setEsPsicofarmacoModificado(articuloSinCambios.isEsPsicofarmaco() != articulo.isEsPsicofarmaco());
+		articulo.setIdMarcaModificado(articuloSinCambios.getIdMarca() != articulo.getIdMarca());
+		articulo.setPorcentajeDescuentoRecetaModificado(articuloSinCambios.getPorcentajeDescuentoReceta().compareTo(articulo.getPorcentajeDescuentoReceta()) != 0);
+		articulo.setPorcentajePrecioVentaModificado(articuloSinCambios.getPorcentajePrecioVenta().compareTo(articulo.getPorcentajePrecioVenta()) != 0);
+		articulo.setPrecioConRecetaModificado(articuloSinCambios.getPrecioConReceta().compareTo(articulo.getPrecioConReceta()) != 0);
+		articulo.setPrecioUnitarioModificado(articuloSinCambios.getPrecioUnitario().compareTo(articulo.getPrecioUnitario()) != 0);
+		articulo.setPrecioVentaModificado(articuloSinCambios.getPrecioVenta().compareTo(articulo.getPrecioVenta()) != 0);
+		articulo.setPresentacionModificado(articuloSinCambios.getPresentacion().compareTo(articulo.getPresentacion()) != 0);
+		articulo.setStockMinimoModificado(articuloSinCambios.getStockMinimo() != articulo.getStockMinimo());
+		articulo.setTipoArticuloModificado(articuloSinCambios.getTipoArticulo() != articulo.getTipoArticulo());
+		articulo.setTipoAutorizacionModificado(articuloSinCambios.getTipoAutorizacion() != articulo.getTipoAutorizacion());
+		articulo.setTipoIvaModificado(articuloSinCambios.getTipoIva().getTipoIVA() != articulo.getTipoIva().getTipoIVA());
+		articulo.setUltimoCostoModificado(articuloSinCambios.getUltimoCosto().compareTo(articulo.getUltimoCosto()) != 0);
+		articulo.setUsuarioModificado(articuloSinCambios.getUsuario().getNombre().compareTo(instanciaSistema.obtenerUsuarioLogueado().getNombre()) != 0);
+		articulo.setVencimientoMasCercanoModificado(articuloSinCambios.getVencimientoMasCercano().compareTo(articulo.getVencimientoMasCercano()) != 0);
+		//Chequeo cambios en drogas
+		procesarDrogas();
+		//Chequeo cambios en acciones terapeuticas
+		procesarAccionesTer();
+		this.articuloModificado.setArticulo(articulo);	
+	}
+	
+	/**
+	 * Esta operación se encarga de chequear los cambios en las drogas para la modificación
+	 * cargando en el articuloModificado los array de drogas como corresponda
+	 */
+	private void procesarDrogas(){
+		if (articulo.getTipoArticulo() == Enumerados.tipoArticulo.MEDICAMENTO){
+			//Me fijo para cada droga del articulo actual si la misma ya existia
+			//en caso de no existir es una droga nueva seleccionada entonces la
+			//agrego a la lista de nuevasDrogas
+			for(long droga : articulo.getDrogas()){
+				if (!existeIdEnArray(droga, articuloSinCambios.getDrogas())){
+					articuloModificado.getDrogasNuevas().add(droga);
+					//Marco que hay cambios en las drogas
+					articulo.setDrogasModificado(true);
+				}
+			}
+			//Me fijo para cada droga del articulo sin cambios si la misma existe
+			//en el articulo actual, en caso de no existir es porque no está mas
+			//seleccionada entonces la agrego a la lista de drogasABorrar
+			for(long droga : articuloSinCambios.getDrogas()){
+				if (!existeIdEnArray(droga, articulo.getDrogas())){
+					articuloModificado.getDrogasABorrar().add(droga);
+					//Marco que hay cambios en las drogas
+					articulo.setDrogasModificado(true);
+				}
+			}
+		}
+		//Si no es medicamento no puede tener drogas. Si tenía se sacan
+		else {
+			for(long droga : articuloSinCambios.getDrogas()){
+				articuloModificado.getDrogasABorrar().add(droga);
+				//Marco que hay cambios en las drogas
+				articulo.setDrogasModificado(true);
+			}
+		}
 	}	
+	
+	/**
+	 * Esta operación se encarga de chequear los cambios en las acciones terapeuticas para la modificación
+	 * cargando en el articuloModificado los array de drogas como corresponda
+	 */
+	private void procesarAccionesTer(){
+		if (articulo.getTipoArticulo() == Enumerados.tipoArticulo.MEDICAMENTO){
+			//Me fijo para cada accionTer del articulo actual si la misma ya existia
+			//en caso de no existir es una accionTer nueva seleccionada entonces la
+			//agrego a la lista de nuevasAccionesTer
+			for(long accionTer : articulo.getAccionesTer()){
+				if (!existeIdEnArray(accionTer, articuloSinCambios.getAccionesTer())){
+					articuloModificado.getAccionesTerNuevas().add(accionTer);
+					//Marco que hay cambios en las acciones terapeuticas
+					articulo.setAccionesTerModificado(true);
+				}
+			}
+			//Me fijo para cada accionTer del articulo sin cambios si la misma existe
+			//en el articulo actual, en caso de no existir es porque no está mas
+			//seleccionada entonces la agrego a la lista de accionesTerABorrar
+			for(long accionTer : articuloSinCambios.getAccionesTer()){
+				if (!existeIdEnArray(accionTer, articulo.getAccionesTer())){
+					articuloModificado.getAccionesTerABorrar().add(accionTer);
+					//Marco que hay cambios en las acciones terapeuticas
+					articulo.setAccionesTerModificado(true);
+				}
+			}
+		}
+		//Si no es medicamento no puede tener acciones terapeuticas. Si tenía se sacan
+		else{
+			for(long accionTer : articuloSinCambios.getAccionesTer()){
+				articuloModificado.getAccionesTerABorrar().add(accionTer);
+				//Marco que hay cambios en las acciones terapeuticas
+				articulo.setAccionesTerModificado(true);
+			}
+		}
+	}
+	
+	private boolean existeIdEnArray(long id, long[] array){
+		boolean ret = false;
+		int i = 0;
+		int len = array.length;
+		while (!ret && i < len){			
+			ret = id == array[i];
+			i++;
+		}		
+		return ret;
+	}
 	
 	/* Manejo del componente wizard en modificarArticulo.xhtml */
 	public String onFlowProcess(FlowEvent event) {
