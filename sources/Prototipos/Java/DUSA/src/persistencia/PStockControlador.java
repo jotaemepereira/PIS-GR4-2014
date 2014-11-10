@@ -1598,6 +1598,31 @@ public class PStockControlador implements IStockPersistencia {
 	public void modificarPreciosDeArticulo(Map<Long, Integer> preciosModificados)
 			throws Excepciones {
 		// TODO Auto-generated method stub
-		
+		PreparedStatement stmt = null;
+		/*try {
+			Connection c = Conexion.getConnection();
+			for (Map.Entry<Long, Integer> entry : map.entrySet())
+			{
+			    System.out.println(entry.getKey() + "/" + entry.getValue());
+			}
+			String  query = "UPDATE products SET stock = stock + ?, last_cost = ? ";
+					query += "WHERE product_id = ?;";
+					
+			while (it.hasNext()) {
+				OrdenDetalle ordenDetalle = (OrdenDetalle) it.next();
+				stmt = c.prepareStatement(query);
+				stmt.setInt(1, ordenDetalle.getCantidad());
+				stmt.setBigDecimal(2, ordenDetalle.getPrecioUnitario());
+				stmt.setLong(3, ordenDetalle.getProductId());
+				
+				stmt.executeUpdate();
+				stmt.close();
+			}
+
+			c.close();
+		} catch (Exception e) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		} */
 	}
 }

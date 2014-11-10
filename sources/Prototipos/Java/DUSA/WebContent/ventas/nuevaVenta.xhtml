@@ -128,8 +128,7 @@
 											</p:dataTable>
 
 										</div>
-										<!-- 		<div
-											style="float: left; width: 70%; margin-left: 25px; min-width: 500px;"> -->
+
 										<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
 
 											<div style="margin-bottom: 2px">
@@ -150,8 +149,14 @@
 												<p:column headerText="Cantidad" style="text-align: center;">
 													<p:inputText id="cantidad" value="#{venta2.cantidad}"
 														style="width:40px;">
-														<p:ajax listener="#{ventaBean.calcularTotales()}"
-															update=":form1" process="@this" />
+														<p:ajax listener="#{ventaBean.strTotal()}"
+															update="GridVentas2 :form1:total" process="@this" />
+														<p:ajax listener="#{ventaBean.strIva()}"
+															update="GridVentas2 :form1:iva" process="@this" />
+														<p:ajax listener="#{ventaBean.strSubTotal()}"
+															update="GridVentas2 :form1:subTotal" process="@this" />
+														<p:ajax listener="#{ventaBean.strDescuentoPrecio()}"
+															update="@form" process="@this" />
 													</p:inputText>
 												</p:column>
 												<p:column headerText="Descripcion"
@@ -167,7 +172,7 @@
 												</p:column>
 												<p:column headerText="Precio Descuento"
 													style="text-align: center;">
-													<h:outputText value="%#{venta2.descuento}" />
+													<h:outputText value="#{venta2.totalPrecioLinea}" />
 												</p:column>
 
 												<p:column headerText=" " style="text-align: center;">
@@ -181,46 +186,30 @@
 											</p:dataTable>
 
 											<div>
-												<table class="tablaDetalleVenta"
-													style="float: left; text-align: left; width: 250px;">
+												<table style="float: left; text-align: left; width: 250px;">
 													<tr>
 														<td style="font-weight: bold;">SubTotal:</td>
-														<td>$ <h:outputText id="subTotal"
-																value=" #{ventaBean.subtotal}">
-																<f:convertNumber maxFractionDigits="2"
-																	minFractionDigits="2" />
-															</h:outputText></td>
+														<td><h:outputText id="subTotal"
+																value=" #{ventaBean.strSubTotal()}"></h:outputText></td>
 													</tr>
+
 													<tr>
-														<td style="font-weight: bold;">IVA 10%:</td>
-														<td>$ <h:outputText id="iva10"
-																value=" #{ventaBean.iva10}">
-																<f:convertNumber maxFractionDigits="2"
-																	minFractionDigits="2" />
+														<td style="font-weight: bold;">Iva:</td>
+														<td><h:outputText id="iva"
+																value=" #{ventaBean.strIva()}">
 															</h:outputText></td>
 													</tr>
-													<tr>
-														<td style="font-weight: bold;">IVA 22%:</td>
-														<td>$ <h:outputText id="iva22"
-																value=" #{ventaBean.iva22}">
-																<f:convertNumber maxFractionDigits="2"
-																	minFractionDigits="2" />
-															</h:outputText></td>
-													</tr>
+
 													<tr>
 														<td style="font-weight: bold;">Descuentos:</td>
-														<td>$ <h:outputText id="descuentos"
-																value=" #{ventaBean.descuento}">
-																<f:convertNumber maxFractionDigits="2"
-																	minFractionDigits="2" />
+														<td><h:outputText id="descuentos"
+																value=" #{ventaBean.strDescuentos()}">
 															</h:outputText></td>
 													</tr>
 													<tr>
 														<td style="font-weight: bold;">Total:</td>
-														<td>$ <h:outputText id="total"
-																value=" #{ventaBean.total}">
-																<f:convertNumber maxFractionDigits="2"
-																	minFractionDigits="2" />
+														<td><h:outputText id="total"
+																value=" #{ventaBean.strTotal()}">
 															</h:outputText></td>
 													</tr>
 												</table>
@@ -312,13 +301,14 @@
 							<f:selectItem itemLabel="5% descuento" itemValue="5" />
 							<f:selectItem itemLabel="10% descuento" itemValue="10" />
 							<f:selectItem itemLabel="15% descuento" itemValue="15" />
+							<f:ajax event="change" execute="@this" />
 						</p:selectOneMenu>
 					</p:outputPanel>
 
 					<p:outputPanel style=" padding: 0; margin: 0;">
-						<p:outputLabel for="descuentoo" value="Descuento manual (%) :"
+						<p:outputLabel for="descuento" value="Descuento manual (%) :"
 							style="width:100%" />
-						<p:inputText id="descuentoo"
+						<p:inputText id="descuento"
 							value="#{ventaBean.articuloSeleccionado.descuento}"
 							style="width:50%">
 							<f:ajax event="change" execute="@this" />
@@ -327,9 +317,10 @@
 				</p:panelGrid>
 				<p:commandButton value="Agregar" update=":form1"
 					actionListener="#{ventaBean.agregarLineaVenta()}"
-					process="@this,descuentoo,cant,descImportantes"
+					process="@this,descuento,cant,descImportantes"
 					styleClass="btn btn-default pull-right"
 					oncomplete="PF('ventaDialog').hide()" icon="ui-icon-check">
+
 				</p:commandButton>
 			</h:form>
 		</p:dialog>
