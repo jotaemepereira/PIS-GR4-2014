@@ -1142,6 +1142,12 @@ public class PStockControlador implements IStockPersistencia {
 		if (articulo.isPorcentajePrecioVentaModificado()) {
 			query += "SALE_PRICE_PORCENTAGE = :sale_price_porcentage, ";
 		}
+		if (articulo.isPrecioConRecetaModificado()) {
+			query += "RECIPE_PRICE = :recipe_price, ";
+		}
+		if (articulo.isPorcentajeDescuentoRecetaModificado()) {
+			query += "RECIPE_DISCOUNT = :recipe_discount, ";
+		}
 		if (articulo.isCostoListaModificado()) {
 			query += "LIST_COST = :list_cost, ";
 		}
@@ -1238,6 +1244,12 @@ public class PStockControlador implements IStockPersistencia {
 				if (articulo.isPorcentajePrecioVentaModificado()) {
 					stmt.setBigDecimal("sale_price_porcentage",
 							articulo.getPorcentajePrecioVenta());
+				}
+				if (articulo.isPrecioConRecetaModificado()) {
+					stmt.setBigDecimal("recipe_price", articulo.getPrecioConReceta());
+				}
+				if (articulo.isPorcentajeDescuentoRecetaModificado()) {
+					stmt.setBigDecimal("recipe_discount", articulo.getPorcentajeDescuentoReceta());
 				}
 				if (articulo.isCostoListaModificado()) {
 					stmt.setBigDecimal("list_cost", articulo.getCostoLista());

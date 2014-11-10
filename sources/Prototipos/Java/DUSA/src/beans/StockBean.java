@@ -333,7 +333,7 @@ public class StockBean implements Serializable {
 				// si todo bien aviso y vacio el formulario
 				context.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_INFO,
-						Excepciones.MENSAJE_OK_ALTA, ""));
+						Excepciones.MENSAJE_OK_MODIFICACION, ""));
 				this.articulo = new Articulo();
 				this.proveedoresSeleccionados = new ArrayList<DTProveedor>();
 				this.proveedor = 0;
