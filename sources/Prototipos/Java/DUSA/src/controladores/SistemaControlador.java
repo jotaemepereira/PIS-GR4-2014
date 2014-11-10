@@ -104,11 +104,11 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones {
-		// TODO chequeo permisos del usuario
-		//if (user.tienePermiso(casoDeUso.buscarArticulo))
-		return FabricaLogica.getIStock().buscarArticulos(busqueda, proveedor);
-		//else
-		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		
+		if (user.tienePermiso(casoDeUso.buscarArticulo))
+			return FabricaLogica.getIStock().buscarArticulos(busqueda, proveedor);
+		else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 
 	}
 	
@@ -264,13 +264,20 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public void ingresarFacturaCompra(Orden orden) throws Excepciones {
-		// TODO Auto-generated method stub
-		FabricaLogica.getInstanciaCompras().ingresarFacturaCompra(orden);
+		
+		if (user.tienePermiso(casoDeUso.ingresarFacturaCompra))
+			FabricaLogica.getInstanciaCompras().ingresarFacturaCompra(orden);
+		else
+			throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
 	}
 
 	@Override
 	public Map<Integer, DTTiposDGI> obtenerTiposDGI() throws Excepciones {
-		return FabricaLogica.getInstanciaCompras().obtenerTiposDGI();
+		
+		if (user.tienePermiso(casoDeUso.obtenerTiposDGI))
+			return FabricaLogica.getInstanciaCompras().obtenerTiposDGI();
+		else
+			throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
 	}
 
 	@Override
