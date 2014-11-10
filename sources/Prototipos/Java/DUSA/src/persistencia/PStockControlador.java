@@ -1,12 +1,9 @@
 package persistencia;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,9 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.naming.NamingException;
-
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -24,11 +19,8 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.primefaces.json.JSONObject;
-
 import Util.NamedParameterStatement;
 import controladores.Excepciones;
-import controladores.FabricaPersistencia;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTProveedor;

@@ -13,6 +13,8 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.naming.NamingException;
+
 import controladores.Excepciones;
 import datatypes.DTVenta;
 import model.Articulo;
@@ -27,7 +29,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 
 	@Override
 	public List<Venta> listarVentasPendientes() throws Excepciones {
-		
+
 		try {
 			Connection con = Conexion.getConnection();
 			Statement st = con.createStatement();
@@ -75,12 +77,14 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 						v.setTipoDgi(rs.getInt("sale_dgi_type"));
 						v.setSerial(rs.getString("serial"));
 						v.setFormaDePago(rs.getString("payment_type"));
-						v.setMontoNoGravado(rs.getBigDecimal("not_taxed_amount"));
+						v.setMontoNoGravado(rs
+								.getBigDecimal("not_taxed_amount"));
 						v.setMontoNetoGravadoIvaMinimo(rs
 								.getBigDecimal("taxed_minimum_net_amount"));
 						v.setMontoNetoGravadoIvaBasico(rs
 								.getBigDecimal("taxed_basic_net_amount"));
-						v.setTotalIvaMinimo(rs.getBigDecimal("minimum_tax_total"));
+						v.setTotalIvaMinimo(rs
+								.getBigDecimal("minimum_tax_total"));
 						v.setTotalIvaBasico(rs.getBigDecimal("basic_tax_total"));
 						v.setMontoTotal(rs.getBigDecimal("total_amount"));
 						v.setMontoRetenidoIVA(rs
@@ -131,17 +135,19 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				}
 				return ret;
 			} catch (Exception e) {
-				
+
 				e.printStackTrace();
-				throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+				throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+						Excepciones.ERROR_SISTEMA);
 			} finally {
 				st.close();
 				con.close();
 			}
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
-			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA);
 		}
 	}
 
@@ -152,8 +158,9 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			Statement st = con.createStatement();
 			try {
 				String sqlUpdate = "UPDATE sales SET sale_status = '"
-						+ Enumerados.EstadoVenta.CANCELADA + "'  WHERE sale_id = "
-						+ ventaId + " AND sale_status = '"
+						+ Enumerados.EstadoVenta.CANCELADA
+						+ "'  WHERE sale_id = " + ventaId
+						+ " AND sale_status = '"
 						+ Enumerados.EstadoVenta.PENDIENTE + "'";
 				st.executeUpdate(sqlUpdate);
 			} catch (Exception e) {
@@ -163,14 +170,15 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				con.close();
 			}
 		} catch (Exception e) {
-			
-			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA);
 		}
 	}
 
 	@Override
 	public Venta facturarVenta(long ventaId) throws Excepciones {
-		
+
 		try {
 			Connection con = Conexion.getConnection();
 			con.setAutoCommit(false);
@@ -178,8 +186,9 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			try {
 
 				String sqlUpdate = "UPDATE sales SET sale_status = '"
-						+ Enumerados.EstadoVenta.FACTURADA + "'  WHERE sale_id = "
-						+ ventaId + " " + "AND sale_status = '"
+						+ Enumerados.EstadoVenta.FACTURADA
+						+ "'  WHERE sale_id = " + ventaId + " "
+						+ "AND sale_status = '"
 						+ Enumerados.EstadoVenta.PENDIENTE + "'";
 				int modQty = st.executeUpdate(sqlUpdate);
 
@@ -231,12 +240,14 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 						v.setTipoDgi(rs.getInt("sale_dgi_type"));
 						v.setSerial(rs.getString("serial"));
 						v.setFormaDePago(rs.getString("payment_type"));
-						v.setMontoNoGravado(rs.getBigDecimal("not_taxed_amount"));
+						v.setMontoNoGravado(rs
+								.getBigDecimal("not_taxed_amount"));
 						v.setMontoNetoGravadoIvaMinimo(rs
 								.getBigDecimal("taxed_minimum_net_amount"));
 						v.setMontoNetoGravadoIvaBasico(rs
 								.getBigDecimal("taxed_basic_net_amount"));
-						v.setTotalIvaMinimo(rs.getBigDecimal("minimum_tax_total"));
+						v.setTotalIvaMinimo(rs
+								.getBigDecimal("minimum_tax_total"));
 						v.setTotalIvaBasico(rs.getBigDecimal("basic_tax_total"));
 						v.setMontoTotal(rs.getBigDecimal("total_amount"));
 						v.setMontoRetenidoIVA(rs
@@ -292,11 +303,12 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				st.close();
 				con.close();
 			}
-			
+
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
-			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA);
 		}
 	}
 

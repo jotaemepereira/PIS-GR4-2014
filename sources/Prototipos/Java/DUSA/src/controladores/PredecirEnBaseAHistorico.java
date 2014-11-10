@@ -90,7 +90,10 @@ public class PredecirEnBaseAHistorico implements IPredictor{
 		double cantidaPredecida = P1 * cantPredecidaMinimosCuadrados + P2 * cantPromVendidaAniosAnt;
 		
 		long minStock = st.getStockMinimo(idArticulo);
+		
 		int cantAPedir = (int) Math.ceil(Math.max(cantidaPredecida, minStock) - st.getStock(idArticulo));
+		
+		System.out.println("SALE");
 		
 		if (cantAPedir < 0)
 			return 0;
