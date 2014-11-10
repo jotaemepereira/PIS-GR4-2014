@@ -96,8 +96,12 @@ public class StockBean implements Serializable {
 	private DTBusquedaArticulo articuloSeleccionado;
 	private DTProveedor proveedorSeleccionado;
 
-	/* Operaciones para Alta de Artículo */
+	// Busqueda de proveedores
+	private String busquedaProveedor = "";
+	private List<Articulo> articulosDelProveedor;
 	
+	/* Operaciones para Alta de Artículo */
+
 	public void altaArticulo() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (!proveedoresSeleccionados.isEmpty()) {
@@ -274,6 +278,28 @@ public class StockBean implements Serializable {
 	
 	/* Fin Operaciones para Modificación de Artículo */
 
+	
+	/* Modificar precio de articulos */
+	
+	public void buscarProveedores() {
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		if (busquedaProveedor.equals("")) {
+			return;
+		}
+		
+		articulosDelProveedor = new ArrayList<Articulo>();
+		long idProveedor = Long.parseLong(busquedaProveedor);
+		
+		try {
+			articulosDelProveedor = this.instanciaSistema.
+					obtenerArticulosDelProveedor(idProveedor);
+		}
+		catch (Excepciones e) {
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+		}
+	}
 	/* Operaciones de la tabla de proveedores tanto para el Alta como la Modificación */
 	
 	public void agregarProveedor() {
@@ -692,5 +718,21 @@ public class StockBean implements Serializable {
 
 	public void setBusqueda(String busqueda) {
 		this.busqueda = busqueda;
+	}
+	
+	public String getBusquedaProveedor() {
+		return busquedaProveedor;
+	}
+
+	public void setBusquedaProveedor(String busquedaProveedor) {
+		this.busquedaProveedor = busquedaProveedor;
+	}
+	
+	public List<Articulo> getArticulosDelProveedor() {
+		return articulosDelProveedor;
+	}
+
+	public void setArticulosDelProveedor(List<Articulo> articulosDelProveedor) {
+		this.articulosDelProveedor = articulosDelProveedor;
 	}
 }

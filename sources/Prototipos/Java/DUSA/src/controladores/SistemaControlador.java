@@ -302,4 +302,10 @@ public class SistemaControlador implements ISistema {
 		
 	}
 
+	@Override
+	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor)
+			throws Excepciones {
+	 return FabricaLogica.getIStock().obtenerArticulosDelProveedor(idProveedor);
+	}
+
 }

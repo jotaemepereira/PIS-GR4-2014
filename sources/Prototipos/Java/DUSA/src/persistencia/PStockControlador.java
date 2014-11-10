@@ -1532,7 +1532,7 @@ public class PStockControlador implements IStockPersistencia {
 			throws Excepciones {
 		// TODO Traer todos los articulos del proveedor
 		PreparedStatement stmt = null;
-		List<Integer> listaArticulos;
+		List<Long> listaArticulos;
 		try {
 			Connection c = Conexion.getConnection();
 			String  query = "SELECT * FROM products_suppliers "
@@ -1542,9 +1542,9 @@ public class PStockControlador implements IStockPersistencia {
 			ResultSet rs = stmt.executeQuery();
 			// Obtengo los productos que vende ese proveedor 
 			// y los guardo en una lista de integers
-			listaArticulos = new ArrayList<Integer>();
+			listaArticulos = new ArrayList<Long>();
 			while (rs.next()) {
-				listaArticulos.add(rs.getInt("product_id"));
+				listaArticulos.add(rs.getLong("product_id"));
 			}
 			rs.close();
 			stmt.close();
@@ -1556,8 +1556,8 @@ public class PStockControlador implements IStockPersistencia {
 		
 		List<Articulo> returnArticulos = new ArrayList<Articulo>();
 		// Obtengo los articulos desde la función obtenerArticulo
-		for (int item : listaArticulos) {
-			returnArticulos.add(obtenerArticulo(item));
+		for (long item : listaArticulos) {
+			returnArticulos.add(obtenerArticuloConId(item));
 		}
 		
 		return returnArticulos;
@@ -1568,21 +1568,15 @@ public class PStockControlador implements IStockPersistencia {
 			throws Excepciones {
 		// TODO Auto-generated method stub
 		PreparedStatement stmt = null;
-		/*try {
+		try {
 			Connection c = Conexion.getConnection();
-			for (Map.Entry<Long, Integer> entry : map.entrySet())
+			for (Map.Entry<Long, Integer> entry : preciosModificados.entrySet())
 			{
-			    System.out.println(entry.getKey() + "/" + entry.getValue());
-			}
-			String  query = "UPDATE products SET stock = stock + ?, last_cost = ? ";
-					query += "WHERE product_id = ?;";
-					
-			while (it.hasNext()) {
-				OrdenDetalle ordenDetalle = (OrdenDetalle) it.next();
+				String  query = "UPDATE products SET sale_price = ? ";
+				query += "WHERE product_id = ?;";
 				stmt = c.prepareStatement(query);
-				stmt.setInt(1, ordenDetalle.getCantidad());
-				stmt.setBigDecimal(2, ordenDetalle.getPrecioUnitario());
-				stmt.setLong(3, ordenDetalle.getProductId());
+				stmt.setLong(1, entry.getKey());
+				stmt.setInt(2, entry.getValue());
 				
 				stmt.executeUpdate();
 				stmt.close();
@@ -1592,6 +1586,6 @@ public class PStockControlador implements IStockPersistencia {
 		} catch (Exception e) {
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
-		} */
+		}
 	}
 }

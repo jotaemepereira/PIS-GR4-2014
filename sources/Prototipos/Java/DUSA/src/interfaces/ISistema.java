@@ -298,4 +298,12 @@ public interface ISistema {
 	 * @throws Excepciones
 	 */
 	public void cancelarVentaPendiente(long idVenta) throws Excepciones;
+	
+	/**
+	 * Obtener los articulos del proveedor
+	 * @author Juanma
+	 * @param id del proveedor
+	 * @throws Excepciones
+	 * */
+	 public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
 }
