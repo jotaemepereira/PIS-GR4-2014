@@ -68,6 +68,13 @@
 														value="Detallar" title="Detallar" />
 
 												</p:column>
+												
+												<p:column rendered="#{!facturacionBean.facturacionControlada}" style="text-align: center;width: 150px;">
+													<p:commandButton id="facturarEnLista" update=":form1"
+														actionListener="#{facturacionBean.facturarVenta(venta.ventaId)}" ajax="true"
+														value="Facturar" title="Facturar" />
+
+												</p:column>
 
 											</p:dataTable>
 										</div>
