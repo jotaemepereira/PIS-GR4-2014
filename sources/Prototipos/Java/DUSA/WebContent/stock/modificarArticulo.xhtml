@@ -331,10 +331,10 @@
 																		actionListener="#{stockBean.agregarProveedor}"
 																		styleClass="btn btn-info"
 																		process="@this,codigoIdentificador" />
-<!-- 																	<p:commandButton value="Editar" -->
-<!-- 																		update="msgs codigoIdentificador proveedor tablaProveedores" -->
-<!-- 																		validateClient="true" styleClass="btn btn-warning" -->
-<!-- 																		process="@this, tablaProveedores" /> -->
+																	<!-- 																	<p:commandButton value="Editar" -->
+																	<!-- 																		update="msgs codigoIdentificador proveedor tablaProveedores" -->
+																	<!-- 																		validateClient="true" styleClass="btn btn-warning" -->
+																	<!-- 																		process="@this, tablaProveedores" /> -->
 																	<p:commandButton value="Eliminar"
 																		update="msgs codigoIdentificador proveedor tablaProveedores"
 																		validateClient="true"
@@ -436,30 +436,31 @@
 												<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
 													<p:outputLabel for="costoLista" value="Costo de lista ($):" />
 													<p:inputText id="costoLista" styleClass="form-control"
-														value="#{stockBean.articulo.costoLista}"
+														maxlength="10" value="#{stockBean.articulo.costoLista}"
 														converterMessage="Dato Inválido."
 														requiredMessage="Dato Requerido." style="height: 100%"
 														required="true">
-														<f:convertNumber type="number" maxIntegerDigits="12"
+														<f:convertNumber type="number" maxIntegerDigits="10"
 															maxFractionDigits="2" locale="es_UY" />
 													</p:inputText>
 													<p:message for="costoLista" display="text" />
 												</div>
 												<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
 													<p:outputLabel for="costoReal" value="Costo real ($):" />
-													<p:inputText id="costoReal" styleClass="form-control"
+													<p:inputText id="costoReal" styleClass="form-control" maxlength="10"
 														value="#{stockBean.articulo.ultimoCosto}"
 														converterMessage="Dato Inválido."
 														requiredMessage="Dato Requerido." style="height: 100%"
 														required="true">
-														<f:convertNumber type="number" />
+														<f:convertNumber type="number" maxIntegerDigits="10"
+															maxFractionDigits="2" locale="es_UY" />
 													</p:inputText>
 													<p:message for="costoReal" />
 												</div>
 												<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
 													<p:outputLabel for="costoOferta"
 														value="Costo de oferta ($):" />
-													<p:inputText id="costoOferta" styleClass="form-control"
+													<p:inputText id="costoOferta" styleClass="form-control" maxlength="10"
 														value="#{stockBean.articulo.costoOferta}"
 														converterMessage="Dato Inválido."
 														requiredMessage="Dato Requerido." style="height: 100%"
@@ -472,7 +473,7 @@
 												<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
 													<p:outputLabel for="costoPromedio"
 														value="Costo promedio ($):" />
-													<p:inputText id="costoPromedio" styleClass="form-control"
+													<p:inputText id="costoPromedio" styleClass="form-control" maxlength="10"
 														value="#{stockBean.articulo.costoPromedio}"
 														converterMessage="Dato Inválido."
 														requiredMessage="Dato Requerido." style="height: 100%"
@@ -489,11 +490,12 @@
 													<p:outputLabel for="precioPublico"
 														value="Precio público ($):" />
 													<p:inputText id="precioPublico" styleClass="form-control"
+														maxlength="10"
 														value="#{stockBean.articulo.precioUnitario}"
 														converterMessage="Dato Inválido."
 														requiredMessage="Dato Requerido." style="height: 100%"
 														required="true">
-														<f:convertNumber type="number" maxIntegerDigits="12"
+														<f:convertNumber type="number" maxIntegerDigits="10"
 															maxFractionDigits="2" locale="es_UY" />
 													</p:inputText>
 													<p:message for="precioPublico" display="text" />
@@ -510,22 +512,22 @@
 														<p:radioButton id="opt1" for="radioPrecioVenta"
 															itemIndex="0" />
 														<h:outputLabel for="opt1" value=" Precio de venta ($)" />
-													</div>													
+													</div>
 												</div>
 												<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 													<p:outputLabel for="precioVenta"
 														value="Precio de venta ($):" />
 													<p:inputText id="precioVenta" styleClass="form-control"
-														value="#{stockBean.articulo.precioVenta}"
+														maxlength="10" value="#{stockBean.articulo.precioVenta}"
 														converterMessage="Dato Inválido." style="height: 100%"
 														disabled="#{stockBean.radioPrecioVenta != '$'}">
-														<f:convertNumber type="number" maxIntegerDigits="12"
+														<f:convertNumber type="number" maxIntegerDigits="10"
 															maxFractionDigits="2" locale="es_UY" />
 													</p:inputText>
-													<p:message for="precioVenta" display="text" />													
+													<p:message for="precioVenta" display="text" />
 												</div>
 											</div>
-											
+
 											<div class="row" style="margin-bottom: 1%;">
 												<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
 													<div class="row">
@@ -569,23 +571,24 @@
 													<p:message for="porcentajePrecioVenta" display="text" />
 												</div>
 											</div>
-											
+
 											<div class="row" style="margin-bottom: 1%;">
 												<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
 													<div class="row">
 														<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-															<p:outputLabel for="descuentoReceta" value="Descuento con receta:" />
+															<p:outputLabel for="descuentoReceta"
+																value="Descuento con receta:" />
 														</div>
 													</div>
 													<div class="row">
 														<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 															<p:selectOneMenu id="descuentoReceta"
-																value="#{stockBean.descuentoRecetaSeleccionado}"																
+																value="#{stockBean.descuentoRecetaSeleccionado}"
 																disabled="#{stockBean.noEsMedicamento}">
 																<f:selectItem itemLabel="Seleccione porcentaje"
 																	itemValue="#{null}" />
-																<f:selectItems value="#{stockBean.descuentosReceta}" var="f"
-																	itemLabel="#{f.descripcion}"
+																<f:selectItems value="#{stockBean.descuentosReceta}"
+																	var="f" itemLabel="#{f.descripcion}"
 																	itemValue="#{f.tipoDescuento}" />
 															</p:selectOneMenu>
 															<p:message for="descuentoReceta" display="text" />
