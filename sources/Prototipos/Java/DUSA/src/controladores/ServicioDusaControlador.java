@@ -89,7 +89,8 @@ public class ServicioDusaControlador implements IServicio {
 		articulo.setPorcentajePrecioVenta(new BigDecimal(0));
 		articulo.setPrecioVenta(productoDT.getPrecioVenta());
 		//articulo.setPresentacion();
-		//articulo.setStatus();
+		articulo.setStatus((productoDT.getHabilitado() > 1) ? true : false);
+		System.out.println("ServicioDusaControlador" +articulo.isStatus());
 		//articulo.setStock();
 		//articulo.setStockMinimo();
 		//articulo.setTipoAutorizacion();
