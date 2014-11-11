@@ -38,6 +38,21 @@ import model.Usuario;
 import interfaces.IStockPersistencia;
 
 public class PStockControlador implements IStockPersistencia {
+	
+	Connection c;
+	
+	public PStockControlador() {
+		try {
+			c = Conexion.getConnection();
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 
 	@Override
 	public void persistirArticulo(Articulo articulo) throws Excepciones {
@@ -557,7 +572,7 @@ public class PStockControlador implements IStockPersistencia {
 				+ idArticulo + ";";
 		try {
 
-			Connection c = Conexion.getConnection();
+//			Connection c = Conexion.getConnection();
 			PreparedStatement stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 
@@ -567,7 +582,7 @@ public class PStockControlador implements IStockPersistencia {
 
 			rs.close();
 			stmt.close();
-			c.close();
+//			c.close();
 		} catch (Exception e) {
 			// Excepcion personalizada
 			e.printStackTrace();
@@ -593,7 +608,7 @@ public class PStockControlador implements IStockPersistencia {
 		int ret = 0;
 		try {
 
-			Connection c = Conexion.getConnection();
+//			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -602,7 +617,7 @@ public class PStockControlador implements IStockPersistencia {
 			}
 			rs.close();
 			stmt.close();
-			c.close();
+//			c.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
@@ -697,7 +712,7 @@ public class PStockControlador implements IStockPersistencia {
 
 		try {
 
-			Connection c = Conexion.getConnection();
+//			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			stmt.setInt(1, Enumerados.infoDUSA.proveedorID);
 			stmt.setBoolean(2, true);
@@ -710,7 +725,7 @@ public class PStockControlador implements IStockPersistencia {
 
 			rs.close();
 			stmt.close();
-			c.close();
+//			c.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
