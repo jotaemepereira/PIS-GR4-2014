@@ -34,6 +34,7 @@ import persistencia.PStockControlador;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProduct;
 import datatypes.DTProveedor;
 import datatypes.DTVenta;
@@ -364,7 +365,7 @@ public class StockControlador implements IStock {
 	}
 
 	@Override
-	public void modificarArticulo(Articulo articulo) throws Excepciones {
+	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones {
 		FabricaPersistencia.getStockPersistencia().modificarArticulo(articulo);
 
 	}
@@ -390,6 +391,15 @@ public class StockControlador implements IStock {
 		// TODO Auto-generated method stub
 		return FabricaPersistencia.getStockPersistencia().
 				obtenerArticulosDelProveedor(idProveedor);
+		
+	}
+
+	@Override
+	public void modificarPreciodeArticulos(Map<Long, Integer> preciosModificados)
+			throws Excepciones {
+		// TODO Auto-generated method stub
+		FabricaPersistencia.getStockPersistencia().
+			modificarPreciosDeArticulo(preciosModificados);
 		
 	}
 	

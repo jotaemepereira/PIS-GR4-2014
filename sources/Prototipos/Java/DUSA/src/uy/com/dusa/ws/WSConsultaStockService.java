@@ -69,7 +69,6 @@ public class WSConsultaStockService
      */
     @WebEndpoint(name = "WSConsultaStockPort")
     public WSConsultaStock getWSConsultaStockPort() {
-    
         return super.getPort(new QName("http://ws.dusa.com.uy/", "WSConsultaStockPort"), WSConsultaStock.class);
     }
 

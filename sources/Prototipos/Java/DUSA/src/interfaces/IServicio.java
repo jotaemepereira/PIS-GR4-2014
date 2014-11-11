@@ -37,4 +37,13 @@ public interface IServicio {
 	 * @author Victoria Díaz
 	 */
 	public void obtenerFacturasDUSA() throws Excepciones;
+	
+	/**
+	 * Trae la información de un determinado producto según su numero de producto
+	 * 
+	 * @param numeroArticulo
+	 * @author Victoria Díaz
+	 * @return el artículo devuelto por el ws
+	 */
+	public Articulo obtenerArticulo(int numeroArticulo);
 }

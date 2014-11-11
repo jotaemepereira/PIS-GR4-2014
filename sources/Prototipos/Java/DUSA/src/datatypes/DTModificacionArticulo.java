@@ -10,15 +10,19 @@ public class DTModificacionArticulo {
 	private List<DTProveedor> proveedoresNuevos;
 	private List<DTProveedor> proveedoresConCambios;
 	private List<DTProveedor> proveedoresABorrar;
-	private long[] drogasNuevas;
-	private long[] drogasABorrar;
-	private long[] accionesTerNuevas;
-	private long[] accionesTerABorrar;
+	private List<Long> drogasNuevas;
+	private List<Long> drogasABorrar;
+	private List<Long> accionesTerNuevas;
+	private List<Long> accionesTerABorrar;
 	
 	public DTModificacionArticulo(){
 		this.proveedoresNuevos = new ArrayList<DTProveedor>();
 		this.proveedoresConCambios = new ArrayList<DTProveedor>();
-		this.proveedoresABorrar = new ArrayList<DTProveedor>();		
+		this.proveedoresABorrar = new ArrayList<DTProveedor>();
+		this.drogasNuevas = new ArrayList<Long>();
+		this.drogasABorrar = new ArrayList<Long>();
+		this.accionesTerNuevas = new ArrayList<Long>();
+		this.accionesTerABorrar = new ArrayList<Long>();
 	}
 	
 	public Articulo getArticulo() {
@@ -45,28 +49,28 @@ public class DTModificacionArticulo {
 	public void setProveedoresABorrar(List<DTProveedor> proveedoresABorrar) {
 		this.proveedoresABorrar = proveedoresABorrar;
 	}
-	public long[] getDrogasNuevas() {
+	public List<Long> getDrogasNuevas() {
 		return drogasNuevas;
 	}
-	public void setDrogasNuevas(long[] drogasNuevas) {
+	public void setDrogasNuevas(List<Long> drogasNuevas) {
 		this.drogasNuevas = drogasNuevas;
 	}
-	public long[] getDrogasABorrar() {
+	public List<Long> getDrogasABorrar() {
 		return drogasABorrar;
 	}
-	public void setDrogasABorrar(long[] drogasABorrar) {
+	public void setDrogasABorrar(List<Long> drogasABorrar) {
 		this.drogasABorrar = drogasABorrar;
 	}
-	public long[] getAccionesTerNuevas() {
+	public List<Long> getAccionesTerNuevas() {
 		return accionesTerNuevas;
 	}
-	public void setAccionesTerNuevas(long[] accionesTerNuevas) {
+	public void setAccionesTerNuevas(List<Long> accionesTerNuevas) {
 		this.accionesTerNuevas = accionesTerNuevas;
 	}
-	public long[] getAccionesTerABorrar() {
+	public List<Long> getAccionesTerABorrar() {
 		return accionesTerABorrar;
 	}
-	public void setAccionesTerABorrar(long[] accionesTerABorrar) {
+	public void setAccionesTerABorrar(List<Long> accionesTerABorrar) {
 		this.accionesTerABorrar = accionesTerABorrar;
 	}
 }

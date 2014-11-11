@@ -20,7 +20,7 @@ public class Orden {
 	private long idOrden;
 	private int tipoCFE;
 	private String serieCFE;
-	private long numeroCFE;
+	private int numeroCFE;
 	private Date fechaComprobante;
 	private String formaDePago;
 	private long ordenDeCompra;
@@ -38,51 +38,12 @@ public class Orden {
 	private BigDecimal montoTributoIvaMinimo = new BigDecimal(0);
 	private BigDecimal montoTributoIvaBasico = new BigDecimal(0);
 	private List<OrdenDetalle> detalle = new ArrayList<OrdenDetalle>();
-	
+
 	private Boolean procesada;
 
 	// private List<DataVencimiento> vencimientos;
-	
-	public Orden(){}
-	
-	public Orden(DataComprobante comprobante, Boolean procesada) throws Excepciones{
-		this.idProveedor = 1;
-    	this.tipoCFE = comprobante.getTipoCFE();
-    	this.serieCFE = comprobante.getSerieCFE();
-    	this.numeroCFE = comprobante.getNumeroCFE();
-    	this.fechaComprobante = comprobante.getFechaComprobante().toGregorianCalendar().getTime();
-    	this.formaDePago = comprobante.getFormaDePago().name();
-    	this.ordenDeCompra = comprobante.getOrdenDeCompra();
-    	this.montoNoGravado = comprobante.getMontoNoGravado();
-    	this.montoNetoGravadoIvaMinimo = comprobante.getMontoNetoGravadoIvaMinimo();
-    	this.montoNetoGravadoIvaBasico = comprobante.getMontoNetoGravadoIvaBasico();
-    	this.totalIvaMinimo = comprobante.getTotalIvaMinimo();
-    	this.totalIvaBasico = comprobante.getTotalIvaBasico();
-    	this.montoTotal = comprobante.getMontoTotal();
-    	this.montoRetenidoIVA = comprobante.getMontoRetenidoIVA();
-    	this.montoRetenidoIRAE = comprobante.getMontoRetenidoIRAE();
-    	this.montoNoFacturable = comprobante.getMontoNoFacturable();
-    	this.montoTotalAPagar = comprobante.getMontoTotalAPagar();
-    	this.montoTributoIvaMinimo = comprobante.getMontoTributoIvaMinimo();
-    	this.montoTributoIvaBasico = comprobante.getMontoTributoIvaBasico();
-    	this.procesada = procesada;
-    	this.cantidadLineas = comprobante.getCantidadLineas();
-    	
-    	// Primeramente casteo los articulos de la factura
-    	Iterator<DataLineaComprobante> it = comprobante.getDetalle().iterator();
-    	while (it.hasNext()) {
-			DataLineaComprobante dataLineaComprobante = (DataLineaComprobante) it
-					.next();
-			OrdenDetalle detalle = new OrdenDetalle(dataLineaComprobante);
-			if(detalle.getProductId() != 0){ // el producto se encuentra en el sistema
-				this.detalle.add(detalle);
-			}else{
-				this.detalle = null;
-				return;
-			}
-			
-		}
-    	
+
+	public Orden() {
 	}
 
 	public int getTipoCFE() {
@@ -105,11 +66,11 @@ public class Orden {
 		this.serieCFE = serieCFE;
 	}
 
-	public long getNumeroCFE() {
+	public int getNumeroCFE() {
 		return numeroCFE;
 	}
 
-	public void setNumeroCFE(long numeroCFE) throws Excepciones {
+	public void setNumeroCFE(int numeroCFE) throws Excepciones {
 		if (numeroCFE == 0) {
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_DATOS,
 					Excepciones.ERROR_DATOS));
@@ -219,7 +180,7 @@ public class Orden {
 			throws Excepciones {
 		if ((montoTotalAPagar == null)
 				|| (montoTotalAPagar == (new BigDecimal(0)))) {
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_DATOS,
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_TOTAL,
 					Excepciones.ERROR_DATOS));
 		}
 		this.montoTotalAPagar = montoTotalAPagar;
@@ -253,7 +214,11 @@ public class Orden {
 		return detalle;
 	}
 
-	public void setDetalle(List<OrdenDetalle> detalle) {
+	public void setDetalle(List<OrdenDetalle> detalle) throws Excepciones {
+		if (detalle.isEmpty()) {
+			throw (new Excepciones(Excepciones.MENSAJE_DETALLE_VACIO,
+					Excepciones.ERROR_DATOS));
+		}
 		this.detalle = detalle;
 	}
 
@@ -278,8 +243,9 @@ public class Orden {
 	}
 
 	public void setIdProveedor(int idProveedor) throws Excepciones {
-		if(idProveedor == 0){
-			throw(new Excepciones(Excepciones.MENSAJE_ERROR_DATOS, Excepciones.ERROR_DATOS));
+		if (idProveedor == 0) {
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_DATOS,
+					Excepciones.ERROR_DATOS));
 		}
 		this.idProveedor = idProveedor;
 	}

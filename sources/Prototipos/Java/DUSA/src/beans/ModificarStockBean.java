@@ -4,11 +4,15 @@ import interfaces.ISistema;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.ViewHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 import model.Enumerados.tipoMovimientoDeStock;
@@ -180,6 +184,16 @@ public class ModificarStockBean implements Serializable{
 		try {
 			resBusquedaDesarme = this.instanciaSistema
 					.buscarArticulos(busquedaDesarme);
+			
+			for (Iterator<DTBusquedaArticulo> iterator = resBusquedaDesarme.iterator(); iterator.hasNext();) {
+				DTBusquedaArticulo art = (DTBusquedaArticulo) iterator.next();
+				
+				if (art.getIdArticulo() == this.articuloSeleccionado.getIdArticulo()) {
+					
+					iterator.remove();
+				}
+				
+			}
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -300,6 +314,25 @@ public class ModificarStockBean implements Serializable{
 				contexto.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_INFO,
 						"Desarme realizado con éxito.", ""));
+				
+				//Refresh de pagina para regresar al estado inicial
+				
+				this.articuloParaDesarme = null;
+				this.articuloSeleccionado = null;
+				this.busqueda = "";
+				this.busquedaDesarme = "";
+				this.resBusqueda.clear();
+				this.resBusquedaDesarme.clear();
+				nuevoStockSeleccionado = 0;
+				nuevoStockDesarme = 0;
+				
+				FacesContext context = FacesContext.getCurrentInstance();
+				Application application = context.getApplication();
+				ViewHandler viewHandler = application.getViewHandler();
+				UIViewRoot viewRoot = viewHandler.createView(context, context
+						.getViewRoot().getViewId());
+				context.setViewRoot(viewRoot);
+				context.renderResponse(); 
 			}
 		} catch (Excepciones ex){ 
 			

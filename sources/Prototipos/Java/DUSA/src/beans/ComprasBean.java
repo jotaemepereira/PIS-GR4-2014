@@ -9,18 +9,22 @@ import interfaces.ISistema;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.context.RequestContext;
 
 import model.Orden;
 import model.OrdenDetalle;
 import controladores.Excepciones;
-import controladores.FabricaSistema;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTComprobanteFactura;
 import datatypes.DTLineaFacturaCompra;
@@ -56,7 +60,16 @@ public class ComprasBean implements Serializable {
 	private Map<Integer, DTTiposDGI> mapTiposDGI = new HashMap<Integer, DTTiposDGI>();
 	private List<DTTiposDGI> tiposDGI = new ArrayList<DTTiposDGI>();
 
+	List<DTLineaFacturaCompra> alertasPrecios = new ArrayList<DTLineaFacturaCompra>();
+	
+	private Date hoy = new Date();
+
 	// getters y setters
+	
+	public Date getHoy(){
+		return hoy;
+	}
+	
 	public Boolean getDisableBotones() {
 		return disableBotones;
 	}
@@ -143,7 +156,7 @@ public class ComprasBean implements Serializable {
 		if (this.instanciaSistema != null) {
 			obtenerTiposDGI();
 		}
-	}	
+	}
 
 	public List<DTTiposDGI> getTiposDGI() {
 		return tiposDGI;
@@ -152,7 +165,6 @@ public class ComprasBean implements Serializable {
 	public void setTiposDGI(List<DTTiposDGI> tiposDGI) {
 		this.tiposDGI = tiposDGI;
 	}
-	
 
 	public int getProveedorSeleccionado() {
 		return proveedorSeleccionado;
@@ -169,7 +181,7 @@ public class ComprasBean implements Serializable {
 	public void setFacturaAutomatica(Boolean facturaAutomatica) {
 		this.facturaAutomatica = facturaAutomatica;
 	}
-	
+
 	public Boolean getSerieFactura() {
 		return serieFactura;
 	}
@@ -178,10 +190,18 @@ public class ComprasBean implements Serializable {
 		this.serieFactura = serieFactura;
 	}
 
+	public List<DTLineaFacturaCompra> getAlertasPrecios() {
+		return alertasPrecios;
+	}
+
+	public void setSerieFactura(List<DTLineaFacturaCompra> alertasPrecios) {
+		this.alertasPrecios = alertasPrecios;
+	}
+
 	// funciones ingresar compra
 	public void ingresoManual() {
 		actualizarProveedores();
-		
+
 		facturaAutomatica = false;
 		disableBotones = true;
 		hideTable = "visible";
@@ -192,15 +212,17 @@ public class ComprasBean implements Serializable {
 
 	public void facturaAutomaticaDUSA() {
 		try {
+			proveedorSeleccionado = 1;
 			mapFacturasDUSA = this.instanciaSistema.obtenerFacturasDUSA();
 			this.facturasDUSA = new ArrayList<DTComprobanteFactura>(
 					mapFacturasDUSA.values());
 		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 			return;
 		}
-		
+
 		facturaAutomatica = true;
 		disableBotones = true;
 		hideTable = "visible";
@@ -208,9 +230,10 @@ public class ComprasBean implements Serializable {
 		selectProveedores = "hidden";
 		serieFactura = true;
 	}
-	
-	public void seleccionFacturaDUSA(){
+
+	public void seleccionFacturaDUSA() {
 		factura = mapFacturasDUSA.get(ordenDeCompraDUSA);
+		proveedorSeleccionado = 1;
 	}
 
 	public void cancelarIngresarCompra() {
@@ -223,52 +246,76 @@ public class ComprasBean implements Serializable {
 	}
 
 	public void ingresarCompra() {
-		System.out.println("INGRESAR COMPRA");
-
-		// TODO: verificar que total != 0
+		FacesContext context = FacesContext.getCurrentInstance();
+		alertasPrecios.clear();
 		
+		if((serieFactura == false) && (factura.getSerieCFE().equals(""))){
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, "En el caso de los comprobantes electrónicos es necesario ingresar la serie.", ""));
+			return;
+		}
+
 		List<OrdenDetalle> detalles = new ArrayList<OrdenDetalle>();
 		Orden orden = new Orden();
-		
+
 		// Genero todos los detalles de las órdenes
 		Iterator<DTLineaFacturaCompra> it = factura.getDetalle().iterator();
 		int numeroLinea = 0;
-		
+
 		while (it.hasNext()) {
 			DTLineaFacturaCompra linea = (DTLineaFacturaCompra) it.next();
 			OrdenDetalle detalle = new OrdenDetalle();
 			numeroLinea++;
-			
+
+			System.out.println(linea.getCostoListaArticulo().compareTo(
+					linea.getPrecioUnitario()));
+			// Chequeo si el costo de lista es menor al costo comprado y si lo
+			// es, lo agrego a la lista de alerta
+			if (linea.getCostoListaArticulo().compareTo(
+					linea.getPrecioUnitario()) < 0) {
+				alertasPrecios.add(linea);
+			}
+
 			try {
 				detalle.setCantidad(linea.getCantidad());
 				detalle.setDescripcionOferta(linea.getDescripcionOferta());
 				detalle.setDescuento(linea.getDescuento());
-				detalle.setIndicadorDeFacturacion(linea.getIndicadorDeFacturacion());
+				detalle.setIndicadorDeFacturacion(linea
+						.getIndicadorDeFacturacion());
 				detalle.setNumeroArticulo(linea.getNumeroArticulo());
-				if(factura.getOrdenDeCompra() != 0){ // en el caso de factura de DUSA
+				if (factura.getOrdenDeCompra() != 0) { // en el caso de factura
+														// de DUSA
 					detalle.setNumeroLinea(linea.getNumeroLinea());
-				}else{ // caso de factura manual
+				} else { // caso de factura manual
 					detalle.setNumeroLinea(numeroLinea);
 				}
 				detalle.setPrecioUnitario(linea.getPrecioUnitario());
 				detalle.setProductId(linea.getProductId());
-				
+
 				detalles.add(detalle);
 			} catch (Excepciones e) {
-				// TODO: handle exception
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 				return;
 			}
 		}
-		
+
 		// Guardo los datos de la factura
 		try {
 			orden.setCantidadLineas(numeroLinea);
 			orden.setDetalle(detalles);
 			orden.setFechaComprobante(factura.getFechaComprobante());
 			orden.setFormaDePago(factura.getFormaDePago());
-			orden.setIdProveedor(factura.getIdProveedor());
-			orden.setMontoNetoGravadoIvaBasico(factura.getMontoNetoGravadoIvaBasico());
-			orden.setMontoNetoGravadoIvaMinimo(factura.getMontoNetoGravadoIvaMinimo());
+			if(factura.getOrdenDeCompra() == 0){
+				orden.setIdProveedor(factura.getIdProveedor());
+			}else{
+				orden.setIdOrden(factura.getIdOrden());
+				orden.setIdProveedor(1);
+			}
+			orden.setMontoNetoGravadoIvaBasico(factura
+					.getMontoNetoGravadoIvaBasico());
+			orden.setMontoNetoGravadoIvaMinimo(factura
+					.getMontoNetoGravadoIvaMinimo());
 			orden.setMontoNoFacturable(factura.getMontoNoFacturable());
 			orden.setMontoNoGravado(factura.getMontoNoGravado());
 			orden.setMontoRetenidoIRAE(factura.getMontoRetenidoIRAE());
@@ -283,17 +330,19 @@ public class ComprasBean implements Serializable {
 			orden.setProcesada(true);
 			orden.setOrdenDeCompra(factura.getOrdenDeCompra());
 		} catch (Excepciones e) {
-			// TODO: handle exception
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 			return;
 		}
 
 		try {
 			this.instanciaSistema.ingresarFacturaCompra(orden);
 		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 			return;
 		}
-		
+
 		// Reseteo los valores por defecto
 		disableBotones = false;
 		hideTable = "hidden";
@@ -301,6 +350,12 @@ public class ComprasBean implements Serializable {
 		selectProveedores = "hidden";
 		factura = new DTComprobanteFactura();
 		serieFactura = false;
+
+		if (!alertasPrecios.isEmpty()) {
+			System.out.println("alerta");
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogAlerta').show()");
+		}
 	}
 
 	public void actualizarProveedores() {
@@ -310,12 +365,14 @@ public class ComprasBean implements Serializable {
 			this.proveedores = new ArrayList<DTProveedor>(
 					proveedoresLista.values());
 		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 			e.printStackTrace();
 		}
 	}
-	
-	public void obtenerTiposDGI(){
+
+	public void obtenerTiposDGI() {
 		try {
 			this.mapTiposDGI = this.instanciaSistema.obtenerTiposDGI();
 			this.tiposDGI = new ArrayList<DTTiposDGI>(mapTiposDGI.values());
@@ -331,12 +388,11 @@ public class ComprasBean implements Serializable {
 		linea.setNumeroArticulo(articulo.getNumeroProducto_proveedor());
 		linea.setProductId(articulo.getIdArticulo());
 		linea.setCantidad(1);
-		linea.setCostoUltimaCompra(articulo.getCostoReal());
+		linea.setCostoListaArticulo(articulo.getCostoDeLista());
 		linea.setDescripcionOferta("");
 		linea.setDescuento(new BigDecimal(0));
 		linea.setTotal(new BigDecimal(0));
 		linea.setPrecioUnitario(new BigDecimal(0));
-		linea.setCostoUltimaCompra(articulo.getCostoReal());
 
 		List<DTLineaFacturaCompra> detalle = factura.getDetalle();
 		detalle.add(linea);
@@ -351,15 +407,20 @@ public class ComprasBean implements Serializable {
 		}
 
 		try {
-			if(factura.getIdProveedor() != 0) {
-				busquedaArticulos = this.instanciaSistema.buscarArticulos(busqueda, this.proveedorSeleccionado);
-			}else{
-				busquedaArticulos = this.instanciaSistema.buscarArticulos(busqueda);
+			System.out.println("PROVEEDOR: " + factura.getIdProveedor());
+			if (factura.getIdProveedor() != 0) {
+				busquedaArticulos = this.instanciaSistema.buscarArticulos(
+						busqueda, this.proveedorSeleccionado);
+			} else {
+				busquedaArticulos = this.instanciaSistema
+						.buscarArticulos(busqueda);
 			}
 			System.out.println("CANTIDAD ENCONTRADA: "
 					+ busquedaArticulos.size());
 		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 			e.printStackTrace();
 		}
 	}
@@ -370,8 +431,9 @@ public class ComprasBean implements Serializable {
 	 */
 	public void calcularTotalArticulo(DTLineaFacturaCompra detalle) {
 		// Saco el valor anterior de la suma del subtotal
-		factura.setSubtotalProdctos(factura.getSubtotalProdctos().subtract(detalle.getTotal()));
-		
+		factura.setSubtotalProdctos(factura.getSubtotalProdctos().subtract(
+				detalle.getTotal()));
+
 		// Calculo el total del producto modificado
 		BigDecimal precio = detalle.getPrecioUnitario();
 		BigDecimal descuento = detalle.getDescuento()
@@ -381,7 +443,7 @@ public class ComprasBean implements Serializable {
 
 		BigDecimal total = precio.multiply(cantidad).multiply(descuento);
 		detalle.setTotal(total);
-		
+
 		// Agrego el precio calculado al total
 		factura.setSubtotalProdctos(factura.getSubtotalProdctos().add(total));
 	}
@@ -405,23 +467,23 @@ public class ComprasBean implements Serializable {
 				.add(factura.getMontoNoFacturable()));
 
 	}
-	
-	public void saveProveedor(){
+
+	public void saveProveedor() {
 
 		this.proveedorSeleccionado = factura.getIdProveedor();
 
 	}
-	
-	public void cambioTipoCFE(){
-		if((factura.getTipoCFE() == 1) || (factura.getTipoCFE() == 2)){
+
+	public void cambioTipoCFE() {
+		if ((factura.getTipoCFE() == 1) || (factura.getTipoCFE() == 2)) {
 			serieFactura = true;
 			factura.setSerieCFE("");
-		}else{
+		} else {
 			serieFactura = (false || facturaAutomatica);
 		}
 	}
 
-	public String getNombreTipoFactura(int tipo){
+	public String getNombreTipoFactura(int tipo) {
 		return mapTiposDGI.get(tipo).getDescripcion();
 	}
 }

@@ -197,23 +197,24 @@
 												</tr>
 												<tr>
 													<td>Nuevo stock:</td>
-													<td><p:inputText
+													<td><p:inputMask mask="?999999999999999999"
 															value="#{modificarStockBean.nuevoStockSeleccionado}"
 															style="width: 50px; margin-right: 10px;">
 															<f:ajax event="change" execute="@this" />
-														</p:inputText></td>
+														</p:inputMask></td>
 													<td>Nuevo stock:</td>
-													<td><p:inputText
+													<td><p:inputMask mask="?999999999999999999"
 															value="#{modificarStockBean.nuevoStockDesarme}"
 															style="width: 50px;">
 															<f:ajax event="change" execute="@this" />
-														</p:inputText></td>
+														</p:inputMask></td>
 												</tr>
 												<tr>
 													<td>Motivo:</td>
 													<td colspan="3"><p:inputText
 															value="#{modificarStockBean.motivo}"
-															style="width: 100%; margin: 15px 0;">
+															style="width: 100%; margin: 15px 0;"
+															maxlength="250">
 															<f:ajax event="change" execute="@this" />
 														</p:inputText></td>
 												</tr>
@@ -222,8 +223,9 @@
 													<td><p:commandButton
 															actionListener="#{modificarStockBean.confirmarDesarme()}"
 															styleClass="btn btn-success"
-															oncomplete="PF('dlg2').hide()" update=":form1"
+															update=":form1"
 															value="Confirmar" title="Facturar">
+															<!-- oncomplete="PF('dlg2').hide()" -->
 														</p:commandButton></td>
 												</tr>
 											</table>

@@ -9,7 +9,7 @@ import controladores.FabricaPersistencia;
 public class OrdenDetalle {
 	private long idOrden;
 	private int numeroLinea;
-	private long numeroArticulo;
+	private int numeroArticulo;
 	private int cantidad;
 	private BigDecimal precioUnitario;
 	private BigDecimal descuento;
@@ -18,24 +18,6 @@ public class OrdenDetalle {
 	private long productId;
 	
 	public OrdenDetalle() {}
-	
-	public OrdenDetalle(DataLineaComprobante linea) throws Excepciones{
-		this.numeroLinea = linea.getNumeroLinea();
-    	this.numeroArticulo = linea.getNumeroArticulo();
-    	this.cantidad = linea.getCantidad();
-    	this.precioUnitario = linea.getPrecioUnitario();
-    	this.descuento = (linea.getDescuento() != null) ? linea.getDescuento() : new BigDecimal(0);
-    	this.descripcionOferta = linea.getDescripcionOferta();
-    	this.indicadorDeFacturacion = linea.getIndicadorDeFacturacion();
-    	
-    	// Obtengo los id todos juntos de los articulos de la factura
-    	try {
-			FabricaPersistencia.getInstanciaComprasPersistencia().getDatosArticulo(this);
-		} catch (Excepciones e) {
-			e.printStackTrace();
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
-		}
-	}
 
 	public long getIdOrden() {
 		return idOrden;
@@ -57,11 +39,11 @@ public class OrdenDetalle {
 		this.numeroLinea = numeroLinea;
 	}
 
-	public long getNumeroArticulo() {
+	public int getNumeroArticulo() {
 		return numeroArticulo;
 	}
 
-	public void setNumeroArticulo(long numeroArticulo) {
+	public void setNumeroArticulo(int numeroArticulo) {
 		this.numeroArticulo = numeroArticulo;
 	}
 

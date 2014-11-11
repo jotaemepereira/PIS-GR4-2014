@@ -1,14 +1,12 @@
 package interfaces;
 
-import java.util.List;
+import java.util.Date;
 import java.util.Map;
 
 import model.Orden;
 import model.OrdenDetalle;
 import controladores.Excepciones;
 import datatypes.DTComprobanteFactura;
-import datatypes.DTFormasVenta;
-import datatypes.DTLineaFacturaCompra;
 import datatypes.DTTiposDGI;
 
 public interface IComprasPersistencia {
@@ -40,11 +38,30 @@ public interface IComprasPersistencia {
 	public void getDatosArticulo(OrdenDetalle detalle) throws Excepciones;
 	
 	/**
+	 * Obtiene las facturas de DUSA pendientes a ser ingresadas
 	 * 
 	 * @return los comprobantes pendientes de procesar
 	 * @throws Excepciones
 	 * @author Victoria Díaz
 	 */
 	public Map<Long, DTComprobanteFactura> obtenerFacturasPendientes() throws Excepciones;
+	
+	/**
+	 * Es la función encargada de pasar una orden de DUSA a procesada
+	 * 
+	 * @param orden
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public void actualizarFacturaCompraDUSA(Orden orden) throws Excepciones;
+	
+	/**
+	 * Trae la fecha de la última factura de DUSA en el sistema
+	 * 
+	 * @return Date - fecha ultima factura
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	public Date getFechaUltimaFacturaDUSA() throws Excepciones;
 	
 }
