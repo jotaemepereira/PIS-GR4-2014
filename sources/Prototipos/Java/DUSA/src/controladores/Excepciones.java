@@ -50,6 +50,11 @@ public class Excepciones extends Exception {
 	public static String MENSAJE_ERROR_TOTAL					= "El total de la factura no puede ser 0.";
 	public static String MENSAJE_DETALLE_VACIO					= "Es necesario ingresar al menos un artículo.";
 	public static String MENSAJE_FACTURA_DUPLICADA				= "Ya existe en el sistema una factura con el mismo tipo, serie y numero.";
+	public static String MENSAJE_TIPO_REQUERIDO					= "Para continuar es necesario ingeresar el tipo de factura";
+	public static String MENSAJE_SERIE_REQUERIDO				= "Para continuar es necesario ingeresar la serie de factura";
+	public static String MENSAJE_NUMERO_REQUERIDO				= "Para continuar es necesario ingeresar el numero de factura";
+	public static String MENSAJE_PROVEEDOR_VACIO				= "Para continuar es necesario seleccionar un proveedor";
+	
 	public Excepciones(String message, int errorCode){
         super(message);
         this.errorCode = errorCode;

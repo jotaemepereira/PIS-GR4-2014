@@ -52,7 +52,7 @@ public class Orden {
 
 	public void setTipoCFE(int tipoCFE) throws Excepciones {
 		if (tipoCFE == 0) {
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_DATOS,
+			throw (new Excepciones(Excepciones.MENSAJE_TIPO_REQUERIDO,
 					Excepciones.ERROR_DATOS));
 		}
 		this.tipoCFE = tipoCFE;
@@ -72,7 +72,7 @@ public class Orden {
 
 	public void setNumeroCFE(int numeroCFE) throws Excepciones {
 		if (numeroCFE == 0) {
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_DATOS,
+			throw (new Excepciones(Excepciones.MENSAJE_NUMERO_REQUERIDO,
 					Excepciones.ERROR_DATOS));
 		}
 		this.numeroCFE = numeroCFE;
@@ -141,10 +141,6 @@ public class Orden {
 	}
 
 	public void setCantidadLineas(Integer cantidadLineas) throws Excepciones {
-		if (cantidadLineas == 0) {
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_DATOS,
-					Excepciones.ERROR_DATOS));
-		}
 		this.cantidadLineas = cantidadLineas;
 	}
 
@@ -244,7 +240,7 @@ public class Orden {
 
 	public void setIdProveedor(int idProveedor) throws Excepciones {
 		if (idProveedor == 0) {
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_DATOS,
+			throw (new Excepciones(Excepciones.MENSAJE_PROVEEDOR_VACIO,
 					Excepciones.ERROR_DATOS));
 		}
 		this.idProveedor = idProveedor;
