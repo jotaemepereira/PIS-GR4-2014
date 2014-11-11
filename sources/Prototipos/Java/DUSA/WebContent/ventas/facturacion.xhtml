@@ -40,6 +40,9 @@
 											<p:dataTable id="tablaVentas" var="venta"
 												value="#{facturacionBean.ventas}">
 
+												<p:column headerText="ID" style="text-align: center;">
+													<h:outputText value="#{venta.ventaId}" />
+												</p:column>
 												<p:column headerText="Tiempo" style="text-align: center;">
 													<h:outputText
 														value="#{facturacionBean.parseFechaVenta(venta)}" />
@@ -88,7 +91,8 @@
 
 					<p:column rendered="#{facturacionBean.facturacionControlada}"
 						headerText="" style="text-align: center; width: 50px;">
-						<p:selectBooleanCheckbox value="#{facturacionBean.lineasCheck[index]}">
+						<p:selectBooleanCheckbox
+							value="#{facturacionBean.lineasCheck[index]}">
 							<f:ajax event="change" execute="@this" />
 						</p:selectBooleanCheckbox>
 					</p:column>
@@ -146,14 +150,13 @@
 				<div style="margin-top: 15px;">
 					<p:commandButton style="margin-right: 45px;"
 						actionListener="#{facturacionBean.facturar()}"
-						styleClass="btn btn-default pull-right"
-						update=":form1" value="Facturar"
-						title="Facturar">
+						styleClass="btn btn-default pull-right" update=":form1"
+						value="Facturar" title="Facturar">
 					</p:commandButton>
 					<p:commandButton actionListener="#{facturacionBean.cancelar()}"
 						styleClass="btn btn-default pull-right"
-						oncomplete="PF('dlg2').hide()" update=":form1" value="Cancelar factura"
-						title="Facturar">
+						oncomplete="PF('dlg2').hide()" update=":form1"
+						value="Cancelar factura" title="Facturar">
 					</p:commandButton>
 				</div>
 			</h:form>
