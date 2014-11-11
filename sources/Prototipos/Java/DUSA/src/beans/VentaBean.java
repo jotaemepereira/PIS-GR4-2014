@@ -490,7 +490,7 @@ public class VentaBean implements Serializable {
 			// cada uno y los multiplico por las cantidades
 			totIva = totIva.add(iva).multiply(new BigDecimal(v.getCantidad()));
 		}
-		return totIva.toString();
+		return totIva.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
 	}
 
 	public void cancelarVenta() {
@@ -551,7 +551,7 @@ public class VentaBean implements Serializable {
 			total = total.add(x.multiply(new BigDecimal(v.getCantidad()))).add(
 					n.multiply(new BigDecimal(v.getCantidad())));
 		}
-		return total.toString();
+		return total.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
 	}
 
 	public String strTotal() {
@@ -610,8 +610,8 @@ public class VentaBean implements Serializable {
 					.subtract(n)).multiply(new BigDecimal(v.getCantidad())));
 
 		}
-		venta.setMontoTotalAPagar(total);
-		return total.toString();
+		venta.setMontoTotalAPagar(total.setScale(2, BigDecimal.ROUND_HALF_UP));
+		return total.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
 	}
 
 	public String strSubTotal() {
@@ -629,8 +629,8 @@ public class VentaBean implements Serializable {
 							.multiply(new BigDecimal(v.getCantidad())));
 
 		}
-		venta.setMontoTotal(total);
-		return total.toString();
+		venta.setMontoTotal(total.setScale(2, BigDecimal.ROUND_HALF_UP));
+		return total.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
 	}
 
 	public List<DTVenta> getLineasVenta() {
