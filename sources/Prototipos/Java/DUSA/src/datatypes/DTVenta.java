@@ -24,10 +24,11 @@ public class DTVenta implements Serializable {
 	private String CodigoBarras;
 	private int stock;
 	private String descuentoPrecio;
-	private String descuentoReceta;
 	
 	private BigDecimal irae;
 	private BigDecimal iva;
+	private BigDecimal precioReceta;
+	private BigDecimal descuentoReceta;
 	private int indicadorFacturacion;
 	
 
@@ -175,14 +176,6 @@ public class DTVenta implements Serializable {
 		this.descuentoPrecio = descuentoPrecio;
 	}
 
-	public String getDescuentoReceta() {
-		return descuentoReceta;
-	}
-
-	public void setDescuentoReceta(String descuentoReceta) {
-		this.descuentoReceta = descuentoReceta;
-	}
-
 	public BigDecimal getIrae() {
 		return irae;
 	}
@@ -205,6 +198,22 @@ public class DTVenta implements Serializable {
 
 	public void setIndicadorFacturacion(int indicadorFacturacion) {
 		this.indicadorFacturacion = indicadorFacturacion;
+	}
+
+	public BigDecimal getPrecioReceta() {
+		return precioReceta;
+	}
+
+	public void setPrecioReceta(BigDecimal precioReceta) {
+		this.precioReceta = precioReceta;
+	}
+
+	public BigDecimal getDescuentoReceta() {
+		return descuentoReceta;
+	}
+
+	public void setDescuentoReceta(BigDecimal descuentoReceta) {
+		this.descuentoReceta = descuentoReceta;
 	}
 	
 }
