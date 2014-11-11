@@ -1,7 +1,5 @@
 package model;
 
-import datatypes.DTFormasVenta;
-
 public class Enumerados {
 
 	public enum TipoFormaDePago {
