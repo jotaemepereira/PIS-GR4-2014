@@ -237,7 +237,15 @@ public class StockControlador implements IStock {
 
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
-		//grabarTiposIVA();
+//		grabarTiposIVA();
+		
+		Calendar cal = Calendar.getInstance();  //Get current date/month i.e 27 Feb, 2012
+		cal.add(Calendar.MONTH, -1);   //Go to date, 6 months ago 27 July, 2011
+		cal.set(Calendar.DAY_OF_MONTH, 1); 
+		
+		(new StockControlador()).actualizarStock(cal.getTime());
+		(new PStockControlador()).fullImportSolr();
+		
 		return FabricaPersistencia.getStockPersistencia()
 				.obtenerAccionesTerapeuticas();
 	}
@@ -296,19 +304,19 @@ public class StockControlador implements IStock {
 		}
 			
 		IUsuarioPersistencia iup = FabricaPersistencia.getInstanciaUsuaruiPersistencia();
-		List <String> admins = iup.getAdminisMails();
-		Mail m = new Mail();
-		m.setDestinatarios("santiago.taba@gmail.com");
-		m.setAsunto("cambio en productos de DUSA");   
-		m.setContenido(cambios);
-		m.setEmisor("dusapis", "grupo4grupo4");
-		try {
-			m.Enviar();
-		} catch (AddressException e) {
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
+//		List <String> admins = iup.getAdminisMails();
+//		Mail m = new Mail();
+//		m.setDestinatarios("santiago.taba@gmail.com");
+//		m.setAsunto("cambio en productos de DUSA");   
+//		m.setContenido(cambios);
+//		m.setEmisor("dusapis", "grupo4grupo4");
+//		try {
+//			m.Enviar();
+//		} catch (AddressException e) {
+//			e.printStackTrace();
+//		} catch (MessagingException e) {
+//			e.printStackTrace();
+//		}
 		                
 	
          
