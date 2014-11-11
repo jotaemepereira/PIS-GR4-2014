@@ -296,15 +296,21 @@ public class StockControlador implements IStock {
 		List<Cambio> cambios = FabricaPersistencia.getStockPersistencia().obtenerCambios(articulos);
 		
 		OutputStream output;
-		try {
-		FileInputStream in = new FileInputStream("alertaStock.properties");
-		Properties prop = new Properties();
-		prop.load(in);
-		String mailEmisor = prop.getProperty("mailEmisor");
-		String passEmisor = prop.getProperty("passEmisor");
-		String receptores = prop.getProperty("mailReceptores");
 		
-		in.close();
+		FileInputStream in;
+		Properties prop = new Properties();
+		String mailEmisor = null;
+		String passEmisor = null;
+		String receptores = null;
+		try {
+			in = new FileInputStream("alertaStock.properties");
+			
+			prop.load(in);
+			mailEmisor = prop.getProperty("mailEmisor");
+			passEmisor = prop.getProperty("passEmisor");
+			receptores = prop.getProperty("mailReceptores");
+			in.close();
+		
 		if (mailEmisor==null)
 			mailEmisor = "dusapis";
 		if (passEmisor ==null)
@@ -312,7 +318,9 @@ public class StockControlador implements IStock {
 		if (receptores == null)
 			receptores = "dusapis@gmail.com";
 		
+		
 		output = new FileOutputStream("alertaStock.properties");
+		
 		Date date = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
 		String sDate = sdf.format(date);
@@ -323,7 +331,7 @@ public class StockControlador implements IStock {
 		prop.store(output, null);
 
 
-		if (cambios!=null){
+		if (cambios.size()>0){
 			m = new Mail();
 			m.setAsunto("cambio en productos de DUSA");   
 			m.setContenido(cambios);
@@ -331,11 +339,12 @@ public class StockControlador implements IStock {
 			m.setDestinatarios(receptores);
 			m.Enviar();
 		}
-		
-		} catch (IOException | MessagingException e) {
+		} catch ( IOException | MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 				         
 
 	}                      
