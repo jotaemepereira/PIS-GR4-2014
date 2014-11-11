@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import model.Usuario;
 import model.Venta;
 import controladores.Excepciones;
 import controladores.FabricaLogica;
+import controladores.FabricaPersistencia;
 import controladores.FabricaSistema;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTProveedor;
@@ -180,7 +182,7 @@ public class VentaBean implements Serializable {
 
 				v.setTotalPrecioLinea("$"
 						+ ((v.getArticulo().getPrecioVenta().subtract(x))
-								.subtract(n)).toString() + "(" + "%"
+								.subtract(n)).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "(" + "%"
 						+ v.getDescuentoPrecio() + ")");
 			}
 
@@ -189,7 +191,7 @@ public class VentaBean implements Serializable {
 
 				v.setTotalPrecioLinea("$"
 						+ ((v.getArticulo().getPrecioVenta().subtract(x))
-								.subtract(n)).toString() + "(" + "%"
+								.subtract(n)).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "(" + "%"
 						+ v.getDescuentoPrecio() + " + %"
 						+ v.getDescuento().toString() + ")");
 			}
@@ -199,7 +201,7 @@ public class VentaBean implements Serializable {
 
 				v.setTotalPrecioLinea("$"
 						+ ((v.getArticulo().getPrecioVenta().subtract(x))
-								.subtract(n)).toString() + "(" + "%"
+								.subtract(n)).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "(" + "%"
 						+ v.getDescuento().toString() + ")");
 			}
 
@@ -208,7 +210,7 @@ public class VentaBean implements Serializable {
 
 				v.setTotalPrecioLinea("$"
 						+ ((v.getArticulo().getPrecioVenta().subtract(x))
-								.subtract(n)).toString() + "(%0)");
+								.subtract(n)).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "(%0)");
 			}
 
 		}
