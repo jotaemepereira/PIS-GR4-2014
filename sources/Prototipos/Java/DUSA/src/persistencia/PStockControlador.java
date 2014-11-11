@@ -98,7 +98,11 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.setBigDecimal(20, articulo.getUltimoCosto());// Null
 				stmt.setBigDecimal(21, articulo.getCostoPromedio());// Null
 				if (articulo.getTipoIva() != null) {
-					stmt.setString(22, String.valueOf(articulo.getTipoIva().getTipoIVA()));// Null
+					if (articulo.getTipoIva().getTipoIVA() != 0x00){
+						stmt.setString(22, String.valueOf(articulo.getTipoIva().getTipoIVA()));// Null
+					}else{
+						stmt.setNull(22, java.sql.Types.CHAR);
+					}
 				} else {
 					stmt.setNull(22, java.sql.Types.CHAR);
 				}
@@ -1365,7 +1369,7 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.close();
 				c.close();
 
-				// indexacion de solr del producto nuevo
+				// indexacion de solr del producto modificado
 				deltaImportSolr();
 			} catch (Exception e) {
 				// Hago rollback de las cosas y lanzo excepcion
