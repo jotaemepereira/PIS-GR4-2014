@@ -2,11 +2,10 @@ package controladores;
 
 import interfaces.IFacturacion;
 import interfaces.IFacturacionPersistencia;
-import interfaces.ISistema;
 
 import java.util.List;
 
-import datatypes.DTVenta;
+import model.PocasVentas;
 import model.Venta;
 import Util.XMLUtil;
 
@@ -80,5 +79,15 @@ public class FacturacionControlador implements IFacturacion {
 				.getInstanciaFacturacionPersistencia();
 		return pf.persistirVenta(v);
 
+	}
+
+	@Override
+	public void articulosConPocasVentasEnLosUltimosMeses(int mesesAtras)
+			throws Exception {
+		
+		IFacturacionPersistencia fp = FabricaPersistencia.getInstanciaFacturacionPersistencia();
+		List<PocasVentas> pv = fp.articulosConPocasVentasEnLosUltimosMeses(mesesAtras);                                  
+		
+		
 	}
 }

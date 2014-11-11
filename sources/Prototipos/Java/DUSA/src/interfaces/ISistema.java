@@ -1,15 +1,11 @@
 package interfaces;
 
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import controladores.Excepciones;
-import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTComprobanteFactura;
-import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
@@ -20,7 +16,6 @@ import model.Articulo;
 import model.Droga;
 import model.Orden;
 import model.Pedido;
-import model.Presentacion;
 import model.Proveedor;
 import model.TipoIva;
 import model.Usuario;

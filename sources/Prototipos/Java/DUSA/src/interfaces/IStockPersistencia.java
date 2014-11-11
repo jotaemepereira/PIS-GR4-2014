@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import sun.print.resources.serviceui;
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
@@ -15,7 +14,6 @@ import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
 import model.Droga;
-import model.LineaPedido;
 import model.OrdenDetalle;
 import model.Pedido;
 import model.TipoIva;
@@ -126,6 +124,7 @@ public interface IStockPersistencia {
 	 * @param idArticulo
 	 * @return true si D.U.S.A. maneja el articulo con id "idArticulo"
 	 */
+	@Deprecated
 	public boolean existeArticuloDeDUSA(Long idArticulo) throws Excepciones;
 	
 	/**
