@@ -519,7 +519,7 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setStock(rs.getInt("STOCK"));
 				articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
 				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
-				articulo.setIva(rs.getBigDecimal("BILLING_INDICATOR"));
+				articulo.setIndicadorFacturacion(rs.getInt("BILLING_INDICATOR"));
 				articulo.setPrecioReceta(rs.getBigDecimal("RECIPE_PRICE"));
 				articulo.setDescuentoReceta(rs.getBigDecimal("RECIPE_DISCOUNT"));
 

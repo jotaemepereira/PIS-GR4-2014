@@ -68,7 +68,7 @@
 						</div>
 						<p:messages id="msgs" />
 
-						<p:remoteCommand name="buscarArticulo" update="GridVentas"
+						<p:remoteCommand name="buscarArticulo" update="TablaVentas"
 							actionListener="#{ventaBean.buscarArticulos}" />
 						<p:remoteCommand name="buscarArticuloLector" update=":form1"
 							actionListener="#{ventaBean.buscarArticuloLector}" />
@@ -93,17 +93,17 @@
 													<f:ajax event="change" execute="@this" />
 												</p:inputText>
 
-												<p:commandButton value="" id="ajax3" update="GridVentas"
+												<p:commandButton value="" id="ajax3" update="TablaVentas"
 													icon="ui-icon-search" style="width: 35px; height: 31px;"
 													onclick="buscarArticulos();"
 													styleClass="ui-priority-primary col-xs-3 col-sm-2 col-md-1 col-lg-1 " />
 
 											</div>
 
-											<p:dataTable id="GridVentas" var="venta"
+											<p:dataTable id="TablaVentas" var="venta" 
 												value="#{ventaBean.lineasVenta}" rowIndexVar="index">
 
-												<p:column headerText="Descripcion"
+												<p:column headerText="Descripcion" 
 													style="text-align: center;">
 													<h:outputText value="#{venta.descripcion}" />
 												</p:column>
@@ -118,7 +118,7 @@
 													<h:outputText value="stock:#{venta.stock}" />
 												</p:column>
 												<p:column headerText=" " style="text-align: center;">
-													<p:commandButton update="GridVentas :ventaDetail"
+													<p:commandButton update="TablaVentas :ventaDetail"
 														oncomplete="PF('ventaDialog').show()"
 														icon="ui-icon-search" ajax="true" title="Ver Detalle">
 														<f:setPropertyActionListener value="#{venta}"
@@ -143,18 +143,18 @@
 												</p:inputText>
 											</div>
 
-											<p:dataTable id="GridVentas2" var="venta2"
+											<p:dataTable id="TablaVentas2" var="venta2" resizableColumns="true"
 												value="#{ventaBean.lineasVenta2}" rowIndexVar="index">
 
 												<p:column headerText="Cantidad" style="text-align: center;">
 													<p:inputText id="cantidad" value="#{venta2.cantidad}"
 														style="width:40px;">
 														<p:ajax listener="#{ventaBean.strTotal()}"
-															update="GridVentas2 :form1:total" process="@this" />
+															update="TablaVentas2 :form1:total" process="@this" />
 														<p:ajax listener="#{ventaBean.strIva()}"
-															update="GridVentas2 :form1:iva" process="@this" />
+															update="TablaVentas2 :form1:iva" process="@this" />
 														<p:ajax listener="#{ventaBean.strSubTotal()}"
-															update="GridVentas2 :form1:subTotal" process="@this" />
+															update="TablaVentas2 :form1:subTotal" process="@this" />
 														<p:ajax listener="#{ventaBean.strDescuentoPrecio()}"
 															update="@form" process="@this" />
 													</p:inputText>
@@ -177,7 +177,7 @@
 
 												<p:column headerText=" " style="text-align: center;">
 													<p:commandButton value="Eliminar" id="ajax6"
-														update="GridVentas2 :form1" icon="ui-icon-cancel"
+														update="TablaVentas2 :form1" icon="ui-icon-cancel"
 														actionListener="#{ventaBean.eliminarLineaVenta(venta2)}"
 														process="@this" styleClass="ui-priority-primary">
 													</p:commandButton>

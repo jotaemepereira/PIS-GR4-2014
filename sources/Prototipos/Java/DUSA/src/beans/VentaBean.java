@@ -22,6 +22,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import model.Articulo;
+import model.Cliente;
 import model.Enumerados;
 import model.LineaVenta;
 import model.Usuario;
@@ -338,6 +339,7 @@ public class VentaBean implements Serializable {
 						.toString());
 				venta.setCantidadLineas(lineasVenta2.size());
 
+
 				venta.setEstadoVenta(String
 						.valueOf(Enumerados.EstadoVenta.PENDIENTE)); // estado p
 																		// seria
@@ -517,7 +519,6 @@ public class VentaBean implements Serializable {
 
 			// calculo para IVA del 10%
 			if (v.getIva().equals(new BigDecimal(22))) {
-
 				venta.setMontoNetoGravadoIvaBasico(v.getPrecio().subtract(iva));
 				venta.setMontoTributoIvaBasico(iva);
 				venta.setTotalIvaBasico(venta.getTotalIvaBasico().add(iva));
