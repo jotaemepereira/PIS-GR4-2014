@@ -57,6 +57,15 @@ public class Excepciones extends Exception {
 	public static String MENSAJE_ERROR_FECHA					= "La fecha seleccionada no puede ser posterior a la fecha actual.";
 	public static String MENSAJE_COMPRA_OK						= "La compra ha sido realizada con éxito.";
 	
+	//Modificar Stock
+	public static String MENSAJE_MOTIVO_VACIO					= "Por favor, ingrese un motivo.";
+	public static String MENSAJE_CANT_INVALIDA_ORIGEN			= "El nuevo stock del artículo origen debe ser menor al actual.";
+	public static String MENSAJE_CANT_INVALIDA_DESTINO			= "El nuevo stock del artículo destino debe ser mayor al actual.";
+	public static String MENSAJE_DESARME_EXITO					= "Desarme realizado con éxito.";
+	public static String MENSAJE_CANT_IGUALES					= "No hay cambios ingresados.";
+	public static String MENSAJE_SELECCIONE_ARTICULO			= "Por favor, busque y/o seleccione un artículo para continuar.";
+	
+	
 	public Excepciones(String message, int errorCode){
         super(message);
         this.errorCode = errorCode;
