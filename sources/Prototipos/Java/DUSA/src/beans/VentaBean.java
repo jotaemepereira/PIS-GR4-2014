@@ -519,7 +519,6 @@ public class VentaBean implements Serializable {
 
 			// calculo para IVA del 10%
 			if (v.getIva().equals(new BigDecimal(22))) {
-
 				venta.setMontoNetoGravadoIvaBasico(v.getPrecio().subtract(iva));
 				venta.setMontoTributoIvaBasico(iva);
 				venta.setTotalIvaBasico(venta.getTotalIvaBasico().add(iva));
