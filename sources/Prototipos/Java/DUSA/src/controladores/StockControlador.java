@@ -239,14 +239,11 @@ public class StockControlador implements IStock {
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
 //		grabarTiposIVA();
-		
-		Calendar cal = Calendar.getInstance();  //Get current date/month i.e 27 Feb, 2012
-		cal.add(Calendar.MONTH, -1);   //Go to date, 6 months ago 27 July, 2011
-		cal.set(Calendar.DAY_OF_MONTH, 1); 
-		
-		(new StockControlador()).actualizarStock(cal.getTime());
-		(new PStockControlador()).fullImportSolr();
-		
+//		Calendar cal = Calendar.getInstance();  //Get current date/month i.e 27 Feb, 2012
+//		cal.add(Calendar.MONTH, -3);   //Go to date, 6 months ago 27 July, 2011
+//		cal.set(Calendar.DAY_OF_MONTH, 1); 
+//		(new StockControlador()).actualizarStock(cal.getTime());
+//		(new PStockControlador()).fullImportSolr();
 		return FabricaPersistencia.getStockPersistencia()
 				.obtenerAccionesTerapeuticas();
 	}
