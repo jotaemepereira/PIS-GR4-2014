@@ -282,12 +282,20 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
-		return FabricaLogica.getInstanciaCompras().obtenerFacturasDUSA();
+		
+		if (user.tienePermiso(casoDeUso.obtenerFacturasDUSA))
+			return FabricaLogica.getInstanciaCompras().obtenerFacturasDUSA();
+		else
+			throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
 	}
 
 	@Override
 	public Articulo obtenerArticulo(int idArticulo) throws Excepciones {
-		return FabricaLogica.getIStock().obtenerArticulo(idArticulo);
+		
+		if (user.tienePermiso(casoDeUso.obtenerArticulo))
+			return FabricaLogica.getIStock().obtenerArticulo(idArticulo);
+		else
+			throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
 	}
 	
 	@Override
