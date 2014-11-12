@@ -17,6 +17,7 @@ import javax.faces.context.FacesContext;
 
 import model.Enumerados.tipoMovimientoDeStock;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
 import controladores.Excepciones;
@@ -149,6 +150,18 @@ public class ModificarStockBean implements Serializable{
 	 * @return
 	 */
 	public String onFlowProcess(FlowEvent event) {
+		
+		if ((event.getNewStep().equals("paso2") && this.articuloSeleccionado == null) || 
+			(event.getNewStep().equals("paso3") && this.articuloParaDesarme == null)){
+			
+			FacesContext contexto = FacesContext.getCurrentInstance();
+			contexto.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Por favor busque y/o seleccione un artículo para continuar.", ""));
+			
+//			RequestContext.getCurrentInstance().update("msgs");
+			return event.getOldStep();
+		}
+		
 		return event.getNewStep();
 	}
 	
