@@ -297,7 +297,7 @@ public class ServicioDusaControlador implements IServicio {
 			ResultGetComprobantes resComprobantes = null;
 			
 			Calendar c = Calendar.getInstance(); 
-			c.add(Calendar.DAY_OF_YEAR, -50);  //TODO: cambiar a una fecha más cercana
+			c.add(Calendar.DAY_OF_YEAR, -60);  //TODO: cambiar a una fecha más cercana
 			Date date = c.getTime();
 			
 			GregorianCalendar gCalendar = new GregorianCalendar();

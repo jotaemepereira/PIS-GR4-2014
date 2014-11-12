@@ -54,6 +54,8 @@ public class Excepciones extends Exception {
 	public static String MENSAJE_SERIE_REQUERIDO				= "Para continuar es necesario ingeresar la serie de factura";
 	public static String MENSAJE_NUMERO_REQUERIDO				= "Para continuar es necesario ingeresar el numero de factura";
 	public static String MENSAJE_PROVEEDOR_VACIO				= "Para continuar es necesario seleccionar un proveedor";
+	public static String MENSAJE_ERROR_FECHA					= "La fecha seleccionada no puede ser posterior a la fecha actual.";
+	public static String MENSAJE_COMPRA_OK						= "La compra ha sido realizada con éxito.";
 	
 	public Excepciones(String message, int errorCode){
         super(message);

@@ -283,7 +283,8 @@ public class PComprasControlador implements IComprasPersistencia {
 		String queryOrden = "SELECT * FROM orders ";
 		queryOrden += "WHERE is_processed = ?";
 
-		String queryDetalle = "SELECT od.*, p.description, p.list_cost FROM order_details od ";
+		String queryDetalle = "SELECT od.*, p.description, p.list_cost ";
+		queryDetalle += "FROM order_details od ";
 		queryDetalle += "INNER JOIN products p ON p.product_id = od.product_id ";
 		queryDetalle += "WHERE order_id = ?";
 

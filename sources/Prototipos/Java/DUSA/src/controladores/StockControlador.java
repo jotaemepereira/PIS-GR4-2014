@@ -243,11 +243,6 @@ public class StockControlador implements IStock {
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
 		//grabarTiposIVA();
-		Calendar c = Calendar.getInstance(); 
-		c.add(Calendar.DAY_OF_YEAR, -30);  //TODO: cambiar a una fecha más cercana
-		Date date = c.getTime();
-		actualizarStock(date);
-		
 		return FabricaPersistencia.getStockPersistencia()
 				.obtenerAccionesTerapeuticas();
 	}

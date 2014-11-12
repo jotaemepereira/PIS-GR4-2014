@@ -202,7 +202,12 @@ public class Orden {
 		return fechaComprobante;
 	}
 
-	public void setFechaComprobante(Date fechaComprobante) {
+	public void setFechaComprobante(Date fechaComprobante) throws Excepciones{
+		Date hoy = new Date();
+		if(fechaComprobante.compareTo(hoy) > 0){
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_FECHA,
+					Excepciones.ERROR_DATOS));
+		}
 		this.fechaComprobante = fechaComprobante;
 	}
 
