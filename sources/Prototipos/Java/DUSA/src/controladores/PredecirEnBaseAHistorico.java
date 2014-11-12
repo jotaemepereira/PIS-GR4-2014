@@ -39,6 +39,7 @@ public class PredecirEnBaseAHistorico implements IPredictor{
 	
 	}
 	
+	@Override
 	public int predecir(Long idArticulo) throws Excepciones{
 		
 		IFacturacionPersistencia fp = FabricaPersistencia.getInstanciaFacturacionPersistencia();
@@ -61,7 +62,7 @@ public class PredecirEnBaseAHistorico implements IPredictor{
 			
 			//Se considera los domingo como feriado.
 			//Hay que evitar calcular los dias cerrados ya que influyen negativamente el la prediccion.
-			if (desde.DAY_OF_WEEK!=1 ){
+			if (Calendar.DAY_OF_WEEK!=1 ){
 				
 				int cantidad = fp.cantidadVendidaEnPeriodo(idArticulo, new Date(desde.getTimeInMillis()), new Date(desde.getTimeInMillis() + CANT_MILISEC_EN_UN_DIA));
 				recta.addData(i,cantidad);
@@ -81,7 +82,7 @@ public class PredecirEnBaseAHistorico implements IPredictor{
 		for (int i=1; i<= CANT_ANIOS_ANTEIORES; i++){
 			desde = Calendar.getInstance();
 			hasta = Calendar.getInstance();
-			desde.add(hoy.YEAR, -i);
+			desde.add(Calendar.YEAR, -i);
 			hasta.setTimeInMillis(desde.getTimeInMillis()+dias_a_predecir_en_milisec);
 			cantPromVendidaAniosAnt += fp.cantidadVendidaEnPeriodo(idArticulo, new Date(desde.getTimeInMillis()), new Date(hasta.getTimeInMillis()));
 		}

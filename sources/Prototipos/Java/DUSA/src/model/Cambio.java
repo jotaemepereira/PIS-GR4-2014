@@ -15,14 +15,14 @@ public class Cambio {
 	BigDecimal precioAntiguo;
 	BigDecimal precioAtual;
 	
-	public Cambio(Articulo art, Articulo artAnt){
+	public Cambio(Articulo art, Articulo artAnt, boolean bajaPrecio ,boolean dadoDeBaja){
 	
-		this.idArticulo = art.getIdArticulo();
+		this.idArticulo = artAnt.getIdArticulo();
 		this.descripcion = art.getDescripcion();
-		this.dadoDeBaja = (artAnt.isStatus()==true && art.isStatus()==false);
-		this.bajoElPrecio = (artAnt.getPrecioUnitario().compareTo(art.getPrecioUnitario() )  == 1);
+		this.dadoDeBaja = dadoDeBaja;
+		this.bajoElPrecio = bajaPrecio;
 		this.precioAntiguo = artAnt.getPrecioUnitario();
-		this.precioAntiguo = art.getPrecioUnitario();
+		this.precioAtual= art.getPrecioUnitario().setScale(2, BigDecimal.ROUND_HALF_UP);;
 	
 	}
 	
@@ -44,8 +44,9 @@ public class Cambio {
 		result += " y su precio actual: ";
 		result += this.precioAtual.toString();
 	}
-	
+	System.out.print("IMPRIMO EL CAMBIO" + result);
 	return result;
+	
 		
 	}
 	

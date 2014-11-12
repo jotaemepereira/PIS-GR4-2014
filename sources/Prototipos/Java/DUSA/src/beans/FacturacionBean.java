@@ -29,38 +29,40 @@ public class FacturacionBean implements Serializable {
 	private static final long serialVersionUID = 2007052022183720826L;
 
 	private ISistema instanciaSistema;
-	
+
 	private List<Venta> ventas;
 	private Venta ventaSeleccionada;
 	private boolean[] lineasCheck;
 	private boolean facturacionControlada = false;
-	
+
 	/**
 	 * Utilizado en el xhtml por el loginBean
+	 * 
 	 * @param s
 	 */
-	public void setISistema(ISistema s){
-		
+	public void setISistema(ISistema s) {
+
 		this.instanciaSistema = s;
 		if (this.instanciaSistema != null) {
-			
+
 			try {
-				facturacionControlada = (Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext()
+				facturacionControlada = (Integer.parseInt(FacesContext
+						.getCurrentInstance().getExternalContext()
 						.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.controlada);
-				
+
 				ventas = this.instanciaSistema.listarVentasPendientes();
 			} catch (Excepciones e) {
 				FacesContext.getCurrentInstance().addMessage(
 						null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR,
-								e.getMessage(), ""));
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e
+								.getMessage(), ""));
 			} catch (Exception ex) {
-				
+
 				ex.printStackTrace();
 				FacesContext.getCurrentInstance().addMessage(
 						null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR,
-								ex.getMessage(), ""));
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, ex
+								.getMessage(), ""));
 			}
 		}
 	}
@@ -68,7 +70,7 @@ public class FacturacionBean implements Serializable {
 	public void facturar() {
 		try {
 			boolean allCheck = true;
-			if (facturacionControlada) { 
+			if (facturacionControlada) {
 				for (int i = 0; i < ventaSeleccionada.getCantidadLineas(); i++) {
 					if (!lineasCheck[i]) {
 						allCheck = false;
@@ -78,46 +80,53 @@ public class FacturacionBean implements Serializable {
 
 			if (allCheck) {
 
-				boolean ret = this.instanciaSistema.facturarVentaPendiente(ventaSeleccionada.getVentaId());
-
-				if (ret){
-				FacesContext.getCurrentInstance().addMessage(
-						null,
-						new FacesMessage(FacesMessage.SEVERITY_INFO,
-								Excepciones.MENSAJE_FACTURADA_OK, ""));
-				} else{
-					FacesContext.getCurrentInstance().addMessage(
-							null,
-							new FacesMessage(FacesMessage.SEVERITY_ERROR,
-									Excepciones.MENSAJE_FACTURA_FACTURADA, ""));
-				}
-				ventas = this.instanciaSistema.listarVentasPendientes();
-				RequestContext.getCurrentInstance().execute("PF('dlg2').hide()");
+				facturarVenta(ventaSeleccionada.getVentaId());
+				RequestContext.getCurrentInstance()
+						.execute("PF('dlg2').hide()");
 			} else {
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR,
 								Excepciones.MENSAJE_NO_CORROBORADO_OK, ""));
 			}
-		} catch (Excepciones ex) {
-			//Se notifica del error ocurrido en el sistema
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							ex.getMessage(), ""));
- 
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							Excepciones.MENSAJE_ERROR_SISTEMA, ""));
- 
+
+		}
+	}
+
+	public void facturarVenta(long id) {
+		try {
+			boolean ret = this.instanciaSistema.facturarVentaPendiente(id);
+
+			if (ret) {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_INFO,
+								Excepciones.MENSAJE_FACTURADA_OK, ""));
+			} else {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								Excepciones.MENSAJE_FACTURA_FACTURADA, ""));
+			}
+			ventas = this.instanciaSistema.listarVentasPendientes();
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							Excepciones.MENSAJE_ERROR_SISTEMA, ""));
+
 		}
 	}
 
 	public void cancelar() {
 		try {
-			this.instanciaSistema.cancelarVentaPendiente(ventaSeleccionada.getVentaId());
+			this.instanciaSistema.cancelarVentaPendiente(ventaSeleccionada
+					.getVentaId());
 
 			FacesContext.getCurrentInstance().addMessage(
 					null,
@@ -135,7 +144,7 @@ public class FacturacionBean implements Serializable {
 	public void cargarFactura(Venta v) {
 		ventaSeleccionada = v;
 		lineasCheck = new boolean[v.getCantidadLineas()];
-		for (int i = 0; i < v.getCantidadLineas(); i++){
+		for (int i = 0; i < v.getCantidadLineas(); i++) {
 			lineasCheck[i] = false;
 		}
 	}

@@ -10,7 +10,6 @@ import model.Articulo;
 import model.Droga;
 import model.Pedido;
 import model.TipoIva;
-import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;

@@ -2,23 +2,20 @@ package persistencia;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 
 import controladores.Excepciones;
-import datatypes.DTVenta;
 import model.Articulo;
 import model.Cliente;
 import model.Enumerados;
 import model.LineaVenta;
+import model.PocasVentas;
 import model.Usuario;
 import model.Venta;
 import interfaces.IFacturacionPersistencia;
@@ -513,6 +510,15 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 
+	}
+
+	@Override
+	public List<PocasVentas> articulosConPocasVentasEnLosUltimosMeses(
+			int mesesAtras) throws Excepciones {
+
+		
+		
+		return null;
 	}
 
 }

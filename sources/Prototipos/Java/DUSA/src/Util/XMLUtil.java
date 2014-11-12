@@ -1,8 +1,6 @@
 package Util;
 
 import java.io.File;
-import java.io.OutputStream;
-
 import model.Venta;
 
 import javax.faces.context.FacesContext;

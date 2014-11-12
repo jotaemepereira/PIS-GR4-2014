@@ -3,15 +3,7 @@ package datatypes;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import controladores.FabricaPersistencia;
-import uy.com.dusa.ws.DataComprobante;
-import uy.com.dusa.ws.DataLineaComprobante;
 
 public class DTComprobanteFactura {
 	
