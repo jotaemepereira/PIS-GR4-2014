@@ -2,6 +2,7 @@ package model;
 
 import java.util.Iterator;
 import java.util.List;
+
 import javax.mail.*; 
 import javax.mail.internet.AddressException;
 
@@ -26,11 +27,13 @@ public class Mail {
 	public void setContenido (List<Cambio> camb){
 		
 		Iterator <Cambio> it = camb.iterator();
-		this.contenido = "Se informa que se realizaron los siguientes cambios:";
-		this.contenido = "\n" + "\n";
+		this.contenido = new String();
+		this.contenido += "Se informa que se realizaron los siguientes cambios:";
+		this.contenido += "\n" + "\n";
 		while(it.hasNext()){
 			contenido += (it.next().toString());
-			this.contenido = "\n";
+			this.contenido += "\n";
+			System.out.println("ADENTRO DE MAIL:    "  + this.contenido);
 		}
 				
 	}

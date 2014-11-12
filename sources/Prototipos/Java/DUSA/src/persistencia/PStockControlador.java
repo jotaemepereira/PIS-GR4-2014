@@ -519,7 +519,7 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setStock(rs.getInt("STOCK"));
 				articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
 				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
-				articulo.setIva(rs.getBigDecimal("BILLING_INDICATOR"));
+				articulo.setIndicadorFacturacion(rs.getInt("BILLING_INDICATOR"));
 				articulo.setPrecioReceta(rs.getBigDecimal("RECIPE_PRICE"));
 				articulo.setDescuentoReceta(rs.getBigDecimal("RECIPE_DISCOUNT"));
 
@@ -1478,7 +1478,7 @@ public class PStockControlador implements IStockPersistencia {
 				BigDecimal bg2 = new BigDecimal("0.5");
 				boolean bajaEnPrecio = bg.abs().compareTo(bg2) > 0;
 				boolean dadoDeBaja =  artAnt.isStatus()==true && art.isStatus()==false;
-				if (bajaEnPrecio   || dadoDeBaja) {
+				if (bajaEnPrecio   || true /*dadoDeBaja*/) {
 //					System.out.print("Precio anterior:   ");
 //					System.out.println(artAnt.getPrecioUnitario());
 //					System.out.print("Precio actual:   ");
