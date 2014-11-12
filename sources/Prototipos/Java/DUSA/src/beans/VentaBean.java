@@ -22,6 +22,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import model.Articulo;
+import model.Cliente;
 import model.Enumerados;
 import model.LineaVenta;
 import model.Usuario;
@@ -337,6 +338,7 @@ public class VentaBean implements Serializable {
 				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO
 						.toString());
 				venta.setCantidadLineas(lineasVenta2.size());
+
 
 				venta.setEstadoVenta(String
 						.valueOf(Enumerados.EstadoVenta.PENDIENTE)); // estado p
