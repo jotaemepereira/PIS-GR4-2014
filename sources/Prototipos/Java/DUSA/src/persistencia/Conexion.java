@@ -24,9 +24,9 @@ public class Conexion {
         String connection = FacesContext.getCurrentInstance()
                 .getExternalContext().getInitParameter("CONNSTRING");
         return DriverManager.getConnection(connection, user, password);
-        /*
         
-        try {
+        
+        /*try {
              Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
@@ -37,7 +37,7 @@ public class Conexion {
         String connection = "jdbc:postgresql://localhost:5432/pisgr4";
         return DriverManager.getConnection(connection, user, password);*/
 		
-	//	return DriverManager.getConnection("jdbc:postgresql://localhost:5432/pisgr4", "root", "root");
+		//return DriverManager.getConnection("jdbc:postgresql://localhost:5432/pisgr4", "root", "root");
 		
 	}
 

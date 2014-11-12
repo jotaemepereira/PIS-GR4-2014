@@ -22,6 +22,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import model.Articulo;
+import model.Cliente;
 import model.Enumerados;
 import model.LineaVenta;
 import model.Usuario;
@@ -96,17 +97,17 @@ public class VentaBean implements Serializable {
 		try {
 			lineasVenta = FabricaSistema.getISistema().buscarArticulosVenta(
 					descripcionBusqueda);
-			
+
 			Iterator<DTVenta> it = lineasVenta.iterator();
 			while (it.hasNext()) {
 				DTVenta dtVenta = (DTVenta) it.next();
-				if (dtVenta.getPrecioReceta() == null || dtVenta.getPrecioReceta().equals(new BigDecimal(0)) ){
+				if (dtVenta.getPrecioReceta() == null
+						|| dtVenta.getPrecioReceta().equals(new BigDecimal(0))) {
 					dtVenta.setRecetaBlanca(false);
-				}else{
+				} else {
 					dtVenta.setRecetaBlanca(true);
 				}
 			}
-			
 
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
@@ -151,12 +152,17 @@ public class VentaBean implements Serializable {
 			BigDecimal x = new BigDecimal(0);
 			BigDecimal n = new BigDecimal(0);
 
+			if (v.getDescuentoPrecio() == null) {
+				v.setDescuentoPrecio("0");
+			}
+			
 			if ((v.getDescuento().compareTo(new BigDecimal(101)) == -1)
 					&& (v.getDescuento().compareTo(new BigDecimal(-1)) == 1)) {
 
 				x = (v.getArticulo().getPrecioVenta()
 						.multiply(v.getDescuento()))
 						.divide(new BigDecimal(100));
+
 				// calculo descuento del 5%
 				if (v.getDescuentoPrecio().equals("5")) {
 					n = (v.getArticulo().getPrecioVenta()
@@ -184,58 +190,70 @@ public class VentaBean implements Serializable {
 								null,
 								new FacesMessage(
 										FacesMessage.SEVERITY_ERROR,
-										"el descuento ingresado debe ser un numero entre 0 y 100",
+										"El descuento ingresado debe ser un número entre 0 y 100",
 										""));
 			}
-			
+
 			String total = "";
 
 			if ((v.getDescuento().compareTo(new BigDecimal(0)) == 0)
 					&& (!v.getDescuentoPrecio().equals("0"))) {
 
-				total=("$"
+				total = ("$"
 						+ ((v.getArticulo().getPrecioVenta().subtract(x))
-								.subtract(n)).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "(" + "%"
-						+ v.getDescuentoPrecio()  );
+								.subtract(n)).setScale(2,
+								BigDecimal.ROUND_HALF_UP).toString() + "("
+						+ "%" + v.getDescuentoPrecio());
 			}
 
 			if ((v.getDescuento().compareTo(new BigDecimal(0)) != 0)
 					&& (!v.getDescuentoPrecio().equals("0"))) {
 
-				total=("$"
+				total = ("$"
 						+ ((v.getArticulo().getPrecioVenta().subtract(x))
-								.subtract(n)).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "(" + "%"
-						+ v.getDescuentoPrecio() + " + %"
-						+ v.getDescuento().toString() );
+								.subtract(n)).setScale(2,
+								BigDecimal.ROUND_HALF_UP).toString() + "("
+						+ "%" + v.getDescuentoPrecio() + " + %" + v
+						.getDescuento().toString());
 			}
 
 			if ((v.getDescuento().compareTo(new BigDecimal(0)) != 0)
 					&& (v.getDescuentoPrecio().equals("0"))) {
 
-				total=("$"
+				total = ("$"
 						+ ((v.getArticulo().getPrecioVenta().subtract(x))
-								.subtract(n)).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "(" + "%"
-						+ v.getDescuento().toString() );
+								.subtract(n)).setScale(2,
+								BigDecimal.ROUND_HALF_UP).toString() + "("
+						+ "%" + v.getDescuento().toString());
 			}
-			
+
 			// calculo descuento de receta
-			if (v.isRecetaBlanca() && (total.equals("")) ){
-				total = total + "(%" + v.getDescuentoReceta().multiply(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).toString() + ")";
-			}else if (v.isRecetaBlanca() && (!total.equals("")) ) {
-				total = total + " + %" + v.getDescuentoReceta().multiply(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).toString() + ")";
-			}
-			else if (!total.equals("")) {
+			if (v.isRecetaBlanca() && (total.equals(""))) {
+				total = total
+						+ "(%"
+						+ v.getDescuentoReceta().multiply(new BigDecimal(100))
+								.setScale(0, BigDecimal.ROUND_HALF_UP)
+								.toString() + ")";
+			} else if (v.isRecetaBlanca() && (!total.equals(""))) {
+				total = total
+						+ " + %"
+						+ v.getDescuentoReceta().multiply(new BigDecimal(100))
+								.setScale(0, BigDecimal.ROUND_HALF_UP)
+								.toString() + ")";
+			} else if (!total.equals("")) {
 				total = total + ")";
 			}
-			
-			if ( (total.equals("")) && (v.getDescuento().compareTo(new BigDecimal(0)) == 0)
+
+			if ((total.equals(""))
+					&& (v.getDescuento().compareTo(new BigDecimal(0)) == 0)
 					&& (v.getDescuentoPrecio().equals("0"))) {
 
-				total=("$"
+				total = ("$"
 						+ ((v.getArticulo().getPrecioVenta().subtract(x))
-								.subtract(n)).setScale(2, BigDecimal.ROUND_HALF_UP).toString() + "(%0)");
+								.subtract(n)).setScale(2,
+								BigDecimal.ROUND_HALF_UP).toString() + "(%0)");
 			}
-			
+
 			v.setTotalPrecioLinea(total);
 
 		}
@@ -253,8 +271,7 @@ public class VentaBean implements Serializable {
 			try {
 
 				venta.setLineas(lineasVenta2);
-				venta.setTotalIvaBasico(new BigDecimal(0));
-				venta.setTotalIvaMinimo(new BigDecimal(0));
+
 				// Agarrar el usuario logueado
 				Usuario usr = new Usuario();
 				usr = this.instanciaSistema.obtenerUsuarioLogueado();
@@ -310,8 +327,7 @@ public class VentaBean implements Serializable {
 			try {
 
 				venta.setLineas(lineasVenta2);
-				venta.setTotalIvaBasico(new BigDecimal(0));
-				venta.setTotalIvaMinimo(new BigDecimal(0));
+
 				// Agarrar el usuario logueado
 				Usuario usr = new Usuario();
 				usr = this.instanciaSistema.obtenerUsuarioLogueado();
@@ -320,6 +336,7 @@ public class VentaBean implements Serializable {
 				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO
 						.toString());
 				venta.setCantidadLineas(lineasVenta2.size());
+
 
 				venta.setEstadoVenta(String
 						.valueOf(Enumerados.EstadoVenta.PENDIENTE)); // estado p
@@ -365,8 +382,7 @@ public class VentaBean implements Serializable {
 
 			try {
 				venta.setLineas(lineasVenta2);
-				venta.setTotalIvaBasico(new BigDecimal(0));
-				venta.setTotalIvaMinimo(new BigDecimal(0));
+
 				// Agarrar el usuario logueado
 				Usuario usr = new Usuario();
 				usr = this.instanciaSistema.obtenerUsuarioLogueado();
@@ -382,13 +398,13 @@ public class VentaBean implements Serializable {
 																		// la
 																		// venta
 																		// pendiente
-				FabricaSistema.getISistema().registrarNuevaVenta(venta);
+				long ventaId = FabricaSistema.getISistema().registrarNuevaVenta(venta);
 
 				// la venta ya esta guardada en el sistema y ahora se factura:
 
 				IFacturacion ifact = FabricaLogica.getIFacturacion();
 
-				ifact.facturarVenta(venta);
+				ifact.facturarVenta(ventaId);
 
 				FacesContext.getCurrentInstance().addMessage(
 						null,
@@ -490,6 +506,8 @@ public class VentaBean implements Serializable {
 	public String strIva() {
 
 		BigDecimal totIva = new BigDecimal(0);
+		venta.setTotalIvaBasico(new BigDecimal(0));
+		venta.setTotalIvaMinimo(new BigDecimal(0));
 		Iterator<LineaVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
 			LineaVenta v = it.next();
@@ -499,16 +517,15 @@ public class VentaBean implements Serializable {
 					.getIva())).divide(new BigDecimal(100));
 
 			// calculo para IVA del 10%
-			if (v.getIva().equals(new BigDecimal(22))) {
-
-				venta.setMontoNetoGravadoIvaBasico(v.getPrecio().subtract(iva));
+			if (v.getIndicadorFacturacion() == 2) {
+				venta.setMontoNetoGravadoIvaBasico(v.getArticulo().getPrecioVenta().subtract(iva));
 				venta.setMontoTributoIvaBasico(iva);
 				venta.setTotalIvaBasico(venta.getTotalIvaBasico().add(iva));
 			}
 			// calculo para IVA del 22%
-			if (v.getIva().equals(new BigDecimal(10))) {
+			if (v.getIndicadorFacturacion() == 3) {
 
-				venta.setMontoNetoGravadoIvaMinimo(v.getPrecio().subtract(iva));
+				venta.setMontoNetoGravadoIvaMinimo(v.getArticulo().getPrecioVenta().subtract(iva));
 				venta.setMontoTributoIvaMinimo(iva);
 				venta.setTotalIvaMinimo(venta.getTotalIvaMinimo().add(iva));
 			}
@@ -565,14 +582,14 @@ public class VentaBean implements Serializable {
 							.multiply(new BigDecimal(10)))
 							.divide(new BigDecimal(100));
 				}
-				
+
 				// calculo descuento de receta
-				if (v.isRecetaBlanca()){
-					
+				if (v.isRecetaBlanca()) {
+
 					descReceta = v.getArticulo().getPrecioVenta()
 							.multiply(v.getDescuentoReceta());
 				}
-				
+
 			} else {
 
 				FacesContext
@@ -584,8 +601,9 @@ public class VentaBean implements Serializable {
 										"el descuento ingresado debe ser un numero entre 0 y 100",
 										""));
 			}
-			total = total.add(x.multiply(new BigDecimal(v.getCantidad()))).add(
-					n.multiply(new BigDecimal(v.getCantidad()))).add(descReceta.multiply(new BigDecimal(v.getCantidad())));
+			total = total.add(x.multiply(new BigDecimal(v.getCantidad())))
+					.add(n.multiply(new BigDecimal(v.getCantidad())))
+					.add(descReceta.multiply(new BigDecimal(v.getCantidad())));
 		}
 		return total.setScale(2, BigDecimal.ROUND_HALF_UP).toString();
 	}
@@ -628,14 +646,13 @@ public class VentaBean implements Serializable {
 							.multiply(new BigDecimal(10)))
 							.divide(new BigDecimal(100));
 				}
-				
+
 				// calculo descuento de receta
-				if (v.isRecetaBlanca()){
-					
+				if (v.isRecetaBlanca()) {
+
 					descReceta = v.getArticulo().getPrecioVenta()
 							.multiply(v.getDescuentoReceta());
 				}
-				
 
 			} else {
 
@@ -652,7 +669,8 @@ public class VentaBean implements Serializable {
 			// sumo los totales restandole los descuentos correspondientes a
 			// cada uno y los multiplico por las cantidades
 			total = total.add((((v.getArticulo().getPrecioVenta().subtract(x))
-					.subtract(n)).subtract(descReceta)).multiply(new BigDecimal(v.getCantidad())));
+					.subtract(n)).subtract(descReceta))
+					.multiply(new BigDecimal(v.getCantidad())));
 
 		}
 		venta.setMontoTotalAPagar(total.setScale(2, BigDecimal.ROUND_HALF_UP));

@@ -332,10 +332,7 @@ public class StockControlador implements IStock {
 			m.Enviar();
 		}
 		
-		} catch (IOException e){ 
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MessagingException e){
+		} catch (IOException | MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

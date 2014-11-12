@@ -1,6 +1,5 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,12 +10,12 @@ public class Mail {
 
 	private String mailEmisor;
 	private String password;
-	private ArrayList<String> destinatarios;
+	private String destinatarios;
 	private String asunto;
 	private String contenido;
 	
 	public void setDestinatarios(String mailDest){
-		this.destinatarios.add(mailDest);                                               
+		this.destinatarios = mailDest;                                              
 	}
 	public void setEmisor(String mailEmisor, String password){
 		this.mailEmisor = mailEmisor;
@@ -28,27 +27,19 @@ public class Mail {
 	public void setContenido (List<Cambio> camb){
 		
 		Iterator <Cambio> it = camb.iterator();
-		this.contenido = "Se informa que se realizaron los siguientes cambios:";
-		this.contenido.concat("\n");
-		this.contenido.concat("\n");
+		this.contenido = new String();
+		this.contenido += "Se informa que se realizaron los siguientes cambios:";
+		this.contenido += "\n" + "\n";
 		while(it.hasNext()){
-			this.contenido.concat(it.next().toString());
-			this.contenido.concat("\n");
+			contenido += (it.next().toString());
+			this.contenido += "\n";
+			System.out.println("ADENTRO DE MAIL:    "  + this.contenido);
 		}
 				
 	}
 	public void Enviar() throws AddressException, MessagingException{
-		
-		String dests = new String();
-		Iterator<String> it = destinatarios.iterator();
-		dests.concat(it.next());
-		while (it.hasNext()){
-			dests.concat(", ");
-			dests.concat(it.next());
-		}
-		// voy a poner usr y pass en una tabla en la bd 
-		GoogleMail.Send(this.mailEmisor,this.password ,  dests, this.asunto, this.contenido);
+	
+		GoogleMail.Send(this.mailEmisor,this.password ,  this.destinatarios, this.asunto, this.contenido);
 
 	}
 }
-

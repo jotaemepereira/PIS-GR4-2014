@@ -4,11 +4,15 @@ import java.util.List;
 
 import controladores.Excepciones;
 import model.Venta;
-import datatypes.DTVenta;
 
 public interface IFacturacion {
 	
+
 	public List<Venta> listarVentasPendientes() throws Excepciones;
+
+
+	public void articulosConPocasVentasEnLosUltimosMeses(int mesesAtras) throws Exception;
+	
 	
 	public boolean facturarVenta(long venta) throws Excepciones;
 	
@@ -16,7 +20,7 @@ public interface IFacturacion {
 	
 	public long registrarNuevaVenta(Venta v)
 			throws Excepciones;
-	/**
+	/**iajo
 	 * Registra en el sistema la venta v
 	 * @param v 
 	 * 			- lista de DTVenta que componen la venta a registrar

@@ -2,11 +2,9 @@ package persistencia;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,11 +22,9 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.primefaces.json.JSONObject;
 
 import Util.NamedParameterStatement;
 import controladores.Excepciones;
-import controladores.FabricaPersistencia;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
@@ -197,6 +193,39 @@ public class PStockControlador implements IStockPersistencia {
 		PreparedStatement stmt = null;
 		String query = "SELECT COUNT(*) AS cant FROM products "
 				+ "WHERE DESCRIPTION = ?";
+		
+		try {
+
+			
+			Connection c = Conexion.getConnection();
+			
+			stmt = c.prepareStatement(query);
+			stmt.setString(1, descripcion);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				
+				cant = rs.getInt("cant");
+			}
+
+			rs.close();
+			stmt.close();
+			c.close();
+		
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+		return (cant > 0);
+		
+	}
+	
+	public long obtenerIdPorDescripcion(String descripcion) throws Excepciones {
+		long id = 0;
+		PreparedStatement stmt = null;
+		String query = "SELECT product_id FROM products "
+				+ "WHERE DESCRIPTION = ?";
 
 		try {
 			Connection c = Conexion.getConnection();
@@ -206,7 +235,7 @@ public class PStockControlador implements IStockPersistencia {
 			ResultSet rs = stmt.executeQuery();
 			// Obtengo la cantidad de proveedores con ese rut
 			while (rs.next()) {
-				cant = rs.getInt("cant");
+				id = rs.getLong("product_id");
 			}
 			rs.close();
 			stmt.close();
@@ -215,8 +244,9 @@ public class PStockControlador implements IStockPersistencia {
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
-		return (cant > 0);
+		return id;
 	}
+
 
 	
 	public List<Articulo> buscarArticulo(String descripcion) {
@@ -501,7 +531,7 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setStock(rs.getInt("STOCK"));
 				articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
 				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
-				articulo.setIva(rs.getBigDecimal("BILLING_INDICATOR"));
+				articulo.setIndicadorFacturacion(rs.getInt("BILLING_INDICATOR"));
 				articulo.setPrecioReceta(rs.getBigDecimal("RECIPE_PRICE"));
 				articulo.setDescuentoReceta(rs.getBigDecimal("RECIPE_DISCOUNT"));
 
@@ -924,6 +954,7 @@ public class PStockControlador implements IStockPersistencia {
 			}
 			rs.close();
 			stmt.close();
+			c.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
@@ -1076,6 +1107,7 @@ public class PStockControlador implements IStockPersistencia {
 		}
 	}
 
+	@Override
 	public void actualizarStockCompra(List<OrdenDetalle> detalles)
 			throws Excepciones {
 
@@ -1087,7 +1119,7 @@ public class PStockControlador implements IStockPersistencia {
 					
 			Iterator<OrdenDetalle> it = detalles.iterator();
 			while (it.hasNext()) {
-				OrdenDetalle ordenDetalle = (OrdenDetalle) it.next();
+				OrdenDetalle ordenDetalle = it.next();
 				stmt = c.prepareStatement(query);
 				stmt.setInt(1, ordenDetalle.getCantidad());
 				stmt.setBigDecimal(2, ordenDetalle.getPrecioUnitario());
@@ -1104,6 +1136,33 @@ public class PStockControlador implements IStockPersistencia {
 		}
 	}
 
+	public void actualizarPrecioYEstadoDeArticulo(Articulo articulo)throws Excepciones{
+		
+		//UPDATE PRODUCTS SET status='f',unit_price='100' WHERE product_id=13;
+		String query = "UPDATE PRODUCTS SET ";
+		String status = articulo.isStatus() ? "'t'" : "'f'";
+		query += "status=" + status + ",";
+		query += "unit_price='" + articulo.getPrecioUnitario() + "' ";
+		query += ",LAST_MODIFIED = LOCALTIMESTAMP ";
+		query += "WHERE PRODUCT_ID =" + articulo.getIdArticulo() +";";
+		System.out.println(query);
+		Connection c = null;
+		
+		try {
+			c = Conexion.getConnection(); 
+			PreparedStatement stmt = null;
+			stmt = c.prepareStatement(query);
+			stmt.executeUpdate();
+			stmt.close();
+			c.close();
+
+		} catch (NamingException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
 	@Override
 	public void modificarArticulo(DTModificacionArticulo dataArticulo) throws Excepciones {          
 		NamedParameterStatement stmt = null;
@@ -1193,6 +1252,7 @@ public class PStockControlador implements IStockPersistencia {
 		if (articulo.isUsuarioModificado()) {
 			query += "USERNAME = :username, ";
 		}
+		
 
 		// Seteo fecha de última modificación a la actual
 		query += "LAST_MODIFIED = LOCALTIMESTAMP ";
@@ -1409,28 +1469,45 @@ public class PStockControlador implements IStockPersistencia {
 	 * @return
 	 * @throws Excepciones 
 	 */
+	@Override
 	public List <Cambio> obtenerCambios(List <Articulo> arts) throws Excepciones{
 
 		Iterator<Articulo> it = arts.iterator();
 		List<Cambio> cambios = new ArrayList<Cambio>();
+		
 		while (it.hasNext()){
 			
 			Articulo art = it.next();
+			
+				System.out.println(art.getDescripcion());
 			if (this.existeArticulo(art.getDescripcion())){
-				//VER SI NO ES CON LA DESCRIPCION
-				Articulo artAnt = this.obtenerArticuloConId(art.getIdArticulo());
+				Long id = this.obtenerIdPorDescripcion(art.getDescripcion());
+				Articulo artAnt = this.obtenerArticuloConId(id);
 				// si el precio unitario disminuyo o fue dado de baja se agrega a los cambios;
-				if (artAnt.getPrecioUnitario().compareTo(art.getPrecioUnitario() )  == 1  || 
-						(artAnt.isStatus()==true && art.isStatus()==false)) {
-					cambios.add(new Cambio(art,artAnt));
-					//TODO marcar las modificaciones correspondientes
-					DTModificacionArticulo dataArticulo = new DTModificacionArticulo();
-					dataArticulo.setArticulo(art);
-					this.modificarArticulo(dataArticulo);
+
+
+				BigDecimal bg = artAnt.getPrecioUnitario().subtract(art.getPrecioUnitario());
+				BigDecimal bg2 = new BigDecimal("0.5");
+				boolean bajaEnPrecio = bg.abs().compareTo(bg2) > 0;
+				boolean dadoDeBaja =  artAnt.isStatus()==true && art.isStatus()==false;
+				if (bajaEnPrecio   || true /*dadoDeBaja*/) {
+//					System.out.print("Precio anterior:   ");
+//					System.out.println(artAnt.getPrecioUnitario());
+//					System.out.print("Precio actual:   ");
+//					System.out.println(art.getPrecioUnitario());
+//					System.out.print("estado anterior:  ");
+//					System.out.println(artAnt.isStatus());
+//					System.out.print("estado actual:   ");
+//					System.out.println(art.isStatus());
+					art.setIdArticulo(artAnt.getIdArticulo());
+					cambios.add(new Cambio(art,artAnt,bajaEnPrecio,dadoDeBaja));
+					this.actualizarPrecioYEstadoDeArticulo(art);
+		
 				}
 				
 			}
 			else{
+				
 				this.persistirArticulo(art);
 			}
 		}	
