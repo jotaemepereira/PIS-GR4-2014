@@ -73,13 +73,10 @@ public class VentaBean implements Serializable {
 				// pueda facturar directo desde la venta
 				ventaFacturacion = ((this.instanciaSistema
 						.obtenerUsuarioLogueado()
-						.tienePermiso(Enumerados.casoDeUso.facturarVentaPendiente)) && ((Integer
+						.tienePermiso(Enumerados.casoDeUso.facturarVentaPendiente)) && ( (Integer
 						.parseInt(FacesContext.getCurrentInstance()
 								.getExternalContext()
-								.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.basica) || (Integer
-						.parseInt(FacesContext.getCurrentInstance()
-								.getExternalContext()
-								.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.controlada)));
+								.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.basica) ));
 
 			} catch (Exception e) {
 				FacesContext.getCurrentInstance().addMessage(
