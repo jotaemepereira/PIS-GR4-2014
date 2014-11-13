@@ -286,7 +286,8 @@ public class ComprasBean implements Serializable {
 		FacesContext context = FacesContext.getCurrentInstance();
 		alertasPrecios.clear();
 
-		// Para el caso de los comprobantes electronicos verifico que se haya ingresado una serie
+		// Para el caso de los comprobantes electronicos verifico que se haya
+		// ingresado una serie
 		if ((serieFactura == false) && (factura.getSerieCFE().equals(""))) {
 			context.addMessage(
 					null,
@@ -296,17 +297,22 @@ public class ComprasBean implements Serializable {
 							""));
 			return;
 		}
-		
-		// Verifico que total ingresado == total calculado
-		BigDecimal tot = factura.getMontoTotalAPagar().add(factura.getMontoNoFacturable());
-		if(totalFactura.compareTo(tot) != 0){
-			context.addMessage(
-					null,
-					new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							"La suma de los montos netos es distinta a el total ingresado.",
-							""));
-			return;
+
+		// En caso de factura manual, Verifico que total ingresado == total
+		// calculado
+		if (factura.getOrdenDeCompra() == 0) {
+			BigDecimal total = factura.getMontoTotalAPagar().add(
+					factura.getMontoNoFacturable());
+			System.out.println("TOTALES: " + total + " " + totalFactura);
+			if (totalFactura.compareTo(total) != 0) {
+				context.addMessage(
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_ERROR,
+								"El total calculado a partir de los costos ingresados, no iguala al total ingresado.",
+								""));
+				return;
+			}
 		}
 
 		List<OrdenDetalle> detalles = new ArrayList<OrdenDetalle>();
@@ -373,7 +379,8 @@ public class ComprasBean implements Serializable {
 			orden.setMontoNoGravado(factura.getMontoNoGravado());
 			orden.setMontoRetenidoIRAE(factura.getMontoRetenidoIRAE());
 			orden.setMontoRetenidoIVA(factura.getMontoRetenidoIVA());
-			orden.setMontoTotalAPagar(factura.getMontoTotalAPagar());
+			orden.setMontoTotalAPagar(factura.getMontoTotalAPagar().add(
+					factura.getMontoNoFacturable()));
 			orden.setMontoTributoIvaBasico(factura.getMontoTributoIvaBasico());
 			orden.setMontoTributoIvaMinimo(factura.getMontoTributoIvaMinimo());
 			orden.setNumeroCFE(factura.getNumeroCFE());
@@ -398,8 +405,8 @@ public class ComprasBean implements Serializable {
 
 		// Reseteo los valores por defecto
 		reset();
-		context.addMessage(null, new FacesMessage(
-				FacesMessage.SEVERITY_INFO, Excepciones.MENSAJE_COMPRA_OK, ""));
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+				Excepciones.MENSAJE_COMPRA_OK, ""));
 
 		// En caso que se haya dado que hay algún artúculo con costo de lista <
 		// precio unitario, muestro el popup con los mismos
@@ -511,6 +518,7 @@ public class ComprasBean implements Serializable {
 	 * corresponde
 	 */
 	public void calcularTotalArticulo(DTLineaFacturaCompra detalle) {
+		System.out.println("calcular");
 		// Saco el valor anterior de la suma del subtotal
 		factura.setSubtotalProdctos(factura.getSubtotalProdctos().subtract(
 				detalle.getTotal()));
@@ -527,47 +535,89 @@ public class ComprasBean implements Serializable {
 
 		// Agrego el precio calculado al total
 		factura.setSubtotalProdctos(factura.getSubtotalProdctos().add(total));
-		
+
 		// Actualizo los valores de iva y retenciones
-		BigDecimal tributo;
-		BigDecimal neto;
-		BigDecimal iva;
-		System.out.println("INDICADOR FACTURACION: " + detalle.getTipoIVA().getIndicadorFacturacion());
-		switch (detalle.getTipoIVA().getIndicadorFacturacion()) {
+		BigDecimal tributo = new BigDecimal(0);
+		BigDecimal neto = new BigDecimal(0);
+		BigDecimal iva = new BigDecimal(0);
+		BigDecimal retenidoIVA = new BigDecimal(0);
+		BigDecimal retenidoIRAE = new BigDecimal(0);
+
+		factura.setMontoNoGravado(new BigDecimal(0));
+		factura.setMontoNetoGravadoIvaBasico(new BigDecimal(0));
+		factura.setMontoNetoGravadoIvaMinimo(new BigDecimal(0));
+		factura.setTotalIvaBasico(new BigDecimal(0));
+		factura.setTotalIvaMinimo(new BigDecimal(0));
+		factura.setMontoTributoIvaBasico(new BigDecimal(0));
+		factura.setMontoTributoIvaMinimo(new BigDecimal(0));
+		factura.setMontoTotalAPagar(new BigDecimal(0));
+		factura.setMontoRetenidoIVA(new BigDecimal(0));
+		factura.setMontoRetenidoIRAE(new BigDecimal(0));
+
+		Iterator<DTLineaFacturaCompra> it = factura.getDetalle().iterator();
+		while (it.hasNext()) {
+			DTLineaFacturaCompra detalleF = (DTLineaFacturaCompra) it.next();
+
+			switch (detalleF.getTipoIVA().getIndicadorFacturacion()) {
 			case 1: // IVA exento
-				factura.setMontoNoGravado(factura.getMontoNoGravado().add(detalle.getTotal()));
-				factura.setMontoTotalAPagar(factura.getMontoTotalAPagar().add(detalle.getTotal()));
+				neto = detalleF.getTotal();
+				factura.setMontoNoGravado(factura.getMontoNoGravado().add(neto));
 				break;
 			case 2: // IVA minimo
-				tributo = detalle.getTotal().multiply(detalle.getTipoIVA().getValorTributo().divide(new BigDecimal(100)));
-				factura.setMontoTributoIvaMinimo(factura.getMontoTributoIvaMinimo().add(tributo));
-				
-				neto = detalle.getTotal().add(tributo);
-				factura.setMontoNetoGravadoIvaMinimo(factura.getMontoNetoGravadoIvaMinimo().add(neto));
-				
-				iva = neto.multiply(detalle.getTipoIVA().getValorIVA().divide(new BigDecimal(100)));
+				tributo = detalleF.getTotal().multiply(
+						detalleF.getTipoIVA().getValorTributo()
+								.divide(new BigDecimal(100)));
+				factura.setMontoTributoIvaMinimo(factura
+						.getMontoTributoIvaMinimo().add(tributo));
+
+				neto = detalleF.getTotal().add(tributo);
+				factura.setMontoNetoGravadoIvaMinimo(factura
+						.getMontoNetoGravadoIvaMinimo().add(neto));
+
+				iva = neto.multiply(detalleF.getTipoIVA().getValorIVA()
+						.divide(new BigDecimal(100)));
 				factura.setTotalIvaMinimo(iva);
-				
-				factura.setMontoRetenidoIVA(iva.multiply(detalle.getTipoIVA().getResguardoIVA().divide(new BigDecimal(100))));
-				factura.setMontoRetenidoIRAE(neto.multiply(detalle.getTipoIVA().getResguardoIRAE().divide(new BigDecimal(100))));
-				factura.setMontoTotalAPagar(factura.getMontoTotalAPagar().add(neto));
+
+				retenidoIVA = iva.multiply(detalleF.getTipoIVA()
+						.getResguardoIVA().divide(new BigDecimal(100)));
+				factura.setMontoRetenidoIVA(retenidoIVA);
+
+				retenidoIRAE = neto.multiply(detalleF.getTipoIVA()
+						.getResguardoIRAE().divide(new BigDecimal(100)));
+				factura.setMontoRetenidoIRAE(retenidoIRAE);
+
+				System.out.println(tributo + " - " + neto + " - " + iva);
+
 				break;
 			case 3: // IVA basico
-				tributo = detalle.getTotal().multiply(detalle.getTipoIVA().getValorTributo().divide(new BigDecimal(100)));
-				factura.setMontoTributoIvaBasico(factura.getMontoTributoIvaBasico().add(tributo));
-				
-				neto = detalle.getTotal().add(tributo);
-				factura.setMontoNetoGravadoIvaBasico(factura.getMontoNetoGravadoIvaBasico().add(neto));
-				
-				iva = neto.multiply(detalle.getTipoIVA().getValorIVA().divide(new BigDecimal(100)));
+				tributo = detalleF.getTotal().multiply(
+						detalleF.getTipoIVA().getValorTributo()
+								.divide(new BigDecimal(100)));
+				factura.setMontoTributoIvaBasico(factura
+						.getMontoTributoIvaBasico().add(tributo));
+
+				neto = detalleF.getTotal().add(tributo);
+				factura.setMontoNetoGravadoIvaBasico(factura
+						.getMontoNetoGravadoIvaBasico().add(neto));
+
+				iva = neto.multiply(detalleF.getTipoIVA().getValorIVA()
+						.divide(new BigDecimal(100)));
 				factura.setTotalIvaBasico(iva);
-				
-				factura.setMontoRetenidoIVA(iva.multiply(detalle.getTipoIVA().getResguardoIVA().divide(new BigDecimal(100))));
-				factura.setMontoRetenidoIRAE(neto.multiply(detalle.getTipoIVA().getResguardoIRAE().divide(new BigDecimal(100))));
-				factura.setMontoTotalAPagar(factura.getMontoTotalAPagar().add(neto));
+
+				retenidoIVA = iva.multiply(detalleF.getTipoIVA()
+						.getResguardoIVA().divide(new BigDecimal(100)));
+				factura.setMontoRetenidoIVA(retenidoIVA);
+
+				retenidoIRAE = neto.multiply(detalleF.getTipoIVA()
+						.getResguardoIRAE().divide(new BigDecimal(100)));
+				factura.setMontoRetenidoIRAE(retenidoIRAE);
 				break;
 			default:
 				break;
+			}
+
+			factura.setMontoTotalAPagar(factura.getMontoTotalAPagar().add(neto)
+					.add(retenidoIRAE).add(retenidoIVA).add(iva));
 		}
 	}
 
