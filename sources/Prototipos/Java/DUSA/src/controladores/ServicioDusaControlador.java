@@ -89,7 +89,8 @@ public class ServicioDusaControlador implements IServicio {
 		articulo.setPorcentajePrecioVenta(new BigDecimal(0));
 		articulo.setPrecioVenta(productoDT.getPrecioVenta());
 		//articulo.setPresentacion();
-		//articulo.setStatus();
+		articulo.setStatus((productoDT.getHabilitado() > 1) ? true : false);
+		System.out.println("ServicioDusaControlador" +articulo.isStatus());
 		//articulo.setStock();
 		//articulo.setStockMinimo();
 		//articulo.setTipoAutorizacion();
@@ -97,7 +98,7 @@ public class ServicioDusaControlador implements IServicio {
 		
 		//TODO ver que pasa con esto Jaguerre
 		TipoIva tipoIva = new TipoIva();
-		tipoIva.setTipoIVA(52);
+		tipoIva.setTipoIVA('3');
 		articulo.setTipoIva(tipoIva);
 		Usuario usr = new Usuario();
 		usr.setNombre("Admin");
@@ -213,7 +214,7 @@ public class ServicioDusaControlador implements IServicio {
 
 	private TipoIva transformarTipoIVA(DataIVA di) {
 		TipoIva ret = new TipoIva();
-		ret.setTipoIVA(di.getTipoIVA());
+		ret.setTipoIVA((char)(short)di.getTipoIVA());
 		ret.setDescripcion(di.getDescripcion());
 		ret.setTipoTasa(di.getTipoTasa());
 		ret.setIndicadorFacturacion(di.getIndicadorFacturacion());
@@ -297,7 +298,7 @@ public class ServicioDusaControlador implements IServicio {
 			ResultGetComprobantes resComprobantes = null;
 			
 			Calendar c = Calendar.getInstance(); 
-			c.add(Calendar.DAY_OF_YEAR, -50);  
+			c.add(Calendar.DAY_OF_YEAR, -60);  //TODO: cambiar a una fecha más cercana
 			Date date = c.getTime();
 			
 			GregorianCalendar gCalendar = new GregorianCalendar();

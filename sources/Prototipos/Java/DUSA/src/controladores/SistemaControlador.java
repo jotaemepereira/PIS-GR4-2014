@@ -1,14 +1,12 @@
 package controladores;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTComprobanteFactura;
-import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTTiposDGI;
 import datatypes.DTVenta;
@@ -188,9 +186,9 @@ public class SistemaControlador implements ISistema {
 	}
 
 	@Override
-	public void registrarNuevaVenta(Venta v) throws Excepciones {
+	public long registrarNuevaVenta(Venta v) throws Excepciones {
 		//if (user.tienePermiso(casoDeUso.buscarArticulo))
-		FabricaLogica.getIFacturacion().registrarNuevaVenta(v);
+		return FabricaLogica.getIFacturacion().registrarNuevaVenta(v);
 
 		//else
 		//	throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
@@ -232,7 +230,7 @@ public class SistemaControlador implements ISistema {
 	}
 
 	@Override
-	public void modificarArticulo(Articulo articulo) throws Excepciones {
+	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones {
 		FabricaLogica.getIStock().modificarArticulo(articulo);
 		
 	}
@@ -264,7 +262,16 @@ public class SistemaControlador implements ISistema {
 		List<Venta> vPendientes = null;
 		if (user.tienePermiso(casoDeUso.listarVentasPendientes)) {
 			
-			vPendientes = FabricaLogica.getIFacturacion().listarVentasPendientes();
+
+
+			try {
+				vPendientes = FabricaLogica.getIFacturacion().listarVentasPendientes();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+
 		} else {
 			
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
@@ -274,18 +281,17 @@ public class SistemaControlador implements ISistema {
 	}
 	
 	@Override
-	public void facturarVentaPendiente(long idVenta) throws Excepciones {
-		
+	public boolean facturarVentaPendiente(long idVenta) throws Excepciones {
 		if (user.tienePermiso(casoDeUso.facturarVentaPendiente)) {
 			
-			FabricaLogica.getIFacturacion().facturarVenta(idVenta);
+			boolean ret = FabricaLogica.getIFacturacion().facturarVenta(idVenta);
 			
 			Operacion operacion = user.getOperacion(casoDeUso.facturarVentaPendiente);
 			Actividad act = new Actividad(operacion, user.getNombre());
 			
 			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+			return ret;
 		} else {
-			
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		}
 	}
@@ -301,6 +307,12 @@ public class SistemaControlador implements ISistema {
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		}
 		
+	}
+
+	@Override
+	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor)
+			throws Excepciones {
+	 return FabricaLogica.getIStock().obtenerArticulosDelProveedor(idProveedor);
 	}
 
 }

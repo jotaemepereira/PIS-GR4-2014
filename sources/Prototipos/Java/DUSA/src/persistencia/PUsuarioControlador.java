@@ -4,13 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 import controladores.Excepciones;
-import datatypes.DTProveedor;
 import model.Actividad;
 import model.Operacion;
 import model.Rol;
@@ -19,17 +15,25 @@ import interfaces.IUsuarioPersistencia;
 /**
  * 
  * @author santiago
- *
+ *  
  */
 public class PUsuarioControlador implements IUsuarioPersistencia{
 	/**
-	 * obtengo al usuario
+	 * Con el usuario y el password obtenidos en la web se van a obtener el 
+	 * usuario de la base de datos y junto con él, los roles asociados y el conjuto de operaciones 
+	 * permitidas para cada rol. 
+	 * A nivel de lógica se consulta antes de ejecutar una operación, si el usuario tiene el permiso asociado 
+	 * correspondiete a la operacion del sistema antes de ejecutar dicha operacion. 
+	 * 
 	 */
+	@Override
 	public Usuario getUsuario(String nombre, String contrasenia) throws Excepciones{
 		Usuario usr = new Usuario();
 		PreparedStatement stmt = null;
 		/**
-		 * obtengo el ID a partir del nombre
+		 * obtengo el usuario de la base de datos 
+		 * 
+		 * 
 		 */
 
 
@@ -111,7 +115,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 
 		Iterator<Rol> it = usr.getRoles().iterator();
 		while (it.hasNext()){
-			Rol rol = (Rol)it.next();
+			Rol rol = it.next();
 			stmt = null;
 			query = null;
 			query = "SELECT op.operation_id ," + " operation_name " + 
@@ -142,7 +146,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 		 */
 		it = usr.getRoles().iterator();
 		while (it.hasNext()){
-			Rol rol = (Rol)it.next();
+			Rol rol = it.next();
 			stmt = null;
 			query = null;
 			query = "SELECT rolename " + 
@@ -164,6 +168,11 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 		}
 		return usr;
 	}
+	/*
+	 * Se registra la actividad del usuario. 
+	 * El tipo actividad vincula a un usuario con una operacion  
+	 */
+	@Override
 	public void registrarActividad(Actividad act)throws Excepciones{
 		PreparedStatement stmt = null;
 		String query = "INSERT INTO USER_ACTIVITY "+ 
@@ -183,7 +192,14 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 		}
 
 	}
+	/*
+	 * Se leen los correos electronicos de los administradores.
+	 * Para enviarle un mail en la operacion actualizarStock()
+	 */
 	
+	
+	
+	@Override
 	public List<String> getAdminisMails()throws Excepciones{
 		
         List<String> adminMails = new ArrayList<String>();

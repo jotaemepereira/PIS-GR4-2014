@@ -4,17 +4,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import sun.print.resources.serviceui;
 import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTVenta;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
 import model.Droga;
-import model.LineaPedido;
 import model.OrdenDetalle;
 import model.Pedido;
 import model.TipoIva;
@@ -37,15 +36,16 @@ public interface IStockPersistencia {
 	/**
 	 * Modifica un articulo del sistema
 	 * 
-	 * @param articulo
-	 *            - Articulo
+	 * @param DTModificacionArticulo
+	 *            - Datatype que contiene el artículo y aparte listas de proveedores,
+	 *            drogas y acciones terapeuticas con las modificaciones necesarias.
 	 * @throws Excepciones
 	 *             ERROR_SISTEMA (en caso de error a la hora de
 	 *             persistir en la base de datos)
 	 * @author Jmaguerre
 	 * 
 	 */
-	public void modificarArticulo(Articulo articulo) throws Excepciones;
+	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones;
 	
 	/**
 	 * Retorna la fecha del ultimo pedido realizado a D.U.S.A.
@@ -124,6 +124,7 @@ public interface IStockPersistencia {
 	 * @param idArticulo
 	 * @return true si D.U.S.A. maneja el articulo con id "idArticulo"
 	 */
+	@Deprecated
 	public boolean existeArticuloDeDUSA(Long idArticulo) throws Excepciones;
 	
 	/**
@@ -232,9 +233,9 @@ public interface IStockPersistencia {
 	public Articulo obtenerArticulo(int idArticulo) throws Excepciones;
 	
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
-	
-	
 
+	public void modificarPreciosDeArticulo(Map<Long, Integer> preciosModificados)
+			throws Excepciones;
 
 }
 

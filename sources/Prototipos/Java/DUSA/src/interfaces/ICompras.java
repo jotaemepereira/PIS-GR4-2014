@@ -1,12 +1,10 @@
 package interfaces;
 
-import java.util.List;
 import java.util.Map;
 
 import model.Orden;
 import controladores.Excepciones;
 import datatypes.DTComprobanteFactura;
-import datatypes.DTFormasVenta;
 import datatypes.DTTiposDGI;
 
 public interface ICompras {

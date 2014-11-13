@@ -2,8 +2,6 @@ package scheduler;
 
 import javax.servlet.ServletContextEvent;
 
-import org.quartz.Scheduler;
-
 import controladores.Excepciones;
 
 

@@ -86,11 +86,11 @@
 														</h:outputText>
 													</p:column>
 													<p:column headerText="Nuevo stock" style="width: 50px;">
-														<p:inputText
+														<p:inputMask mask="?999999999999999999"
 															value="#{modificarStockBean.nuevoStock[rowIndex]}"
 															style="width: 50px;">
 															<f:ajax event="change" execute="@this" />
-														</p:inputText>
+														</p:inputMask>
 													</p:column>
 												</div>
 											</p:dataTable>
@@ -105,8 +105,9 @@
 									</div>
 									<p:commandButton
 										actionListener="#{modificarStockBean.confirmarCambioStock()}"
-										styleClass="btn btn-success" oncomplete="PF('dlg2').hide()"
-										update=":form1" value="Confirmar" title="Facturar">
+										styleClass="btn btn-success"
+										update=":form1" value="Confirmar">
+										<!-- oncomplete="PF('dlg2').hide()" -->
 									</p:commandButton>
 								</div>
 							</h:panelGroup>

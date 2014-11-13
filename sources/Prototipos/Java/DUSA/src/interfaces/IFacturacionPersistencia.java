@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import controladores.Excepciones;
-import datatypes.DTVenta;
+import model.PocasVentas;
 import model.Venta;
 
 public interface IFacturacionPersistencia {
@@ -37,7 +37,7 @@ public interface IFacturacionPersistencia {
 	 */
 	public int cantidadVendidaEnPeriodo(Long idArticulo, Date desde, Date hasta) throws Excepciones;
 	
-	public void persistirVenta(Venta v)
+	public long persistirVenta(Venta v)
 			throws Excepciones;
 	/**
 	 * Registra en el sistema la venta v
@@ -47,4 +47,6 @@ public interface IFacturacionPersistencia {
 	 * @throws Excepciones
 	 * @author Ignacio Rodriguez
 	 */
+	
+	public List<PocasVentas> articulosConPocasVentasEnLosUltimosMeses(int mesesAtras) throws Excepciones;
 }

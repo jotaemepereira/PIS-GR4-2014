@@ -43,35 +43,34 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 
 	}
 
-	public int predecir(Long idArticulo) throws Excepciones {
-
+	
+	@Override
+	public int predecir(Long idArticulo) throws Excepciones{
+		
+		IFacturacionPersistencia fp = FabricaPersistencia.getInstanciaFacturacionPersistencia();
+		IStockPersistencia st = FabricaPersistencia.getStockPersistencia();
 		SimpleRegression recta = new SimpleRegression();
 
 		final Calendar hoy = Calendar.getInstance();
 		Calendar desde = Calendar.getInstance();
 		Calendar hasta = Calendar.getInstance();
-		long j = CANT_MILISEC_EN_UN_DIA;
-
-		// Trunco la fecha de hoy, para calcular las cantidades vendidas por
-		// dia.
-		desde.set(Calendar.HOUR_OF_DAY, 0);
-		desde.set(Calendar.MINUTE, 0);
-		desde.set(Calendar.SECOND, 0);
-		desde.set(Calendar.MILLISECOND, 0);
-
-		for (int i = CANT_DIAS_HABILES; i != 0; j += CANT_MILISEC_EN_UN_DIA) {
-			desde.setTimeInMillis(hoy.getTimeInMillis() - j);
-
-			// Se considera los domingo como feriado.
-			// Hay que evitar calcular los dias cerrados ya que influyen
-			// negativamente el la prediccion.
-			if (desde.DAY_OF_WEEK != 1) {
-
-				int cantidad = fp.cantidadVendidaEnPeriodo(idArticulo,
-						new Date(desde.getTimeInMillis()),
-						new Date(desde.getTimeInMillis()
-								+ CANT_MILISEC_EN_UN_DIA));
-				recta.addData(i, cantidad);
+		long j= CANT_MILISEC_EN_UN_DIA;
+		
+		//Trunco la fecha de hoy, para calcular las cantidades vendidas por dia.
+		desde.set(Calendar.HOUR_OF_DAY	, 0);
+		desde.set(Calendar.MINUTE		, 0);
+		desde.set(Calendar.SECOND		, 0);
+		desde.set(Calendar.MILLISECOND	, 0);
+		
+		for (int i=CANT_DIAS_HABILES; i!=0; j += CANT_MILISEC_EN_UN_DIA){
+			desde.setTimeInMillis(hoy.getTimeInMillis()-j);
+			
+			//Se considera los domingo como feriado.
+			//Hay que evitar calcular los dias cerrados ya que influyen negativamente el la prediccion.
+			if (Calendar.DAY_OF_WEEK!=1 ){
+				
+				int cantidad = fp.cantidadVendidaEnPeriodo(idArticulo, new Date(desde.getTimeInMillis()), new Date(desde.getTimeInMillis() + CANT_MILISEC_EN_UN_DIA));
+				recta.addData(i,cantidad);
 				i--;
 			}
 		}
@@ -90,12 +89,9 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 		for (int i = 1; i <= CANT_ANIOS_ANTEIORES; i++) {
 			desde = Calendar.getInstance();
 			hasta = Calendar.getInstance();
-			desde.add(hoy.YEAR, -i);
-			hasta.setTimeInMillis(desde.getTimeInMillis()
-					+ dias_a_predecir_en_milisec);
-			cantPromVendidaAniosAnt += fp.cantidadVendidaEnPeriodo(idArticulo,
-					new Date(desde.getTimeInMillis()),
-					new Date(hasta.getTimeInMillis()));
+			desde.add(Calendar.YEAR, -i);
+			hasta.setTimeInMillis(desde.getTimeInMillis()+dias_a_predecir_en_milisec);
+			cantPromVendidaAniosAnt += fp.cantidadVendidaEnPeriodo(idArticulo, new Date(desde.getTimeInMillis()), new Date(hasta.getTimeInMillis()));
 		}
 
 		cantPromVendidaAniosAnt /= CANT_ANIOS_ANTEIORES;

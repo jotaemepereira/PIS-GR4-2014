@@ -190,8 +190,7 @@ public class PComprasControlador implements IComprasPersistencia {
 		NamedParameterStatement stmt = null;
 
 		String query = "UPDATE orders SET is_processed = :is_processed ";
-		query += "WHERE order_id = :order_id ";
-		query += "RETURNING ORDER_ID";
+		query += "WHERE dusa_order_id = :dusa_order_id ";
 
 		Connection c;
 		try {
@@ -199,7 +198,10 @@ public class PComprasControlador implements IComprasPersistencia {
 
 			stmt = new NamedParameterStatement(c, query);
 			stmt.setBoolean("is_processed", true);
-			stmt.setLong("order_id", orden.getIdOrden());
+			System.out.println("ORDEN DE COMPRA " + orden.getOrdenDeCompra());
+			stmt.setLong("dusa_order_id", orden.getOrdenDeCompra());
+			
+			stmt.executeUpdate();
 
 			stmt.close();
 			c.close();
@@ -281,7 +283,8 @@ public class PComprasControlador implements IComprasPersistencia {
 		String queryOrden = "SELECT * FROM orders ";
 		queryOrden += "WHERE is_processed = ?";
 
-		String queryDetalle = "SELECT od.*, p.description, p.list_cost FROM order_details od ";
+		String queryDetalle = "SELECT od.*, p.description, p.list_cost ";
+		queryDetalle += "FROM order_details od ";
 		queryDetalle += "INNER JOIN products p ON p.product_id = od.product_id ";
 		queryDetalle += "WHERE order_id = ?";
 
@@ -356,7 +359,7 @@ public class PComprasControlador implements IComprasPersistencia {
 							descuento);
 					detalle.setTotal(total);
 
-					factura.getSubtotalProdctos().add(total);
+					factura.setSubtotalProdctos(factura.getSubtotalProdctos().add(total));
 					factura.getDetalle().add(detalle);
 				}
 
