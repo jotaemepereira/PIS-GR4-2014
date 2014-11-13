@@ -9,6 +9,15 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 public class Conexion {
 	private static BasicDataSource basicDataSource;
 
+	/**
+	 * Devuelve una conexion disponible del pool de conexiones. 
+	 * Esta el liberada y devuelta al pool cuando se invoca su operacion close().
+	 * 
+	 * 
+	 * @return Una conexion disonible del pool
+	 * @throws NamingException
+	 * @throws SQLException
+	 */
 	public static Connection getConnection() throws NamingException,
 			SQLException {
 
