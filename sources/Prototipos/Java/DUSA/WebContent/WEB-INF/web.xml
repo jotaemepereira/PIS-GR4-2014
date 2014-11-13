@@ -51,7 +51,7 @@
     <listener>
 	  <listener-class>
             scheduler.StockInitializer
-          </listener-class>
+          </listener-class> 
 	</listener>
   	<listener>
 	  <listener-class>

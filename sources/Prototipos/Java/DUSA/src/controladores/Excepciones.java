@@ -50,6 +50,22 @@ public class Excepciones extends Exception {
 	public static String MENSAJE_ERROR_TOTAL					= "El total de la factura no puede ser 0.";
 	public static String MENSAJE_DETALLE_VACIO					= "Es necesario ingresar al menos un artículo.";
 	public static String MENSAJE_FACTURA_DUPLICADA				= "Ya existe en el sistema una factura con el mismo tipo, serie y numero.";
+	public static String MENSAJE_TIPO_REQUERIDO					= "Para continuar es necesario ingeresar el tipo de factura";
+	public static String MENSAJE_SERIE_REQUERIDO				= "Para continuar es necesario ingeresar la serie de factura";
+	public static String MENSAJE_NUMERO_REQUERIDO				= "Para continuar es necesario ingeresar el numero de factura";
+	public static String MENSAJE_PROVEEDOR_VACIO				= "Para continuar es necesario seleccionar un proveedor";
+	public static String MENSAJE_ERROR_FECHA					= "La fecha seleccionada no puede ser posterior a la fecha actual.";
+	public static String MENSAJE_COMPRA_OK						= "La compra ha sido realizada con éxito.";
+	
+	//Modificar Stock
+	public static String MENSAJE_MOTIVO_VACIO					= "Por favor, ingrese un motivo.";
+	public static String MENSAJE_CANT_INVALIDA_ORIGEN			= "El nuevo stock del artículo origen debe ser menor al actual.";
+	public static String MENSAJE_CANT_INVALIDA_DESTINO			= "El nuevo stock del artículo destino debe ser mayor al actual.";
+	public static String MENSAJE_DESARME_EXITO					= "Desarme realizado con éxito.";
+	public static String MENSAJE_CANT_IGUALES					= "No hay cambios ingresados.";
+	public static String MENSAJE_SELECCIONE_ARTICULO			= "Por favor, busque y/o seleccione un artículo para continuar.";
+	
+	
 	public Excepciones(String message, int errorCode){
         super(message);
         this.errorCode = errorCode;

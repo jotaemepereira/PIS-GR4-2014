@@ -103,6 +103,7 @@ public class GenerarPedidoBean implements Serializable{
 					.generarPedidoEnBaseAPedidoAnterior();
 
 		} catch (Exception e) {
+			//Imprimo y notifico error generado
 			e.printStackTrace();
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage(

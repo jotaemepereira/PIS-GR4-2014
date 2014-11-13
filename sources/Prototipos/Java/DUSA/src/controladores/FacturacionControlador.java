@@ -3,8 +3,20 @@ package controladores;
 import interfaces.IFacturacion;
 import interfaces.IFacturacionPersistencia;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
+import javax.mail.MessagingException;
+
+import model.Articulo;
+import model.Cambio;
+import model.Mail;
 import model.PocasVentas;
 import model.Venta;
 import Util.XMLUtil;
@@ -85,9 +97,58 @@ public class FacturacionControlador implements IFacturacion {
 	public void articulosConPocasVentasEnLosUltimosMeses(int mesesAtras)
 			throws Exception {
 		
+		Mail m;
+
 		IFacturacionPersistencia fp = FabricaPersistencia.getInstanciaFacturacionPersistencia();
-		List<PocasVentas> pv = fp.articulosConPocasVentasEnLosUltimosMeses(mesesAtras);                                  
+		List<PocasVentas> pv = fp.articulosConPocasVentasEnLosUltimosMeses(mesesAtras);   
+		
+		OutputStream output;
+		
+		FileInputStream in;
+		Properties prop = new Properties();
+		String mailEmisor = null;
+		String passEmisor = null;
+		String receptores = null;
+		try {
+			in = new FileInputStream("ventaStock.properties");
+			
+			prop.load(in);
+			mailEmisor = prop.getProperty("mailEmisor");
+			passEmisor = prop.getProperty("passEmisor");
+			receptores = prop.getProperty("mailReceptores");
+			in.close();
+		
+		if (mailEmisor==null)
+			mailEmisor = "dusapis";
+		if (passEmisor ==null)
+			passEmisor = "grupo4grupo4";
+		if (receptores == null)
+			receptores = "dusapis@gmail.com";
 		
 		
+		output = new FileOutputStream("ventaStock.properties");
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
+		String sDate = sdf.format(date);
+		prop.setProperty("fechaUltimaActualizacion", sDate);
+		prop.setProperty("mailEmisor",mailEmisor);
+		prop.setProperty("passEmisor",passEmisor);
+		prop.setProperty("mailReceptores",receptores);
+		prop.store(output, null);
+
+
+		if (pv.size()>0){
+			m = new Mail();
+			m.setAsunto("alerta por pocas ventas");   
+			m.setContenidoPocasVentas(pv);
+			m.setEmisor(mailEmisor, passEmisor);
+			m.setDestinatarios(receptores);
+			m.Enviar();
+		}
+		} catch ( IOException | MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
 	}
 }

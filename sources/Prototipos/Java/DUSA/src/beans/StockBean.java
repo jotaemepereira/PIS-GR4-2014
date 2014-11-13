@@ -767,54 +767,34 @@ public class StockBean implements Serializable {
 
 	/* Loaders */
 
-	public void cargarMarcas() {
+	public void cargarMarcas() throws Excepciones {
 		if (listaMarcas.isEmpty()) {
-			FacesContext context = FacesContext.getCurrentInstance();
-			try {
-				this.listaMarcas = this.instanciaSistema.obtenerMarcas();
-			} catch (Excepciones e) {
-				context.addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-			}
+
+			this.listaMarcas = this.instanciaSistema.obtenerMarcas();
 		}
 	}
 
-	public void cargarProveedores() {
+	public void cargarProveedores() throws Excepciones {
 		if (listaProveedores.isEmpty()) {
-			FacesContext context = FacesContext.getCurrentInstance();
-			try {
-				this.proveedores = this.instanciaSistema.obtenerProveedores();
-				this.listaProveedores = new ArrayList<DTProveedor>(
-						this.proveedores.values());
-			} catch (Excepciones e) {
-				context.addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-			}
+
+			this.proveedores = this.instanciaSistema.obtenerProveedores();
+			this.listaProveedores = new ArrayList<DTProveedor>(
+					this.proveedores.values());
 		}
 	}
 
-	public void cargarDrogas() {
+	public void cargarDrogas() throws Excepciones {
 		if (listaDrogas.isEmpty()) {
-			FacesContext context = FacesContext.getCurrentInstance();
-			try {
-				this.listaDrogas = this.instanciaSistema.obtenerDrogas();
-			} catch (Excepciones e) {
-				context.addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-			}
+
+			this.listaDrogas = this.instanciaSistema.obtenerDrogas();
 		}
 	}
 
-	public void cargarAccionesTerapeuticas() {
+	public void cargarAccionesTerapeuticas() throws Excepciones {
 		if (listaAccionesTer.isEmpty()) {
-			FacesContext context = FacesContext.getCurrentInstance();
-			try {
-				this.listaAccionesTer = this.instanciaSistema
-						.obtenerAccionesTerapeuticas();
-			} catch (Excepciones e) {
-				context.addMessage(null, new FacesMessage(
-						FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-			}
+
+			this.listaAccionesTer = this.instanciaSistema
+					.obtenerAccionesTerapeuticas();
 		}
 	}
 
@@ -877,7 +857,7 @@ public class StockBean implements Serializable {
 		}
 	}
 
-	public void cargarTiposIva() {
+	public void cargarTiposIva() throws Excepciones {
 		if (tiposIVA.isEmpty()) {
 			TipoIva ti = new TipoIva();
 			ti.setTipoIVA(model.Enumerados.tiposIVA.IVAEXENTO);
@@ -900,29 +880,40 @@ public class StockBean implements Serializable {
 		this.instanciaSistema = s;
 
 		if (this.instanciaSistema != null) {
-			// Cargo las marcas de la base de datos
-			cargarMarcas();
+			
+			try {
+				// Cargo las marcas de la base de datos
+				cargarMarcas();
 
-			// Cargo los proveedores de la base de datos
-			cargarProveedores();
+				// Cargo los proveedores de la base de datos
+				cargarProveedores();
 
-			// Cargo las drogas de la base de datos
-			cargarDrogas();
+				// Cargo las drogas de la base de datos
+				cargarDrogas();
 
-			// Cargo las acciones terapéuticas de la base de datos
-			cargarAccionesTerapeuticas();
+				// Cargo las acciones terapéuticas de la base de datos
+				cargarAccionesTerapeuticas();
 
-			// Cargo tipos de articulo para el combo
-			cargarTiposArticulo();
+				// Cargo tipos de articulo para el combo
+				cargarTiposArticulo();
 
-			// Cargo formas de venta para el combo
-			cargarFormasVenta();
+				// Cargo formas de venta para el combo
+				cargarFormasVenta();
 
-			// Cargo descuentos con receta
-			cargarDescuentosReceta();
+				// Cargo descuentos con receta
+				cargarDescuentosReceta();
 
-			// Cargo tipos de iva para el combo
-			cargarTiposIva();
+				// Cargo tipos de iva para el combo
+				cargarTiposIva();
+
+			} catch (Excepciones ex) {
+				
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, ex.getMessage(), ""));
+				
+				System.out.println("ACA tiro error");
+			}
 		}
 	}
 

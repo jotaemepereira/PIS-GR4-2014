@@ -2,6 +2,8 @@ package datatypes;
 
 import java.math.BigDecimal;
 
+import model.TipoIva;
+
 public class DTBusquedaArticulo extends DTBusquedaArticuloSolr {
 	private String tipoDeArticulo;
 	private String controlDeVenta;
@@ -10,6 +12,7 @@ public class DTBusquedaArticulo extends DTBusquedaArticuloSolr {
 	private BigDecimal costoDeLista;
 	private BigDecimal costoReal;
 	private BigDecimal costoPonderado;
+	private TipoIva tipoIva;
 	private long stock;
 	
 	public DTBusquedaArticulo(DTBusquedaArticuloSolr busqueda){                    
@@ -65,5 +68,13 @@ public class DTBusquedaArticulo extends DTBusquedaArticuloSolr {
 
 	public void setStock(long stock) {
 		this.stock = stock;
+	}
+
+	public TipoIva getTipoIva() {
+		return tipoIva;
+	}
+
+	public void setTipoIva(TipoIva tipoIva) {
+		this.tipoIva = tipoIva;
 	}
 }

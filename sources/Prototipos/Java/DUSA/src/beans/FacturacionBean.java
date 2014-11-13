@@ -52,6 +52,7 @@ public class FacturacionBean implements Serializable {
 
 				ventas = this.instanciaSistema.listarVentasPendientes();
 			} catch (Excepciones e) {
+				//Se notifica del error ocurrido en el sistema
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, e
@@ -61,8 +62,7 @@ public class FacturacionBean implements Serializable {
 				ex.printStackTrace();
 				FacesContext.getCurrentInstance().addMessage(
 						null,
-						new FacesMessage(FacesMessage.SEVERITY_ERROR, ex
-								.getMessage(), ""));
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, Excepciones.MENSAJE_ERROR_SISTEMA, ""));
 			}
 		}
 	}
@@ -114,6 +114,12 @@ public class FacturacionBean implements Serializable {
 								Excepciones.MENSAJE_FACTURA_FACTURADA, ""));
 			}
 			ventas = this.instanciaSistema.listarVentasPendientes();
+		} catch (Excepciones ex) {
+			//Se notifica del error ocurrido en el sistema
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							ex.getMessage(), ""));
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,
@@ -133,6 +139,12 @@ public class FacturacionBean implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_INFO,
 							Excepciones.MENSAJE_CANCELADA_OK, ""));
 			ventas = this.instanciaSistema.listarVentasPendientes();
+		} catch (Excepciones ex) {
+			//Se notifica del error ocurrido en el sistema
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							ex.getMessage(), ""));
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(
 					null,

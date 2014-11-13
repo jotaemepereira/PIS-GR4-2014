@@ -276,7 +276,7 @@ public interface ISistema {
 	 * Se obtiene una lista de ventas pendientes de facturacion
 	 * @author Seba
 	 * @return
-	 * @throws Exception
+	 * @throws Excepciones
 	 */
 	public List<Venta> listarVentasPendientes() throws Excepciones;
 	

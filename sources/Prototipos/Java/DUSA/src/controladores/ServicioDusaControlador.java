@@ -100,6 +100,7 @@ public class ServicioDusaControlador implements IServicio {
 		TipoIva tipoIva = new TipoIva();
 		tipoIva.setTipoIVA('3');
 		articulo.setTipoIva(tipoIva);
+		
 		Usuario usr = new Usuario();
 		usr.setNombre("Admin");
 		articulo.setUsuario(usr);
@@ -128,7 +129,7 @@ public class ServicioDusaControlador implements IServicio {
 
 				dPedido.setFormaDePago(PedidoFormaDePago.CREDITO);
 			}
-			
+			//Transformo informacion de linea pedido para enviar.
 			for (Iterator<LineaPedido> iterator = p.getLineas().iterator(); iterator.hasNext();) {
 				
 				LineaPedido lPedido = iterator.next();
@@ -297,19 +298,15 @@ public class ServicioDusaControlador implements IServicio {
 			WSConsultaComprobantes wscomprobantes = new WSConsultaComprobantesService().getWSConsultaComprobantesPort();
 			ResultGetComprobantes resComprobantes = null;
 			
-			Calendar c = Calendar.getInstance(); 
-			c.add(Calendar.DAY_OF_YEAR, -50);  
-			Date date = c.getTime();
-			
 			GregorianCalendar gCalendar = new GregorianCalendar();
 			if(ultimaFactura != null){
 				gCalendar.setTime(ultimaFactura);
 			}else{
+				Calendar c = Calendar.getInstance(); 
+				c.add(Calendar.DAY_OF_YEAR, -60);  //TODO: cambiar a una fecha más cercana
+				Date date = c.getTime();
 				gCalendar.setTime(date);
 			}
-			
-			
-			System.out.println("FACTURAS DESDE FECHA " + date);
 			
 			XMLGregorianCalendar  fechaXML = DatatypeFactory.newInstance().
 					newXMLGregorianCalendar(gCalendar);
@@ -332,7 +329,9 @@ public class ServicioDusaControlador implements IServicio {
 			Orden orden = transformarOrden(dataComprobante);
 			
 			FabricaPersistencia.getInstanciaComprasPersistencia().ingresarFacturaCompra(orden);
-			
 		}
+		
+		// Corro la indexación por si se agregó algun artículo al traer las órdenes
+		FabricaPersistencia.getStockPersistencia().deltaImportSolr();
 	}
 }
