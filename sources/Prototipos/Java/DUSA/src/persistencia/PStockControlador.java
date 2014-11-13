@@ -1479,6 +1479,14 @@ public class PStockControlador implements IStockPersistencia {
 				boolean bajaEnPrecio = bg.abs().compareTo(bg2) > 0;
 				boolean dadoDeBaja =  artAnt.isStatus()==true && art.isStatus()==false;
 				if (bajaEnPrecio   || dadoDeBaja) {
+//					System.out.print("Precio anterior:   ");
+//					System.out.println(artAnt.getPrecioUnitario());
+//					System.out.print("Precio actual:   ");
+//					System.out.println(art.getPrecioUnitario());
+//					System.out.print("estado anterior:  ");
+//					System.out.println(artAnt.isStatus());
+//					System.out.print("estado actual:   ");
+//					System.out.println(art.isStatus());
 					art.setIdArticulo(artAnt.getIdArticulo());
 					cambios.add(new Cambio(art,artAnt,bajaEnPrecio,dadoDeBaja));
 					this.actualizarPrecioYEstadoDeArticulo(art);

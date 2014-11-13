@@ -46,7 +46,7 @@ public class StockInitializer implements ServletContextListener {
 
 				try {
 					output = new FileOutputStream("alertaStock.properties");
-					prop.setProperty("expresionCron", "0 0 9,21 * * ? *");
+					prop.setProperty("expresionCron", "0 41 22 * * ? *");
 					prop.store(output, null);
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block
