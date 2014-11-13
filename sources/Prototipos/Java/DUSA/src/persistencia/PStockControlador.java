@@ -466,8 +466,11 @@ public class PStockControlador implements IStockPersistencia {
 			throws Excepciones {
 		PreparedStatement stmt = null;
 
-		String query = "SELECT UNIT_PRICE, SALE_PRICE, LIST_COST, LAST_COST, AVG_COST, SALE_CODE, PRODUCT_TYPE, STOCK "
-				+ "FROM PRODUCTS " + "WHERE PRODUCT_ID = ?";
+		String query = "SELECT p.UNIT_PRICE, p.SALE_PRICE, p.LIST_COST, p.LAST_COST, p.AVG_COST, p.SALE_CODE, p.PRODUCT_TYPE, p.STOCK, p.TAX_TYPE_ID, ";
+		query += "t.* ";
+		query += "FROM PRODUCTS p "; 
+		query += "INNER JOIN TAX_TYPES t ON p.TAX_TYPE_ID = t.TAX_TYPE_ID ";
+		query += "WHERE p.PRODUCT_ID = ?";
 		try {
 			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
@@ -486,6 +489,15 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setCostoReal(rs.getBigDecimal("LAST_COST"));
 				articulo.setCostoPonderado(rs.getBigDecimal("AVG_COST"));
 				articulo.setStock(rs.getLong("STOCK"));
+				
+				TipoIva ti = new TipoIva();
+				ti.setTipoIVA(rs.getString("tax_type_id").charAt(0));
+				ti.setValorIVA(rs.getBigDecimal("iva_value"));
+				ti.setValorTributo(rs.getBigDecimal("tax_value"));
+				ti.setResguardoIVA(rs.getBigDecimal("iva_voucher"));
+				ti.setResguardoIRAE(rs.getBigDecimal("irae_voucher"));
+				ti.setIndicadorFacturacion(rs.getInt("billing_indicator"));
+				articulo.setTipoIva(ti);
 			}
 			rs.close();
 			stmt.close();

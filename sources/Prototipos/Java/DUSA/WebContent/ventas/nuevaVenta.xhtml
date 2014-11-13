@@ -143,7 +143,7 @@
 												</p:inputText>
 											</div>
 
-											<p:dataTable id="TablaVentas2" var="venta2" resizableColumns="true"
+											<p:dataTable id="TablaVentas2" var="venta2" 
 												value="#{ventaBean.lineasVenta2}" rowIndexVar="index">
 
 												<p:column headerText="Cantidad" style="text-align: center;">
@@ -159,7 +159,7 @@
 															update="@form" process="@this" />
 													</p:inputText>
 												</p:column>
-												<p:column headerText="Descripcion"
+												<p:column headerText="Descripcion" 
 													style="text-align: center;">
 													<h:outputText value=" #{venta2.articulo.descripcion}" />
 												</p:column>

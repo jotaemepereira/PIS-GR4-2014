@@ -73,13 +73,10 @@ public class VentaBean implements Serializable {
 				// pueda facturar directo desde la venta
 				ventaFacturacion = ((this.instanciaSistema
 						.obtenerUsuarioLogueado()
-						.tienePermiso(Enumerados.casoDeUso.facturarVentaPendiente)) && ((Integer
+						.tienePermiso(Enumerados.casoDeUso.facturarVentaPendiente)) && ( (Integer
 						.parseInt(FacesContext.getCurrentInstance()
 								.getExternalContext()
-								.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.basica) || (Integer
-						.parseInt(FacesContext.getCurrentInstance()
-								.getExternalContext()
-								.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.controlada)));
+								.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.basica) ));
 
 			} catch (Exception e) {
 				FacesContext.getCurrentInstance().addMessage(
@@ -271,8 +268,7 @@ public class VentaBean implements Serializable {
 			try {
 
 				venta.setLineas(lineasVenta2);
-				venta.setTotalIvaBasico(new BigDecimal(0));
-				venta.setTotalIvaMinimo(new BigDecimal(0));
+
 				// Agarrar el usuario logueado
 				Usuario usr = new Usuario();
 				usr = this.instanciaSistema.obtenerUsuarioLogueado();
@@ -328,8 +324,7 @@ public class VentaBean implements Serializable {
 			try {
 
 				venta.setLineas(lineasVenta2);
-				venta.setTotalIvaBasico(new BigDecimal(0));
-				venta.setTotalIvaMinimo(new BigDecimal(0));
+
 				// Agarrar el usuario logueado
 				Usuario usr = new Usuario();
 				usr = this.instanciaSistema.obtenerUsuarioLogueado();
@@ -384,8 +379,7 @@ public class VentaBean implements Serializable {
 
 			try {
 				venta.setLineas(lineasVenta2);
-				venta.setTotalIvaBasico(new BigDecimal(0));
-				venta.setTotalIvaMinimo(new BigDecimal(0));
+
 				// Agarrar el usuario logueado
 				Usuario usr = new Usuario();
 				usr = this.instanciaSistema.obtenerUsuarioLogueado();
@@ -509,6 +503,8 @@ public class VentaBean implements Serializable {
 	public String strIva() {
 
 		BigDecimal totIva = new BigDecimal(0);
+		venta.setTotalIvaBasico(new BigDecimal(0));
+		venta.setTotalIvaMinimo(new BigDecimal(0));
 		Iterator<LineaVenta> it = lineasVenta2.iterator();
 		while (it.hasNext()) {
 			LineaVenta v = it.next();
@@ -518,15 +514,15 @@ public class VentaBean implements Serializable {
 					.getIva())).divide(new BigDecimal(100));
 
 			// calculo para IVA del 10%
-			if (v.getIva().equals(new BigDecimal(22))) {
-				venta.setMontoNetoGravadoIvaBasico(v.getPrecio().subtract(iva));
+			if (v.getIndicadorFacturacion() == 2) {
+				venta.setMontoNetoGravadoIvaBasico(v.getArticulo().getPrecioVenta().subtract(iva));
 				venta.setMontoTributoIvaBasico(iva);
 				venta.setTotalIvaBasico(venta.getTotalIvaBasico().add(iva));
 			}
 			// calculo para IVA del 22%
-			if (v.getIva().equals(new BigDecimal(10))) {
+			if (v.getIndicadorFacturacion() == 3) {
 
-				venta.setMontoNetoGravadoIvaMinimo(v.getPrecio().subtract(iva));
+				venta.setMontoNetoGravadoIvaMinimo(v.getArticulo().getPrecioVenta().subtract(iva));
 				venta.setMontoTributoIvaMinimo(iva);
 				venta.setTotalIvaMinimo(venta.getTotalIvaMinimo().add(iva));
 			}

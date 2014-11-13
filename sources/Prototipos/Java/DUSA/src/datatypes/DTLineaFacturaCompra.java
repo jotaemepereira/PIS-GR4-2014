@@ -2,9 +2,7 @@ package datatypes;
 
 import java.math.BigDecimal;
 
-import controladores.Excepciones;
-import controladores.FabricaPersistencia;
-import uy.com.dusa.ws.DataLineaComprobante;
+import model.TipoIva;
 
 public class DTLineaFacturaCompra {
 	private long idOrden;
@@ -20,6 +18,7 @@ public class DTLineaFacturaCompra {
 	private String descripcion;
 	private long productId;
 	private BigDecimal total;
+	private TipoIva tipoIVA;
 
 	public DTLineaFacturaCompra() {
 	}
@@ -118,5 +117,13 @@ public class DTLineaFacturaCompra {
 
 	public void setCostoListaArticulo(BigDecimal costoListaArticulo) {
 		this.costoListaArticulo = costoListaArticulo;
+	}
+
+	public TipoIva getTipoIVA() {
+		return tipoIVA;
+	}
+
+	public void setTipoIVA(TipoIva tipoIVA) {
+		this.tipoIVA = tipoIVA;
 	}
 }
