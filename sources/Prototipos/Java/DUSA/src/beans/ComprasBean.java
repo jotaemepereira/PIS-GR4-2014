@@ -449,6 +449,9 @@ public class ComprasBean implements Serializable {
 			this.mapTiposDGI = this.instanciaSistema.obtenerTiposDGI();
 			this.tiposDGI = new ArrayList<DTTiposDGI>(mapTiposDGI.values());
 		} catch (Excepciones e) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 			e.printStackTrace();
 		}
 	}

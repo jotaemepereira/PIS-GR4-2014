@@ -1505,7 +1505,7 @@ public class PStockControlador implements IStockPersistencia {
 				BigDecimal bg2 = new BigDecimal("0.5");
 				boolean bajaEnPrecio = bg.abs().compareTo(bg2) > 0;
 				boolean dadoDeBaja =  artAnt.isStatus()==true && art.isStatus()==false;
-				if (bajaEnPrecio   || true /*dadoDeBaja*/) {
+				if (bajaEnPrecio   || dadoDeBaja) {
 //					System.out.print("Precio anterior:   ");
 //					System.out.println(artAnt.getPrecioUnitario());
 //					System.out.print("Precio actual:   ");
