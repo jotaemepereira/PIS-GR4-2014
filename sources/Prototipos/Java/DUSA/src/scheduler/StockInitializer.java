@@ -29,9 +29,9 @@ public class StockInitializer implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		
-		
+	
 		Properties prop = new Properties();
-		OutputStream output = null;
+		OutputStream output = null; 
 		InputStream input = null;
 
 		try {

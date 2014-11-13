@@ -8,9 +8,12 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import controladores.Excepciones;
+import controladores.FabricaPersistencia;
 import model.Articulo;
 import model.Cliente;
 import model.Enumerados;
@@ -515,10 +518,29 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	@Override
 	public List<PocasVentas> articulosConPocasVentasEnLosUltimosMeses(
 			int mesesAtras) throws Excepciones {
+		List<PocasVentas> pv = new ArrayList();
+		Date hoy = new Date();
+		Calendar c = Calendar.getInstance();
+		c.setTime(hoy);
+		c.add(Calendar.MONTH, -mesesAtras);
+		Date dMesesAtras = c.getTime();
+		
 
+		List<Long> idArts =null;
+		idArts = FabricaPersistencia.getStockPersistencia().obtenerIdTodosLosArticulos();
+		Iterator<Long> it = idArts.iterator();
+		Long id=null;
+		while (it.hasNext()){
+			id = it.next();
+			int cant =	cantidadVendidaEnPeriodo(id,dMesesAtras,hoy);
+			long minimo = FabricaPersistencia.getStockPersistencia().getStockMinimo(id);
+			if (cant<minimo){
+				String desc = FabricaPersistencia.getStockPersistencia().obtenerArticuloConId(id).getDescripcion();
+				pv.add(new PocasVentas(id,desc,cant,minimo));
+			}
+		}
 		
-		
-		return null;
+		return pv;
 	}
 
 }
