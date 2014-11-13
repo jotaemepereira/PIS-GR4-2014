@@ -128,7 +128,7 @@ public class ServicioDusaControlador implements IServicio {
 
 				dPedido.setFormaDePago(PedidoFormaDePago.CREDITO);
 			}
-			
+			//Transformo informacion de linea pedido para enviar.
 			for (Iterator<LineaPedido> iterator = p.getLineas().iterator(); iterator.hasNext();) {
 				
 				LineaPedido lPedido = iterator.next();

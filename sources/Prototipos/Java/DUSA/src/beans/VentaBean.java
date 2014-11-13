@@ -92,7 +92,7 @@ public class VentaBean implements Serializable {
 		// Busqueda con solr
 		lineasVenta = new ArrayList<DTVenta>();
 		try {
-			lineasVenta = FabricaSistema.getISistema().buscarArticulosVenta(
+			lineasVenta = this.instanciaSistema.buscarArticulosVenta(
 					descripcionBusqueda);
 
 			Iterator<DTVenta> it = lineasVenta.iterator();
@@ -109,6 +109,10 @@ public class VentaBean implements Serializable {
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							e.getMessage(), ""));
 		}
 
 	}
@@ -123,7 +127,7 @@ public class VentaBean implements Serializable {
 
 		List<DTVenta> lv = new ArrayList<DTVenta>();
 		try {
-			lv = FabricaSistema.getISistema().buscarArticulosVenta(
+			lv = this.instanciaSistema.buscarArticulosVenta(
 					codigoBusqueda);
 
 			Iterator<DTVenta> it = lv.iterator();
@@ -136,6 +140,10 @@ public class VentaBean implements Serializable {
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							e.getMessage(), ""));
 		}
 		codigoBusqueda = "";
 	}
@@ -286,7 +294,7 @@ public class VentaBean implements Serializable {
 																	// venta
 																	// perdida
 
-				FabricaSistema.getISistema().registrarNuevaVenta(venta);
+				this.instanciaSistema.registrarNuevaVenta(venta);
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -311,7 +319,7 @@ public class VentaBean implements Serializable {
 							null,
 							new FacesMessage(
 									FacesMessage.SEVERITY_ERROR,
-									"Debe ingresar al menos un articulo para registrar la venta perdida",
+									"Debe ingresar al menos un artículo para registrar la venta perdida",
 									""));
 		}
 
@@ -342,7 +350,7 @@ public class VentaBean implements Serializable {
 																		// venta
 																		// pendiente
 
-				FabricaSistema.getISistema().registrarNuevaVenta(venta);
+				this.instanciaSistema.registrarNuevaVenta(venta);
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -367,7 +375,7 @@ public class VentaBean implements Serializable {
 							null,
 							new FacesMessage(
 									FacesMessage.SEVERITY_ERROR,
-									"Debe ingresar al menos un articulo para enviar a facturar",
+									"Debe ingresar al menos un artículo para enviar a facturar",
 									""));
 		}
 
@@ -381,8 +389,8 @@ public class VentaBean implements Serializable {
 				venta.setLineas(lineasVenta2);
 
 				// Agarrar el usuario logueado
-				Usuario usr = new Usuario();
-				usr = this.instanciaSistema.obtenerUsuarioLogueado();
+				Usuario usr = this.instanciaSistema.obtenerUsuarioLogueado();
+				
 				venta.setUsuario(usr);
 				// TODO ver como se elige la forma de pago.
 				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO
@@ -395,20 +403,23 @@ public class VentaBean implements Serializable {
 																		// la
 																		// venta
 																		// pendiente
-				long ventaId = FabricaSistema.getISistema().registrarNuevaVenta(venta);
+				long ventaId = this.instanciaSistema.registrarNuevaVenta(venta);
 
 				// la venta ya esta guardada en el sistema y ahora se factura:
-
-				IFacturacion ifact = FabricaLogica.getIFacturacion();
-
-				ifact.facturarVenta(ventaId);
+				this.instanciaSistema.facturarVentaPendiente(ventaId);
 
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
 								"Venta facturada con éxito", ""));
 
-			} catch (Exception e) {
+			} catch (Excepciones e) {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								e.getMessage(), ""));
+			}catch (Exception ex) {
+				ex.printStackTrace();
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -426,7 +437,7 @@ public class VentaBean implements Serializable {
 							null,
 							new FacesMessage(
 									FacesMessage.SEVERITY_ERROR,
-									"Debe ingresar al menos un articulo para facturar la venta",
+									"Debe ingresar al menos un artículo para facturar la venta",
 									""));
 		}
 
@@ -659,7 +670,7 @@ public class VentaBean implements Serializable {
 								null,
 								new FacesMessage(
 										FacesMessage.SEVERITY_ERROR,
-										"el descuento ingresado debe ser un numero entre 0 y 100",
+										"El descuento ingresado debe ser un numero entre 0 y 100",
 										""));
 			}
 
