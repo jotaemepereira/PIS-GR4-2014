@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlType;
 public class DataLineaPedidoSimple {
 
     protected int numeroArticulo;
-    protected int cantidad;
+    protected long cantidad;
 
     /**
      * Gets the value of the numeroArticulo property.
@@ -56,7 +56,7 @@ public class DataLineaPedidoSimple {
      * Gets the value of the cantidad property.
      * 
      */
-    public int getCantidad() {
+    public long getCantidad() {
         return cantidad;
     }
 
@@ -64,7 +64,7 @@ public class DataLineaPedidoSimple {
      * Sets the value of the cantidad property.
      * 
      */
-    public void setCantidad(int value) {
+    public void setCantidad(long value) {
         this.cantidad = value;
     }
 

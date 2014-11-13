@@ -10,13 +10,16 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.NamingException;
 
 import controladores.Excepciones;
 import controladores.FabricaPersistencia;
+import datatypes.DTLineaPedido;
 import model.Articulo;
 import model.Cliente;
 import model.Enumerados;
@@ -27,9 +30,9 @@ import model.Venta;
 import interfaces.IFacturacionPersistencia;
 
 public class PFacturacionControlador implements IFacturacionPersistencia {
-	
+
 	Connection con;
-	
+
 	public PFacturacionControlador() {
 		try {
 			con = Conexion.getConnection();
@@ -46,7 +49,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	public List<Venta> listarVentasPendientes() throws Excepciones {
 
 		try {
-//			Connection con = Conexion.getConnection();
+			// Connection con = Conexion.getConnection();
 			Statement st = con.createStatement();
 			try {
 				List<Venta> ret = new ArrayList<Venta>();
@@ -156,7 +159,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 						Excepciones.ERROR_SISTEMA);
 			} finally {
 				st.close();
-//				con.close();
+				// con.close();
 			}
 		} catch (Exception e) {
 
@@ -368,13 +371,13 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	public List<Long> getIdArticulosEnPeriodo(java.util.Date desde,
 			java.util.Date hasta) throws Excepciones {
 
-//		Connection con = null;
+		// Connection con = null;
 		PreparedStatement stmt = null;
 		List<Long> articulos = new ArrayList<Long>();
 
 		try {
 
-//			con = Conexion.getConnection();
+			// con = Conexion.getConnection();
 			String sql = "SELECT distinct p.product_id "
 					+ "FROM sale_details sd "
 					+ "INNER JOIN products_suppliers ps ON sd.product_id = ps.product_id "
@@ -401,7 +404,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			}
 
 			stmt.close();
-//			con.close();
+			// con.close();
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -421,7 +424,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		int cantidadVendida = 0;
 		try {
 
-//			Connection con = Conexion.getConnection();
+			// Connection con = Conexion.getConnection();
 
 			String sql = "SELECT sum(quantity) as total "
 					+ "FROM sales s INNER JOIN sale_details sd "
@@ -444,7 +447,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			}
 
 			stmt.close();
-//			con.close();
+			// con.close();
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -551,23 +554,71 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		c.setTime(hoy);
 		c.add(Calendar.MONTH, -mesesAtras);
 		Date dMesesAtras = c.getTime();
-		
 
-		List<Long> idArts =null;
-		idArts = FabricaPersistencia.getStockPersistencia().obtenerIdTodosLosArticulos();
+		List<Long> idArts = null;
+		idArts = FabricaPersistencia.getStockPersistencia()
+				.obtenerIdTodosLosArticulos();
 		Iterator<Long> it = idArts.iterator();
-		Long id=null;
-		while (it.hasNext()){
+		Long id = null;
+		while (it.hasNext()) {
 			id = it.next();
-			int cant =	cantidadVendidaEnPeriodo(id,dMesesAtras,hoy);
-			long minimo = FabricaPersistencia.getStockPersistencia().getStockMinimo(id);
-			if (cant<minimo){
-				String desc = FabricaPersistencia.getStockPersistencia().obtenerArticuloConId(id).getDescripcion();
-				pv.add(new PocasVentas(id,desc,cant,minimo));
+			int cant = cantidadVendidaEnPeriodo(id, dMesesAtras, hoy);
+			long minimo = FabricaPersistencia.getStockPersistencia()
+					.getStockMinimo(id);
+			if (cant < minimo) {
+				String desc = FabricaPersistencia.getStockPersistencia()
+						.obtenerArticuloConId(id).getDescripcion();
+				pv.add(new PocasVentas(id, desc, cant, minimo));
 			}
 		}
-		
+
 		return pv;
+	}
+
+	public Map<Long, DTLineaPedido> obtenerCantidadVendidaDeArticulosDeDusa(
+			java.util.Date desde, java.util.Date hasta) throws Excepciones {
+
+		Map<Long, DTLineaPedido> ret;
+
+		String sql = "SELECT p.product_id, p.description, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, sum(sd.quantity) as total "
+				+ "FROM products p "
+				+ "LEFT JOIN sale_details sd ON p.product_id = sd.product_id "
+				+ "LEFT JOIN sales s ON s.sale_id = sd.sale_id "
+				+ "WHERE ((s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) OR (s.sale_status IS NULL AND s.sale_date IS NULL)) "
+				+ "AND ( 1 IN (SELECT ps.supplier_id "
+				+ "FROM products_suppliers ps "
+				+ "WHERE ps.product_id = p.product_id)) "
+				+ "GROUP BY p.product_id, p.stock, p.minimum_stock "
+				+ "ORDER BY p.description;";
+
+		try {
+
+			PreparedStatement stmt = con.prepareStatement(sql);			
+			stmt.setTimestamp(1, new Timestamp(desde.getTime()));
+			stmt.setTimestamp(2, new Timestamp(hasta.getTime()));
+			ResultSet rs = stmt.executeQuery();
+						
+			// Recorro el resultado de la consulta y cargo la lista con los valores correspondientes
+			ret = new HashMap<Long, DTLineaPedido>();
+			while (rs.next()) {
+				DTLineaPedido nuevo = new DTLineaPedido();
+				nuevo.setIdArticulo(rs.getLong("product_id"));
+				nuevo.setDescripcionArticulo(rs.getString("description"));
+				nuevo.setStockActual(rs.getLong("stock"));
+				nuevo.setStockMinimo(rs.getLong("minimum_stock"));
+				nuevo.setPrecioUnitario(rs.getBigDecimal("unit_price"));
+				nuevo.setPrecioPonderado(rs.getBigDecimal("avg_cost"));
+				nuevo.setCantidad(rs.getLong("total"));
+				ret.put(nuevo.getIdArticulo(), nuevo);
+			}
+
+			stmt.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+		return ret;
 	}
 
 }

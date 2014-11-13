@@ -727,7 +727,7 @@ public class PStockControlador implements IStockPersistencia {
 					stmt = c.prepareStatement(query);
 					stmt.setLong(1, pedidoID);
 					stmt.setLong(2, lPedido.getIdArticulo().longValue());
-					stmt.setInt(3, lPedido.getCantidad());
+					stmt.setLong(3, lPedido.getCantidad());
 
 					stmt.executeUpdate();
 				}

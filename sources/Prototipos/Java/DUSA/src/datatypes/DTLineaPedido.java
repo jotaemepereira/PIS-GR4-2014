@@ -3,14 +3,15 @@ package datatypes;
 import java.math.BigDecimal;
 
 public class DTLineaPedido {
-	private Long numeroArticulo;
 	private Long idArticulo;
-	private int cantidad;
 	private String descripcionArticulo;
-	private BigDecimal precioUnitario;
-	private BigDecimal precioPonderado;
 	private Long stockMinimo;
 	private Long stockActual;
+	private BigDecimal precioUnitario;
+	private BigDecimal precioPonderado;
+	private long cantidad;
+	private double cantPredecidaMinimosCuadrados;
+	private Long numeroArticulo;
 	private BigDecimal subtotal;
 	
 	public DTLineaPedido() {
@@ -43,10 +44,10 @@ public class DTLineaPedido {
 	public void setIdArticulo(Long idArticulo) {
 		this.idArticulo = idArticulo;
 	}
-	public int getCantidad() {
+	public long getCantidad() {
 		return cantidad;
 	}
-	public void setCantidad(int cantidad) {
+	public void setCantidad(long cantidad) {
 		this.cantidad = cantidad;
 	}
 	public String getDescripcionArticulo() {
@@ -123,6 +124,15 @@ public class DTLineaPedido {
 	}
 	public void setSubtotal(double subtotal) {
 		this.subtotal = new BigDecimal(subtotal);
+	}
+
+	public double getCantPredecidaMinimosCuadrados() {
+		return cantPredecidaMinimosCuadrados;
+	}
+
+	public void setCantPredecidaMinimosCuadrados(
+			double cantPredecidaMinimosCuadrados) {
+		this.cantPredecidaMinimosCuadrados = cantPredecidaMinimosCuadrados;
 	}
 }
 

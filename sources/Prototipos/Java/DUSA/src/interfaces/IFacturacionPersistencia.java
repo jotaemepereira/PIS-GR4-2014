@@ -3,8 +3,10 @@ package interfaces;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import controladores.Excepciones;
+import datatypes.DTLineaPedido;
 import model.PocasVentas;
 import model.Venta;
 
@@ -49,4 +51,14 @@ public interface IFacturacionPersistencia {
 	 */
 	
 	public List<PocasVentas> articulosConPocasVentasEnLosUltimosMeses(int mesesAtras) throws Excepciones;
+
+	/**
+	 * Devuelve un map con clave idArticulo y los datos de los articulos mas la cantidad vendida en el período (desde, hasta)
+	 * Toma solo ventas facturadas y artículos que los provea DUSA.
+	 * @param desde
+	 * @param hasta
+	 * @return
+	 * @throws Excepciones
+	 */
+	public Map<Long, DTLineaPedido> obtenerCantidadVendidaDeArticulosDeDusa(Date desde, Date hasta) throws Excepciones;
 }

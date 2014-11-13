@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import controladores.Excepciones;
+import datatypes.DTLineaPedido;
 import interfaces.IPredictor;
 import interfaces.ISeleccionador;
 
@@ -35,25 +36,9 @@ public class GeneradorPedido {
 	 * @return Pedido con todas las lineaPedido generado con el ISeleccionador y IPredictor
 	 * @throws Excepciones
 	 */
-	public Pedido generar() throws Excepciones{
-		
-		Pedido pedido = new Pedido();
-		List<Long> articulos = this.seleccionador.getIDArticulos();
-		
+	public List<DTLineaPedido> generar() throws Excepciones{
 		long ini = Calendar.getInstance().getTimeInMillis();
-		for (Long idArticulo : articulos) {
-			
-			int cantidad = this.predictor.predecir(idArticulo);
-			if (cantidad > 0){		
-
-				LineaPedido lPedido = new LineaPedido();
-				lPedido.setIdArticulo(idArticulo);
-				lPedido.setCantidad(cantidad);
-				
-				pedido.getLineas().add(lPedido);
-			}
-		}
-		
+		List<DTLineaPedido> pedido = this.predictor.predecir();
 		System.out.println("Duro: " + (int) ((Calendar.getInstance().getTimeInMillis() - ini) / 1000));
 		return pedido;
 	}

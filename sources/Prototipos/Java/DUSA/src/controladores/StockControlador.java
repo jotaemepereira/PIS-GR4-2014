@@ -114,38 +114,8 @@ public class StockControlador implements IStock {
 		GeneradorPedido gr = new GeneradorPedido(seleccionarDesde,
 				predecirDesde);
 
-		Pedido pedidoGenerado = gr.generar();
-
-		List<DTLineaPedido> lPedidos = new ArrayList<DTLineaPedido>();
-
-		for (LineaPedido lPedido : pedidoGenerado.getLineas()) {
-
-			DTLineaPedido dtlPedido = new DTLineaPedido();
-
-			Articulo articulo = this.obtenerArticulo(lPedido.getIdArticulo());
-
-			if (articulo != null) {
-
-				dtlPedido.setIdArticulo(lPedido.getIdArticulo());
-				dtlPedido.setDescripcionArticulo(articulo.getDescripcion());
-				dtlPedido.setStockMinimo(articulo.getStockMinimo());
-				dtlPedido.setStockActual(articulo.getStock());
-				dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
-				dtlPedido.setCantidad(lPedido.getCantidad());
-				dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
-				dtlPedido.setSubtotal(lPedido.getCantidad() * articulo.getPrecioUnitario().floatValue());
-
-				DTProveedor dtProveedor = articulo.getProveedores().get(Enumerados.infoDUSA.proveedorID);
-
-				if (dtProveedor != null) {
-					// Preventivo control si no es de DUSA no se ingresa
-					dtlPedido.setNumeroArticulo(dtProveedor.getCodigoIdentificador());
-					lPedidos.add(dtlPedido);
-				}
-			}
-		}
-
-		return lPedidos;
+		List<DTLineaPedido> pedidoGenerado = gr.generar();
+		return pedidoGenerado;
 	}
 
 	private List<DTBusquedaArticulo> getDatosArticulosBuscados(
@@ -184,39 +154,8 @@ public class StockControlador implements IStock {
 		ISeleccionador st = new SeleccionarTodos();
 		IPredictor pr = new PredecirEnBaseAHistorico(diasAPredecir);
 		GeneradorPedido gp = new GeneradorPedido(st, pr);
-		Pedido pedidoGenerado = gp.generar();
-
-		List<DTLineaPedido> lPedidos = new ArrayList<DTLineaPedido>();
-
-		for (LineaPedido lPedido : pedidoGenerado.getLineas()) {
-
-			DTLineaPedido dtlPedido = new DTLineaPedido();
-			Articulo articulo = this.obtenerArticulo(lPedido.getIdArticulo());
-
-			if (articulo != null) {
-
-				dtlPedido.setIdArticulo(lPedido.getIdArticulo());
-				dtlPedido.setDescripcionArticulo(articulo.getDescripcion());
-				dtlPedido.setStockMinimo(articulo.getStockMinimo());
-				dtlPedido.setStockActual(articulo.getStock());
-				dtlPedido.setPrecioUnitario(articulo.getPrecioUnitario());
-				dtlPedido.setCantidad(lPedido.getCantidad());
-				dtlPedido.setPrecioPonderado(articulo.getCostoPromedio());
-				dtlPedido.setSubtotal(lPedido.getCantidad()
-						* articulo.getPrecioUnitario().floatValue());
-
-				DTProveedor dtProveedor = articulo.getProveedores().get(
-						Enumerados.infoDUSA.proveedorID);
-				if (dtProveedor != null) {
-					// Preventivo control si no es de DUSA no se ingresa
-					dtlPedido.setNumeroArticulo(dtProveedor
-							.getCodigoIdentificador());
-					lPedidos.add(dtlPedido);
-				}
-			}
-		}
-
-		return lPedidos;
+		List<DTLineaPedido> pedidoGenerado = gp.generar();
+		return pedidoGenerado;
 
 	}
 
