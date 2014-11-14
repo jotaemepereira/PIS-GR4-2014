@@ -323,20 +323,20 @@ public class StockControlador implements IStock {
 		prop.store(output, null);
 
 
-		if (cambios!=null){
+	//	if (cambios.size()==0){
+			
 			m = new Mail();
 			m.setAsunto("cambio en productos de DUSA");   
 			m.setContenido(cambios);
 			m.setEmisor(mailEmisor, passEmisor);
 			m.setDestinatarios(receptores);
 			m.Enviar();
-		}
+	//	}
 		
 		} catch (IOException | MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-				         
 
 	}                      
 
@@ -419,5 +419,4 @@ public class StockControlador implements IStock {
 		
 	}
 	
-
 }
