@@ -28,25 +28,25 @@ import interfaces.IFacturacionPersistencia;
 
 public class PFacturacionControlador implements IFacturacionPersistencia {
 	
-	Connection con;
+//	Connection con;
 	
 	public PFacturacionControlador() {
-		try {
-			con = Conexion.getConnection();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			con = Conexion.getConnection();
+//		} catch (NamingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
 	public List<Venta> listarVentasPendientes() throws Excepciones {
 
 		try {
-//			Connection con = Conexion.getConnection();
+			Connection con = Conexion.getConnection();
 			Statement st = con.createStatement();
 			try {
 				List<Venta> ret = new ArrayList<Venta>();
@@ -368,7 +368,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	public List<Long> getIdArticulosEnPeriodo(java.util.Date desde,
 			java.util.Date hasta) throws Excepciones {
 
-//		Connection con = null;
+		Connection con = null;
 		PreparedStatement stmt = null;
 		List<Long> articulos = new ArrayList<Long>();
 
@@ -421,7 +421,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		int cantidadVendida = 0;
 		try {
 
-//			Connection con = Conexion.getConnection();
+			Connection con = Conexion.getConnection();
 
 			String sql = "SELECT sum(quantity) as total "
 					+ "FROM sales s INNER JOIN sale_details sd "
