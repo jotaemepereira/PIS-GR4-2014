@@ -1,16 +1,13 @@
 package interfaces;
 
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import controladores.Excepciones;
-import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTComprobanteFactura;
-import datatypes.DTFormasVenta;
 import datatypes.DTLineaPedido;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTTiposDGI;
 import datatypes.DTVenta;
@@ -19,7 +16,6 @@ import model.Articulo;
 import model.Droga;
 import model.Orden;
 import model.Pedido;
-import model.Presentacion;
 import model.Proveedor;
 import model.TipoIva;
 import model.Usuario;
@@ -46,15 +42,16 @@ public interface ISistema {
 	/**
 	 * Modifica un articulo del sistema
 	 * 
-	 * @param articulo
-	 *            - Articulo
+	 * @param DTModificacionArticulo
+	 *            - Datatype que contiene el artículo y aparte listas de proveedores,
+	 *            drogas y acciones terapeuticas con las modificaciones necesarias.
 	 * @throws Excepciones
 	 *             ERROR_SISTEMA (en caso de error a la hora de
 	 *             persistir en la base de datos)
 	 * @author Jmaguerre
 	 * 
 	 */
-	public void modificarArticulo(Articulo articulo) throws Excepciones;
+	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones;
 
 	/**
 	 * Retorna todos los proveedores activos existentes en el sistema.
@@ -279,7 +276,7 @@ public interface ISistema {
 	 * Se obtiene una lista de ventas pendientes de facturacion
 	 * @author Seba
 	 * @return
-	 * @throws Exception
+	 * @throws Excepciones
 	 */
 	public List<Venta> listarVentasPendientes() throws Excepciones;
 	
@@ -298,4 +295,12 @@ public interface ISistema {
 	 * @throws Excepciones
 	 */
 	public void cancelarVentaPendiente(long idVenta) throws Excepciones;
+	
+	/**
+	 * Obtener los articulos del proveedor
+	 * @author Juanma
+	 * @param id del proveedor
+	 * @throws Excepciones
+	 * */
+	 public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
 }

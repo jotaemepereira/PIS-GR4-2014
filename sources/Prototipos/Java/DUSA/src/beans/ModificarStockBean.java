@@ -4,15 +4,20 @@ import interfaces.ISistema;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.ViewHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 import model.Enumerados.tipoMovimientoDeStock;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
 import controladores.Excepciones;
@@ -145,6 +150,19 @@ public class ModificarStockBean implements Serializable{
 	 * @return
 	 */
 	public String onFlowProcess(FlowEvent event) {
+		
+		//Si no se selecciona un artículo se notifica y se mantiene el wizard en el mismo paso (tab).
+		if ((event.getNewStep().equals("paso2") && this.articuloSeleccionado == null) || 
+			(event.getNewStep().equals("paso3") && this.articuloParaDesarme == null)){
+			//TODO:La notificación no se esta desplegando correctamente.
+			FacesContext contexto = FacesContext.getCurrentInstance();
+			contexto.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+					Excepciones.MENSAJE_SELECCIONE_ARTICULO, ""));
+			
+			RequestContext.getCurrentInstance().update("msgs");
+			return event.getOldStep();
+		}
+		
 		return event.getNewStep();
 	}
 	
@@ -158,6 +176,7 @@ public class ModificarStockBean implements Serializable{
 		try {
 			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);
 			if (resBusqueda != null && resBusqueda.size() > 0) {
+				//Se carga el stock para modificar
 				nuevoStock = new long[resBusqueda.size()];
 				for (int i = 0; i < resBusqueda.size(); i++) {
 					nuevoStock[i] = resBusqueda.get(i).getStock();
@@ -165,8 +184,12 @@ public class ModificarStockBean implements Serializable{
 			}
 			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
 		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
+			FacesContext contexto = FacesContext.getCurrentInstance();
+			contexto.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					e.getMessage(), ""));
 		}
 	}
 
@@ -180,64 +203,66 @@ public class ModificarStockBean implements Serializable{
 		try {
 			resBusquedaDesarme = this.instanciaSistema
 					.buscarArticulos(busquedaDesarme);
+			//Se elimina de la búsqueda el artículo seleccionado en el paso anterior.
+			for (Iterator<DTBusquedaArticulo> iterator = resBusquedaDesarme.iterator(); iterator.hasNext();) {
+				DTBusquedaArticulo art = (DTBusquedaArticulo) iterator.next();
+				
+				if (art.getIdArticulo() == this.articuloSeleccionado.getIdArticulo()) {
+					
+					iterator.remove();
+				}
+				
+			}
 		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
+			FacesContext contexto = FacesContext.getCurrentInstance();
+			contexto.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					e.getMessage(), ""));
 		}
 	}
 
 	public void confirmarCambioStock() {
 		FacesContext contexto = FacesContext.getCurrentInstance();
 		try {
-			if (motivo.trim().isEmpty()) {
+			if (this.resBusqueda.isEmpty()) {
+				
 				contexto.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
-						"Debe ingresar un motivo.", ""));
+						Excepciones.MENSAJE_CANT_IGUALES, ""));
+			} else if (motivo.trim().isEmpty()) {
+				
+				contexto.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						Excepciones.MENSAJE_MOTIVO_VACIO, ""));
 			} else {
 				int cambios = 0;
 				for (int i = 0; i < resBusqueda.size(); i++) {
-					if (resBusqueda.get(i).getStock() != nuevoStock[i]) {
+					
+					long actualStock = resBusqueda.get(i).getStock();
+					if (actualStock != nuevoStock[i]) {
+						
 						cambios++;
+						//Comparo para generar el registro del movimiento de stock 
+						if (actualStock < nuevoStock[i]) {
+							
+							this.instanciaSistema.modificarStock(resBusqueda.get(i).getIdArticulo(),
+									nuevoStock[i], nuevoStock[i]-actualStock, tipoMovimientoDeStock.aumentoStock, motivo.trim());
+						} else {
+							
+							this.instanciaSistema.modificarStock(resBusqueda.get(i).getIdArticulo(),
+									nuevoStock[i], actualStock-nuevoStock[i], tipoMovimientoDeStock.bajaStock, motivo.trim());
+						}
 					}
 				}
 
 				if (cambios > 0) {
-
-//					long[] ids = new long[cambios];
-//					long[] stocks = new long[cambios];
-//					int j = 0;
-
-					for (int i = 0; i < resBusqueda.size(); i++) {
-						
-						long actualStock = resBusqueda.get(i).getStock();
-						if (actualStock != nuevoStock[i]) {
-//							ids[j] = resBusqueda.get(i).getIdArticulo();
-//							stocks[j] = nuevoStock[i];
-//							j++;
-							
-							
-							
-							//Comparo para generar el registro del movimiento de stock 
-							if (actualStock < nuevoStock[i]) {
-								
-								this.instanciaSistema.modificarStock(resBusqueda.get(i).getIdArticulo(),
-										nuevoStock[i], nuevoStock[i]-actualStock, tipoMovimientoDeStock.aumentoStock, motivo);
-							} else {
-								
-								this.instanciaSistema.modificarStock(resBusqueda.get(i).getIdArticulo(),
-										nuevoStock[i], actualStock-nuevoStock[i], tipoMovimientoDeStock.bajaStock, motivo);
-							}
-							
-//							is.modificarStock(resBusqueda.get(i).getIdArticulo(), nuevoStock[i]);
-						}
-					}
-					
-//					IStock is = FabricaLogica.getIStock();
-//					is.modificarStock(ids, stocks);
-
+					//Se han realizado cambios con exito.
+					String controlPlural = (cambios == 1) ? " artículo.":" artículos.";
 					contexto.addMessage(null, new FacesMessage(
 							FacesMessage.SEVERITY_INFO,
-							"Cambio de stock realizado con éxito.", ""));
+							"Se ha realizado el cambio de stock de " + cambios + controlPlural, ""));//"Cambio de stock realizado con éxito."
 
 					resBusqueda = new ArrayList<DTBusquedaArticulo>();
 					motivo = "";
@@ -245,7 +270,7 @@ public class ModificarStockBean implements Serializable{
 				} else {
 					contexto.addMessage(null, new FacesMessage(
 							FacesMessage.SEVERITY_ERROR,
-							"No hay cambios ingresados.", ""));
+							Excepciones.MENSAJE_CANT_IGUALES, ""));
 
 				}
 			}
@@ -262,7 +287,7 @@ public class ModificarStockBean implements Serializable{
 					null,
 					new FacesMessage(
 							FacesMessage.SEVERITY_ERROR,
-							"Error al ingresar cambio. Intente nuevamente",
+							Excepciones.MENSAJE_ERROR_SISTEMA,
 							""));
 		}
 	}
@@ -270,36 +295,56 @@ public class ModificarStockBean implements Serializable{
 	public void confirmarDesarme() {
 		FacesContext contexto = FacesContext.getCurrentInstance();
 		try {
-			if (nuevoStockSeleccionado >= articuloSeleccionado.getStock()) {
+			
+			if (motivo.trim().isEmpty()) {
+				contexto.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						Excepciones.MENSAJE_MOTIVO_VACIO, ""));
+			} else if (nuevoStockSeleccionado >= articuloSeleccionado.getStock()) {
 				contexto.addMessage(
 						null,
 						new FacesMessage(
 								FacesMessage.SEVERITY_ERROR,
-								"El nuevo stock del artículo origen debe ser menor al actual.",
+								Excepciones.MENSAJE_CANT_INVALIDA_ORIGEN,
 								""));
 			} else if (nuevoStockDesarme <= articuloParaDesarme.getStock()) {
 				contexto.addMessage(
 						null,
 						new FacesMessage(
 								FacesMessage.SEVERITY_ERROR,
-								"El nuevo stock del artículo destino debe ser mayor al actual.",
+								Excepciones.MENSAJE_CANT_INVALIDA_DESTINO,
 								""));
 			} else {
-//				IStock is = FabricaLogica.getIStock();
-//				is.modificarStock(articuloSeleccionado.getIdArticulo(),
-//						articuloParaDesarme.getIdArticulo(),
-//						nuevoStockSeleccionado, nuevoStockDesarme);
 				
 				this.instanciaSistema.modificarStock(articuloSeleccionado.getIdArticulo(), nuevoStockSeleccionado, 
-						articuloSeleccionado.getStock() - nuevoStockSeleccionado, tipoMovimientoDeStock.desarmeStock, motivo);
+						articuloSeleccionado.getStock() - nuevoStockSeleccionado, tipoMovimientoDeStock.desarmeStock, motivo.trim());
 				
 				this.instanciaSistema.modificarStock(articuloParaDesarme.getIdArticulo(), nuevoStockDesarme, 
-						nuevoStockDesarme - articuloParaDesarme.getStock(), tipoMovimientoDeStock.desarmeStock, motivo);
+						nuevoStockDesarme - articuloParaDesarme.getStock(), tipoMovimientoDeStock.desarmeStock, motivo.trim());
 				
 
 				contexto.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_INFO,
-						"Desarme realizado con éxito.", ""));
+						Excepciones.MENSAJE_DESARME_EXITO, ""));
+				
+				//Refresh de pagina para regresar al estado inicial
+				
+				this.articuloParaDesarme = null;
+				this.articuloSeleccionado = null;
+				this.busqueda = "";
+				this.busquedaDesarme = "";
+				this.resBusqueda.clear();
+				this.resBusquedaDesarme.clear();
+				nuevoStockSeleccionado = 0;
+				nuevoStockDesarme = 0;
+				
+				FacesContext context = FacesContext.getCurrentInstance();
+				Application application = context.getApplication();
+				ViewHandler viewHandler = application.getViewHandler();
+				UIViewRoot viewRoot = viewHandler.createView(context, context
+						.getViewRoot().getViewId());
+				context.setViewRoot(viewRoot);
+				context.renderResponse(); 
 			}
 		} catch (Excepciones ex){ 
 			
@@ -315,7 +360,7 @@ public class ModificarStockBean implements Serializable{
 					null,
 					new FacesMessage(
 							FacesMessage.SEVERITY_ERROR,
-							"Error al ingresar cambio. Intente nuevamente",
+							Excepciones.MENSAJE_ERROR_SISTEMA,
 							""));
 		}
 	}

@@ -10,6 +10,7 @@ import interfaces.IStockPersistencia;
 
 public class SeleccionarTodos implements ISeleccionador {
 	
+	@Override
 	public List <Long> getIDArticulos() throws Excepciones{
 		
 		IStockPersistencia ps = FabricaPersistencia.getStockPersistencia();

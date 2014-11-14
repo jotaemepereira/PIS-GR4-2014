@@ -48,6 +48,7 @@ public class ComprasBean implements Serializable {
 
 	private List<DTProveedor> proveedores;
 	private int proveedorSeleccionado;
+	private Boolean disableProveedores = false;
 
 	private List<DTBusquedaArticulo> busquedaArticulos;
 	private String busqueda;
@@ -56,20 +57,23 @@ public class ComprasBean implements Serializable {
 	private List<DTComprobanteFactura> facturasDUSA = new ArrayList<DTComprobanteFactura>();
 	private long ordenDeCompraDUSA;
 	private DTComprobanteFactura factura = new DTComprobanteFactura();
+	private BigDecimal totalFactura = new BigDecimal(0);
 
 	private Map<Integer, DTTiposDGI> mapTiposDGI = new HashMap<Integer, DTTiposDGI>();
 	private List<DTTiposDGI> tiposDGI = new ArrayList<DTTiposDGI>();
 
 	List<DTLineaFacturaCompra> alertasPrecios = new ArrayList<DTLineaFacturaCompra>();
-	
+
 	private Date hoy = new Date();
 
-	// getters y setters
-	
-	public Date getHoy(){
+	/*************************
+	 *** GETTERS Y SETTERS ***
+	 *************************/
+
+	public Date getHoy() {
 		return hoy;
 	}
-	
+
 	public Boolean getDisableBotones() {
 		return disableBotones;
 	}
@@ -198,7 +202,29 @@ public class ComprasBean implements Serializable {
 		this.alertasPrecios = alertasPrecios;
 	}
 
-	// funciones ingresar compra
+	public Boolean getDisableProveedores() {
+		return disableProveedores;
+	}
+
+	public void setDisableProveedores(Boolean disableProveedores) {
+		this.disableProveedores = disableProveedores;
+	}
+
+	public BigDecimal getTotalFactura() {
+		return totalFactura;
+	}
+
+	public void setTotalFactura(BigDecimal totalFactura) {
+		this.totalFactura = totalFactura;
+	}
+
+	/*********************************
+	 ******** FUNCIONES **************
+	 *********************************/
+
+	/**
+	 * Inicia el caso para el ingreso manual de una factura
+	 */
 	public void ingresoManual() {
 		actualizarProveedores();
 
@@ -208,8 +234,13 @@ public class ComprasBean implements Serializable {
 		selectFacturaDUSA = "hidden";
 		selectProveedores = "visible";
 		serieFactura = false;
+		disableProveedores = false;
 	}
 
+	/**
+	 * Función que inicia el caso de factura automática de DUSA, trayendo las
+	 * facturas de DUSA pendientes
+	 */
 	public void facturaAutomaticaDUSA() {
 		try {
 			proveedorSeleccionado = 1;
@@ -231,28 +262,57 @@ public class ComprasBean implements Serializable {
 		serieFactura = true;
 	}
 
+	/**
+	 * Función que setea la factura actual según la seleccionada en el caso de
+	 * la factura automática de DUSA
+	 */
 	public void seleccionFacturaDUSA() {
 		factura = mapFacturasDUSA.get(ordenDeCompraDUSA);
 		proveedorSeleccionado = 1;
+		totalFactura = factura.getMontoTotalAPagar();
 	}
 
+	/**
+	 * Cancela la compra actual
+	 */
 	public void cancelarIngresarCompra() {
-		disableBotones = false;
-		hideTable = "hidden";
-		selectFacturaDUSA = "hidden";
-		selectProveedores = "hidden";
-		factura = new DTComprobanteFactura();
-		serieFactura = false;
+		reset();
 	}
 
+	/**
+	 * Ingresa una compra al sistema
+	 */
 	public void ingresarCompra() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		alertasPrecios.clear();
-		
-		if((serieFactura == false) && (factura.getSerieCFE().equals(""))){
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, "En el caso de los comprobantes electrónicos es necesario ingresar la serie.", ""));
+
+		// Para el caso de los comprobantes electronicos verifico que se haya
+		// ingresado una serie
+		if ((serieFactura == false) && (factura.getSerieCFE().equals(""))) {
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"En el caso de los comprobantes electrónicos es necesario ingresar la serie.",
+							""));
 			return;
+		}
+
+		// En caso de factura manual, Verifico que total ingresado == total
+		// calculado
+		if (factura.getOrdenDeCompra() == 0) {
+			BigDecimal total = factura.getMontoTotalAPagar().add(
+					factura.getMontoNoFacturable());
+			System.out.println("TOTALES: " + total + " " + totalFactura);
+			if (totalFactura.compareTo(total) != 0) {
+				context.addMessage(
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_ERROR,
+								"El total calculado a partir de los costos ingresados, no iguala al total ingresado.",
+								""));
+				return;
+			}
 		}
 
 		List<OrdenDetalle> detalles = new ArrayList<OrdenDetalle>();
@@ -267,12 +327,11 @@ public class ComprasBean implements Serializable {
 			OrdenDetalle detalle = new OrdenDetalle();
 			numeroLinea++;
 
-			System.out.println(linea.getCostoListaArticulo().compareTo(
-					linea.getPrecioUnitario()));
 			// Chequeo si el costo de lista es menor al costo comprado y si lo
 			// es, lo agrego a la lista de alerta
-			if (linea.getCostoListaArticulo().compareTo(
-					linea.getPrecioUnitario()) < 0) {
+			if ((linea.getCostoListaArticulo() != null)
+					&& (linea.getCostoListaArticulo().compareTo(
+							linea.getPrecioUnitario()) < 0)) {
 				alertasPrecios.add(linea);
 			}
 
@@ -306,9 +365,9 @@ public class ComprasBean implements Serializable {
 			orden.setDetalle(detalles);
 			orden.setFechaComprobante(factura.getFechaComprobante());
 			orden.setFormaDePago(factura.getFormaDePago());
-			if(factura.getOrdenDeCompra() == 0){
+			if (factura.getOrdenDeCompra() == 0) {
 				orden.setIdProveedor(factura.getIdProveedor());
-			}else{
+			} else {
 				orden.setIdOrden(factura.getIdOrden());
 				orden.setIdProveedor(1);
 			}
@@ -320,7 +379,8 @@ public class ComprasBean implements Serializable {
 			orden.setMontoNoGravado(factura.getMontoNoGravado());
 			orden.setMontoRetenidoIRAE(factura.getMontoRetenidoIRAE());
 			orden.setMontoRetenidoIVA(factura.getMontoRetenidoIVA());
-			orden.setMontoTotalAPagar(factura.getMontoTotalAPagar());
+			orden.setMontoTotalAPagar(factura.getMontoTotalAPagar().add(
+					factura.getMontoNoFacturable()));
 			orden.setMontoTributoIvaBasico(factura.getMontoTributoIvaBasico());
 			orden.setMontoTributoIvaMinimo(factura.getMontoTributoIvaMinimo());
 			orden.setNumeroCFE(factura.getNumeroCFE());
@@ -344,13 +404,12 @@ public class ComprasBean implements Serializable {
 		}
 
 		// Reseteo los valores por defecto
-		disableBotones = false;
-		hideTable = "hidden";
-		selectFacturaDUSA = "hidden";
-		selectProveedores = "hidden";
-		factura = new DTComprobanteFactura();
-		serieFactura = false;
+		reset();
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+				Excepciones.MENSAJE_COMPRA_OK, ""));
 
+		// En caso que se haya dado que hay algún artúculo con costo de lista <
+		// precio unitario, muestro el popup con los mismos
 		if (!alertasPrecios.isEmpty()) {
 			System.out.println("alerta");
 			RequestContext.getCurrentInstance().execute(
@@ -358,6 +417,23 @@ public class ComprasBean implements Serializable {
 		}
 	}
 
+	/**
+	 * Resetea la vista
+	 */
+	private void reset() {
+		disableBotones = false;
+		disableBotones = false;
+		hideTable = "hidden";
+		selectFacturaDUSA = "hidden";
+		selectProveedores = "hidden";
+		factura = new DTComprobanteFactura();
+		serieFactura = false;
+		totalFactura = new BigDecimal(0);
+	}
+
+	/**
+	 * Actualiza la lista de proveedores
+	 */
 	public void actualizarProveedores() {
 		Map<Integer, DTProveedor> proveedoresLista;
 		try {
@@ -372,6 +448,9 @@ public class ComprasBean implements Serializable {
 		}
 	}
 
+	/**
+	 * Trae los tipos de factura de la base de datos
+	 */
 	public void obtenerTiposDGI() {
 		try {
 			this.mapTiposDGI = this.instanciaSistema.obtenerTiposDGI();
@@ -384,6 +463,13 @@ public class ComprasBean implements Serializable {
 		}
 	}
 
+	/**
+	 * Al darle agregar en el dialog de articulos, se agrega a la lista y se
+	 * muestra en la tabla de articulos de la factura
+	 * 
+	 * @param Articulo
+	 *            - articulo
+	 */
 	public void agregarArticulo(DTBusquedaArticulo articulo) {
 		DTLineaFacturaCompra linea = new DTLineaFacturaCompra();
 
@@ -396,12 +482,16 @@ public class ComprasBean implements Serializable {
 		linea.setDescuento(new BigDecimal(0));
 		linea.setTotal(new BigDecimal(0));
 		linea.setPrecioUnitario(new BigDecimal(0));
+		linea.setTipoIVA(articulo.getTipoIva());
 
 		List<DTLineaFacturaCompra> detalle = factura.getDetalle();
 		detalle.add(linea);
 
 	}
 
+	/**
+	 * Busca articulos utilizando Solr, filtrando por el proveedor seleccionado
+	 */
 	public void buscarArticulos() {
 		busquedaArticulos = new ArrayList<DTBusquedaArticulo>();
 
@@ -410,14 +500,8 @@ public class ComprasBean implements Serializable {
 		}
 
 		try {
-			System.out.println("PROVEEDOR: " + factura.getIdProveedor());
-			if (factura.getIdProveedor() != 0) {
-				busquedaArticulos = this.instanciaSistema.buscarArticulos(
-						busqueda, this.proveedorSeleccionado);
-			} else {
-				busquedaArticulos = this.instanciaSistema
-						.buscarArticulos(busqueda);
-			}
+			busquedaArticulos = this.instanciaSistema.buscarArticulos(busqueda,
+					this.proveedorSeleccionado);
 			System.out.println("CANTIDAD ENCONTRADA: "
 					+ busquedaArticulos.size());
 		} catch (Excepciones e) {
@@ -430,9 +514,11 @@ public class ComprasBean implements Serializable {
 
 	/**
 	 * frente a un cambio en el precio, cantidad o descuento, calcula el total
-	 * de ese articulo
+	 * de ese articulo junto con sus ivas y retenciones, sumandolo donde
+	 * corresponde
 	 */
 	public void calcularTotalArticulo(DTLineaFacturaCompra detalle) {
+		System.out.println("calcular");
 		// Saco el valor anterior de la suma del subtotal
 		factura.setSubtotalProdctos(factura.getSubtotalProdctos().subtract(
 				detalle.getTotal()));
@@ -449,34 +535,117 @@ public class ComprasBean implements Serializable {
 
 		// Agrego el precio calculado al total
 		factura.setSubtotalProdctos(factura.getSubtotalProdctos().add(total));
+
+		// Actualizo los valores de iva y retenciones
+		BigDecimal tributo = new BigDecimal(0);
+		BigDecimal neto = new BigDecimal(0);
+		BigDecimal iva = new BigDecimal(0);
+		BigDecimal retenidoIVA = new BigDecimal(0);
+		BigDecimal retenidoIRAE = new BigDecimal(0);
+
+		factura.setMontoNoGravado(new BigDecimal(0));
+		factura.setMontoNetoGravadoIvaBasico(new BigDecimal(0));
+		factura.setMontoNetoGravadoIvaMinimo(new BigDecimal(0));
+		factura.setTotalIvaBasico(new BigDecimal(0));
+		factura.setTotalIvaMinimo(new BigDecimal(0));
+		factura.setMontoTributoIvaBasico(new BigDecimal(0));
+		factura.setMontoTributoIvaMinimo(new BigDecimal(0));
+		factura.setMontoTotalAPagar(new BigDecimal(0));
+		factura.setMontoRetenidoIVA(new BigDecimal(0));
+		factura.setMontoRetenidoIRAE(new BigDecimal(0));
+
+		Iterator<DTLineaFacturaCompra> it = factura.getDetalle().iterator();
+		while (it.hasNext()) {
+			DTLineaFacturaCompra detalleF = (DTLineaFacturaCompra) it.next();
+
+			switch (detalleF.getTipoIVA().getIndicadorFacturacion()) {
+			case 1: // IVA exento
+				neto = detalleF.getTotal();
+				factura.setMontoNoGravado(factura.getMontoNoGravado().add(neto));
+				break;
+			case 2: // IVA minimo
+				tributo = detalleF.getTotal().multiply(
+						detalleF.getTipoIVA().getValorTributo()
+								.divide(new BigDecimal(100)));
+				factura.setMontoTributoIvaMinimo(factura
+						.getMontoTributoIvaMinimo().add(tributo));
+
+				neto = detalleF.getTotal().add(tributo);
+				factura.setMontoNetoGravadoIvaMinimo(factura
+						.getMontoNetoGravadoIvaMinimo().add(neto));
+
+				iva = neto.multiply(detalleF.getTipoIVA().getValorIVA()
+						.divide(new BigDecimal(100)));
+				factura.setTotalIvaMinimo(iva);
+
+				retenidoIVA = iva.multiply(detalleF.getTipoIVA()
+						.getResguardoIVA().divide(new BigDecimal(100)));
+				factura.setMontoRetenidoIVA(retenidoIVA);
+
+				retenidoIRAE = neto.multiply(detalleF.getTipoIVA()
+						.getResguardoIRAE().divide(new BigDecimal(100)));
+				factura.setMontoRetenidoIRAE(retenidoIRAE);
+
+				System.out.println(tributo + " - " + neto + " - " + iva);
+
+				break;
+			case 3: // IVA basico
+				tributo = detalleF.getTotal().multiply(
+						detalleF.getTipoIVA().getValorTributo()
+								.divide(new BigDecimal(100)));
+				factura.setMontoTributoIvaBasico(factura
+						.getMontoTributoIvaBasico().add(tributo));
+
+				neto = detalleF.getTotal().add(tributo);
+				factura.setMontoNetoGravadoIvaBasico(factura
+						.getMontoNetoGravadoIvaBasico().add(neto));
+
+				iva = neto.multiply(detalleF.getTipoIVA().getValorIVA()
+						.divide(new BigDecimal(100)));
+				factura.setTotalIvaBasico(iva);
+
+				retenidoIVA = iva.multiply(detalleF.getTipoIVA()
+						.getResguardoIVA().divide(new BigDecimal(100)));
+				factura.setMontoRetenidoIVA(retenidoIVA);
+
+				retenidoIRAE = neto.multiply(detalleF.getTipoIVA()
+						.getResguardoIRAE().divide(new BigDecimal(100)));
+				factura.setMontoRetenidoIRAE(retenidoIRAE);
+				break;
+			default:
+				break;
+			}
+
+			factura.setMontoTotalAPagar(factura.getMontoTotalAPagar().add(neto)
+					.add(retenidoIRAE).add(retenidoIVA).add(iva));
+		}
 	}
 
 	/**
-	 * frente a un cambio en los montos de iva o retenciones, recalcula el total
-	 * de cada iva y el total
+	 * Función encargada de mostrar el dialogo para buscar artículos
 	 */
-	public void actualizarDatos() {
-
-		factura.setTotalIvaBasico(factura.getMontoNetoGravadoIvaBasico().add(
-				factura.getMontoTributoIvaBasico()));
-		factura.setTotalIvaMinimo(factura.getMontoNetoGravadoIvaMinimo().add(
-				factura.getMontoTributoIvaMinimo()));
-
-		factura.setMontoTotalAPagar(factura.getTotalIvaBasico()
-				.add(factura.getTotalIvaMinimo())
-				.add(factura.getMontoRetenidoIRAE())
-				.add(factura.getMontoRetenidoIVA())
-				.add(factura.getMontoNoGravado())
-				.add(factura.getMontoNoFacturable()));
-
-	}
-
-	public void saveProveedor() {
-
+	public void dialogArticulos() {
 		this.proveedorSeleccionado = factura.getIdProveedor();
 
+		// Si no se selecciono un proveedor, se pide que se ingrese
+		// y sino se muestra el popup
+		if (this.proveedorSeleccionado == 0) {
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					Excepciones.MENSAJE_PROVEEDOR_VACIO, ""));
+		} else {
+			RequestContext.getCurrentInstance().execute(
+					"PF('dialogArticulo').show()");
+			disableProveedores = true;
+		}
+
 	}
 
+	/**
+	 * Función que habilita o deshabilita el campo de serieCFE según el tipo de
+	 * factura seleccionado: Si es Factura o Remito, lo deshabilito
+	 */
 	public void cambioTipoCFE() {
 		if ((factura.getTipoCFE() == 1) || (factura.getTipoCFE() == 2)) {
 			serieFactura = true;
@@ -486,7 +655,15 @@ public class ComprasBean implements Serializable {
 		}
 	}
 
+	/**
+	 * Dado un identificador del tipo de factura, devuelve el nombre
+	 * 
+	 * @param tipo
+	 *            - el identificador del tipo de factura
+	 * @return String - el nombre del tipo de factura
+	 */
 	public String getNombreTipoFactura(int tipo) {
 		return mapTiposDGI.get(tipo).getDescripcion();
 	}
+
 }

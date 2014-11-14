@@ -47,7 +47,17 @@
     <param-name>IMAGEN</param-name>
     <param-value>../Images/Drcurita.png</param-value>
   </context-param>
-  <listener>
-    <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
-  </listener>
+  
+    <listener>
+	  <listener-class>
+            scheduler.StockInitializer
+          </listener-class> 
+	</listener>
+  	<listener>
+	  <listener-class>
+            scheduler.VentaInitializer
+          </listener-class>
+	</listener>
+  
+  
 </web-app>

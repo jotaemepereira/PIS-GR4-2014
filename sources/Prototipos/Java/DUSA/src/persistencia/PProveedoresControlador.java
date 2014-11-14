@@ -106,6 +106,7 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 		return (cant > 0);
 	}
 	
+	@Override
 	public Map<Integer,DTProveedor> obtenerProveedores() throws Excepciones{		
 		Map<Integer,DTProveedor> ret = null;
 		PreparedStatement stmt = null;

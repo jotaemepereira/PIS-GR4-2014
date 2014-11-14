@@ -68,7 +68,7 @@
 						</div>
 						<p:messages id="msgs" />
 
-						<p:remoteCommand name="buscarArticulo" update="GridVentas"
+						<p:remoteCommand name="buscarArticulo" update="TablaVentas"
 							actionListener="#{ventaBean.buscarArticulos}" />
 						<p:remoteCommand name="buscarArticuloLector" update=":form1"
 							actionListener="#{ventaBean.buscarArticuloLector}" />
@@ -93,17 +93,17 @@
 													<f:ajax event="change" execute="@this" />
 												</p:inputText>
 
-												<p:commandButton value="" id="ajax3" update="GridVentas"
+												<p:commandButton value="" id="ajax3" update="TablaVentas"
 													icon="ui-icon-search" style="width: 35px; height: 31px;"
 													onclick="buscarArticulos();"
 													styleClass="ui-priority-primary col-xs-3 col-sm-2 col-md-1 col-lg-1 " />
 
 											</div>
 
-											<p:dataTable id="GridVentas" var="venta"
+											<p:dataTable id="TablaVentas" var="venta" 
 												value="#{ventaBean.lineasVenta}" rowIndexVar="index">
 
-												<p:column headerText="Descripcion"
+												<p:column headerText="Descripcion" 
 													style="text-align: center;">
 													<h:outputText value="#{venta.descripcion}" />
 												</p:column>
@@ -118,7 +118,7 @@
 													<h:outputText value="stock:#{venta.stock}" />
 												</p:column>
 												<p:column headerText=" " style="text-align: center;">
-													<p:commandButton update="GridVentas :ventaDetail"
+													<p:commandButton update="TablaVentas :ventaDetail"
 														oncomplete="PF('ventaDialog').show()"
 														icon="ui-icon-search" ajax="true" title="Ver Detalle">
 														<f:setPropertyActionListener value="#{venta}"
@@ -128,8 +128,7 @@
 											</p:dataTable>
 
 										</div>
-										<!-- 		<div
-											style="float: left; width: 70%; margin-left: 25px; min-width: 500px;"> -->
+
 										<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
 
 											<div style="margin-bottom: 2px">
@@ -144,17 +143,23 @@
 												</p:inputText>
 											</div>
 
-											<p:dataTable id="GridVentas2" var="venta2"
+											<p:dataTable id="TablaVentas2" var="venta2" 
 												value="#{ventaBean.lineasVenta2}" rowIndexVar="index">
 
 												<p:column headerText="Cantidad" style="text-align: center;">
 													<p:inputText id="cantidad" value="#{venta2.cantidad}"
 														style="width:40px;">
-														<p:ajax listener="#{ventaBean.calcularTotales()}"
-															update=":form1" process="@this" />
+														<p:ajax listener="#{ventaBean.strTotal()}"
+															update="TablaVentas2 :form1:total" process="@this" />
+														<p:ajax listener="#{ventaBean.strIva()}"
+															update="TablaVentas2 :form1:iva" process="@this" />
+														<p:ajax listener="#{ventaBean.strSubTotal()}"
+															update="TablaVentas2 :form1:subTotal" process="@this" />
+														<p:ajax listener="#{ventaBean.strDescuentoPrecio()}"
+															update="@form" process="@this" />
 													</p:inputText>
 												</p:column>
-												<p:column headerText="Descripcion"
+												<p:column headerText="Descripcion" 
 													style="text-align: center;">
 													<h:outputText value=" #{venta2.articulo.descripcion}" />
 												</p:column>
@@ -167,12 +172,12 @@
 												</p:column>
 												<p:column headerText="Precio Descuento"
 													style="text-align: center;">
-													<h:outputText value="%#{venta2.descuento}" />
+													<h:outputText value="#{venta2.totalPrecioLinea}" />
 												</p:column>
 
 												<p:column headerText=" " style="text-align: center;">
 													<p:commandButton value="Eliminar" id="ajax6"
-														update="GridVentas2 :form1" icon="ui-icon-cancel"
+														update="TablaVentas2 :form1" icon="ui-icon-cancel"
 														actionListener="#{ventaBean.eliminarLineaVenta(venta2)}"
 														process="@this" styleClass="ui-priority-primary">
 													</p:commandButton>
@@ -181,46 +186,30 @@
 											</p:dataTable>
 
 											<div>
-												<table class="tablaDetalleVenta"
-													style="float: left; text-align: left; width: 250px;">
+												<table style="float: left; text-align: left; width: 250px;">
 													<tr>
 														<td style="font-weight: bold;">SubTotal:</td>
-														<td>$ <h:outputText id="subTotal"
-																value=" #{ventaBean.subtotal}">
-																<f:convertNumber maxFractionDigits="2"
-																	minFractionDigits="2" />
-															</h:outputText></td>
+														<td><h:outputText id="subTotal"
+																value=" #{ventaBean.strSubTotal()}"></h:outputText></td>
 													</tr>
+
 													<tr>
-														<td style="font-weight: bold;">IVA 10%:</td>
-														<td>$ <h:outputText id="iva10"
-																value=" #{ventaBean.iva10}">
-																<f:convertNumber maxFractionDigits="2"
-																	minFractionDigits="2" />
+														<td style="font-weight: bold;">Iva:</td>
+														<td><h:outputText id="iva"
+																value=" #{ventaBean.strIva()}">
 															</h:outputText></td>
 													</tr>
-													<tr>
-														<td style="font-weight: bold;">IVA 22%:</td>
-														<td>$ <h:outputText id="iva22"
-																value=" #{ventaBean.iva22}">
-																<f:convertNumber maxFractionDigits="2"
-																	minFractionDigits="2" />
-															</h:outputText></td>
-													</tr>
+
 													<tr>
 														<td style="font-weight: bold;">Descuentos:</td>
-														<td>$ <h:outputText id="descuentos"
-																value=" #{ventaBean.descuento}">
-																<f:convertNumber maxFractionDigits="2"
-																	minFractionDigits="2" />
+														<td><h:outputText id="descuentos"
+																value=" #{ventaBean.strDescuentos()}">
 															</h:outputText></td>
 													</tr>
 													<tr>
 														<td style="font-weight: bold;">Total:</td>
-														<td>$ <h:outputText id="total"
-																value=" #{ventaBean.total}">
-																<f:convertNumber maxFractionDigits="2"
-																	minFractionDigits="2" />
+														<td><h:outputText id="total"
+																value=" #{ventaBean.strTotal()}">
 															</h:outputText></td>
 													</tr>
 												</table>
@@ -279,13 +268,14 @@
 						<p:outputLabel for="cant" value="Cantidad:" style="width:100%" />
 						<p:inputText id="cant"
 							value="#{ventaBean.articuloSeleccionado.cantidad}"
-							style="width:40%;">
+							style="width:40%;" onfocus="this.value = this.value;" >
 							<f:ajax event="change" execute="@this" />
 						</p:inputText>
 					</p:outputPanel>
 					<p:outputPanel
 						style="padding: 0; margin: 0; text-align: right; width:50%;">
-						<p:outputPanel>
+						<p:outputPanel 
+							rendered="#{ventaBean.articuloSeleccionado.isRecetaBlanca()}">
 							<p:selectBooleanCheckbox
 								value="#{ventaBean.articuloSeleccionado.recetaBlanca}">
 								<f:ajax event="change" execute="@this" />
@@ -312,13 +302,14 @@
 							<f:selectItem itemLabel="5% descuento" itemValue="5" />
 							<f:selectItem itemLabel="10% descuento" itemValue="10" />
 							<f:selectItem itemLabel="15% descuento" itemValue="15" />
+							<f:ajax event="change" execute="@this" />
 						</p:selectOneMenu>
 					</p:outputPanel>
 
 					<p:outputPanel style=" padding: 0; margin: 0;">
-						<p:outputLabel for="descuentoo" value="Descuento manual (%) :"
+						<p:outputLabel for="descuento" value="Descuento manual (%) :"
 							style="width:100%" />
-						<p:inputText id="descuentoo"
+						<p:inputText id="descuento"
 							value="#{ventaBean.articuloSeleccionado.descuento}"
 							style="width:50%">
 							<f:ajax event="change" execute="@this" />
@@ -327,9 +318,10 @@
 				</p:panelGrid>
 				<p:commandButton value="Agregar" update=":form1"
 					actionListener="#{ventaBean.agregarLineaVenta()}"
-					process="@this,descuentoo,cant,descImportantes"
+					process="@this,descuento,cant,descImportantes"
 					styleClass="btn btn-default pull-right"
 					oncomplete="PF('ventaDialog').hide()" icon="ui-icon-check">
+
 				</p:commandButton>
 			</h:form>
 		</p:dialog>

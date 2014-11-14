@@ -1,11 +1,8 @@
 package model;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import datatypes.DTProveedor;
@@ -41,6 +38,10 @@ public class Articulo {
 	private boolean precioVentaModificado;
 	private BigDecimal porcentajePrecioVenta;
 	private boolean porcentajePrecioVentaModificado;
+	private BigDecimal precioConReceta;
+	private boolean precioConRecetaModificado;
+	private BigDecimal porcentajeDescuentoReceta;
+	private boolean porcentajeDescuentoRecetaModificado;
 	private BigDecimal costoLista;
 	private boolean costoListaModificado;
 	private BigDecimal costoOferta;
@@ -92,7 +93,9 @@ public class Articulo {
 		this.idArticulo = articulo.idArticulo;
 		this.idMarca = articulo.idMarca;
 		this.numero = articulo.numero;
+		this.porcentajeDescuentoReceta = articulo.porcentajeDescuentoReceta;
 		this.porcentajePrecioVenta = articulo.porcentajePrecioVenta;
+		this.precioConReceta = articulo.precioConReceta;
 		this.precioUnitario = articulo.precioUnitario;
 		this.precioVenta = articulo.precioVenta;
 		this.presentacion = articulo.presentacion;
@@ -400,6 +403,31 @@ public class Articulo {
 	public void setPorcentajePrecioVentaModificado(
 			boolean porcentajePrecioVentaModificado) {
 		this.porcentajePrecioVentaModificado = porcentajePrecioVentaModificado;
+	}
+	public BigDecimal getPrecioConReceta() {
+		return precioConReceta;
+	}
+	public void setPrecioConReceta(BigDecimal precioConReceta) {
+		this.precioConReceta = precioConReceta;
+	}
+	public boolean isPrecioConRecetaModificado() {
+		return precioConRecetaModificado;
+	}
+	public void setPrecioConRecetaModificado(boolean precioConRecetaModificado) {
+		this.precioConRecetaModificado = precioConRecetaModificado;
+	}
+	public BigDecimal getPorcentajeDescuentoReceta() {
+		return porcentajeDescuentoReceta;
+	}
+	public void setPorcentajeDescuentoReceta(BigDecimal porcentajeDescuentoReceta) {
+		this.porcentajeDescuentoReceta = porcentajeDescuentoReceta;
+	}
+	public boolean isPorcentajeDescuentoRecetaModificado() {
+		return porcentajeDescuentoRecetaModificado;
+	}
+	public void setPorcentajeDescuentoRecetaModificado(
+			boolean porcentajeDescuentoRecetaModificado) {
+		this.porcentajeDescuentoRecetaModificado = porcentajeDescuentoRecetaModificado;
 	}
 	public boolean isCostoListaModificado() {
 		return costoListaModificado;

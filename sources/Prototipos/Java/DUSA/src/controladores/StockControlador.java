@@ -17,15 +17,19 @@ import model.Mail;
 import model.Pedido;
 import model.TipoIva;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Timestamp;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
@@ -34,6 +38,7 @@ import persistencia.PStockControlador;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
+import datatypes.DTModificacionArticulo;
 import datatypes.DTProduct;
 import datatypes.DTProveedor;
 import datatypes.DTVenta;
@@ -149,7 +154,7 @@ public class StockControlador implements IStock {
 
 		Iterator<DTBusquedaArticuloSolr> it = encontrados.iterator();
 		while (it.hasNext()) {
-			DTBusquedaArticuloSolr dtBusquedaArticulo = (DTBusquedaArticuloSolr) it
+			DTBusquedaArticuloSolr dtBusquedaArticulo = it
 					.next();
 
 			DTBusquedaArticulo articulo = new DTBusquedaArticulo(
@@ -263,7 +268,7 @@ public class StockControlador implements IStock {
 		Iterator<DTBusquedaArticuloSolr> it = lista.iterator();
 
 		while (it.hasNext()) {
-			DTBusquedaArticuloSolr articuloB = (DTBusquedaArticuloSolr) it
+			DTBusquedaArticuloSolr articuloB = it
 					.next();
 			DTVenta articuloV = FabricaPersistencia.getStockPersistencia()
 					.getDatosArticuloVenta(articuloB.getIdArticulo());
@@ -279,39 +284,59 @@ public class StockControlador implements IStock {
 		return articulos;
 	}
 
+	@Override
 	public void actualizarStock(Date fecha) throws Excepciones {
 		System.out.println("actualizarStock controlador");
-//		Calendar calendario = Calendar.getInstance();
-//		calendario.add(Calendar.DAY_OF_MONTH, -36);
-//		calendario.add(Calendar.DAY_OF_WEEK, -2);
-//		java.util.Date fecha = calendario.getTime();
 
+		Mail m;
+
+		System.out.println(fecha.toString());
 		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
+		System.out.println(articulos.size());
 		List<Cambio> cambios = FabricaPersistencia.getStockPersistencia().obtenerCambios(articulos);
 		
-		String contenido = new String();
-		Iterator<Cambio> it = cambios.iterator();
-		while (it.hasNext()){
-			contenido.concat(it.next().toString());
-		}
-			
-		IUsuarioPersistencia iup = FabricaPersistencia.getInstanciaUsuaruiPersistencia();
-		List <String> admins = iup.getAdminisMails();
-		Mail m = new Mail();
-		m.setDestinatarios("santiago.taba@gmail.com");
-		m.setAsunto("cambio en productos de DUSA");   
-		m.setContenido(cambios);
-		m.setEmisor("dusapis", "grupo4grupo4");
+		OutputStream output;
 		try {
+		FileInputStream in = new FileInputStream("alertaStock.properties");
+		Properties prop = new Properties();
+		prop.load(in);
+		String mailEmisor = prop.getProperty("mailEmisor");
+		String passEmisor = prop.getProperty("passEmisor");
+		String receptores = prop.getProperty("mailReceptores");
+		
+		in.close();
+		if (mailEmisor==null)
+			mailEmisor = "dusapis";
+		if (passEmisor ==null)
+			passEmisor = "grupo4grupo4";
+		if (receptores == null)
+			receptores = "dusapis@gmail.com";
+		
+		output = new FileOutputStream("alertaStock.properties");
+		Date date = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
+		String sDate = sdf.format(date);
+		prop.setProperty("fechaUltimaActualizacion", sDate);
+		prop.setProperty("mailEmisor",mailEmisor);
+		prop.setProperty("passEmisor",passEmisor);
+		prop.setProperty("mailReceptores",receptores);
+		prop.store(output, null);
+
+
+		if (cambios!=null){
+			m = new Mail();
+			m.setAsunto("cambio en productos de DUSA");   
+			m.setContenido(cambios);
+			m.setEmisor(mailEmisor, passEmisor);
+			m.setDestinatarios(receptores);
 			m.Enviar();
-		} catch (AddressException e) {
-			e.printStackTrace();
-		} catch (MessagingException e) {
+		}
+		
+		} catch (IOException | MessagingException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		                
-	
-         
+				         
 
 	}                      
 
@@ -356,7 +381,7 @@ public class StockControlador implements IStock {
 	}
 
 	@Override
-	public void modificarArticulo(Articulo articulo) throws Excepciones {
+	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones {
 		FabricaPersistencia.getStockPersistencia().modificarArticulo(articulo);
 
 	}

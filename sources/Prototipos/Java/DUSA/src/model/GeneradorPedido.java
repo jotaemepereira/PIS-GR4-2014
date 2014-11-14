@@ -2,6 +2,8 @@ package model;
 
 
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import controladores.Excepciones;
@@ -38,7 +40,7 @@ public class GeneradorPedido {
 		Pedido pedido = new Pedido();
 		List<Long> articulos = this.seleccionador.getIDArticulos();
 		
-//		System.out.println("Empieza " + new Date(Calendar.getInstance().getTimeInMillis()));
+		long ini = Calendar.getInstance().getTimeInMillis();
 		for (Long idArticulo : articulos) {
 			
 			int cantidad = this.predictor.predecir(idArticulo);
@@ -52,7 +54,7 @@ public class GeneradorPedido {
 			}
 		}
 		
-//		System.out.println("Termina " + new Date(Calendar.getInstance().getTimeInMillis()));
+		System.out.println("Duro: " + (int) ((Calendar.getInstance().getTimeInMillis() - ini) / 1000));
 		return pedido;
 	}
 	
