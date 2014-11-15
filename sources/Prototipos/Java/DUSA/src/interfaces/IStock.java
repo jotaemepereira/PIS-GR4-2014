@@ -178,7 +178,7 @@ public interface IStock {
 	 * @throws Excepciones
 	 * @author Victoria Díaz
 	 */
-	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones;
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, long proveedor) throws Excepciones;
 
 	/**
 	 * Devuelve un artículo con todos sus datos, sus proveedores, drogas y acciones terapéuticas.

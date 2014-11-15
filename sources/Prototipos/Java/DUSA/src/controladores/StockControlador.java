@@ -387,7 +387,7 @@ public class StockControlador implements IStock {
 
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda,
-			int proveedor) throws Excepciones {
+			long proveedor) throws Excepciones {
 		List<DTBusquedaArticuloSolr> encontrados = FabricaPersistencia
 				.getStockPersistencia()
 				.buscarArticulosSolr(busqueda, proveedor);
