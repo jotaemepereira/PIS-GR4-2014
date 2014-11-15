@@ -17,6 +17,7 @@ public class OrdenDetalle {
 	
 	private BigDecimal avg_cost;
 	private int stock;
+	private TipoIva tipoIVA;
 	
 	public OrdenDetalle() {}
 
@@ -120,6 +121,14 @@ public class OrdenDetalle {
 
 	public void setStock(int stock) {
 		this.stock = stock;
+	}
+
+	public TipoIva getTipoIVA() {
+		return tipoIVA;
+	}
+
+	public void setTipoIVA(TipoIva tipoIva) {
+		this.tipoIVA = tipoIva;
 	}
 
 }

@@ -34,5 +34,5 @@ public interface ICompras {
 	 * @throws Excepciones
 	 * @author Victoria Díaz
 	 */
-	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones;
+	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA(String usuario) throws Excepciones;
 }

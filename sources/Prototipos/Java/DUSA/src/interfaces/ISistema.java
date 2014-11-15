@@ -10,7 +10,7 @@ import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTTiposDGI;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
@@ -139,7 +139,7 @@ public interface ISistema {
 	 * @throws Excepciones
 	 * @author Victoria Diaz
 	 */
-	public List<DTVenta> buscarArticulosVenta(String busqueda)
+	public List<DTProducto> buscarArticulosVenta(String busqueda)
 			throws Excepciones;
 
 	/**

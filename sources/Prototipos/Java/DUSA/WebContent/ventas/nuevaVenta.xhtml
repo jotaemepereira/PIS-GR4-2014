@@ -149,13 +149,7 @@
 												<p:column headerText="Cantidad" style="text-align: center;">
 													<p:inputText id="cantidad" value="#{venta2.cantidad}"
 														style="width:40px;">
-														<p:ajax listener="#{ventaBean.strTotal()}"
-															update="TablaVentas2 :form1:total" process="@this" />
-														<p:ajax listener="#{ventaBean.strIva()}"
-															update="TablaVentas2 :form1:iva" process="@this" />
-														<p:ajax listener="#{ventaBean.strSubTotal()}"
-															update="TablaVentas2 :form1:subTotal" process="@this" />
-														<p:ajax listener="#{ventaBean.strDescuentoPrecio()}"
+														<p:ajax listener="#{ventaBean.calcularTotales()}"
 															update="@form" process="@this" />
 													</p:inputText>
 												</p:column>
@@ -275,19 +269,27 @@
 					<p:outputPanel
 						style="padding: 0; margin: 0; text-align: right; width:50%;">
 						<p:outputPanel 
-							rendered="#{ventaBean.articuloSeleccionado.isRecetaBlanca()}">
+							rendered="#{ventaBean.articuloSeleccionado.descuentoReceta.comparteTo(0) > 0}">
 							<p:selectBooleanCheckbox
 								value="#{ventaBean.articuloSeleccionado.recetaBlanca}">
 								<f:ajax event="change" execute="@this" />
 							</p:selectBooleanCheckbox>
 							<img src="../Images/receta_blanca.png" />
 						</p:outputPanel>
-						<p:outputPanel
-							rendered="#{ventaBean.articuloSeleccionado.isRecetaVerde()}">
+						<p:outputPanel 
+							rendered="#{ventaBean.articuloSeleccionado.psicofarmaco}">
+							<p:selectBooleanCheckbox
+								value="#{ventaBean.articuloSeleccionado.recetaVerde}">
+								<f:ajax event="change" execute="@this" />
+							</p:selectBooleanCheckbox>
 							<img src="../Images/receta_verde.png" />
 						</p:outputPanel>
-						<p:outputPanel
-							rendered="#{ventaBean.articuloSeleccionado.isRecetaNaranja()}">
+						<p:outputPanel 
+							rendered="#{ventaBean.articuloSeleccionado.estupefaciente}">
+							<p:selectBooleanCheckbox
+								value="#{ventaBean.articuloSeleccionado.recetaNaranja}">
+								<f:ajax event="change" execute="@this" />
+							</p:selectBooleanCheckbox>
 							<img src="../Images/receta_naranja.png" />
 						</p:outputPanel>
 					</p:outputPanel>

@@ -30,7 +30,7 @@ import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
@@ -46,21 +46,6 @@ import interfaces.IStockPersistencia;
 
 public class PStockControlador implements IStockPersistencia {
 	
-//	Connection c;
-	
-	public PStockControlador() {
-//		try {
-//			c = Conexion.getConnection();
-//		} catch (NamingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-	}
-	
-
 	@Override
 	public void persistirArticulo(Articulo articulo) throws Excepciones {
 		PreparedStatement stmt = null;
@@ -527,8 +512,8 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones {
-		DTVenta articulo = new DTVenta();
+	public DTProducto getDatosArticuloVenta(int idArticulo) throws Excepciones {
+		DTProducto articulo = new DTProducto();
 		PreparedStatement stmt = null;
 		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR, RECIPE_PRICE, RECIPE_DISCOUNT "
 				+ "FROM PRODUCTS p "
@@ -542,9 +527,10 @@ public class PStockControlador implements IStockPersistencia {
 			ResultSet rs = stmt.executeQuery();
 			// Obtengo la cantidad de proveedores con ese rut
 			while (rs.next()) {
+				
 				articulo.setPrecioVenta(rs.getBigDecimal("SALE_PRICE"));
-				articulo.setRecetaVerde(rs.getBoolean("IS_PSYCHOTROPIC"));
-				articulo.setRecetaNaranja(rs.getBoolean("IS_NARCOTIC"));
+				articulo.setPsicofarmaco(rs.getBoolean("IS_PSYCHOTROPIC"));
+				articulo.setEstupefaciente(rs.getBoolean("IS_NARCOTIC"));
 				articulo.setStock(rs.getInt("STOCK"));
 				articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
 				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
@@ -1180,13 +1166,29 @@ public class PStockControlador implements IStockPersistencia {
 				stmt = c.prepareStatement(query);
 				stmt.setInt(1, ordenDetalle.getCantidad());
 				
-			//	BigDecimal real = ordenDetalle.getPrecioUnitario().multiply(arg0)
-				stmt.setBigDecimal(2, ordenDetalle.getPrecioUnitario());
+				BigDecimal descuento = ordenDetalle.getDescuento()
+						.subtract(new BigDecimal(100)).abs()
+						.divide(new BigDecimal(100));
+
+				BigDecimal total = ordenDetalle.getPrecioUnitario().multiply(descuento);
+				
+				BigDecimal tributo = total.multiply(
+						ordenDetalle.getTipoIVA().getValorTributo()
+								.divide(new BigDecimal(100)));
+
+				total = total.add(tributo);
+
+				BigDecimal iva = total.multiply(ordenDetalle.getTipoIVA().getValorIVA()
+						.divide(new BigDecimal(100)));
+				
+				total = total.add(iva);
+
+				stmt.setBigDecimal(2, total);
 				
 				// Precio ponderado promedio
 				// avg_cost = ((avg_cost * stock) + (costo_real * cant)) / (stock + cant)
 				BigDecimal pondActual = ordenDetalle.getAvg_cost().multiply( new BigDecimal(ordenDetalle.getStock()));
-				BigDecimal pondNuevo = ordenDetalle.getPrecioUnitario().multiply(new BigDecimal(ordenDetalle.getCantidad()));
+				BigDecimal pondNuevo = total.multiply(new BigDecimal(ordenDetalle.getCantidad()));
 				BigDecimal sumAvg =  pondActual.add(pondNuevo);
 				int totArts = ordenDetalle.getStock() + ordenDetalle.getCantidad();
 				stmt.setBigDecimal(3, sumAvg.divide(new BigDecimal(totArts), 2, RoundingMode.HALF_UP));

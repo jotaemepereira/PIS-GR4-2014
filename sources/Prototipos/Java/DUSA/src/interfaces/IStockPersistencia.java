@@ -9,7 +9,7 @@ import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
@@ -149,7 +149,7 @@ public interface IStockPersistencia {
 	 */
 	public Articulo obtenerArticuloConId(long idArticulo) throws Excepciones;
 
-	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones;
+	public DTProducto getDatosArticuloVenta(int idArticulo) throws Excepciones;
 
 	/**
 	 * En base a lo encontrado usando solr, complementa los datos para ese artícuo

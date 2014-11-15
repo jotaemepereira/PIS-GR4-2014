@@ -9,7 +9,7 @@ import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTTiposDGI;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
 import model.AccionTer;
 import model.Actividad;
 import model.Articulo;
@@ -180,7 +180,7 @@ public class SistemaControlador implements ISistema {
 
 	}
 	@Override
-	public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones {
+	public List<DTProducto> buscarArticulosVenta(String busqueda) throws Excepciones {
 		System.out.println("********* BUSCAR ************** " + busqueda);
 		if (user.tienePermiso(casoDeUso.buscarArticulo))
 			return FabricaLogica.getIStock().buscarArticulosVenta(busqueda);
@@ -322,7 +322,7 @@ public class SistemaControlador implements ISistema {
 	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
 		
 		if (user.tienePermiso(casoDeUso.obtenerFacturasDUSA))
-			return FabricaLogica.getInstanciaCompras().obtenerFacturasDUSA();
+			return FabricaLogica.getInstanciaCompras().obtenerFacturasDUSA(user.getNombre());
 		else
 			throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
 	}

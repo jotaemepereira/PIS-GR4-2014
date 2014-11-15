@@ -39,9 +39,8 @@ import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
-import datatypes.DTProduct;
 import datatypes.DTProveedor;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
 import controladores.FabricaPersistencia;
 
 public class StockControlador implements IStock {
@@ -259,9 +258,9 @@ public class StockControlador implements IStock {
 	}
 
 	@Override
-	public List<DTVenta> buscarArticulosVenta(String busqueda)
+	public List<DTProducto> buscarArticulosVenta(String busqueda)
 			throws Excepciones {
-		List<DTVenta> articulos = new ArrayList<DTVenta>();
+		List<DTProducto> articulos = new ArrayList<DTProducto>();
 		List<DTBusquedaArticuloSolr> lista = FabricaPersistencia
 				.getStockPersistencia().buscarArticulosSolr(busqueda);
 
@@ -270,7 +269,7 @@ public class StockControlador implements IStock {
 		while (it.hasNext()) {
 			DTBusquedaArticuloSolr articuloB = it
 					.next();
-			DTVenta articuloV = FabricaPersistencia.getStockPersistencia()
+			DTProducto articuloV = FabricaPersistencia.getStockPersistencia()
 					.getDatosArticuloVenta(articuloB.getIdArticulo());
 			articuloV.setDescripcion(articuloB.getDescripcion());
 			articuloV.setProductId(articuloB.getIdArticulo());
