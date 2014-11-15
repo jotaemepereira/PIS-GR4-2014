@@ -23,6 +23,7 @@ public class Orden {
 	private int numeroCFE;
 	private Date fechaComprobante;
 	private String formaDePago;
+	private String nombreUsuario;
 	private long ordenDeCompra;
 	private BigDecimal montoNoGravado = new BigDecimal(0);
 	private BigDecimal montoNetoGravadoIvaMinimo = new BigDecimal(0);
@@ -229,6 +230,14 @@ public class Orden {
 
 	public void setFormaDePago(String formaDePago) {
 		this.formaDePago = formaDePago;
+	}
+	
+	public String getNombreUsuario() {
+		return nombreUsuario;
+	}
+	
+	public void setNombreUsuario(String nombreUsuario) {
+		this.nombreUsuario = nombreUsuario;
 	}
 
 	public long getIdOrden() {

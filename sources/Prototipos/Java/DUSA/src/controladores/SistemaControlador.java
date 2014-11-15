@@ -43,7 +43,6 @@ public class SistemaControlador implements ISistema {
 				
 				FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
 			} catch (Excepciones e) {
-				// TODO: handle exception
 				
 				if (e.getErrorCode() == Excepciones.ADVERTENCIA_DATOS) {
 					//Dado que es una advertencia, la actividad fue efectuada y se debe persistir.
@@ -63,9 +62,15 @@ public class SistemaControlador implements ISistema {
 	@Override
 	public void altaArticulo(Articulo articulo) throws Excepciones {
 		if (user.tienePermiso(casoDeUso.altaArticulo)){
+			
 			FabricaLogica.getIStock().altaArticulo(articulo);
-		}
-		else{
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.altaArticulo);
+			Actividad act = new Actividad(operacion, user.getNombre());
+			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+		} else {
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		}
 
@@ -126,6 +131,12 @@ public class SistemaControlador implements ISistema {
 		if (user.tienePermiso(casoDeUso.realizarPedido)) {
 			
 			FabricaLogica.getIStock().realizarPedido(pedido);
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.realizarPedido);
+			Actividad act = new Actividad(operacion, user.getNombre());
+			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
 		} else {
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 		}
@@ -212,7 +223,7 @@ public class SistemaControlador implements ISistema {
 	public long registrarNuevaVenta(Venta v) throws Excepciones {
 		if (user.tienePermiso(casoDeUso.registrarNuevaVenta))
 			return FabricaLogica.getIFacturacion().registrarNuevaVenta(v);
-
+			//TODO:Se persiste actividad de esto?
 		else
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 
@@ -241,13 +252,13 @@ public class SistemaControlador implements ISistema {
 			
 			FabricaLogica.getIStock().modificarStock(idArticulo, nuevoValor);
 			
-			try {
-				FabricaPersistencia.getStockPersistencia().movimientoStock(user.getNombre(), idArticulo, registroCantidad, tipoMovimiento, motivo);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
-			}
+			FabricaPersistencia.getStockPersistencia().movimientoStock(user.getNombre(), idArticulo, registroCantidad, tipoMovimiento, motivo);
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.modificarStock);
+			Actividad act = new Actividad(operacion, user.getNombre());
+			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
 		} else {
 			
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
@@ -260,6 +271,12 @@ public class SistemaControlador implements ISistema {
 		if (user.tienePermiso(casoDeUso.modificarArticulo)) {
 			
 			FabricaLogica.getIStock().modificarArticulo(articulo);
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.modificarArticulo);
+			Actividad act = new Actividad(operacion, user.getNombre());
+			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
 		} else {
 			
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
@@ -269,9 +286,18 @@ public class SistemaControlador implements ISistema {
 	@Override
 	public void ingresarFacturaCompra(Orden orden) throws Excepciones {
 		
-		if (user.tienePermiso(casoDeUso.ingresarFacturaCompra))
+		if (user.tienePermiso(casoDeUso.ingresarFacturaCompra)){
+			
+			orden.setNombreUsuario(user.getNombre());
 			FabricaLogica.getInstanciaCompras().ingresarFacturaCompra(orden);
-		else
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.ingresarFacturaCompra);
+			Actividad act = new Actividad(operacion, user.getNombre());
+			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+		
+		} else
 			throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
 	}
 
@@ -330,6 +356,7 @@ public class SistemaControlador implements ISistema {
 			
 			boolean ret = FabricaLogica.getIFacturacion().facturarVenta(idVenta);
 			
+			//Registro actividad del usuario
 			Operacion operacion = user.getOperacion(casoDeUso.facturarVentaPendiente);
 			Actividad act = new Actividad(operacion, user.getNombre());
 			

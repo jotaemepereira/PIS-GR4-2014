@@ -1094,7 +1094,7 @@ public class PStockControlador implements IStockPersistencia {
 	@Override
 	public void movimientoStock(String usuario, long aticuloID, long cantidad,
 			char tipoMovimiento, String motivo)
-			throws Exception {
+			throws Excepciones {
 		
 		PreparedStatement stmt = null;
 		try {
@@ -1117,6 +1117,7 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
