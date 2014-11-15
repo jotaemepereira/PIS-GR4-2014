@@ -41,17 +41,29 @@
 										filterMatchMode="contains" required="false">
 										<f:selectItem itemLabel="Seleccione proveedor"
 											itemValue="#{null}" />
-										<f:selectItems value="#{stockBean.listaProveedores}"
+										<f:selectItems value="#{modificarPreciosBean.listaProveedores}"
 											var="p" itemLabel="#{p.nombreComercial}"
 											itemValue="#{p.idProveedor}" />
 										<f:ajax event="change" execute="@this" />
 									</p:selectOneMenu>
 									<div class="btn-group-vertical">
 									<p:commandButton 
-										actionListener="{modificarPreciosBean.getArticulosProveedor}"
-										value="Obtener artículos">
+										actionListener="#{modificarPreciosBean.getArticulosProveedor}"
+										value="Obtener artículos"
+										update="tableArticulos">
 									</p:commandButton>
 									</div>
+									<p:dataTable var="articulos" id="tableArticulos" 
+												value="#{modificarPreciosBean.articulosDelProveedor}" emptyMessage="No se encontraron registros.">
+												<div class="row">
+													<p:column headerText="Descripcion" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:outputText value="#{articulos.descripcion}" />
+													</p:column>
+													<p:column headerText="Precio" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+														<h:inputText value="#{articulos.precioVenta}" />
+													</p:column>
+												</div>
+											</p:dataTable>
 								</div>
 							</h:panelGroup>
 						</div>

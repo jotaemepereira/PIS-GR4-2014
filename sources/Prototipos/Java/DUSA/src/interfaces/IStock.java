@@ -13,8 +13,7 @@ import model.TipoIva;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
-import datatypes.DTProduct;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
 
 public interface IStock {
 
@@ -109,7 +108,7 @@ public interface IStock {
 	
 	
 
-	public List<DTVenta> buscarArticulosVenta(String busqueda)
+	public List<DTProducto> buscarArticulosVenta(String busqueda)
 			throws Excepciones;
 
 	/**

@@ -30,7 +30,7 @@ import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
@@ -513,8 +513,8 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones {
-		DTVenta articulo = new DTVenta();
+	public DTProducto getDatosArticuloVenta(int idArticulo) throws Excepciones {
+		DTProducto articulo = new DTProducto();
 		PreparedStatement stmt = null;
 		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR, RECIPE_PRICE, RECIPE_DISCOUNT "
 				+ "FROM PRODUCTS p "
@@ -528,9 +528,10 @@ public class PStockControlador implements IStockPersistencia {
 			ResultSet rs = stmt.executeQuery();
 			// Obtengo la cantidad de proveedores con ese rut
 			while (rs.next()) {
+				
 				articulo.setPrecioVenta(rs.getBigDecimal("SALE_PRICE"));
-				articulo.setRecetaVerde(rs.getBoolean("IS_PSYCHOTROPIC"));
-				articulo.setRecetaNaranja(rs.getBoolean("IS_NARCOTIC"));
+				articulo.setPsicofarmaco(rs.getBoolean("IS_PSYCHOTROPIC"));
+				articulo.setEstupefaciente(rs.getBoolean("IS_NARCOTIC"));
 				articulo.setStock(rs.getInt("STOCK"));
 				articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
 				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
@@ -1761,19 +1762,100 @@ public class PStockControlador implements IStockPersistencia {
 			throws Excepciones {
 		// TODO Traer todos los articulos del proveedor
 		PreparedStatement stmt = null;
-		List<Long> listaArticulos;
+		List<Articulo> returnArticulos = new ArrayList<Articulo>();
 		try {
 			Connection c = Conexion.getConnection();
-			String  query = "SELECT * FROM products_suppliers "
-					+ "WHERE supplier_id = ?";
+			String  query = "SELECT * FROM products p " +
+					"JOIN products_suppliers ps ON ps.product_id = p.product_id " +
+					"WHERE ps.supplier_id = ? AND p.authorization_type = 'S' "
+					+ "ORDER BY p.description;";
 			stmt = c.prepareStatement(query);
-			stmt.setString(1, Long.toString(idProveedor));
+			stmt.setLong(1, idProveedor);
 			ResultSet rs = stmt.executeQuery();
-			// Obtengo los productos que vende ese proveedor 
-			// y los guardo en una lista de integers
-			listaArticulos = new ArrayList<Long>();
 			while (rs.next()) {
-				listaArticulos.add(rs.getLong("product_id"));
+				Articulo articulo = new Articulo();
+				
+				articulo.setIdArticulo(rs.getLong("product_id"));
+				articulo.setIdMarca(rs.getInt("brand_id"));
+				String aux = rs.getString("product_type");
+				if (aux != null) {
+					articulo.setTipoArticulo(aux.charAt(0));
+				}
+				articulo.setDescripcion(rs.getString("description"));
+				articulo.setPresentacion(rs.getString("presentation"));
+				articulo.setClave1(rs.getString("key1"));
+				articulo.setClave2(rs.getString("key2"));
+				articulo.setClave3(rs.getString("key3"));
+				articulo.setEsPsicofarmaco(rs.getBoolean("is_psychotropic"));
+				articulo.setEsEstupefaciente(rs.getBoolean("is_narcotic"));
+				articulo.setEsHeladera(rs.getBoolean("is_refrigerator"));
+				aux = rs.getString("sale_code");
+				if (aux != null) {
+					articulo.setCodigoVenta(aux.charAt(0));
+				}
+				aux = rs.getString("authorization_type");
+				if (aux != null) {
+					articulo.setTipoAutorizacion(aux.charAt(0));
+				}
+				articulo.setPrecioUnitario(rs.getBigDecimal("unit_price"));
+				articulo.setPrecioVenta(rs.getBigDecimal("sale_price"));
+				articulo.setPorcentajePrecioVenta(rs
+						.getBigDecimal("sale_price_porcentage"));
+				BigDecimal bd = rs.getBigDecimal("recipe_price");
+				if (bd != null){
+					articulo.setPrecioConReceta(bd);
+				}else{
+					articulo.setPrecioConReceta(new BigDecimal(0));
+				}
+				bd = rs.getBigDecimal("recipe_discount");
+				if (bd != null){
+					articulo.setPorcentajeDescuentoReceta(bd);
+				}else{
+					articulo.setPorcentajeDescuentoReceta(new BigDecimal(0));
+				}
+				articulo.setCostoLista(rs.getBigDecimal("list_cost"));
+				bd = rs.getBigDecimal("offer_cost");
+				if (bd != null){
+					articulo.setCostoOferta(bd);
+				}else{
+					 articulo.setCostoOferta(new BigDecimal(0));
+				}
+				bd = rs.getBigDecimal("last_cost");
+				if (bd != null){
+					articulo.setUltimoCosto(bd);
+				}else{
+					articulo.setUltimoCosto(new BigDecimal(0));
+				}
+				bd = rs.getBigDecimal("avg_cost");
+				if (bd != null){
+					articulo.setCostoPromedio(bd);
+				}else{
+					articulo.setCostoPromedio(new BigDecimal(0));
+				}
+				char auxTipoIva = rs.getString("tax_type_id").charAt(0);
+				if (auxTipoIva != 0) {
+					TipoIva ti = new TipoIva();
+					ti.setTipoIVA(auxTipoIva);
+					articulo.setTipoIva(ti);;
+				}
+				articulo.setCodigoBarras(rs.getString("barcode"));
+				Timestamp timestamp = rs.getTimestamp("nearest_due_date");
+				if (timestamp != null) {
+	
+					articulo.setVencimientoMasCercano(new java.util.Date(
+							timestamp.getTime()));
+				}else{
+					//Fecha mínima de java.util.Date (new Date(0L) = Thu Jan 01 01:00:00 GMT 1970)
+					articulo.setVencimientoMasCercano(new java.util.Date(0L));
+				}
+				articulo.setStock(rs.getLong("stock"));
+				articulo.setStockMinimo(rs.getLong("minimum_stock"));
+				Usuario usr = new Usuario();
+				usr.setNombre(rs.getString("username"));
+				articulo.setUsuario(usr);
+				articulo.setStatus(rs.getBoolean("status"));
+				
+				returnArticulos.add(articulo);
 			}
 			rs.close();
 			stmt.close();
@@ -1781,12 +1863,6 @@ public class PStockControlador implements IStockPersistencia {
 		} catch (Exception e) {
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
-		}
-		
-		List<Articulo> returnArticulos = new ArrayList<Articulo>();
-		// Obtengo los articulos desde la función obtenerArticulo
-		for (long item : listaArticulos) {
-			returnArticulos.add(obtenerArticuloConId(item));
 		}
 		
 		return returnArticulos;
