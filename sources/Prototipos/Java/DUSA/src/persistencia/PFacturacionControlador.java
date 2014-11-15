@@ -360,7 +360,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 
 		try {
 
-//			con = Conexion.getConnection();
+			con = Conexion.getConnection();
 			String sql = "SELECT distinct p.product_id "
 					+ "FROM sale_details sd "
 					+ "INNER JOIN products_suppliers ps ON sd.product_id = ps.product_id "
