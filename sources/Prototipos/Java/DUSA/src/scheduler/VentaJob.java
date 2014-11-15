@@ -25,6 +25,7 @@ public class VentaJob implements Job {
 		try {
 			input = new FileInputStream("ventaStock.properties");
 			prop.load(input);
+			input.close();
 
 			mesesAtras = Integer.parseInt(prop.getProperty("mesesAtras"));
 

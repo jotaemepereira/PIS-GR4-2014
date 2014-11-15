@@ -286,13 +286,12 @@ public class StockControlador implements IStock {
 
 	@Override
 	public void actualizarStock(Date fecha) throws Excepciones {
-		System.out.println("actualizarStock controlador");
+		
 
 		Mail m;
 
-		System.out.println(fecha.toString());
 		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
-		System.out.println(articulos.size());
+		
 		List<Cambio> cambios = FabricaPersistencia.getStockPersistencia().obtenerCambios(articulos);
 		
 		OutputStream output;
@@ -323,7 +322,7 @@ public class StockControlador implements IStock {
 		prop.store(output, null);
 
 
-	//	if (cambios.size()==0){
+		if (cambios.size()!=0){
 			
 			m = new Mail();
 			m.setAsunto("cambio en productos de DUSA");   
@@ -331,7 +330,7 @@ public class StockControlador implements IStock {
 			m.setEmisor(mailEmisor, passEmisor);
 			m.setDestinatarios(receptores);
 			m.Enviar();
-	//	}
+		}
 		
 		} catch (IOException | MessagingException e) {
 			// TODO Auto-generated catch block

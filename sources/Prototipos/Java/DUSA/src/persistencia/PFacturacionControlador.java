@@ -444,7 +444,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			}
 
 			stmt.close();
-//			con.close();
+			con.close();
 		} catch (Exception e) {
 
 			e.printStackTrace();
