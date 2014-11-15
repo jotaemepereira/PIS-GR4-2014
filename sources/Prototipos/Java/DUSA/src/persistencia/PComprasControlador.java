@@ -16,6 +16,7 @@ import javax.naming.NamingException;
 import Util.NamedParameterStatement;
 import model.Orden;
 import model.OrdenDetalle;
+import model.TipoIva;
 import controladores.Excepciones;
 import datatypes.DTComprobanteFactura;
 import datatypes.DTLineaFacturaCompra;
@@ -285,9 +286,10 @@ public class PComprasControlador implements IComprasPersistencia {
 		String queryOrden = "SELECT * FROM orders ";
 		queryOrden += "WHERE is_processed = ?";
 
-		String queryDetalle = "SELECT od.*, p.description, p.list_cost, p.avg_cost, p.stock ";
+		String queryDetalle = "SELECT od.*, p.description, p.list_cost, p.avg_cost, p.stock, t.* ";
 		queryDetalle += "FROM order_details od ";
 		queryDetalle += "INNER JOIN products p ON p.product_id = od.product_id ";
+		queryDetalle += "INNER JOIN TAX_TYPES t ON p.TAX_TYPE_ID = t.TAX_TYPE_ID ";
 		queryDetalle += "WHERE order_id = ?";
 
 		try {
@@ -362,6 +364,15 @@ public class PComprasControlador implements IComprasPersistencia {
 					BigDecimal total = precio.multiply(cantidad).multiply(
 							descuento);
 					detalle.setTotal(total);
+					
+					TipoIva ti = new TipoIva();
+					ti.setTipoIVA(rsDetalle.getString("tax_type_id").charAt(0));
+					ti.setValorIVA(rsDetalle.getBigDecimal("iva_value"));
+					ti.setValorTributo(rsDetalle.getBigDecimal("tax_value"));
+					ti.setResguardoIVA(rsDetalle.getBigDecimal("iva_voucher"));
+					ti.setResguardoIRAE(rsDetalle.getBigDecimal("irae_voucher"));
+					ti.setIndicadorFacturacion(rsDetalle.getInt("billing_indicator"));
+					detalle.setTipoIVA(ti);
 
 					factura.setSubtotalProdctos(factura.getSubtotalProdctos().add(total));
 					factura.getDetalle().add(detalle);
