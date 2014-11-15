@@ -256,8 +256,14 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones {
-		FabricaLogica.getIStock().modificarArticulo(articulo);
 		
+		if (user.tienePermiso(casoDeUso.modificarArticulo)) {
+			
+			FabricaLogica.getIStock().modificarArticulo(articulo);
+		} else {
+			
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+		}
 	}
 
 	@Override
