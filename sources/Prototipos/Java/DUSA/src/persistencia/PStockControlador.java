@@ -406,8 +406,9 @@ public class PStockControlador implements IStockPersistencia {
 				DTBusquedaArticuloSolr articulo = new DTBusquedaArticuloSolr();
 				articulo.setIdArticulo(Integer.parseInt(item
 						.getFieldValue("id").toString()));
-				articulo.setCodigoBarras(item.getFieldValue("BARCODE")
-						.toString());
+				if(item.getFieldValue("BARCODE") != null)
+					articulo.setCodigoBarras(item.getFieldValue("BARCODE")
+							.toString());
 				articulo.setDescripcion(item.getFieldValue("DESCRIPTION")
 						.toString());
 				if (item.getFieldValue("DROGAS") == null) {
@@ -515,9 +516,10 @@ public class PStockControlador implements IStockPersistencia {
 	public DTProducto getDatosArticuloVenta(int idArticulo) throws Excepciones {
 		DTProducto articulo = new DTProducto();
 		PreparedStatement stmt = null;
-		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR, RECIPE_PRICE, RECIPE_DISCOUNT "
+		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR, RECIPE_PRICE, RECIPE_DISCOUNT, COMERCIALNAME "
 				+ "FROM PRODUCTS p "
 				+ "INNER JOIN tax_types tt ON p.tax_type_id = tt.tax_type_id "
+				+ "LEFT JOIN suppliers s ON s.supplier_id = p.brand_id "
 
 				+ "WHERE PRODUCT_ID = ?";
 		try {
@@ -537,6 +539,7 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setIndicadorFacturacion(rs.getInt("BILLING_INDICATOR"));
 				articulo.setPrecioReceta(rs.getBigDecimal("RECIPE_PRICE"));
 				articulo.setDescuentoReceta(rs.getBigDecimal("RECIPE_DISCOUNT"));
+				articulo.setLaboratorio(rs.getString("COMERCIALNAME"));
 
 			}  
 			rs.close();
@@ -1190,7 +1193,7 @@ public class PStockControlador implements IStockPersistencia {
 				BigDecimal pondActual = ordenDetalle.getAvg_cost().multiply( new BigDecimal(ordenDetalle.getStock()));
 				BigDecimal pondNuevo = total.multiply(new BigDecimal(ordenDetalle.getCantidad()));
 				BigDecimal sumAvg =  pondActual.add(pondNuevo);
-				int totArts = ordenDetalle.getStock() + ordenDetalle.getCantidad();
+				long totArts = ordenDetalle.getStock() + ordenDetalle.getCantidad();
 				stmt.setBigDecimal(3, sumAvg.divide(new BigDecimal(totArts), 2, RoundingMode.HALF_UP));
 				
 				stmt.setLong(4, ordenDetalle.getProductId());

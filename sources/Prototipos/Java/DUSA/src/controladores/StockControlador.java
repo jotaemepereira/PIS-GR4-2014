@@ -277,7 +277,6 @@ public class StockControlador implements IStock {
 			articuloV.setBarcode(articuloB.getCodigoBarras());
 			articuloV.setPresentacion(articuloB.getPresentacion());
 			articuloV.setPrincipioActivo(articuloB.getDroga());
-			articuloV.setLaboratorio(articuloB.getMarca());
 			articulos.add(articuloV);
 		}
 
