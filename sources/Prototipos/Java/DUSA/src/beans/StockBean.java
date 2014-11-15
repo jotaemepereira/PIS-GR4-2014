@@ -22,6 +22,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
 import controladores.Excepciones;
@@ -31,6 +32,7 @@ import model.AccionTer;
 import model.Articulo;
 import model.Droga;
 import model.Enumerados;
+import model.Enumerados.casoDeUso;
 import model.Enumerados.tipoMovimientoDeStock;
 import model.TipoIva;
 import model.Usuario;
@@ -585,17 +587,33 @@ public class StockBean implements Serializable {
 
 	/* Manejo del componente wizard en modificarArticulo.xhtml */
 	public String onFlowProcess(FlowEvent event) {
+		
+		String siguienteTab;
 		if (event.getNewStep().equals("tabModificacion")) {
 			if (articuloSeleccionado != null) {
-				this.modificacion = true;
-				cargarArticuloParaModificacion();
-				return event.getNewStep();
+				
+				//Chequeo permiso para modificar artículo
+//				Usuario usuariActual = this.instanciaSistema.obtenerUsuarioLogueado();
+//				if (usuariActual.tienePermiso(casoDeUso.modificarArticulo)) {
+					
+					this.modificacion = true;
+					cargarArticuloParaModificacion();
+					siguienteTab = event.getNewStep();
+//				} else {
+//					
+//					FacesContext context = FacesContext.getCurrentInstance();
+//					context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, Excepciones.USUARIO_INVALIDO, ""));
+//					RequestContext.getCurrentInstance().update("msgs");
+//					siguienteTab = event.getOldStep();
+//				}
 			} else {
-				return event.getOldStep();
+				siguienteTab = event.getOldStep();
 			}
 		} else {
-			return event.getNewStep();
+			siguienteTab = event.getNewStep();
 		}
+		
+		return siguienteTab;
 	}
 
 	private void cargarArticuloParaModificacion() {

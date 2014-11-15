@@ -44,18 +44,18 @@ import interfaces.IStockPersistencia;
 
 public class PStockControlador implements IStockPersistencia {
 	
-	Connection c;
+//	Connection c;
 	
 	public PStockControlador() {
-		try {
-			c = Conexion.getConnection();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			c = Conexion.getConnection();
+//		} catch (NamingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 
@@ -628,7 +628,7 @@ public class PStockControlador implements IStockPersistencia {
 				+ idArticulo + ";";
 		try {
 
-//			Connection c = Conexion.getConnection();
+			Connection c = Conexion.getConnection();
 			PreparedStatement stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 
@@ -638,7 +638,7 @@ public class PStockControlador implements IStockPersistencia {
 
 			rs.close();
 			stmt.close();
-//			c.close();
+			c.close();
 		} catch (Exception e) {
 			// Excepcion personalizada
 			e.printStackTrace();
@@ -664,7 +664,7 @@ public class PStockControlador implements IStockPersistencia {
 		int ret = 0;
 		try {
 
-//			Connection c = Conexion.getConnection();
+			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
@@ -673,7 +673,7 @@ public class PStockControlador implements IStockPersistencia {
 			}
 			rs.close();
 			stmt.close();
-//			c.close();
+			c.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
@@ -768,7 +768,7 @@ public class PStockControlador implements IStockPersistencia {
 
 		try {
 
-//			Connection c = Conexion.getConnection();
+			Connection c = Conexion.getConnection();
 			stmt = c.prepareStatement(query);
 			stmt.setInt(1, Enumerados.infoDUSA.proveedorID);
 			stmt.setBoolean(2, true);
@@ -781,7 +781,7 @@ public class PStockControlador implements IStockPersistencia {
 
 			rs.close();
 			stmt.close();
-//			c.close();
+			c.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
@@ -1094,7 +1094,7 @@ public class PStockControlador implements IStockPersistencia {
 	@Override
 	public void movimientoStock(String usuario, long aticuloID, long cantidad,
 			char tipoMovimiento, String motivo)
-			throws Exception {
+			throws Excepciones {
 		
 		PreparedStatement stmt = null;
 		try {
@@ -1117,6 +1117,7 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
@@ -1494,26 +1495,17 @@ public class PStockControlador implements IStockPersistencia {
 			
 			Articulo art = it.next();
 			
-				System.out.println(art.getDescripcion());
+
 			if (this.existeArticulo(art.getDescripcion())){
 				Long id = this.obtenerIdPorDescripcion(art.getDescripcion());
 				Articulo artAnt = this.obtenerArticuloConId(id);
 				// si el precio unitario disminuyo o fue dado de baja se agrega a los cambios;
-
 
 				BigDecimal bg = artAnt.getPrecioUnitario().subtract(art.getPrecioUnitario());
 				BigDecimal bg2 = new BigDecimal("0.5");
 				boolean bajaEnPrecio = bg.abs().compareTo(bg2) > 0;
 				boolean dadoDeBaja =  artAnt.isStatus()==true && art.isStatus()==false;
 				if (bajaEnPrecio   || dadoDeBaja) {
-//					System.out.print("Precio anterior:   ");
-//					System.out.println(artAnt.getPrecioUnitario());
-//					System.out.print("Precio actual:   ");
-//					System.out.println(art.getPrecioUnitario());
-//					System.out.print("estado anterior:  ");
-//					System.out.println(artAnt.isStatus());
-//					System.out.print("estado actual:   ");
-//					System.out.println(art.isStatus());
 					art.setIdArticulo(artAnt.getIdArticulo());
 					cambios.add(new Cambio(art,artAnt,bajaEnPrecio,dadoDeBaja));
 					this.actualizarPrecioYEstadoDeArticulo(art);

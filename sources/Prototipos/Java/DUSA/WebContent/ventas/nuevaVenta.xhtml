@@ -268,7 +268,7 @@
 						<p:outputLabel for="cant" value="Cantidad:" style="width:100%" />
 						<p:inputText id="cant"
 							value="#{ventaBean.articuloSeleccionado.cantidad}"
-							style="width:40%;">
+							style="width:40%;" onfocus="this.value = this.value;" >
 							<f:ajax event="change" execute="@this" />
 						</p:inputText>
 					</p:outputPanel>

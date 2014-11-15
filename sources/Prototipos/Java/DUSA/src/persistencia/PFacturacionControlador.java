@@ -30,26 +30,26 @@ import model.Venta;
 import interfaces.IFacturacionPersistencia;
 
 public class PFacturacionControlador implements IFacturacionPersistencia {
-
-	Connection con;
-
+	
+//	Connection con;
+	
 	public PFacturacionControlador() {
-		try {
-			con = Conexion.getConnection();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			con = Conexion.getConnection();
+//		} catch (NamingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
 	public List<Venta> listarVentasPendientes() throws Excepciones {
 
 		try {
-			// Connection con = Conexion.getConnection();
+			Connection con = Conexion.getConnection();
 			Statement st = con.createStatement();
 			try {
 				List<Venta> ret = new ArrayList<Venta>();
@@ -371,7 +371,8 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	public List<Long> getIdArticulosEnPeriodo(java.util.Date desde,
 			java.util.Date hasta) throws Excepciones {
 
-		// Connection con = null;
+		Connection con = null;
+
 		PreparedStatement stmt = null;
 		List<Long> articulos = new ArrayList<Long>();
 
@@ -424,7 +425,8 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		int cantidadVendida = 0;
 		try {
 
-			// Connection con = Conexion.getConnection();
+			Connection con = Conexion.getConnection();
+
 
 			String sql = "SELECT sum(quantity) as total "
 					+ "FROM sales s INNER JOIN sale_details sd "
@@ -447,7 +449,8 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			}
 
 			stmt.close();
-			// con.close();
+			con.close();
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -578,6 +581,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	public Map<Long, DTLineaPedido> obtenerCantidadVendidaDeArticulosDeDusa(
 			java.util.Date desde, java.util.Date hasta) throws Excepciones {
 
+		Connection con = null;
 		Map<Long, DTLineaPedido> ret;
 
 		String sql = "SELECT p.product_id, p.description, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, sum(sd.quantity) as total "
@@ -592,7 +596,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				+ "ORDER BY p.description;";
 
 		try {
-
+			con = Conexion.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);			
 			stmt.setTimestamp(1, new Timestamp(desde.getTime()));
 			stmt.setTimestamp(2, new Timestamp(hasta.getTime()));
