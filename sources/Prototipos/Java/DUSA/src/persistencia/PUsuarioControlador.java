@@ -187,8 +187,8 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 			c.close();
 
 		} catch (Exception e){
+			//Si sucede un error al persistir la actividad, no se notifica en la presentación. 
 			e.printStackTrace();
-			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 
 	}
