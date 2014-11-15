@@ -14,9 +14,7 @@ public class LineaVenta implements Serializable {
 	private boolean recetaBlanca;
 	private boolean recetaNaranja;
 	private boolean recetaVerde;
-	private String descuentoPrecio;
 	private String descripcionOferta;
-	private String totalPrecioLinea;
 	
 	private BigDecimal irae;
 	private BigDecimal iva;
@@ -104,14 +102,6 @@ public class LineaVenta implements Serializable {
 		this.recetaVerde = recetaVerde;
 	}
 
-	public String getDescuentoPrecio() {
-		return descuentoPrecio;
-	}
-
-	public void setDescuentoPrecio(String descuentoPrecio) {
-		this.descuentoPrecio = descuentoPrecio;
-	}
-	
 	public BigDecimal getIrae() {
 		return irae;
 	}
@@ -142,14 +132,6 @@ public class LineaVenta implements Serializable {
 
 	public void setDescripcionOferta(String descripcionOferta) {
 		this.descripcionOferta = descripcionOferta;
-	}
-
-	public String getTotalPrecioLinea() {
-		return totalPrecioLinea;
-	}
-
-	public void setTotalPrecioLinea(String totalPrecioLinea) {
-		this.totalPrecioLinea = totalPrecioLinea;
 	}
 
 	public BigDecimal getPrecioReceta() {

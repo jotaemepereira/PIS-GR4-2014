@@ -30,7 +30,7 @@ import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
@@ -512,8 +512,8 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones {
-		DTVenta articulo = new DTVenta();
+	public DTProducto getDatosArticuloVenta(int idArticulo) throws Excepciones {
+		DTProducto articulo = new DTProducto();
 		PreparedStatement stmt = null;
 		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR, RECIPE_PRICE, RECIPE_DISCOUNT "
 				+ "FROM PRODUCTS p "
@@ -527,9 +527,10 @@ public class PStockControlador implements IStockPersistencia {
 			ResultSet rs = stmt.executeQuery();
 			// Obtengo la cantidad de proveedores con ese rut
 			while (rs.next()) {
+				
 				articulo.setPrecioVenta(rs.getBigDecimal("SALE_PRICE"));
-				articulo.setRecetaVerde(rs.getBoolean("IS_PSYCHOTROPIC"));
-				articulo.setRecetaNaranja(rs.getBoolean("IS_NARCOTIC"));
+				articulo.setPsicofarmaco(rs.getBoolean("IS_PSYCHOTROPIC"));
+				articulo.setEstupefaciente(rs.getBoolean("IS_NARCOTIC"));
 				articulo.setStock(rs.getInt("STOCK"));
 				articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
 				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));

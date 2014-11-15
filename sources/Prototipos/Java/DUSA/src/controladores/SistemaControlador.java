@@ -9,7 +9,7 @@ import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTTiposDGI;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
 import model.AccionTer;
 import model.Actividad;
 import model.Articulo;
@@ -180,7 +180,7 @@ public class SistemaControlador implements ISistema {
 
 	}
 	@Override
-	public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones {
+	public List<DTProducto> buscarArticulosVenta(String busqueda) throws Excepciones {
 		System.out.println("********* BUSCAR ************** " + busqueda);
 		if (user.tienePermiso(casoDeUso.buscarArticulo))
 			return FabricaLogica.getIStock().buscarArticulosVenta(busqueda);
