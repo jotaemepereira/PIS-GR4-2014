@@ -21,6 +21,7 @@ public class ComprasControlador implements ICompras {
 		
 		// Actualizo el stock de todos los artículos en la compra
 		FabricaPersistencia.getStockPersistencia().actualizarStockCompra(orden.getDetalle());
+		FabricaPersistencia.getStockPersistencia().movimientoStockCompra(orden);
 	}
 
 	@Override
@@ -29,9 +30,9 @@ public class ComprasControlador implements ICompras {
 	}
 
 	@Override
-	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
+	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA(String usuario) throws Excepciones {
 		// Primero traigo facturas nuevas que pueden haber en el sistema
-		FabricaServicios.getIServicios().obtenerFacturasDUSA();
+		FabricaServicios.getIServicios().obtenerFacturasDUSA(usuario);
 
 		// Luego, obtengo todas las facturas pendientes en la base de datos (incluyendo las nuevas)
 		return FabricaPersistencia.getInstanciaComprasPersistencia().obtenerFacturasPendientes();

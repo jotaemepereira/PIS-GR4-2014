@@ -39,7 +39,8 @@ public class LoginBean implements Serializable {
 					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.generPeEnBaseAPedAnt))
 					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.genPedEnBaseAHist))
 					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.bajaArticulo))
-					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarArticulo))) {
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarArticulo))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.alertaVencimiento))) {
 				return ""; }
 			else return "display : none";}
 		return "";
@@ -284,6 +285,14 @@ public class LoginBean implements Serializable {
 	public String getCerrarSesionRet() {
 		if (instanciaSistema != null) {
 			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.cerrarSesion))
+				return "";
+			else return "display : none"; }
+		return "";
+	}
+	
+	public String getAlertaVencimientoRet() {
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.alertaVencimiento))
 				return "";
 			else return "display : none"; }
 		return "";

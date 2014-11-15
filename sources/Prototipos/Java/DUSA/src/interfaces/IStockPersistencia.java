@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,11 +10,12 @@ import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
 import model.Droga;
+import model.Orden;
 import model.OrdenDetalle;
 import model.Pedido;
 import model.TipoIva;
@@ -79,7 +81,7 @@ public interface IStockPersistencia {
 	 * @return lista de articulos encontrados
 	 * @throws Excepciones
 	 */
-	List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda, int proveedor) throws Excepciones;
+	List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda, long proveedor) throws Excepciones;
 	
 	/**
 	 * realiza la reindexacion total de solr
@@ -148,7 +150,7 @@ public interface IStockPersistencia {
 	 */
 	public Articulo obtenerArticuloConId(long idArticulo) throws Excepciones;
 
-	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones;
+	public DTProducto getDatosArticuloVenta(int idArticulo) throws Excepciones;
 
 	/**
 	 * En base a lo encontrado usando solr, complementa los datos para ese artícuo
@@ -211,11 +213,11 @@ public interface IStockPersistencia {
 	 * @param cantidad Cantidad relacionada al tipo de movimiento
 	 * @param tipoMovimiento tipoMovimientoDeStock indicando si es un aumento, baja o desarme de stock
 	 * @param motivo Motivo del cambio de stock
-	 * @throws Exception
+	 * @throws Excepciones
 	 * @author Guille
 	 * @see model.Enumerados.tipoMovimientoDeStock
 	 */
-	public void movimientoStock(String usuario, long aticuloID, long cantidad, char tipoMovimiento, String motivo) throws Exception;
+	public void movimientoStock(String usuario, long aticuloID, long cantidad, char tipoMovimiento, String motivo) throws Excepciones;
 
 	public List <Cambio> obtenerCambios(List <Articulo> arts) throws Excepciones;
 
@@ -234,8 +236,17 @@ public interface IStockPersistencia {
 	
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
 
-	public void modificarPreciosDeArticulo(Map<Long, Integer> preciosModificados)
+	public void modificarPreciosDeArticulo(Map<Long, BigDecimal> preciosModificados)
 			throws Excepciones;
+
+	/**
+	 * Se actualiza la tabla de movimientos de stock para el detalle de una compra
+	 * 
+	 * @param detalles - lista de detalles de una compra
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	void movimientoStockCompra(Orden orden) throws Excepciones;
 
 }
 

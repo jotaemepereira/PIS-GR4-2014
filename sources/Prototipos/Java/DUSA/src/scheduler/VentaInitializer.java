@@ -46,7 +46,7 @@ public class VentaInitializer implements ServletContextListener {
 
 				try {
 					output = new FileOutputStream("ventaStock.properties");
-					prop.setProperty("expresionCron", "0 0 0 25 * ?");
+					prop.setProperty("expresionCron", "0 23 21 * * ? *");
 					prop.store(output, null);
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block

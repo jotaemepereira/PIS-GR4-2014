@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,9 +40,8 @@ import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
-import datatypes.DTProduct;
 import datatypes.DTProveedor;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
 import controladores.FabricaPersistencia;
 
 public class StockControlador implements IStock {
@@ -259,9 +259,9 @@ public class StockControlador implements IStock {
 	}
 
 	@Override
-	public List<DTVenta> buscarArticulosVenta(String busqueda)
+	public List<DTProducto> buscarArticulosVenta(String busqueda)
 			throws Excepciones {
-		List<DTVenta> articulos = new ArrayList<DTVenta>();
+		List<DTProducto> articulos = new ArrayList<DTProducto>();
 		List<DTBusquedaArticuloSolr> lista = FabricaPersistencia
 				.getStockPersistencia().buscarArticulosSolr(busqueda);
 
@@ -270,14 +270,13 @@ public class StockControlador implements IStock {
 		while (it.hasNext()) {
 			DTBusquedaArticuloSolr articuloB = it
 					.next();
-			DTVenta articuloV = FabricaPersistencia.getStockPersistencia()
+			DTProducto articuloV = FabricaPersistencia.getStockPersistencia()
 					.getDatosArticuloVenta(articuloB.getIdArticulo());
 			articuloV.setDescripcion(articuloB.getDescripcion());
 			articuloV.setProductId(articuloB.getIdArticulo());
 			articuloV.setBarcode(articuloB.getCodigoBarras());
 			articuloV.setPresentacion(articuloB.getPresentacion());
 			articuloV.setPrincipioActivo(articuloB.getDroga());
-			articuloV.setLaboratorio(articuloB.getMarca());
 			articulos.add(articuloV);
 		}
 
@@ -286,13 +285,12 @@ public class StockControlador implements IStock {
 
 	@Override
 	public void actualizarStock(Date fecha) throws Excepciones {
-		System.out.println("actualizarStock controlador");
+		
 
 		Mail m;
 
-		System.out.println(fecha.toString());
 		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
-		System.out.println(articulos.size());
+		
 		List<Cambio> cambios = FabricaPersistencia.getStockPersistencia().obtenerCambios(articulos);
 		
 		OutputStream output;
@@ -323,7 +321,8 @@ public class StockControlador implements IStock {
 		prop.store(output, null);
 
 
-		if (cambios!=null){
+		if (cambios.size()!=0){
+			
 			m = new Mail();
 			m.setAsunto("cambio en productos de DUSA");   
 			m.setContenido(cambios);
@@ -336,7 +335,6 @@ public class StockControlador implements IStock {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-				         
 
 	}                      
 
@@ -388,7 +386,7 @@ public class StockControlador implements IStock {
 
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda,
-			int proveedor) throws Excepciones {
+			long proveedor) throws Excepciones {
 		List<DTBusquedaArticuloSolr> encontrados = FabricaPersistencia
 				.getStockPersistencia()
 				.buscarArticulosSolr(busqueda, proveedor);
@@ -411,7 +409,7 @@ public class StockControlador implements IStock {
 	}
 
 	@Override
-	public void modificarPreciodeArticulos(Map<Long, Integer> preciosModificados)
+	public void modificarPreciodeArticulos(Map<Long, BigDecimal> preciosModificados)
 			throws Excepciones {
 		// TODO Auto-generated method stub
 		FabricaPersistencia.getStockPersistencia().
@@ -419,5 +417,4 @@ public class StockControlador implements IStock {
 		
 	}
 	
-
 }

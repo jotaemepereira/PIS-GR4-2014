@@ -68,11 +68,13 @@
 														value="Detallar" title="Detallar" />
 
 												</p:column>
-												
-												<p:column rendered="#{!facturacionBean.facturacionControlada}" style="text-align: center;width: 150px;">
+
+												<p:column
+													rendered="#{!facturacionBean.facturacionControlada}"
+													style="text-align: center;width: 150px;">
 													<p:commandButton id="facturarEnLista" update=":form1"
-														actionListener="#{facturacionBean.facturarVenta(venta.ventaId)}" ajax="true"
-														value="Facturar" title="Facturar" />
+														actionListener="#{facturacionBean.facturarVenta(venta.ventaId)}"
+														ajax="true" value="Facturar" title="Facturar" />
 
 												</p:column>
 
@@ -136,11 +138,12 @@
 					</p:column>
 
 					<p:column headerText="Precio" style="text-align: center;">
-						<h:outputText value="$ #{lineaVenta.precio}" />
+						<h:outputText
+							value="$ #{facturacionBean.calcularPrecioSinDescuento(lineaVenta)}" />
 					</p:column>
 
 					<p:column headerText="Descuento" style="text-align: center;">
-						<h:outputText value="% #{lineaVenta.descuento}" />
+						<h:outputText value="$ #{lineaVenta.descuento}" />
 					</p:column>
 
 					<p:column headerText="Subtotal" style="text-align: center;">

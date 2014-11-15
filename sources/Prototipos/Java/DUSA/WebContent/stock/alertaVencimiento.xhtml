@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:view contentType="text/html">
+	<h:head>
+		<link href="../CSS/General.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
+		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
+		<link href="../CSS/font-awesome.min.css" rel="stylesheet" />
+		<script src="../JS/bootstrap.min.js"></script>
+		<f:facet name="first">
+			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+			<title>DUSA</title>
+		</f:facet>
+	</h:head>
+	<h:body>
+		<h:form id="form1">
+			<ui:include src="../cabezal.xhtml" />
+			<ui:include src="../menuVertical/stock.xhtml" />
+			#{loginBean.redirectIfNotLoggedIn()}
+			#{modificarStockBean.setISistema(loginBean.instanciaSistema)}
+			<p:focus></p:focus>
+			<div class="vpanel_right">
+				<div class="wrapper">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Notificar artículos por vencer</h3>
+						</div>
+						<p:messages id="msgs" />
+
+						<div class="panel-body">
+							<h:panelGroup layout="block" id="panel">
+								<div class="container-fluid">
+
+									<div class="row" style="margin-bottom: 1%; text-align: center;">
+										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+											<div class="row">
+												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<p:outputLabel for="fechaDesde" value="Desde:" />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<p:calendar id="fechaDesde"
+														value="#{alertaVencimientoBean.fechaDesde}"
+														pattern="dd-MM-yyyy" mask="true" />
+													<p:message for="fechaDesde" display="text" />
+												</div>
+											</div>
+										</div>
+										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+											<div class="row">
+												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<p:outputLabel for="fechaHasta" value="Hasta:" />
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+													<p:calendar id="fechaHasta"
+														value="#{alertaVencimientoBean.fechaHasta}"
+														pattern="dd-MM-yyyy" mask="true" />
+													<p:message for="fechaHasta" display="text" />
+												</div>
+											</div>
+										</div>
+										<div class="">
+											<div class="btn-group ">
+												<h:commandButton value="Obtener vencimientos" update="panel"
+													actionListener="#{alertaVencimientoBean.articulosQueSeVencenEnPeriodo}"
+													class="btn btn-default" />
+											</div>
+										</div>
+									</div>
+
+									<div class="row" style="margin-bottom: 1%; text-align: center;">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+											<p:dataTable var="articulo" id="tableArticulos"
+												value="#{alertaVencimientoBean.articulos}"
+												rowIndexVar="rowIndex"
+												emptyMessage="No hay artículos por vencer">
+												<div class="row">
+													<p:column headerText="Descripción"
+														styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+														<h:outputText value="#{articulo.descripcion}" />
+													</p:column>
+
+													<p:column headerText="Stock actual" style="width: 50px;">
+														<h:outputText value="#{articulo.stock}"
+															style="width: 50px;">
+														</h:outputText>
+													</p:column>
+
+													<p:column headerText="Vencimiento" style="width: 50px;">
+														<h:outputText value="#{articulo.vencimientoMasCercano}"
+															style="width: 50px;">
+														</h:outputText>
+													</p:column>
+
+													<p:column headerText="Nuevo vencimiento"
+														style="width: 50px;">
+														<p:calendar
+															value="#{alertaVencimientoBean.nuevosVencimientos[rowIndex]}"
+															pattern="dd-MM-yyyy" mask="true" />
+													</p:column>
+												</div>
+											</p:dataTable>
+										</div>
+									</div>
+									<p:commandButton
+										actionListener="#{alertaVencimientoBean.confirmar()}"
+										styleClass="btn btn-success" update=":form1" value="Confirmar">
+									</p:commandButton>
+								</div>
+							</h:panelGroup>
+						</div>
+					</div>
+				</div>
+			</div>
+		</h:form>
+	</h:body>
+
+</f:view>
+</html>

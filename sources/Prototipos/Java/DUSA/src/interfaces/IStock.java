@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +14,7 @@ import model.TipoIva;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
-import datatypes.DTProduct;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
 
 public interface IStock {
 
@@ -109,7 +109,7 @@ public interface IStock {
 	
 	
 
-	public List<DTVenta> buscarArticulosVenta(String busqueda)
+	public List<DTProducto> buscarArticulosVenta(String busqueda)
 			throws Excepciones;
 
 	/**
@@ -178,7 +178,7 @@ public interface IStock {
 	 * @throws Excepciones
 	 * @author Victoria Díaz
 	 */
-	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones;
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, long proveedor) throws Excepciones;
 
 	/**
 	 * Devuelve un artículo con todos sus datos, sus proveedores, drogas y acciones terapéuticas.
@@ -202,6 +202,6 @@ public interface IStock {
 	
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
 	
-	public void modificarPreciodeArticulos(Map<Long, Integer> preciosModificados) throws Excepciones;
+	public void modificarPreciodeArticulos(Map<Long, BigDecimal> preciosModificados) throws Excepciones;
 	
 }

@@ -59,7 +59,7 @@ public class DTBusquedaArticulo extends DTBusquedaArticuloSolr {
 		return costoPonderado;
 	}
 	public void setCostoPonderado(BigDecimal costoPonderado) {
-		this.costoPonderado = costoPonderado;
+		this.costoPonderado = (costoPonderado != null) ? costoPonderado : new BigDecimal(0);
 	}
 
 	public long getStock() {
