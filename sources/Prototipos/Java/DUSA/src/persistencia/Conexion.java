@@ -19,7 +19,7 @@ public class Conexion {
 			Class.forName(FacesContext.getCurrentInstance()
 					.getExternalContext().getInitParameter("DRIVER"));
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		//        String user = FacesContext.getCurrentInstance().getExternalContext()

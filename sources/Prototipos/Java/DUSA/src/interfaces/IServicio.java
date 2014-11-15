@@ -33,7 +33,7 @@ public interface IServicio {
 	 * @throws Excepciones
 	 * @author Victoria Díaz
 	 */
-	public void obtenerFacturasDUSA() throws Excepciones;
+	public void obtenerFacturasDUSA(String usuario) throws Excepciones;
 	
 	/**
 	 * Trae la información de un determinado producto según su numero de producto
