@@ -75,8 +75,6 @@ public class PComprasControlador implements IComprasPersistencia {
 			query += "AND serial = :serial ";
 		query += "AND order_number = :order_number ";
 		
-		System.out.println(query);
-		
 		try {
 			stmt = new NamedParameterStatement(c, query);
 			
