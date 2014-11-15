@@ -1875,19 +1875,20 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public void modificarPreciosDeArticulo(Map<Long, Integer> preciosModificados)
+	public void modificarPreciosDeArticulo(Map<Long, BigDecimal> preciosModificados)
 			throws Excepciones {
 		// TODO Auto-generated method stub
 		PreparedStatement stmt = null;
 		try {
 			Connection c = Conexion.getConnection();
-			for (Map.Entry<Long, Integer> entry : preciosModificados.entrySet())
+			for (Map.Entry<Long, BigDecimal> entry : preciosModificados.entrySet())
 			{
-				String  query = "UPDATE products SET sale_price = ? ";
+				String  query = "UPDATE products SET unit_price = ? ";
 				query += "WHERE product_id = ?;";
 				stmt = c.prepareStatement(query);
-				stmt.setLong(1, entry.getKey());
-				stmt.setInt(2, entry.getValue());
+				stmt.setBigDecimal(1, entry.getValue());
+				stmt.setLong(2, entry.getKey());
+
 				
 				stmt.executeUpdate();
 				stmt.close();

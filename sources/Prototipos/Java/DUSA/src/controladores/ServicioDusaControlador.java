@@ -189,7 +189,6 @@ public class ServicioDusaControlador implements IServicio {
 
 	@Override
 	public Articulo obtenerArticulo(int nroArticulo) {
-		System.out.println("obtenerActualizacionDeStock");
 		Articulo articulo = new Articulo();
 		WSConsultaStock servicio = getServicioStock();
 		try {
@@ -343,8 +342,6 @@ public class ServicioDusaControlador implements IServicio {
 					userTest, passTest, fechaXML);
 
 			listComprobantes = resComprobantes.getComprobantes();
-			System.out.println("SE ENCONTRAROR CANT COMPROBANTES: "
-					+ listComprobantes.size());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -358,9 +355,6 @@ public class ServicioDusaControlador implements IServicio {
 
 		while (it.hasNext()) {
 			DataComprobante dataComprobante = (DataComprobante) it.next();
-
-			System.out.println("COMPROBANTE: "
-					+ dataComprobante.getOrdenDeCompra());
 
 			Orden orden = transformarOrden(dataComprobante);
 			orden.setNombreUsuario(usuario);

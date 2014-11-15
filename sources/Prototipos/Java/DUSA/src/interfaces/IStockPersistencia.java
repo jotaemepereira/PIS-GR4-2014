@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -235,7 +236,7 @@ public interface IStockPersistencia {
 	
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
 
-	public void modificarPreciosDeArticulo(Map<Long, Integer> preciosModificados)
+	public void modificarPreciosDeArticulo(Map<Long, BigDecimal> preciosModificados)
 			throws Excepciones;
 
 	/**

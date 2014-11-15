@@ -352,7 +352,6 @@ public class ComprasBean implements Serializable {
 				detalle.setProductId(linea.getProductId());
 				detalle.setAvg_cost(linea.getAvg_cost());
 				detalle.setStock(linea.getStock());
-				System.out.println("TIPO IVA: " + linea.getTipoIVA().getDescripcion());
 				detalle.setTipoIVA(linea.getTipoIVA());
 
 				detalles.add(detalle);
