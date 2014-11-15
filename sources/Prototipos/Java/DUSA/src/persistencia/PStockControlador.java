@@ -46,21 +46,6 @@ import interfaces.IStockPersistencia;
 
 public class PStockControlador implements IStockPersistencia {
 	
-//	Connection c;
-	
-	public PStockControlador() {
-//		try {
-//			c = Conexion.getConnection();
-//		} catch (NamingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-	}
-	
-
 	@Override
 	public void persistirArticulo(Articulo articulo) throws Excepciones {
 		PreparedStatement stmt = null;

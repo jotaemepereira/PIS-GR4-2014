@@ -106,7 +106,7 @@ public class SistemaControlador implements ISistema {
 	}
 
 	@Override
-	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones {
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, long proveedor) throws Excepciones {
 		
 		if (user.tienePermiso(casoDeUso.buscarArticulo))
 			return FabricaLogica.getIStock().buscarArticulos(busqueda, proveedor);

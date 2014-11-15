@@ -192,7 +192,7 @@ public interface ISistema {
 	 * @throws Excepciones
 	 * @author Victoria Díaz
 	 */
-	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones;
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, long proveedor) throws Excepciones;
 
 	/**
 	 * Chequea la existencia del codigoIdentificador para el proveedor.
