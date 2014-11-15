@@ -1,6 +1,7 @@
 package persistencia;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,6 +37,7 @@ import model.Cambio;
 import model.Droga;
 import model.Enumerados;
 import model.LineaPedido;
+import model.Orden;
 import model.OrdenDetalle;
 import model.Pedido;
 import model.TipoIva;
@@ -380,7 +382,7 @@ public class PStockControlador implements IStockPersistencia {
 
 	@Override
 	public List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda,
-			int proveedor) throws Excepciones {
+			long proveedor) throws Excepciones {
 		List<DTBusquedaArticuloSolr> listaArticulos = new ArrayList<DTBusquedaArticuloSolr>();
 
 		String urlString = "http://localhost:8080/solr";
@@ -1122,6 +1124,45 @@ public class PStockControlador implements IStockPersistencia {
 					Excepciones.ERROR_SISTEMA));
 		}
 	}
+	
+	@Override
+	public void movimientoStockCompra(Orden orden) throws Excepciones {
+		
+		PreparedStatement stmt = null;
+		try {
+			Connection c = Conexion.getConnection();
+
+			String query = "INSERT INTO STOCK_MOVEMENTS "
+					+ "(USERNAME, PRODUCT_ID, QUANTITY, MOVEMENT_TYPE, "
+					+ "MOTIVE, MOVEMENT_DATE) VALUES "
+					+ " (?, ?, ?, ?, ?, LOCALTIMESTAMP);";
+			
+			Iterator<OrdenDetalle> it = orden.getDetalle().iterator();
+			while (it.hasNext()) {
+				OrdenDetalle ordenDetalle = (OrdenDetalle) it.next();
+				
+				stmt = c.prepareStatement(query);
+				stmt.setString(1, orden.getNombreUsuario());
+				stmt.setLong(2, ordenDetalle.getProductId());
+				stmt.setLong(3, ordenDetalle.getCantidad());
+				stmt.setString(4, String.valueOf(Enumerados.tipoMovimientoDeStock.aumentoStock));
+				String motivo = "COMPRA " + orden.getIdProveedor() + " - " + orden.getTipoCFE() + " " + orden.getSerieCFE() + " " + orden.getNumeroCFE();
+				if(motivo.length() > 250)
+					motivo = motivo.substring(250);
+				stmt.setString(5, motivo);
+				
+				stmt.executeUpdate();
+				
+				stmt.close();
+			}
+			
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+	}
 
 	@Override
 	public void actualizarStockCompra(List<OrdenDetalle> detalles)
@@ -1130,7 +1171,7 @@ public class PStockControlador implements IStockPersistencia {
 		PreparedStatement stmt = null;
 		try {
 			Connection c = Conexion.getConnection();
-			String  query = "UPDATE products SET stock = stock + ?, last_cost = ? ";
+			String  query = "UPDATE products SET stock = stock + ?, last_cost = ?, avg_cost = ? ";
 					query += "WHERE product_id = ?;";
 					
 			Iterator<OrdenDetalle> it = detalles.iterator();
@@ -1138,8 +1179,19 @@ public class PStockControlador implements IStockPersistencia {
 				OrdenDetalle ordenDetalle = it.next();
 				stmt = c.prepareStatement(query);
 				stmt.setInt(1, ordenDetalle.getCantidad());
+				
+			//	BigDecimal real = ordenDetalle.getPrecioUnitario().multiply(arg0)
 				stmt.setBigDecimal(2, ordenDetalle.getPrecioUnitario());
-				stmt.setLong(3, ordenDetalle.getProductId());
+				
+				// Precio ponderado promedio
+				// avg_cost = ((avg_cost * stock) + (costo_real * cant)) / (stock + cant)
+				BigDecimal pondActual = ordenDetalle.getAvg_cost().multiply( new BigDecimal(ordenDetalle.getStock()));
+				BigDecimal pondNuevo = ordenDetalle.getPrecioUnitario().multiply(new BigDecimal(ordenDetalle.getCantidad()));
+				BigDecimal sumAvg =  pondActual.add(pondNuevo);
+				int totArts = ordenDetalle.getStock() + ordenDetalle.getCantidad();
+				stmt.setBigDecimal(3, sumAvg.divide(new BigDecimal(totArts), 2, RoundingMode.HALF_UP));
+				
+				stmt.setLong(4, ordenDetalle.getProductId());
 				
 				stmt.executeUpdate();
 				stmt.close();
@@ -1147,6 +1199,7 @@ public class PStockControlador implements IStockPersistencia {
 
 			c.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}

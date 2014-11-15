@@ -21,6 +21,7 @@ public class ComprasControlador implements ICompras {
 		
 		// Actualizo el stock de todos los artículos en la compra
 		FabricaPersistencia.getStockPersistencia().actualizarStockCompra(orden.getDetalle());
+		FabricaPersistencia.getStockPersistencia().movimientoStockCompra(orden);
 	}
 
 	@Override

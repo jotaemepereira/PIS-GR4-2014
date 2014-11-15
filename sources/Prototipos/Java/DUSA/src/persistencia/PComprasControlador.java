@@ -283,7 +283,7 @@ public class PComprasControlador implements IComprasPersistencia {
 		String queryOrden = "SELECT * FROM orders ";
 		queryOrden += "WHERE is_processed = ?";
 
-		String queryDetalle = "SELECT od.*, p.description, p.list_cost ";
+		String queryDetalle = "SELECT od.*, p.description, p.list_cost, p.avg_cost, p.stock ";
 		queryDetalle += "FROM order_details od ";
 		queryDetalle += "INNER JOIN products p ON p.product_id = od.product_id ";
 		queryDetalle += "WHERE order_id = ?";
@@ -337,6 +337,7 @@ public class PComprasControlador implements IComprasPersistencia {
 					detalle.setCantidad(rsDetalle.getInt("quantity"));
 					detalle.setCostoListaArticulo(rsDetalle
 							.getBigDecimal("list_cost"));
+					detalle.setAvg_cost(rsDetalle.getBigDecimal("avg_cost"));
 					detalle.setDescripcion(rsDetalle.getString("description"));
 					detalle.setDescripcionOferta(rsDetalle
 							.getString("offer_description"));
@@ -349,6 +350,7 @@ public class PComprasControlador implements IComprasPersistencia {
 					detalle.setNumeroLinea(rsDetalle.getInt("line"));
 					detalle.setPrecioUnitario(rsDetalle.getBigDecimal("cost"));
 					detalle.setProductId(rsDetalle.getLong("product_id"));
+					detalle.setStock(rsDetalle.getInt("stock"));
 
 					BigDecimal precio = detalle.getPrecioUnitario();
 					BigDecimal descuento = detalle.getDescuento()

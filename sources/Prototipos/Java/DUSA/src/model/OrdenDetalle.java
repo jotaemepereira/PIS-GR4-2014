@@ -2,9 +2,7 @@ package model;
 
 import java.math.BigDecimal;
 
-import uy.com.dusa.ws.DataLineaComprobante;
 import controladores.Excepciones;
-import controladores.FabricaPersistencia;
 
 public class OrdenDetalle {
 	private long idOrden;
@@ -16,6 +14,9 @@ public class OrdenDetalle {
 	private String descripcionOferta;
 	private int indicadorDeFacturacion;
 	private long productId;
+	
+	private BigDecimal avg_cost;
+	private int stock;
 	
 	public OrdenDetalle() {}
 
@@ -103,6 +104,22 @@ public class OrdenDetalle {
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		this.productId = productId;
+	}
+
+	public BigDecimal getAvg_cost() {
+		return avg_cost;
+	}
+
+	public void setAvg_cost(BigDecimal avg_cost) {
+		this.avg_cost = (avg_cost != null) ? avg_cost : new BigDecimal(0);
+	}
+
+	public int getStock() {
+		return stock;
+	}
+
+	public void setStock(int stock) {
+		this.stock = stock;
 	}
 
 }

@@ -14,6 +14,7 @@ import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
 import model.Droga;
+import model.Orden;
 import model.OrdenDetalle;
 import model.Pedido;
 import model.TipoIva;
@@ -79,7 +80,7 @@ public interface IStockPersistencia {
 	 * @return lista de articulos encontrados
 	 * @throws Excepciones
 	 */
-	List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda, int proveedor) throws Excepciones;
+	List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda, long proveedor) throws Excepciones;
 	
 	/**
 	 * realiza la reindexacion total de solr
@@ -236,6 +237,15 @@ public interface IStockPersistencia {
 
 	public void modificarPreciosDeArticulo(Map<Long, Integer> preciosModificados)
 			throws Excepciones;
+
+	/**
+	 * Se actualiza la tabla de movimientos de stock para el detalle de una compra
+	 * 
+	 * @param detalles - lista de detalles de una compra
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	void movimientoStockCompra(Orden orden) throws Excepciones;
 
 }
 
