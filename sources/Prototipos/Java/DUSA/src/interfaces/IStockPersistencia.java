@@ -211,11 +211,11 @@ public interface IStockPersistencia {
 	 * @param cantidad Cantidad relacionada al tipo de movimiento
 	 * @param tipoMovimiento tipoMovimientoDeStock indicando si es un aumento, baja o desarme de stock
 	 * @param motivo Motivo del cambio de stock
-	 * @throws Exception
+	 * @throws Excepciones
 	 * @author Guille
 	 * @see model.Enumerados.tipoMovimientoDeStock
 	 */
-	public void movimientoStock(String usuario, long aticuloID, long cantidad, char tipoMovimiento, String motivo) throws Exception;
+	public void movimientoStock(String usuario, long aticuloID, long cantidad, char tipoMovimiento, String motivo) throws Excepciones;
 
 	public List <Cambio> obtenerCambios(List <Articulo> arts) throws Excepciones;
 
