@@ -593,19 +593,19 @@ public class StockBean implements Serializable {
 			if (articuloSeleccionado != null) {
 				
 				//Chequeo permiso para modificar artículo
-//				Usuario usuariActual = this.instanciaSistema.obtenerUsuarioLogueado();
-//				if (usuariActual.tienePermiso(casoDeUso.modificarArticulo)) {
+				Usuario usuariActual = this.instanciaSistema.obtenerUsuarioLogueado();
+				if (usuariActual.tienePermiso(casoDeUso.modificarArticulo)) {
 					
 					this.modificacion = true;
 					cargarArticuloParaModificacion();
 					siguienteTab = event.getNewStep();
-//				} else {
-//					
-//					FacesContext context = FacesContext.getCurrentInstance();
-//					context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, Excepciones.USUARIO_INVALIDO, ""));
+				} else {
+					
+					FacesContext context = FacesContext.getCurrentInstance();
+					context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, Excepciones.USUARIO_INVALIDO, ""));
 //					RequestContext.getCurrentInstance().update("msgs");
-//					siguienteTab = event.getOldStep();
-//				}
+					siguienteTab = event.getOldStep();
+				}
 			} else {
 				siguienteTab = event.getOldStep();
 			}
