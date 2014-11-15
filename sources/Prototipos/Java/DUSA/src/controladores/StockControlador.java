@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -409,7 +410,7 @@ public class StockControlador implements IStock {
 	}
 
 	@Override
-	public void modificarPreciodeArticulos(Map<Long, Integer> preciosModificados)
+	public void modificarPreciodeArticulos(Map<Long, BigDecimal> preciosModificados)
 			throws Excepciones {
 		// TODO Auto-generated method stub
 		FabricaPersistencia.getStockPersistencia().

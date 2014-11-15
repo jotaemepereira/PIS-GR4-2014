@@ -1,9 +1,12 @@
 package beans;
 
 import interfaces.ISistema;
+import interfaces.IStock;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +17,9 @@ import javax.faces.context.FacesContext;
 
 import model.Articulo;
 import controladores.Excepciones;
+import controladores.FabricaLogica;
+import controladores.FabricaServicios;
+import controladores.FabricaSistema;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTProveedor;
@@ -28,6 +34,7 @@ public class ModificarPreciosBean implements Serializable {
 	private List<Articulo> articulosDelProveedor;
 	private List<DTProveedor> listaProveedores;
 	private Map<Integer, DTProveedor> proveedores;
+	private ISistema instanciaSistema;
 
 	public Map<Integer, DTProveedor> getProveedores() {
 		return proveedores;
@@ -54,7 +61,6 @@ public class ModificarPreciosBean implements Serializable {
 		this.articulosDelProveedor = articulosDelProveedor;
 	}
 
-	private ISistema instanciaSistema;
 
 	public long getProveedor() {
 		return proveedor;
@@ -81,7 +87,6 @@ public class ModificarPreciosBean implements Serializable {
 	public void getArticulosProveedor() {
 		try {
 			articulosDelProveedor = instanciaSistema.obtenerArticulosDelProveedor(proveedor);
-			System.out.println(articulosDelProveedor.toString());
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -103,6 +108,21 @@ public class ModificarPreciosBean implements Serializable {
 						FacesMessage.SEVERITY_ERROR, ex.getMessage(), ""));
 
 			}
+		}
+	}
+	
+	public void enviarPrecios() {
+		Map<Long, BigDecimal> modificacionPrecios = new HashMap<Long, BigDecimal>();
+		IStock sControlador = FabricaLogica.getIStock();
+		
+		for (Articulo a : articulosDelProveedor) {
+			modificacionPrecios.put(a.getIdArticulo(), a.getPrecioUnitario());
+		}
+		try {
+			sControlador.modificarPreciodeArticulos(modificacionPrecios);
+		} catch (Excepciones e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
