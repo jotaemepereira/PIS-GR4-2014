@@ -27,20 +27,6 @@ import model.Venta;
 import interfaces.IFacturacionPersistencia;
 
 public class PFacturacionControlador implements IFacturacionPersistencia {
-	
-//	Connection con;
-	
-	public PFacturacionControlador() {
-//		try {
-//			con = Conexion.getConnection();
-//		} catch (NamingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-	}
 
 	@Override
 	public List<Venta> listarVentasPendientes() throws Excepciones {
@@ -156,7 +142,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 						Excepciones.ERROR_SISTEMA);
 			} finally {
 				st.close();
-//				con.close();
+				con.close();
 			}
 		} catch (Exception e) {
 
@@ -401,7 +387,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			}
 
 			stmt.close();
-//			con.close();
+			con.close();
 		} catch (Exception e) {
 
 			e.printStackTrace();
