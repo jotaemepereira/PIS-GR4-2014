@@ -23,6 +23,7 @@ public class Orden {
 	private int numeroCFE;
 	private Date fechaComprobante;
 	private String formaDePago;
+	private String nombreUsuario;
 	private long ordenDeCompra;
 	private BigDecimal montoNoGravado = new BigDecimal(0);
 	private BigDecimal montoNetoGravadoIvaMinimo = new BigDecimal(0);
@@ -52,7 +53,7 @@ public class Orden {
 
 	public void setTipoCFE(int tipoCFE) throws Excepciones {
 		if (tipoCFE == 0) {
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_DATOS,
+			throw (new Excepciones(Excepciones.MENSAJE_TIPO_REQUERIDO,
 					Excepciones.ERROR_DATOS));
 		}
 		this.tipoCFE = tipoCFE;
@@ -72,7 +73,7 @@ public class Orden {
 
 	public void setNumeroCFE(int numeroCFE) throws Excepciones {
 		if (numeroCFE == 0) {
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_DATOS,
+			throw (new Excepciones(Excepciones.MENSAJE_NUMERO_REQUERIDO,
 					Excepciones.ERROR_DATOS));
 		}
 		this.numeroCFE = numeroCFE;
@@ -141,10 +142,6 @@ public class Orden {
 	}
 
 	public void setCantidadLineas(Integer cantidadLineas) throws Excepciones {
-		if (cantidadLineas == 0) {
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_DATOS,
-					Excepciones.ERROR_DATOS));
-		}
 		this.cantidadLineas = cantidadLineas;
 	}
 
@@ -206,7 +203,12 @@ public class Orden {
 		return fechaComprobante;
 	}
 
-	public void setFechaComprobante(Date fechaComprobante) {
+	public void setFechaComprobante(Date fechaComprobante) throws Excepciones{
+		Date hoy = new Date();
+		if(fechaComprobante.compareTo(hoy) > 0){
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_FECHA,
+					Excepciones.ERROR_DATOS));
+		}
 		this.fechaComprobante = fechaComprobante;
 	}
 
@@ -229,6 +231,14 @@ public class Orden {
 	public void setFormaDePago(String formaDePago) {
 		this.formaDePago = formaDePago;
 	}
+	
+	public String getNombreUsuario() {
+		return nombreUsuario;
+	}
+	
+	public void setNombreUsuario(String nombreUsuario) {
+		this.nombreUsuario = nombreUsuario;
+	}
 
 	public long getIdOrden() {
 		return idOrden;
@@ -244,7 +254,7 @@ public class Orden {
 
 	public void setIdProveedor(int idProveedor) throws Excepciones {
 		if (idProveedor == 0) {
-			throw (new Excepciones(Excepciones.MENSAJE_ERROR_DATOS,
+			throw (new Excepciones(Excepciones.MENSAJE_PROVEEDOR_VACIO,
 					Excepciones.ERROR_DATOS));
 		}
 		this.idProveedor = idProveedor;

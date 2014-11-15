@@ -4,13 +4,19 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.naming.NamingException;
+
 import controladores.Excepciones;
+import controladores.FabricaPersistencia;
 import model.Articulo;
 import model.Cliente;
 import model.Enumerados;
@@ -21,10 +27,24 @@ import model.Venta;
 import interfaces.IFacturacionPersistencia;
 
 public class PFacturacionControlador implements IFacturacionPersistencia {
+	
+//	Connection con;
+	
+	public PFacturacionControlador() {
+//		try {
+//			con = Conexion.getConnection();
+//		} catch (NamingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+	}
 
 	@Override
 	public List<Venta> listarVentasPendientes() throws Excepciones {
-		
+
 		try {
 			Connection con = Conexion.getConnection();
 			Statement st = con.createStatement();
@@ -72,12 +92,14 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 						v.setTipoDgi(rs.getInt("sale_dgi_type"));
 						v.setSerial(rs.getString("serial"));
 						v.setFormaDePago(rs.getString("payment_type"));
-						v.setMontoNoGravado(rs.getBigDecimal("not_taxed_amount"));
+						v.setMontoNoGravado(rs
+								.getBigDecimal("not_taxed_amount"));
 						v.setMontoNetoGravadoIvaMinimo(rs
 								.getBigDecimal("taxed_minimum_net_amount"));
 						v.setMontoNetoGravadoIvaBasico(rs
 								.getBigDecimal("taxed_basic_net_amount"));
-						v.setTotalIvaMinimo(rs.getBigDecimal("minimum_tax_total"));
+						v.setTotalIvaMinimo(rs
+								.getBigDecimal("minimum_tax_total"));
 						v.setTotalIvaBasico(rs.getBigDecimal("basic_tax_total"));
 						v.setMontoTotal(rs.getBigDecimal("total_amount"));
 						v.setMontoRetenidoIVA(rs
@@ -128,17 +150,19 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				}
 				return ret;
 			} catch (Exception e) {
-				
+
 				e.printStackTrace();
-				throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+				throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+						Excepciones.ERROR_SISTEMA);
 			} finally {
 				st.close();
-				con.close();
+//				con.close();
 			}
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
-			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA);
 		}
 	}
 
@@ -149,8 +173,9 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			Statement st = con.createStatement();
 			try {
 				String sqlUpdate = "UPDATE sales SET sale_status = '"
-						+ Enumerados.EstadoVenta.CANCELADA + "'  WHERE sale_id = "
-						+ ventaId + " AND sale_status = '"
+						+ Enumerados.EstadoVenta.CANCELADA
+						+ "'  WHERE sale_id = " + ventaId
+						+ " AND sale_status = '"
 						+ Enumerados.EstadoVenta.PENDIENTE + "'";
 				st.executeUpdate(sqlUpdate);
 			} catch (Exception e) {
@@ -160,14 +185,15 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				con.close();
 			}
 		} catch (Exception e) {
-			
-			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA);
 		}
 	}
 
 	@Override
 	public Venta facturarVenta(long ventaId) throws Excepciones {
-		
+
 		try {
 			Connection con = Conexion.getConnection();
 			con.setAutoCommit(false);
@@ -175,8 +201,9 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			try {
 
 				String sqlUpdate = "UPDATE sales SET sale_status = '"
-						+ Enumerados.EstadoVenta.FACTURADA + "'  WHERE sale_id = "
-						+ ventaId + " " + "AND sale_status = '"
+						+ Enumerados.EstadoVenta.FACTURADA
+						+ "'  WHERE sale_id = " + ventaId + " "
+						+ "AND sale_status = '"
 						+ Enumerados.EstadoVenta.PENDIENTE + "'";
 				int modQty = st.executeUpdate(sqlUpdate);
 
@@ -228,12 +255,14 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 						v.setTipoDgi(rs.getInt("sale_dgi_type"));
 						v.setSerial(rs.getString("serial"));
 						v.setFormaDePago(rs.getString("payment_type"));
-						v.setMontoNoGravado(rs.getBigDecimal("not_taxed_amount"));
+						v.setMontoNoGravado(rs
+								.getBigDecimal("not_taxed_amount"));
 						v.setMontoNetoGravadoIvaMinimo(rs
 								.getBigDecimal("taxed_minimum_net_amount"));
 						v.setMontoNetoGravadoIvaBasico(rs
 								.getBigDecimal("taxed_basic_net_amount"));
-						v.setTotalIvaMinimo(rs.getBigDecimal("minimum_tax_total"));
+						v.setTotalIvaMinimo(rs
+								.getBigDecimal("minimum_tax_total"));
 						v.setTotalIvaBasico(rs.getBigDecimal("basic_tax_total"));
 						v.setMontoTotal(rs.getBigDecimal("total_amount"));
 						v.setMontoRetenidoIVA(rs
@@ -289,11 +318,12 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				st.close();
 				con.close();
 			}
-			
+
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
-			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA);
 		}
 	}
 
@@ -344,7 +374,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 
 		try {
 
-			con = Conexion.getConnection();
+//			con = Conexion.getConnection();
 			String sql = "SELECT distinct p.product_id "
 					+ "FROM sale_details sd "
 					+ "INNER JOIN products_suppliers ps ON sd.product_id = ps.product_id "
@@ -371,7 +401,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			}
 
 			stmt.close();
-			con.close();
+//			con.close();
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -515,10 +545,29 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 	@Override
 	public List<PocasVentas> articulosConPocasVentasEnLosUltimosMeses(
 			int mesesAtras) throws Excepciones {
+		List<PocasVentas> pv = new ArrayList();
+		Date hoy = new Date();
+		Calendar c = Calendar.getInstance();
+		c.setTime(hoy);
+		c.add(Calendar.MONTH, -mesesAtras);
+		Date dMesesAtras = c.getTime();
+		
 
+		List<Long> idArts =null;
+		idArts = FabricaPersistencia.getStockPersistencia().obtenerIdTodosLosArticulos();
+		Iterator<Long> it = idArts.iterator();
+		Long id=null;
+		while (it.hasNext()){
+			id = it.next();
+			int cant =	cantidadVendidaEnPeriodo(id,dMesesAtras,hoy);
+			long minimo = FabricaPersistencia.getStockPersistencia().getStockMinimo(id);
+			if (cant<minimo){
+				String desc = FabricaPersistencia.getStockPersistencia().obtenerArticuloConId(id).getDescripcion();
+				pv.add(new PocasVentas(id,desc,cant,minimo));
+			}
+		}
 		
-		
-		return null;
+		return pv;
 	}
 
 }

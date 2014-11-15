@@ -4,15 +4,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import datatypes.DTComprobanteFactura;
 import datatypes.DTProveedor;
 import uy.com.dusa.ws.DataComprobante;
 import uy.com.dusa.ws.DataIVA;
@@ -22,9 +17,7 @@ import uy.com.dusa.ws.DataLineaPedidoSimple;
 import uy.com.dusa.ws.DataPedidoSimple;
 import uy.com.dusa.ws.MensajeError;
 import uy.com.dusa.ws.PedidoFormaDePago;
-import uy.com.dusa.ws.ResultGetComprobante;
 import uy.com.dusa.ws.ResultGetComprobantes;
-import uy.com.dusa.ws.ResultGetStock;
 import uy.com.dusa.ws.ResultRealizarPedido;
 import uy.com.dusa.ws.WSConsultaComprobantes;
 import uy.com.dusa.ws.WSConsultaComprobantesService;
@@ -63,43 +56,59 @@ public class ServicioDusaControlador implements IServicio {
 	}
 	
 	private Articulo transformarArticulo(DataInfoProducto productoDT) {
+		
+		/*
+		//nos estarian sobrando
+	    protected String idLaboratorio;
+	    protected String idLineaLaboratorio;
+	    protected String codigoLaboratorio;
+	    protected int idProductoNoritel;
+	    protected int idPresentacionNoritel;
+	    
+	    //ver el paso de tipos 
+	    protected int habilitado;
+	    productoDT.getTipoIVA()
+	    
+	    //nos estarian sobrando ??
+	    protected List<DataOferta> ofertas;
+	    protected BigDecimal porcentajeDescuentoOferta;
+	    protected BigDecimal precioOferta;
+	    
+	    //estos dos tienen toda la pinta de que el primero se asigna al segudno
+	    productDT protected DataPrecioReceta precioReceta;
+		articulo private BigDecimal precioConReceta;
+
+		protected XMLGregorianCalendar fechaUltimaActualizacion;
+		private Date fechaUltimaModificacion;
+		
+		*/
+
+		
 		Articulo articulo = new Articulo();
 		articulo.setDescripcion(productoDT.getDescripcion());
 		articulo.setCostoLista(productoDT.getPrecioVenta());
 		articulo.setPrecioUnitario(productoDT.getPrecioPublico());
 		articulo.setTipoArticulo(model.Enumerados.tipoArticulo.MEDICAMENTO);
-		
-		//articulo.setAccionesTer();
-		
 		articulo.setClave1(productoDT.getClave1());
 		articulo.setClave2(productoDT.getClave2());
 		articulo.setClave3(productoDT.getClave3());
-		articulo.setCodigoBarras(productoDT.getCodigoBarra());
-		//articulo.setCodigoVenta();
-		//articulo.setCostoOferta();
-		//articulo.setCostoPromedio();
-		//articulo.setDrogas();
-		//articulo.setEsEstupefaciente();
-		//articulo.setEsHeladera();
-		//articulo.setEsPsicofarmaco();
+		if (productoDT.isHasCodigoBarra())
+			articulo.setCodigoBarras(productoDT.getCodigoBarra());
+	
 		articulo.setFechaUltimoPrecio(productoDT.getFechaUlitmoPrecio().toGregorianCalendar().getTime());
-		//articulo.setFechaUltimaModificacion(productoDT.getFechaUltimaActualizacion().toGregorianCalendar().getTime());
-		//articulo.setIdMarca();
-		articulo.setNumero(productoDT.getNumeroArticulo());
 		articulo.setPorcentajePrecioVenta(new BigDecimal(0));
 		articulo.setPrecioVenta(productoDT.getPrecioVenta());
-		//articulo.setPresentacion();
+		
 		articulo.setStatus((productoDT.getHabilitado() > 1) ? true : false);
-		System.out.println("ServicioDusaControlador" +articulo.isStatus());
-		//articulo.setStock();
-		//articulo.setStockMinimo();
-		//articulo.setTipoAutorizacion();
-		//articulo.setTipoIva();
+		
 		
 		//TODO ver que pasa con esto Jaguerre
+		//LE AGREGO LA PARTE DEL IVA QUE ESTABA HARDCODEADO 
 		TipoIva tipoIva = new TipoIva();
-		tipoIva.setTipoIVA('3');
+		char c = productoDT.getTipoIVA().charAt(0);
+		tipoIva.setTipoIVA(c);
 		articulo.setTipoIva(tipoIva);
+		
 		Usuario usr = new Usuario();
 		usr.setNombre("Admin");
 		articulo.setUsuario(usr);
@@ -128,7 +137,7 @@ public class ServicioDusaControlador implements IServicio {
 
 				dPedido.setFormaDePago(PedidoFormaDePago.CREDITO);
 			}
-			
+			//Transformo informacion de linea pedido para enviar.
 			for (Iterator<LineaPedido> iterator = p.getLineas().iterator(); iterator.hasNext();) {
 				
 				LineaPedido lPedido = iterator.next();
@@ -153,7 +162,6 @@ public class ServicioDusaControlador implements IServicio {
 	
 	@Override
 	public List<Articulo> obtenerActualizacionDeStock(java.util.Date fecha) {
-		System.out.println("obtenerActualizacionDeStock");
 		List<Articulo> articulos = new ArrayList<Articulo>();
 		WSConsultaStock servicio = getServicioStock();
 		GregorianCalendar gCalendar = new GregorianCalendar();
@@ -297,19 +305,15 @@ public class ServicioDusaControlador implements IServicio {
 			WSConsultaComprobantes wscomprobantes = new WSConsultaComprobantesService().getWSConsultaComprobantesPort();
 			ResultGetComprobantes resComprobantes = null;
 			
-			Calendar c = Calendar.getInstance(); 
-			c.add(Calendar.DAY_OF_YEAR, -50);  
-			Date date = c.getTime();
-			
 			GregorianCalendar gCalendar = new GregorianCalendar();
 			if(ultimaFactura != null){
 				gCalendar.setTime(ultimaFactura);
 			}else{
+				Calendar c = Calendar.getInstance(); 
+				c.add(Calendar.DAY_OF_YEAR, -60);  //TODO: cambiar a una fecha más cercana
+				Date date = c.getTime();
 				gCalendar.setTime(date);
 			}
-			
-			
-			System.out.println("FACTURAS DESDE FECHA " + date);
 			
 			XMLGregorianCalendar  fechaXML = DatatypeFactory.newInstance().
 					newXMLGregorianCalendar(gCalendar);
@@ -332,7 +336,9 @@ public class ServicioDusaControlador implements IServicio {
 			Orden orden = transformarOrden(dataComprobante);
 			
 			FabricaPersistencia.getInstanciaComprasPersistencia().ingresarFacturaCompra(orden);
-			
 		}
+		
+		// Corro la indexación por si se agregó algun artículo al traer las órdenes
+		FabricaPersistencia.getStockPersistencia().deltaImportSolr();
 	}
 }

@@ -111,7 +111,7 @@ public class PComprasControlador implements IComprasPersistencia {
 
 			stmt = new NamedParameterStatement(c, query);
 			stmt.setLong("supplier_id", orden.getIdProveedor());
-			stmt.setString("username", "Admin"); // TODO poner el correcto
+			stmt.setString("username", orden.getNombreUsuario());
 			stmt.setInt("dgi_type_id", orden.getTipoCFE());
 			stmt.setString("serial", orden.getSerieCFE());
 			stmt.setInt("order_number", orden.getNumeroCFE());
@@ -283,7 +283,8 @@ public class PComprasControlador implements IComprasPersistencia {
 		String queryOrden = "SELECT * FROM orders ";
 		queryOrden += "WHERE is_processed = ?";
 
-		String queryDetalle = "SELECT od.*, p.description, p.list_cost FROM order_details od ";
+		String queryDetalle = "SELECT od.*, p.description, p.list_cost ";
+		queryDetalle += "FROM order_details od ";
 		queryDetalle += "INNER JOIN products p ON p.product_id = od.product_id ";
 		queryDetalle += "WHERE order_id = ?";
 

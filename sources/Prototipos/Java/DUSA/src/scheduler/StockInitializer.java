@@ -1,5 +1,6 @@
 package scheduler;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -7,15 +8,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
+
 import javax.servlet.ServletContextEvent;
+
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
+
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 import static org.quartz.CronScheduleBuilder.cronSchedule;
+
 import javax.servlet.ServletContextListener;
 
 public class StockInitializer implements ServletContextListener {
@@ -29,9 +34,9 @@ public class StockInitializer implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		
-		
+	
 		Properties prop = new Properties();
-		OutputStream output = null;
+		OutputStream output = null; 
 		InputStream input = null;
 
 		try {
@@ -46,7 +51,7 @@ public class StockInitializer implements ServletContextListener {
 
 				try {
 					output = new FileOutputStream("alertaStock.properties");
-					prop.setProperty("expresionCron", "0 0 9,21 * * ? *");
+					prop.setProperty("expresionCron", "0 25 20 * * ? *");
 					prop.store(output, null);
 				} catch (FileNotFoundException e1) {
 					// TODO Auto-generated catch block
@@ -58,6 +63,7 @@ public class StockInitializer implements ServletContextListener {
 				}
 
 			} finally {
+		        
 				String cron = prop.getProperty("expresionCron");
 				CronTrigger trigger = newTrigger()
 						.withIdentity("trigger01", "grupo01")

@@ -37,6 +37,19 @@ public class Mail {
 		}
 				
 	}
+public void setContenidoPocasVentas (List<PocasVentas> pv ){
+		
+		Iterator <PocasVentas> it = pv.iterator();
+		this.contenido = new String();
+		this.contenido += "Se informa que se hicieron pocas ventas en los siguientes productos:";
+		this.contenido += "\n" + "\n";
+		while(it.hasNext()){
+			contenido += (it.next().toString());
+			this.contenido += "\n";
+			System.out.println("ADENTRO DE MAIL:    "  + this.contenido);
+		}
+				
+	}
 	public void Enviar() throws AddressException, MessagingException{
 	
 		GoogleMail.Send(this.mailEmisor,this.password ,  this.destinatarios, this.asunto, this.contenido);
