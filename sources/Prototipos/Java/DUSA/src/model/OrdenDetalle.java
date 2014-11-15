@@ -16,7 +16,7 @@ public class OrdenDetalle {
 	private long productId;
 	
 	private BigDecimal avg_cost;
-	private int stock;
+	private long stock;
 	private TipoIva tipoIVA;
 	
 	public OrdenDetalle() {}
@@ -115,11 +115,11 @@ public class OrdenDetalle {
 		this.avg_cost = (avg_cost != null) ? avg_cost : new BigDecimal(0);
 	}
 
-	public int getStock() {
+	public long getStock() {
 		return stock;
 	}
 
-	public void setStock(int stock) {
+	public void setStock(long stock) {
 		this.stock = stock;
 	}
 

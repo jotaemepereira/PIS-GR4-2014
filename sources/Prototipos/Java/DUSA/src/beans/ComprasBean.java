@@ -488,6 +488,7 @@ public class ComprasBean implements Serializable {
 		linea.setPrecioUnitario(new BigDecimal(0));
 		linea.setTipoIVA(articulo.getTipoIva());
 		linea.setAvg_cost(articulo.getCostoPonderado());
+		linea.setStock(articulo.getStock());
 
 		List<DTLineaFacturaCompra> detalle = factura.getDetalle();
 		detalle.add(linea);

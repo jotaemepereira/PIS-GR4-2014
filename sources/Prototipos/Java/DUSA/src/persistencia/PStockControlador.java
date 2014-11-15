@@ -406,8 +406,9 @@ public class PStockControlador implements IStockPersistencia {
 				DTBusquedaArticuloSolr articulo = new DTBusquedaArticuloSolr();
 				articulo.setIdArticulo(Integer.parseInt(item
 						.getFieldValue("id").toString()));
-				articulo.setCodigoBarras(item.getFieldValue("BARCODE")
-						.toString());
+				if(item.getFieldValue("BARCODE") != null)
+					articulo.setCodigoBarras(item.getFieldValue("BARCODE")
+							.toString());
 				articulo.setDescripcion(item.getFieldValue("DESCRIPTION")
 						.toString());
 				if (item.getFieldValue("DROGAS") == null) {
@@ -1189,7 +1190,7 @@ public class PStockControlador implements IStockPersistencia {
 				BigDecimal pondActual = ordenDetalle.getAvg_cost().multiply( new BigDecimal(ordenDetalle.getStock()));
 				BigDecimal pondNuevo = total.multiply(new BigDecimal(ordenDetalle.getCantidad()));
 				BigDecimal sumAvg =  pondActual.add(pondNuevo);
-				int totArts = ordenDetalle.getStock() + ordenDetalle.getCantidad();
+				long totArts = ordenDetalle.getStock() + ordenDetalle.getCantidad();
 				stmt.setBigDecimal(3, sumAvg.divide(new BigDecimal(totArts), 2, RoundingMode.HALF_UP));
 				
 				stmt.setLong(4, ordenDetalle.getProductId());
