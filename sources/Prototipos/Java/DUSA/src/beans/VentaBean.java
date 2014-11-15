@@ -15,6 +15,8 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import org.primefaces.context.RequestContext;
+
 import model.Enumerados;
 import model.LineaVenta;
 import model.Usuario;
@@ -99,7 +101,7 @@ public class VentaBean implements Serializable {
 					dtVenta.setRecetaBlanca(true);
 				}
 			}
-			descripcionBusqueda = "";
+
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -108,7 +110,8 @@ public class VentaBean implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e
 							.getMessage(), ""));
 		}
-		
+		descripcionBusqueda = "";	
+		codigoBusqueda = "";
 	}
 
 	public void buscarArticuloLector() {
@@ -126,7 +129,6 @@ public class VentaBean implements Serializable {
 			if (lv.size() > 0) {
 				DTProducto dtVenta = (DTProducto) lv.get(0);
 				articuloSeleccionado = dtVenta;
-				agregarLineaVenta();
 			}
 
 		} catch (Excepciones e) {
@@ -138,6 +140,7 @@ public class VentaBean implements Serializable {
 							.getMessage(), ""));
 		}
 		codigoBusqueda = "";
+		descripcionBusqueda = "";
 	}
 
 	public void calcularTotales() {

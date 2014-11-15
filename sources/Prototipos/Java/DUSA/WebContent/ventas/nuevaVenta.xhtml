@@ -68,10 +68,10 @@
 						</div>
 						<p:messages id="msgs" />
 						<p:focus for="codigoLector" />
-						<p:remoteCommand name="buscarArticulo" update="@form"
+						<p:remoteCommand name="buscarArticulos" update="@form"
 							actionListener="#{ventaBean.buscarArticulos}" />
-						<p:remoteCommand name="buscarArticuloLector" update="@form"
-							actionListener="#{ventaBean.buscarArticuloLector}" />
+						<p:remoteCommand name="buscarArticuloLector"
+							actionListener="#{ventaBean.buscarArticuloLector}" update="@form :ventaDetail" oncomplete="PF('ventaDialog').show();" />
 						<div class="panel-body">
 							<div class="container-fluid">
 								<h:panelGroup layout="block" id="panel">
@@ -134,7 +134,7 @@
 													style="vertical-align: 8px; margin-right: 5px; width:100%"
 													value="#{ventaBean.codigoBusqueda}"
 													placeholder="Codigo Articulo..."
-													onkeypress="if (event.keyCode == 13) { buscarConLector(); e.preventDefault(); return false; }">
+													onkeypress="if (event.keyCode == 13) { buscarArticuloLector(); e.preventDefault(); return false; }">
 													<f:ajax event="change" execute="@this" />
 												</p:inputText>
 											</div>
@@ -263,7 +263,7 @@
 			global="true" modal="true" showEffect="fade" hideEffect="fade"
 			resizable="false">
 			<h:form id="ventaDetail">
-				
+				<p:focus for="cant" />
 				<p:outputPanel style="padding: 0; margin: 0;">
 					<p:outputLabel for="cant" value="Cantidad:" style="width:100%" />
 					<p:inputText id="cant"
