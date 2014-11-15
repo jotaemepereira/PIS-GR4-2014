@@ -50,6 +50,7 @@ public class VentaBean implements Serializable {
 	private BigDecimal montoTributoIvaBasico = new BigDecimal(0);
 	private BigDecimal totalIvaBasico = new BigDecimal(0);
 	private BigDecimal montoNoGravado = new BigDecimal(0);
+
 	/**
 	 * Utilizado en el xhtml por el loginBean
 	 * 
@@ -98,7 +99,7 @@ public class VentaBean implements Serializable {
 					dtVenta.setRecetaBlanca(true);
 				}
 			}
-
+			descripcionBusqueda = "";
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,7 +108,7 @@ public class VentaBean implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e
 							.getMessage(), ""));
 		}
-
+		
 	}
 
 	public void buscarArticuloLector() {
@@ -266,31 +267,11 @@ public class VentaBean implements Serializable {
 
 			try {
 
-				List<LineaVenta> lineas = convertirProductoALinea(lineasVenta);
-				venta.setLineas(lineas);
-
-				// Agarrar el usuario logueado
-				Usuario usr = new Usuario();
-				usr = this.instanciaSistema.obtenerUsuarioLogueado();
-				venta.setUsuario(usr);
-				// TODO ver como se elige la forma de pago.
-				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO
-						.toString());
-				venta.setCantidadLineas(lineas.size());
+				prepararVenta();
 
 				venta.setEstadoVenta(String
 						.valueOf(Enumerados.EstadoVenta.PENDIENTE));
 
-				
-				venta.setMontoNetoGravadoIvaMinimo(montoNetoGravadoIvaMinimo);
-				venta.setTotalIvaMinimo(totalIvaMinimo);
-				venta.setMontoNetoGravadoIvaBasico(montoNetoGravadoIvaBasico);
-				venta.setMontoTributoIvaBasico(montoTributoIvaBasico);
-				venta.setTotalIvaBasico(totalIvaBasico);
-				venta.setMontoNoGravado(montoNoGravado);
-				
-				venta.setMontoTotal(total);
-				venta.setMontoTotalAPagar(total.setScale(0, BigDecimal.ROUND_HALF_UP));
 				
 				this.instanciaSistema.registrarNuevaVenta(venta);
 				FacesContext.getCurrentInstance().addMessage(
@@ -305,11 +286,34 @@ public class VentaBean implements Serializable {
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, e
 								.getMessage(), ""));
 			}
-
-			resultadoBusqueda = new ArrayList<DTProducto>();
-			lineasVenta = new ArrayList<DTProducto>();
+			nuevaVenta();
 
 		}
+	}
+	
+	private void prepararVenta(){
+		List<LineaVenta> lineas = convertirProductoALinea(lineasVenta);
+		venta.setLineas(lineas);
+
+		// Agarrar el usuario logueado
+		Usuario usr = new Usuario();
+		usr = this.instanciaSistema.obtenerUsuarioLogueado();
+		venta.setUsuario(usr);
+		// TODO ver como se elige la forma de pago.
+		venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO
+				.toString());
+		venta.setCantidadLineas(lineas.size());
+
+		venta.setMontoNetoGravadoIvaMinimo(montoNetoGravadoIvaMinimo);
+		venta.setTotalIvaMinimo(totalIvaMinimo);
+		venta.setMontoNetoGravadoIvaBasico(montoNetoGravadoIvaBasico);
+		venta.setMontoTributoIvaBasico(montoTributoIvaBasico);
+		venta.setTotalIvaBasico(totalIvaBasico);
+		venta.setMontoNoGravado(montoNoGravado);
+
+		venta.setMontoTotal(total);
+		venta.setMontoTotalAPagar(total.setScale(0,
+				BigDecimal.ROUND_HALF_UP));
 	}
 
 	private List<LineaVenta> convertirProductoALinea(List<DTProducto> param) {
@@ -321,17 +325,13 @@ public class VentaBean implements Serializable {
 
 			lv.setCantidad(p.getCantidad());
 
+			lv.setDescuento(new BigDecimal(0));
 			if (p.isRecetaBlanca()) {
-				lv.setDescuento(p
-						.getPrecioVenta()
-						.multiply(
-								(new BigDecimal(100)).subtract(p
-										.getDescuentoReceta()))
-						.divide(new BigDecimal(100)));
+				lv.setDescuento(p.getPrecioVenta().multiply(p.getDescuentoReceta()).divide(new BigDecimal(100)));
 			}
-			lv.setDescuento(p.getPrecioVenta()
-					.multiply((new BigDecimal(100)).subtract(p.getDescuento()))
-					.divide(new BigDecimal(100)));
+			lv.setDescuento(lv.getDescuento().add(p.getPrecioVenta()
+					.multiply(p.getDescuento())
+					.divide(new BigDecimal(100))));
 
 			lv.setLinea(i);
 			lv.setPrecio(p.getPrecioVenta().subtract(lv.getDescuento()));
@@ -340,6 +340,7 @@ public class VentaBean implements Serializable {
 			lv.setRecetaVerde(p.isRecetaVerde());
 			lv.setRecetaNaranja(p.isRecetaNaranja());
 			lv.setDescripcionOferta("");
+			lineas.add(lv);
 			i++;
 		}
 
@@ -362,28 +363,8 @@ public class VentaBean implements Serializable {
 
 			try {
 
-				List<LineaVenta> lineas = convertirProductoALinea(lineasVenta);
-				venta.setLineas(lineas);
 
-				// Agarrar el usuario logueado
-				Usuario usr = this.instanciaSistema.obtenerUsuarioLogueado();
-
-				venta.setUsuario(usr);
-				// TODO ver como se elige la forma de pago.
-				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO
-						.toString());
-				venta.setCantidadLineas(lineas.size());
-
-				venta.setMontoNetoGravadoIvaMinimo(montoNetoGravadoIvaMinimo);
-				venta.setTotalIvaMinimo(totalIvaMinimo);
-				venta.setMontoNetoGravadoIvaBasico(montoNetoGravadoIvaBasico);
-				venta.setMontoTributoIvaBasico(montoTributoIvaBasico);
-				venta.setTotalIvaBasico(totalIvaBasico);
-				venta.setMontoNoGravado(montoNoGravado);
-				
-				venta.setMontoTotal(total);
-				venta.setMontoTotalAPagar(total.setScale(0, BigDecimal.ROUND_HALF_UP));
-				
+				prepararVenta();
 				venta.setEstadoVenta(String
 						.valueOf(Enumerados.EstadoVenta.PENDIENTE));
 
@@ -410,8 +391,7 @@ public class VentaBean implements Serializable {
 								Excepciones.MENSAJE_ERROR_SISTEMA, ""));
 			}
 
-			resultadoBusqueda = new ArrayList<DTProducto>();
-			lineasVenta = new ArrayList<DTProducto>();
+			nuevaVenta();
 
 		}
 	}
@@ -432,30 +412,7 @@ public class VentaBean implements Serializable {
 
 			try {
 
-				List<LineaVenta> lineas = convertirProductoALinea(lineasVenta);
-				venta.setLineas(lineas);
-
-				// Agarrar el usuario logueado
-				Usuario usr = new Usuario();
-				usr = this.instanciaSistema.obtenerUsuarioLogueado();
-				venta.setUsuario(usr);
-
-				venta.setUsuario(this.instanciaSistema.obtenerUsuarioLogueado());
-				// TODO ver como se elige la forma de pago.
-				venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO
-						.toString());
-				venta.setCantidadLineas(lineas.size());
-
-				venta.setMontoNetoGravadoIvaMinimo(montoNetoGravadoIvaMinimo);
-				venta.setTotalIvaMinimo(totalIvaMinimo);
-				venta.setMontoNetoGravadoIvaBasico(montoNetoGravadoIvaBasico);
-				venta.setMontoTributoIvaBasico(montoTributoIvaBasico);
-				venta.setTotalIvaBasico(totalIvaBasico);
-				venta.setMontoNoGravado(montoNoGravado);
-				
-				venta.setMontoTotal(total);
-				venta.setMontoTotalAPagar(total.setScale(0, BigDecimal.ROUND_HALF_UP));
-				
+				prepararVenta();
 				venta.setEstadoVenta(String
 						.valueOf(Enumerados.EstadoVenta.PERDIDA));
 
@@ -473,10 +430,25 @@ public class VentaBean implements Serializable {
 								.getMessage(), ""));
 			}
 
-			resultadoBusqueda = new ArrayList<DTProducto>();
-			lineasVenta = new ArrayList<DTProducto>();
-
+			nuevaVenta();
 		}
+	}
+
+	private void nuevaVenta() {
+		resultadoBusqueda = new ArrayList<DTProducto>();
+		lineasVenta = new ArrayList<DTProducto>();
+
+		subtotal = new BigDecimal(0);
+		iva10 = new BigDecimal(0);
+		iva22 = new BigDecimal(0);
+		total = new BigDecimal(0);
+		descuento = new BigDecimal(0);
+		montoNetoGravadoIvaMinimo = new BigDecimal(0);
+		totalIvaMinimo = new BigDecimal(0);
+		montoNetoGravadoIvaBasico = new BigDecimal(0);
+		montoTributoIvaBasico = new BigDecimal(0);
+		totalIvaBasico = new BigDecimal(0);
+		montoNoGravado = new BigDecimal(0);
 	}
 
 	public String descuentoVenta(DTProducto v) {
