@@ -74,10 +74,6 @@ public class ServicioDusaControlador implements IServicio {
 	    protected BigDecimal porcentajeDescuentoOferta;
 	    protected BigDecimal precioOferta;
 	    
-	    //estos dos tienen toda la pinta de que el primero se asigna al segudno
-	    productDT protected DataPrecioReceta precioReceta;
-		articulo private BigDecimal precioConReceta;
-
 		protected XMLGregorianCalendar fechaUltimaActualizacion;
 		private Date fechaUltimaModificacion;
 		
@@ -89,6 +85,8 @@ public class ServicioDusaControlador implements IServicio {
 		articulo.setCostoLista(productoDT.getPrecioVenta());
 		articulo.setPrecioUnitario(productoDT.getPrecioPublico());
 		articulo.setTipoArticulo(model.Enumerados.tipoArticulo.MEDICAMENTO);
+		articulo.setPrecioConReceta(productoDT.getPrecioReceta().getPrecioReceta());
+		articulo.setPorcentajeDescuentoReceta(productoDT.getPrecioReceta().getDescuentoReceta());
 		articulo.setClave1(productoDT.getClave1());
 		articulo.setClave2(productoDT.getClave2());
 		articulo.setClave3(productoDT.getClave3());
@@ -259,6 +257,7 @@ public class ServicioDusaControlador implements IServicio {
     	orden.setProcesada(false);
     	orden.setCantidadLineas(comprobante.getCantidadLineas());
     	
+    	
     	// Obtengo todos los detalles de la factura 
     	Iterator<DataLineaComprobante> it = comprobante.getDetalle().iterator();
     	while (it.hasNext()) {
@@ -297,7 +296,7 @@ public class ServicioDusaControlador implements IServicio {
 	}
 
 	@Override
-	public void obtenerFacturasDUSA() throws Excepciones {
+	public void obtenerFacturasDUSA(String usuario) throws Excepciones {
 		List<DataComprobante> listComprobantes = new ArrayList<DataComprobante>();
 		try {
 			Date ultimaFactura = FabricaPersistencia.getInstanciaComprasPersistencia().getFechaUltimaFacturaDUSA();
@@ -324,7 +323,7 @@ public class ServicioDusaControlador implements IServicio {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			//throw new Excepciones(Excepciones.MENSAJE_ERROR_CONEXION_WS, Excepciones.ERROR_SIN_CONEXION);
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_CONEXION_WS, Excepciones.ERROR_SIN_CONEXION);
 		}
 		
 		// Para cada factura obtenida, la guardo en la base de datos como pendiente	
@@ -333,7 +332,10 @@ public class ServicioDusaControlador implements IServicio {
 		while (it.hasNext()) {
 			DataComprobante dataComprobante = (DataComprobante) it.next();
 			
+			System.out.println("COMPROBANTE: " + dataComprobante.getOrdenDeCompra());
+			
 			Orden orden = transformarOrden(dataComprobante);
+			orden.setNombreUsuario(usuario);
 			
 			FabricaPersistencia.getInstanciaComprasPersistencia().ingresarFacturaCompra(orden);
 		}

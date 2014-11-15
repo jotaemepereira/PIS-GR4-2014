@@ -1164,13 +1164,30 @@ public class PStockControlador implements IStockPersistencia {
 				OrdenDetalle ordenDetalle = it.next();
 				stmt = c.prepareStatement(query);
 				stmt.setInt(1, ordenDetalle.getCantidad());
+				
+				BigDecimal descuento = ordenDetalle.getDescuento()
+						.subtract(new BigDecimal(100)).abs()
+						.divide(new BigDecimal(100));
 
-				stmt.setBigDecimal(2, ordenDetalle.getPrecioUnitario());
+				BigDecimal total = ordenDetalle.getPrecioUnitario().multiply(descuento);
+				
+				BigDecimal tributo = total.multiply(
+						ordenDetalle.getTipoIVA().getValorTributo()
+								.divide(new BigDecimal(100)));
+
+				total = total.add(tributo);
+
+				BigDecimal iva = total.multiply(ordenDetalle.getTipoIVA().getValorIVA()
+						.divide(new BigDecimal(100)));
+				
+				total = total.add(iva);
+
+				stmt.setBigDecimal(2, total);
 				
 				// Precio ponderado promedio
 				// avg_cost = ((avg_cost * stock) + (costo_real * cant)) / (stock + cant)
 				BigDecimal pondActual = ordenDetalle.getAvg_cost().multiply( new BigDecimal(ordenDetalle.getStock()));
-				BigDecimal pondNuevo = ordenDetalle.getPrecioUnitario().multiply(new BigDecimal(ordenDetalle.getCantidad()));
+				BigDecimal pondNuevo = total.multiply(new BigDecimal(ordenDetalle.getCantidad()));
 				BigDecimal sumAvg =  pondActual.add(pondNuevo);
 				int totArts = ordenDetalle.getStock() + ordenDetalle.getCantidad();
 				stmt.setBigDecimal(3, sumAvg.divide(new BigDecimal(totArts), 2, RoundingMode.HALF_UP));

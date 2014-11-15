@@ -322,7 +322,7 @@ public class SistemaControlador implements ISistema {
 	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
 		
 		if (user.tienePermiso(casoDeUso.obtenerFacturasDUSA))
-			return FabricaLogica.getInstanciaCompras().obtenerFacturasDUSA();
+			return FabricaLogica.getInstanciaCompras().obtenerFacturasDUSA(user.getNombre());
 		else
 			throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
 	}
