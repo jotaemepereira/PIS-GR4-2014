@@ -221,10 +221,18 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public long registrarNuevaVenta(Venta v) throws Excepciones {
-		if (user.tienePermiso(casoDeUso.registrarNuevaVenta))
-			return FabricaLogica.getIFacturacion().registrarNuevaVenta(v);
-			//TODO:Se persiste actividad de esto?
-		else
+		if (user.tienePermiso(casoDeUso.registrarNuevaVenta)) {
+			
+			long idVenta = FabricaLogica.getIFacturacion().registrarNuevaVenta(v);
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.registrarNuevaVenta);
+			Actividad act = new Actividad(operacion, user.getNombre());
+			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+			
+			return idVenta;
+		} else
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 
 	}
