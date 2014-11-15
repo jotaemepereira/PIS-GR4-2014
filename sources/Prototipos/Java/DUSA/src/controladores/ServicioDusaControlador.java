@@ -85,8 +85,8 @@ public class ServicioDusaControlador implements IServicio {
 		articulo.setCostoLista(productoDT.getPrecioVenta());
 		articulo.setPrecioUnitario(productoDT.getPrecioPublico());
 		articulo.setTipoArticulo(model.Enumerados.tipoArticulo.MEDICAMENTO);
-		articulo.setPrecioConReceta(productoDT.getPrecioReceta().getPrecioReceta());
-		articulo.setPorcentajeDescuentoReceta(productoDT.getPrecioReceta().getDescuentoReceta());
+//		articulo.setPrecioConReceta(productoDT.getPrecioReceta().getPrecioReceta());
+//		articulo.setPorcentajeDescuentoReceta(productoDT.getPrecioReceta().getDescuentoReceta());
 		articulo.setClave1(productoDT.getClave1());
 		articulo.setClave2(productoDT.getClave2());
 		articulo.setClave3(productoDT.getClave3());
