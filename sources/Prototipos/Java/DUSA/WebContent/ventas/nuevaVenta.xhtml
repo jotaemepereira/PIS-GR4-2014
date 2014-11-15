@@ -100,10 +100,10 @@
 
 											</div>
 
-											<p:dataTable id="TablaVentas" var="venta" 
-												value="#{ventaBean.lineasVenta}" rowIndexVar="index">
+											<p:dataTable id="TablaVentas" var="venta"
+												value="#{ventaBean.resultadoBusqueda}" rowIndexVar="index">
 
-												<p:column headerText="Descripcion" 
+												<p:column headerText="Descripcion"
 													style="text-align: center;">
 													<h:outputText value="#{venta.descripcion}" />
 												</p:column>
@@ -143,8 +143,8 @@
 												</p:inputText>
 											</div>
 
-											<p:dataTable id="TablaVentas2" var="venta2" 
-												value="#{ventaBean.lineasVenta2}" rowIndexVar="index">
+											<p:dataTable id="TablaVentas2" var="venta2"
+												value="#{ventaBean.lineasVenta}" rowIndexVar="index">
 
 												<p:column headerText="Cantidad" style="text-align: center;">
 													<p:inputText id="cantidad" value="#{venta2.cantidad}"
@@ -153,20 +153,19 @@
 															update="@form" process="@this" />
 													</p:inputText>
 												</p:column>
-												<p:column headerText="Descripcion" 
+												<p:column headerText="Descripcion"
 													style="text-align: center;">
-													<h:outputText value=" #{venta2.articulo.descripcion}" />
+													<h:outputText value=" #{venta2.descripcion}" />
 												</p:column>
 												<p:column headerText="Laboratorio"
 													style="text-align: center;">
 													<h:outputText value=" #{venta.laboratorio}" />
 												</p:column>
 												<p:column headerText="Precio" style="text-align: center;">
-													<h:outputText value="$ #{venta2.articulo.precioVenta}" />
+													<h:outputText value="$ #{venta2.precioVenta}" />
 												</p:column>
-												<p:column headerText="Precio Descuento"
-													style="text-align: center;">
-													<h:outputText value="#{venta2.totalPrecioLinea}" />
+												<p:column headerText="Descuento" style="text-align: center;">
+													<h:outputText value="#{ventaBean.descuentoVenta(venta2)}" />
 												</p:column>
 
 												<p:column headerText=" " style="text-align: center;">
@@ -183,27 +182,39 @@
 												<table style="float: left; text-align: left; width: 250px;">
 													<tr>
 														<td style="font-weight: bold;">SubTotal:</td>
-														<td><h:outputText id="subTotal"
-																value=" #{ventaBean.strSubTotal()}"></h:outputText></td>
+														<td>$ <h:outputText id="subTotal"
+																value=" #{ventaBean.strSubtotal}">
+																
+															</h:outputText></td>
 													</tr>
 
 													<tr>
-														<td style="font-weight: bold;">Iva:</td>
-														<td><h:outputText id="iva"
-																value=" #{ventaBean.strIva()}">
+														<td style="font-weight: bold;">Iva 10%:</td>
+														<td>$ <h:outputText id="iva10"
+																value=" #{ventaBean.strIva10}">
+															</h:outputText></td>
+													</tr>
+
+													<tr>
+														<td style="font-weight: bold;">Iva 22%:</td>
+														<td>$ <h:outputText id="iva22"
+																value=" #{ventaBean.strIva22}">
+																
 															</h:outputText></td>
 													</tr>
 
 													<tr>
 														<td style="font-weight: bold;">Descuentos:</td>
-														<td><h:outputText id="descuentos"
-																value=" #{ventaBean.strDescuentos()}">
+														<td>$ <h:outputText id="descuentos"
+																value=" #{ventaBean.strDescuento}">
+																
 															</h:outputText></td>
 													</tr>
 													<tr>
 														<td style="font-weight: bold;">Total:</td>
-														<td><h:outputText id="total"
-																value=" #{ventaBean.strTotal()}">
+														<td>$ <h:outputText id="total"
+																value=" #{ventaBean.strTotal}">
+																
 															</h:outputText></td>
 													</tr>
 												</table>
@@ -262,21 +273,21 @@
 						<p:outputLabel for="cant" value="Cantidad:" style="width:100%" />
 						<p:inputText id="cant"
 							value="#{ventaBean.articuloSeleccionado.cantidad}"
-							style="width:40%;" onfocus="this.value = this.value;" >
+							style="width:40%;" onfocus="this.value = this.value;">
 							<f:ajax event="change" execute="@this" />
 						</p:inputText>
 					</p:outputPanel>
 					<p:outputPanel
 						style="padding: 0; margin: 0; text-align: right; width:50%;">
-						<p:outputPanel 
-							rendered="#{ventaBean.articuloSeleccionado.descuentoReceta.comparteTo(0) > 0}">
+						<p:outputPanel
+							rendered="#{ventaBean.articuloSeleccionado.descuentoReceta.intValue() > 0}">
 							<p:selectBooleanCheckbox
 								value="#{ventaBean.articuloSeleccionado.recetaBlanca}">
 								<f:ajax event="change" execute="@this" />
 							</p:selectBooleanCheckbox>
 							<img src="../Images/receta_blanca.png" />
 						</p:outputPanel>
-						<p:outputPanel 
+						<p:outputPanel
 							rendered="#{ventaBean.articuloSeleccionado.psicofarmaco}">
 							<p:selectBooleanCheckbox
 								value="#{ventaBean.articuloSeleccionado.recetaVerde}">
@@ -284,7 +295,7 @@
 							</p:selectBooleanCheckbox>
 							<img src="../Images/receta_verde.png" />
 						</p:outputPanel>
-						<p:outputPanel 
+						<p:outputPanel
 							rendered="#{ventaBean.articuloSeleccionado.estupefaciente}">
 							<p:selectBooleanCheckbox
 								value="#{ventaBean.articuloSeleccionado.recetaNaranja}">
@@ -298,13 +309,13 @@
 						<p:outputLabel for="descImportantes" value="Descuento:"
 							style="width:100%" />
 						<p:selectOneMenu id="descImportantes"
-							value="#{ventaBean.articuloSeleccionado.descuentoPrecio}"
+							value="#{ventaBean.articuloSeleccionado.descuento}"
 							style="width:50%">
 							<f:selectItem itemLabel="ninguno" itemValue="0" />
 							<f:selectItem itemLabel="5% descuento" itemValue="5" />
 							<f:selectItem itemLabel="10% descuento" itemValue="10" />
 							<f:selectItem itemLabel="15% descuento" itemValue="15" />
-							<f:ajax event="change" execute="@this" />
+							<f:ajax event="change" execute="@this" render="descuento" />
 						</p:selectOneMenu>
 					</p:outputPanel>
 

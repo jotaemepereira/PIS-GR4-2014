@@ -515,9 +515,10 @@ public class PStockControlador implements IStockPersistencia {
 	public DTProducto getDatosArticuloVenta(int idArticulo) throws Excepciones {
 		DTProducto articulo = new DTProducto();
 		PreparedStatement stmt = null;
-		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR, RECIPE_PRICE, RECIPE_DISCOUNT "
+		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR, RECIPE_PRICE, RECIPE_DISCOUNT, COMERCIALNAME "
 				+ "FROM PRODUCTS p "
 				+ "INNER JOIN tax_types tt ON p.tax_type_id = tt.tax_type_id "
+				+ "LEFT JOIN suppliers s ON s.supplier_id = p.brand_id "
 
 				+ "WHERE PRODUCT_ID = ?";
 		try {
@@ -537,6 +538,7 @@ public class PStockControlador implements IStockPersistencia {
 				articulo.setIndicadorFacturacion(rs.getInt("BILLING_INDICATOR"));
 				articulo.setPrecioReceta(rs.getBigDecimal("RECIPE_PRICE"));
 				articulo.setDescuentoReceta(rs.getBigDecimal("RECIPE_DISCOUNT"));
+				articulo.setLaboratorio(rs.getString("COMERCIALNAME"));
 
 			}  
 			rs.close();
