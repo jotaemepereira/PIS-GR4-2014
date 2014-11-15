@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import datatypes.DTLineaPedido;
@@ -29,13 +32,20 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 	 * @var j son los milisegundos que pasaron desde la feha que se esta
 	 *      calculando hasta el dia de hoy
 	 * @var P1 y P2 coeficientes para ponderar dias anteriores frente a anios
-	 *      anteriores CANT_DIAS_HABILES CANT_DIAS_HABILES P1 Y P2 Van
-	 *      hardcodeadas deberian ir en el .properties
+	 *      anteriores. Configurables mediante el webxml
 	 */
-	final double P1 = 0.7;
-	final double P2 = 0.3;
-	final int CANT_DIAS_HABILES = 24;
-	final int CANT_ANIOS_ANTERIORES = 2;
+	
+	ExternalContext externalContext = FacesContext.getCurrentInstance()
+			.getExternalContext();
+	
+	final double P1 = Double.parseDouble(externalContext
+			.getInitParameter("PONDERADOR_DIAS_HABILES"));
+	final double P2 = Double.parseDouble(externalContext
+			.getInitParameter("PONDERADOR_ANIOS_ANTERIORES"));
+	final int CANT_DIAS_HABILES = Integer.parseInt(externalContext
+			.getInitParameter("CANT_DIAS_HABILES"));
+	final int CANT_ANIOS_ANTERIORES = Integer.parseInt(externalContext
+			.getInitParameter("CANT_ANIOS_ANTERIORES"));;
 	final long CANT_MILISEC_EN_UN_DIA = 1000 * 60 * 60 * 24;
 	private int diasApredecir = 0;
 	IFacturacionPersistencia fp;
