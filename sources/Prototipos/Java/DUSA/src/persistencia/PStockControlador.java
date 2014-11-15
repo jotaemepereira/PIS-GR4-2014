@@ -1179,8 +1179,7 @@ public class PStockControlador implements IStockPersistencia {
 				OrdenDetalle ordenDetalle = it.next();
 				stmt = c.prepareStatement(query);
 				stmt.setInt(1, ordenDetalle.getCantidad());
-				
-			//	BigDecimal real = ordenDetalle.getPrecioUnitario().multiply(arg0)
+
 				stmt.setBigDecimal(2, ordenDetalle.getPrecioUnitario());
 				
 				// Precio ponderado promedio
