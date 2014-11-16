@@ -90,31 +90,34 @@ public class VentaBean implements Serializable {
 
 	public void buscarArticulos() {
 
-		// Busqueda con solr
-		resultadoBusqueda = new ArrayList<DTProducto>();
-		try {
-			resultadoBusqueda = this.instanciaSistema
-					.buscarArticulosVenta(descripcionBusqueda);
+		if (descripcionBusqueda != null && !descripcionBusqueda.isEmpty()) {
+			// Busqueda con solr
+			resultadoBusqueda = new ArrayList<DTProducto>();
+			try {
+				resultadoBusqueda = this.instanciaSistema
+						.buscarArticulosVenta(descripcionBusqueda);
 
-			for (DTProducto dtVenta : resultadoBusqueda) {
-				if (dtVenta.getPrecioReceta() == null
-						|| dtVenta.getPrecioReceta().equals(new BigDecimal(0))) {
-					dtVenta.setRecetaBlanca(false);
-				} else {
-					dtVenta.setRecetaBlanca(true);
+				for (DTProducto dtVenta : resultadoBusqueda) {
+					if (dtVenta.getPrecioReceta() == null
+							|| dtVenta.getPrecioReceta().equals(
+									new BigDecimal(0))) {
+						dtVenta.setRecetaBlanca(false);
+					} else {
+						dtVenta.setRecetaBlanca(true);
+					}
 				}
-			}
 
-		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(
-					null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, e
-							.getMessage(), ""));
+			} catch (Excepciones e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, e
+								.getMessage(), ""));
+			}
+			descripcionBusqueda = "";
+			codigoBusqueda = "";
 		}
-		descripcionBusqueda = "";
-		codigoBusqueda = "";
 	}
 
 	public void buscarArticuloLector() {
@@ -224,6 +227,19 @@ public class VentaBean implements Serializable {
 			}
 		}
 		total = subtotal.add(iva10).add(iva22);
+	}
+
+	public void agregarArticuloSeleccionado() {
+		if (articuloSeleccionado.getCantidad() <= 0) {
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"La cantidad debe ser mayor que cero.", ""));
+		} else {
+			agregarLineaVenta();
+			RequestContext.getCurrentInstance().execute(
+					"PF('ventaDialog').hide();");
+		}
 	}
 
 	public void agregarLineaVenta() {
