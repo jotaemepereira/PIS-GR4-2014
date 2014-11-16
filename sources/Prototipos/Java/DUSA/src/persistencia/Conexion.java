@@ -71,7 +71,13 @@ public class Conexion {
 		// Devuelve una conexion disponible del pool. Al invocar close() en esa
 		// conexion, en realidad se le está indicando al pool que esa conexion
 		//queda libre y la vuelve a tomar.
-		return basicDataSource.getConnection();
+		
+		Connection conexion = basicDataSource.getConnection();
+		//Estado inicial que se espera da la conexion.
+		
+		conexion.setAutoCommit(true);
+		
+		return conexion;
 	}
 
 }

@@ -160,7 +160,8 @@ public class ServicioDusaControlador implements IServicio {
 			System.out.println("Realizar pedido respuesta: "
 					+ error.getMensaje());
 		} catch (Exception e) {
-
+			
+			e.printStackTrace();
 			throw new Excepciones(Excepciones.MENSAJE_ERROR_CONEXION_WS,
 					Excepciones.ERROR_SIN_CONEXION);
 		}

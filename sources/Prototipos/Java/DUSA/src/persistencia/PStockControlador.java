@@ -326,8 +326,12 @@ public class PStockControlador implements IStockPersistencia {
 				DTBusquedaArticuloSolr articulo = new DTBusquedaArticuloSolr();
 				articulo.setIdArticulo(Integer.parseInt(item
 						.getFieldValue("id").toString()));
-				articulo.setCodigoBarras(item.getFieldValue("BARCODE")
-						.toString());
+				
+				if (item.getFieldValue("BARCODE") != null) {
+					
+					articulo.setCodigoBarras(item.getFieldValue("BARCODE")
+							.toString());
+				}
 				articulo.setDescripcion(item.getFieldValue("DESCRIPTION")
 						.toString());
 				if (item.getFieldValue("DROGAS") == null) {
@@ -507,7 +511,7 @@ public class PStockControlador implements IStockPersistencia {
 			c.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 
 	}

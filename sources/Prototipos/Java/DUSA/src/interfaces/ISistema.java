@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -303,4 +304,12 @@ public interface ISistema {
 	 * @throws Excepciones
 	 * */
 	 public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
+	 
+	 /**
+	  * Para cada 'idArticulo' se le modifica el precio unitario al valor 'nuevoPrecio'
+	  *  
+	  * @param articulosInfo Diccionario (idArticulo, nuevoPrecio) 
+	  * @throws Excepciones
+	  */
+	 public void modificarPrecioArticulos(Map<Long, BigDecimal> articulosInfo) throws Excepciones;
 }

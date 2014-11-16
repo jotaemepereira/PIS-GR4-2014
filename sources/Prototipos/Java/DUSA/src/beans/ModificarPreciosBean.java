@@ -88,8 +88,11 @@ public class ModificarPreciosBean implements Serializable {
 		try {
 			articulosDelProveedor = instanciaSistema.obtenerArticulosDelProveedor(proveedor);
 		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 		}
 	}
 
@@ -112,17 +115,28 @@ public class ModificarPreciosBean implements Serializable {
 	}
 	
 	public void enviarPrecios() {
+		
+		FacesContext context = FacesContext.getCurrentInstance();
 		Map<Long, BigDecimal> modificacionPrecios = new HashMap<Long, BigDecimal>();
-		IStock sControlador = FabricaLogica.getIStock();
 		
 		for (Articulo a : articulosDelProveedor) {
 			modificacionPrecios.put(a.getIdArticulo(), a.getPrecioUnitario());
 		}
+		
 		try {
-			sControlador.modificarPreciodeArticulos(modificacionPrecios);
+			
+			this.instanciaSistema.modificarPrecioArticulos(modificacionPrecios);
+			this.articulosDelProveedor.clear();
+			
+			long cambios = modificacionPrecios.size();
+			String controlPlural = (cambios == 1) ? " artículo.":" artículos.";
+			
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, 
+					"Se ha realizado el cambio de precio de " + cambios + controlPlural, ""));
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 		}
 	}
 

@@ -31,7 +31,7 @@
 						<div class="panel-heading">
 							<h3 class="panel-title">Modificar stock</h3>
 						</div>
-						<p:messages id="msgs" />
+						<p:messages id="msgs"/>
 
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
@@ -85,12 +85,13 @@
 															style="width: 50px;">
 														</h:outputText>
 													</p:column>
+													<!-- Se ingresa el nuevo stock -->
 													<p:column headerText="Nuevo stock" style="width: 50px;">
-														<p:inputMask mask="?999999999999999999"
-															value="#{modificarStockBean.nuevoStock[rowIndex]}"
-															style="width: 50px;">
-															<f:ajax event="change" execute="@this" />
-														</p:inputMask>
+														<p:inputText value="#{modificarStockBean.nuevoStock[rowIndex]}"
+																	style="width: 50px;" validatorMessage="El valor de nuevo stock debe ser un entero.">
+															<f:validateDoubleRange minimum="-9223372036854775808"
+																maximum="9223372036854775807" />
+														</p:inputText> 
 													</p:column>
 												</div>
 											</p:dataTable>
@@ -107,7 +108,6 @@
 										actionListener="#{modificarStockBean.confirmarCambioStock()}"
 										styleClass="btn btn-success"
 										update=":form1" value="Confirmar">
-										<!-- oncomplete="PF('dlg2').hide()" -->
 									</p:commandButton>
 								</div>
 							</h:panelGroup>
