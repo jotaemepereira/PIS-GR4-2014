@@ -4,14 +4,11 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import javax.naming.NamingException;
 
 import Util.NamedParameterStatement;
 import model.Orden;
@@ -66,7 +63,6 @@ public class PComprasControlador implements IComprasPersistencia {
 			String query = "SELECT COUNT(order_id) cant ";
 			query += "FROM orders ";
 			query += "WHERE dgi_type_id = :dgi_type_id ";
-			System.out.println(orden.getSerieCFE());
 			if((orden.getSerieCFE() != null) && (!orden.getSerieCFE().equals("")))
 				query += "AND serial = :serial ";
 			query += "AND order_number = :order_number ";
@@ -81,7 +77,6 @@ public class PComprasControlador implements IComprasPersistencia {
 				
 				ResultSet rs = stmt.executeQuery();
 				while (rs.next()) {
-					System.out.println("CANT FACTURAS: " + rs.getInt("cant"));
 					if (rs.getInt("cant") > 0){
 						
 						c.close();
@@ -205,7 +200,6 @@ public class PComprasControlador implements IComprasPersistencia {
 
 			stmt = new NamedParameterStatement(c, query);
 			stmt.setBoolean("is_processed", true);
-			System.out.println("ORDEN DE COMPRA " + orden.getOrdenDeCompra());
 			stmt.setLong("dusa_order_id", orden.getOrdenDeCompra());
 			
 			stmt.executeUpdate();
@@ -213,7 +207,6 @@ public class PComprasControlador implements IComprasPersistencia {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
-			
 			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
@@ -302,6 +295,7 @@ public class PComprasControlador implements IComprasPersistencia {
 			while (rs.next()) {
 				DTComprobanteFactura factura = new DTComprobanteFactura();
 
+				// Guardo los datos de la factura
 				factura.setCantidadLineas(rs.getInt("detail_quantity"));
 				factura.setFechaComprobante(rs.getDate("order_date"));
 				factura.setFormaDePago(rs.getString("payment_type"));
@@ -334,6 +328,7 @@ public class PComprasControlador implements IComprasPersistencia {
 				stmtDetalle = c.prepareStatement(queryDetalle);
 				stmtDetalle.setLong(1, factura.getIdOrden());
 
+				// Para cada detalle, lo guardo y lo agrego al detalle de la factura
 				ResultSet rsDetalle = stmtDetalle.executeQuery();
 				while (rsDetalle.next()) {
 					DTLineaFacturaCompra detalle = new DTLineaFacturaCompra();
@@ -410,7 +405,6 @@ public class PComprasControlador implements IComprasPersistencia {
 
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
-				System.out.println("fecha: " + rs.getDate("order_date"));
 				ret = rs.getDate("order_date");
 			}
 

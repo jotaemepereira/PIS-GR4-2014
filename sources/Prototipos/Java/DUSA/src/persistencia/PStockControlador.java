@@ -309,7 +309,7 @@ public class PStockControlador implements IStockPersistencia {
 						"DESCRIPTION id BARCODE DROGAS PRESENTATION ACCIONES_TERAPEUTICAS MARCA");
 		parameters.set("start", 0);
 		parameters.set("rows", 100);
-		parameters.set("sort", "DESCRIPTION DESC");
+		//parameters.set("sort", "DESCRIPTION DESC");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
@@ -393,7 +393,7 @@ public class PStockControlador implements IStockPersistencia {
 		parameters.set("start", 0);
 		parameters.set("rows", 100);
 		parameters.set("fq", "SUPPLIER_DATA: \"" + proveedor + "#*\"");
-		parameters.set("sort", "DESCRIPTION DESC");
+		//parameters.set("sort", "DESCRIPTION DESC");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
