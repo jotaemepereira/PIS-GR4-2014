@@ -2,6 +2,7 @@ package beans;
 
 import interfaces.ISistema;
 
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,15 +13,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.ViewHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.Validator;
-import javax.faces.validator.ValidatorException;
 
 import model.Enumerados.tipoMovimientoDeStock;
 
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
 import controladores.Excepciones;
@@ -28,7 +25,7 @@ import datatypes.DTBusquedaArticulo;
 
 @ManagedBean
 @ViewScoped
-public class ModificarStockBean implements Serializable, Validator{
+public class ModificarStockBean implements Serializable{
 
 	/**
 	 * 
@@ -157,12 +154,10 @@ public class ModificarStockBean implements Serializable, Validator{
 		//Si no se selecciona un artículo se notifica y se mantiene el wizard en el mismo paso (tab).
 		if ((event.getNewStep().equals("paso2") && this.articuloSeleccionado == null) || 
 			(event.getNewStep().equals("paso3") && this.articuloParaDesarme == null)){
-			//TODO:La notificación no se esta desplegando correctamente.
+			
 			FacesContext contexto = FacesContext.getCurrentInstance();
 			contexto.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
 					Excepciones.MENSAJE_SELECCIONE_ARTICULO, ""));
-			
-			RequestContext.getCurrentInstance().update("msgs");
 			return event.getOldStep();
 		}
 		
@@ -224,43 +219,11 @@ public class ModificarStockBean implements Serializable, Validator{
 			contexto.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
 					e.getMessage(), ""));
+
 		}
 	}
 	
-	@Override
-	public void validate(FacesContext arg0, UIComponent arg1, Object arg2)
-			throws ValidatorException {
-		
-		String aValidar = (String) arg2;
-		
-		try {
-			
-			 Long.parseLong(aValidar);
-			
-		} catch (Exception e) {
-			
-			FacesMessage mensajeAMostrar = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hola", "");
-			arg0.addMessage(null, mensajeAMostrar);
-		}
-	}
-	/**
-	 * Método para validar la entrada en la cantidad de stock del artículo.
-	 */
-	public void validarEntradaStock (FacesContext context, UIComponent component, Object value) throws ValidatorException { 
-		
-		String aValidar = (String) value;
-		
-		try {
-			
-			 Long.parseLong(aValidar);
-			
-		} catch (Exception e) {
-			
-			FacesMessage mensajeAMostrar = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hola", "");
-			context.addMessage(null, mensajeAMostrar);
-//			throw new ValidatorException(mensajeAMostrar);
-		}
-	}
+	
 
 	public void confirmarCambioStock() {
 		FacesContext contexto = FacesContext.getCurrentInstance();
