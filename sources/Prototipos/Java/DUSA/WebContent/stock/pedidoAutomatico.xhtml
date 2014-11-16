@@ -85,7 +85,6 @@
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<p:dataTable var="pedido" id="tablePedido" 
 												value="#{generarPedidoBean.pedidos}" emptyMessage="No se encontraron registros.">
-												<!-- rendered="${generarPedidoBean.disablePrediccionDePedido || generarPedidoBean.disableDesdeUltimoPedido}" -->
 												<div class="row">
 													<p:column headerText="Numero artículo" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
 														<h:outputText value="#{pedido.numeroArticulo}" />
@@ -110,6 +109,16 @@
 													
 													<p:column headerText="Stock actual" styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 														<h:outputText value="#{pedido.stockActual}" />
+														
+													</p:column>
+													
+													<p:column rendered="#{generarPedidoBean.esHistorico}" headerText="Predicción por ventas recientes" styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+														<h:outputText value="#{pedido.prediccionVentasAnt}" />
+														
+													</p:column>
+													
+													<p:column rendered="#{generarPedidoBean.esHistorico}" headerText="Promedio ventas de años anteriores" styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+														<h:outputText value="#{pedido.promedioVendidoAnosAnt}" />
 														
 													</p:column>
 													

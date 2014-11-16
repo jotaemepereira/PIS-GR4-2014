@@ -13,6 +13,8 @@ public class DTLineaPedido {
 	private double cantPredecidaMinimosCuadrados;
 	private Long numeroArticulo;
 	private BigDecimal subtotal;
+	private BigDecimal promedioVendidoAnosAnt;
+	private BigDecimal prediccionVentasAnt;
 	
 	public DTLineaPedido() {
 		
@@ -133,6 +135,22 @@ public class DTLineaPedido {
 	public void setCantPredecidaMinimosCuadrados(
 			double cantPredecidaMinimosCuadrados) {
 		this.cantPredecidaMinimosCuadrados = cantPredecidaMinimosCuadrados;
+	}
+
+	public BigDecimal getPromedioVendidoAnosAnt() {
+		return promedioVendidoAnosAnt;
+	}
+
+	public void setPromedioVendidoAnosAnt(BigDecimal promedioVendidoAnosAnt) {
+		this.promedioVendidoAnosAnt = promedioVendidoAnosAnt;
+	}
+
+	public BigDecimal getPrediccionVentasAnt() {
+		return prediccionVentasAnt;
+	}
+
+	public void setPrediccionVentasAnt(BigDecimal prediccionVentasAnt) {
+		this.prediccionVentasAnt = prediccionVentasAnt;
 	}
 }
 

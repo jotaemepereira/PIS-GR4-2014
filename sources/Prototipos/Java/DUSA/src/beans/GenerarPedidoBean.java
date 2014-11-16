@@ -32,6 +32,7 @@ public class GenerarPedidoBean implements Serializable{
 	private Boolean disablePrediccionDePedido = false;
 	private String hideElement = "hidden";
 	private String formaDePago = "contado";
+	private Boolean esHistorico;
 	
 	// Getters y setters
 	public static long getSerialversionuid() {
@@ -95,6 +96,7 @@ public class GenerarPedidoBean implements Serializable{
 		disablePrediccionDePedido = true;
 		disableDesdeUltimoPedido = true;
 		hideElement = "visible";
+		esHistorico = false;
 		pedidos.clear();
 
 		try {
@@ -122,6 +124,7 @@ public class GenerarPedidoBean implements Serializable{
 		disablePrediccionDePedido = true;
 		disableDesdeUltimoPedido = true;
 		hideElement = "visible";
+		esHistorico = true;
 		pedidos.clear();
 
 		try {
@@ -224,6 +227,14 @@ public class GenerarPedidoBean implements Serializable{
 		disableDesdeUltimoPedido = false;
 		disablePrediccionDePedido = false;
 		hideElement = "hidden";
+	}
+
+	public Boolean getEsHistorico() {
+		return esHistorico;
+	}
+
+	public void setEsHistorico(Boolean esHistorico) {
+		this.esHistorico = esHistorico;
 	}
 	
 }

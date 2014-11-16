@@ -37,9 +37,7 @@ public class GeneradorPedido {
 	 * @throws Excepciones
 	 */
 	public List<DTLineaPedido> generar() throws Excepciones{
-		long ini = Calendar.getInstance().getTimeInMillis();
 		List<DTLineaPedido> pedido = this.predictor.predecir();
-		System.out.println("Duro: " + (int) ((Calendar.getInstance().getTimeInMillis() - ini) / 1000));
 		return pedido;
 	}
 	

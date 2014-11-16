@@ -4,6 +4,7 @@ import interfaces.IFacturacionPersistencia;
 import interfaces.IPredictor;
 import interfaces.IStockPersistencia;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,10 +35,10 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 	 * @var P1 y P2 coeficientes para ponderar dias anteriores frente a anios
 	 *      anteriores. Configurables mediante el webxml
 	 */
-	
+
 	ExternalContext externalContext = FacesContext.getCurrentInstance()
 			.getExternalContext();
-	
+
 	final double P1 = Double.parseDouble(externalContext
 			.getInitParameter("PONDERADOR_DIAS_HABILES"));
 	final double P2 = Double.parseDouble(externalContext
@@ -68,7 +69,7 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 		Map<Long, DTLineaPedido> mapaCantVendidaAnosAnteriores;
 		Map<Long, SimpleRegression> mapaRectas = new HashMap<Long, SimpleRegression>();
 		List<DTLineaPedido> ret = null;
-		
+
 		final Calendar hoy = Calendar.getInstance();
 		Calendar desde = Calendar.getInstance();
 		Calendar hasta = Calendar.getInstance();
@@ -108,8 +109,9 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 				 * artículo para luego utilizar en el cálculo de mínimos
 				 * cuadrados.
 				 */
-				agregarDatos(new ArrayList<DTLineaPedido>(
-						mapaCantidadesAPedir.values()), mapaRectas, i);
+				agregarDatos(
+						new ArrayList<DTLineaPedido>(
+								mapaCantidadesAPedir.values()), mapaRectas, i);
 				i--;
 			}
 		}
@@ -119,8 +121,7 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 		 * de la recta tomando en cuenta la cantidad de días a predecir.
 		 */
 		for (i = 1; i <= this.diasApredecir; i++) {
-			for (DTLineaPedido item : mapaCantidadesAPedir
-					.values()) {
+			for (DTLineaPedido item : mapaCantidadesAPedir.values()) {
 				item.setCantPredecidaMinimosCuadrados(item
 						.getCantPredecidaMinimosCuadrados()
 						+ mapaRectas.get(item.getIdArticulo()).predict(
@@ -151,26 +152,26 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 							new Date(desde.getTimeInMillis()),
 							new Date(hasta.getTimeInMillis()));
 
-			sumarCantidades(
-					new ArrayList<DTLineaPedido>(auxMapa.values()),
+			sumarCantidades(new ArrayList<DTLineaPedido>(auxMapa.values()),
 					mapaCantVendidaAnosAnteriores);
 
 			i++;
 			/*
-			 * La última vez que entra calculo los valores finales
-			 * del algoritmo.
+			 * La última vez que entra calculo los valores finales del
+			 * algoritmo.
 			 */
 			if (i > CANT_ANIOS_ANTERIORES) {
-				calcularCantidadesAPedir(mapaCantidadesAPedir, mapaCantVendidaAnosAnteriores);
+				calcularCantidadesAPedir(mapaCantidadesAPedir,
+						mapaCantVendidaAnosAnteriores);
 			}
 		}
-		
+
 		/*
 		 * Devuelvo solo los artículos que tienen una cantidad predecida.
 		 */
 		ret = new ArrayList<DTLineaPedido>();
-		for(DTLineaPedido linea : mapaCantidadesAPedir.values()){
-			if (linea.getCantidad() > 0){
+		for (DTLineaPedido linea : mapaCantidadesAPedir.values()) {
+			if (linea.getCantidad() > 0) {
 				ret.add(linea);
 			}
 		}
@@ -207,8 +208,7 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 	 * @param cantidadesAnio
 	 * @param mapaCantVendidaAnosAnteriores
 	 */
-	private void sumarCantidades(
-			ArrayList<DTLineaPedido> cantidadesAnio,
+	private void sumarCantidades(ArrayList<DTLineaPedido> cantidadesAnio,
 			Map<Long, DTLineaPedido> mapaCantVendidaAnosAnteriores) {
 		for (DTLineaPedido item : cantidadesAnio) {
 			if (!mapaCantVendidaAnosAnteriores
@@ -229,34 +229,47 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 	 * Calcula las cantidades finales a pedir.
 	 * 
 	 * @param mapaCantVendidaAnosAnteriores
-	 * @param mapaCantVendidaAnosAnteriores2 
+	 * @param mapaCantVendidaAnosAnteriores2
 	 */
 	private void calcularCantidadesAPedir(
-			Map<Long, DTLineaPedido> mapaCantidadesAPedir, Map<Long, DTLineaPedido> mapaCantVendidaAnosAnteriores) {
-		for (DTLineaPedido item : mapaCantVendidaAnosAnteriores
-				.values()) {
+			Map<Long, DTLineaPedido> mapaCantidadesAPedir,
+			Map<Long, DTLineaPedido> mapaCantVendidaAnosAnteriores) {
+		for (DTLineaPedido item : mapaCantVendidaAnosAnteriores.values()) {
 			/*
 			 * Calculo el promedio de acuerdo a CANT_ANIOS_ANTERIORES
 			 */
-			long cantPromVendidaAniosAnt = item.getCantidad() / CANT_ANIOS_ANTERIORES;
-			
+			double cantPromVendidaAniosAnt = Math.ceil(item.getCantidad()
+					/ CANT_ANIOS_ANTERIORES);
+			mapaCantidadesAPedir.get(item.getIdArticulo())
+					.setPromedioVendidoAnosAnt(
+							new BigDecimal(cantPromVendidaAniosAnt));
+
 			/*
-			 * Pondero la cantidad predecida como P1 * cantPredecidaMinimosCuadrados + P2 * cantPromVendidaAniosAnt
+			 * Pondero la cantidad predecida como P1 *
+			 * cantPredecidaMinimosCuadrados + P2 * cantPromVendidaAniosAnt
 			 */
-			double cantidadPredecida = P1 * mapaCantidadesAPedir.get(item.getIdArticulo()).getCantPredecidaMinimosCuadrados() + P2
+			double cantidadPredecida = P1
+					* mapaCantidadesAPedir.get(item.getIdArticulo())
+							.getCantPredecidaMinimosCuadrados() + P2
 					* cantPromVendidaAniosAnt;
-			
-			/* 
-			 * Calculo la cantidad a pedir.
-			 * Si resulta menor a cero se fija en cero, de lo contrario se fija el resultado del algoritmo
+			mapaCantidadesAPedir.get(item.getIdArticulo())
+					.setPrediccionVentasAnt(
+							new BigDecimal(Math.ceil(mapaCantidadesAPedir.get(
+									item.getIdArticulo())
+									.getCantPredecidaMinimosCuadrados() * P1)));
+			/*
+			 * Calculo la cantidad a pedir. Si resulta menor a cero se fija en
+			 * cero, de lo contrario se fija el resultado del algoritmo
 			 */
-			long cantAPedir = (long) Math.ceil(Math.max(cantidadPredecida, item.getStockMinimo())
+			long cantAPedir = (long) Math.ceil(Math.max(cantidadPredecida,
+					item.getStockMinimo())
 					- item.getStockActual());
-			
-			if (cantAPedir < 0){
+
+			if (cantAPedir < 0) {
 				mapaCantidadesAPedir.get(item.getIdArticulo()).setCantidad(0);
 			} else {
-				mapaCantidadesAPedir.get(item.getIdArticulo()).setCantidad(cantAPedir);
+				mapaCantidadesAPedir.get(item.getIdArticulo()).setCantidad(
+						cantAPedir);
 			}
 		}
 
