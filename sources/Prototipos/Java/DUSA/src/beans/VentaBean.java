@@ -46,6 +46,7 @@ public class VentaBean implements Serializable {
 	private BigDecimal montoTributoIvaBasico = new BigDecimal(0);
 	private BigDecimal totalIvaBasico = new BigDecimal(0);
 	private BigDecimal montoNoGravado = new BigDecimal(0);
+	private String codigoTimbre = "";
 
 	/**
 	 * Utilizado en el xhtml por el loginBean
@@ -69,6 +70,9 @@ public class VentaBean implements Serializable {
 						.parseInt(FacesContext.getCurrentInstance()
 								.getExternalContext()
 								.getInitParameter("MODO_FACTURACION")) == Enumerados.modoFacturacion.basica)));
+
+				codigoTimbre = FacesContext.getCurrentInstance()
+						.getExternalContext().getInitParameter("CODIGO_TIMBRE");
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -118,7 +122,8 @@ public class VentaBean implements Serializable {
 		}
 
 		try {
-			DTProducto p = this.instanciaSistema.buscarArticulosPorCodigo(codigoBusqueda);
+			DTProducto p = this.instanciaSistema
+					.buscarArticulosPorCodigo(codigoBusqueda);
 
 			if (p != null) {
 				articuloSeleccionado = p;
@@ -246,6 +251,35 @@ public class VentaBean implements Serializable {
 
 		resultadoBusqueda = new ArrayList<DTProducto>();
 		calcularTotales();
+
+		int cantidadTimbres = 0;
+		if (articuloSeleccionado.isRecetaBlanca()) {
+			cantidadTimbres++;
+		}
+
+		if (articuloSeleccionado.isRecetaNaranja()) {
+			cantidadTimbres++;
+		}
+
+		if (articuloSeleccionado.isRecetaVerde()) {
+			cantidadTimbres++;
+		}
+
+		cantidadTimbres = cantidadTimbres * articuloSeleccionado.getCantidad();
+		if (cantidadTimbres > 0
+				&& (codigoTimbre != null && !codigoTimbre.trim().isEmpty())) {
+			try {
+				articuloSeleccionado = instanciaSistema
+						.buscarArticulosPorCodigo(codigoTimbre);
+				articuloSeleccionado.setCantidad(cantidadTimbres);
+				agregarLineaVenta();
+			} catch (Excepciones e) {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								"Artículo timbre no encontrado.", ""));
+			}
+		}
 	}
 
 	public void eliminarLineaVenta(DTProducto lv) {
@@ -332,8 +366,11 @@ public class VentaBean implements Serializable {
 
 			lv.setDescuento(new BigDecimal(0));
 			if (p.isRecetaBlanca()) {
-				lv.setDescuento(p.getPrecioVenta()
-						.multiply((new BigDecimal(100)).subtract(p.getDescuentoReceta()))
+				lv.setDescuento(p
+						.getPrecioVenta()
+						.multiply(
+								(new BigDecimal(100)).subtract(p
+										.getDescuentoReceta()))
 						.divide(new BigDecimal(100)));
 			}
 			lv.setDescuento(lv.getDescuento().add(
@@ -465,7 +502,8 @@ public class VentaBean implements Serializable {
 		df.setMinimumFractionDigits(0);
 
 		if (v.isRecetaBlanca()) {
-			descuento = df.format((new BigDecimal(100)).subtract(v.getDescuentoReceta())) + "%";
+			descuento = df.format((new BigDecimal(100)).subtract(v
+					.getDescuentoReceta())) + "%";
 		}
 
 		if (v.getDescuento().compareTo(new BigDecimal(0)) > 0) {

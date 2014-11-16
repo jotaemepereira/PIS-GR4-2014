@@ -304,7 +304,6 @@ public class PStockControlador implements IStockPersistencia {
 						"DESCRIPTION id BARCODE DROGAS PRESENTATION ACCIONES_TERAPEUTICAS MARCA");
 		parameters.set("start", 0);
 		parameters.set("rows", 100);
-		//parameters.set("sort", "DESCRIPTION DESC");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
@@ -388,7 +387,6 @@ public class PStockControlador implements IStockPersistencia {
 		parameters.set("start", 0);
 		parameters.set("rows", 100);
 		parameters.set("fq", "SUPPLIER_DATA: \"" + proveedor + "#*\"");
-		//parameters.set("sort", "DESCRIPTION DESC");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
@@ -398,7 +396,10 @@ public class PStockControlador implements IStockPersistencia {
 				cant = (long) 100;
 			}
 			for (int i = 0; i < cant; i++) {
+
 				
+
+
 
 				SolrDocument item = response.get(i);
 
@@ -449,9 +450,6 @@ public class PStockControlador implements IStockPersistencia {
 				} else {
 					articulo.setNumeroProducto_proveedor(0);
 				}
-
-				
-				
 				listaArticulos.add(articulo);
 			}
 		} catch (SolrServerException e) {
@@ -464,8 +462,10 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public void buscarArticulosId(DTBusquedaArticulo articulo)
+	public List<DTBusquedaArticulo> getDatosArticulosBuscados(List<DTBusquedaArticuloSolr> articulos)
 			throws Excepciones {
+		List<DTBusquedaArticulo> articulosRet = new ArrayList<DTBusquedaArticulo>();
+		
 		PreparedStatement stmt = null;
 
 		String query = "SELECT p.UNIT_PRICE, p.SALE_PRICE, p.LIST_COST, p.LAST_COST, p.AVG_COST, p.SALE_CODE, p.PRODUCT_TYPE, p.STOCK, p.TAX_TYPE_ID, ";
@@ -475,35 +475,50 @@ public class PStockControlador implements IStockPersistencia {
 		query += "WHERE p.PRODUCT_ID = ?";
 		try {
 			Connection c = Conexion.getConnection();
-			stmt = c.prepareStatement(query);
-			stmt.setInt(1, articulo.getIdArticulo());
-			ResultSet rs = stmt.executeQuery();
-			// Obtengo la cantidad de proveedores con ese rut
-			while (rs.next()) {
-				articulo.setTipoDeArticulo(model.Enumerados
-						.descripcionTipoArticuloAbreviado(rs
-								.getString("PRODUCT_TYPE")));
-				articulo.setControlDeVenta(model.Enumerados
-						.descripcionTipoVenta(rs.getString("SALE_CODE")));
-				articulo.setPrecioDeVenta(rs.getBigDecimal("UNIT_PRICE"));
-				articulo.setPrecioPublico(rs.getBigDecimal("SALE_PRICE"));
-				articulo.setCostoDeLista(rs.getBigDecimal("LIST_COST"));
-				articulo.setCostoReal(rs.getBigDecimal("LAST_COST"));
-				articulo.setCostoPonderado(rs.getBigDecimal("AVG_COST"));
-				articulo.setStock(rs.getLong("STOCK"));
+			
+			Iterator<DTBusquedaArticuloSolr> it = articulos.iterator();
+			while (it.hasNext()) {
+				// Obtengo el articulo de la lista
+				DTBusquedaArticuloSolr itArticulo = (DTBusquedaArticuloSolr) it
+						.next();
 				
-				TipoIva ti = new TipoIva();
-				ti.setTipoIVA(rs.getString("tax_type_id").charAt(0));
-				ti.setValorIVA(rs.getBigDecimal("iva_value"));
-				ti.setValorTributo(rs.getBigDecimal("tax_value"));
-				ti.setResguardoIVA(rs.getBigDecimal("iva_voucher"));
-				ti.setResguardoIRAE(rs.getBigDecimal("irae_voucher"));
-				ti.setIndicadorFacturacion(rs.getInt("billing_indicator"));
-				articulo.setTipoIva(ti);
+				// Lo casteo a DTBusquedaArticulo
+				DTBusquedaArticulo articulo = new DTBusquedaArticulo(itArticulo);
+				
+				// Traigo los datos
+				stmt = c.prepareStatement(query);
+				stmt.setInt(1, articulo.getIdArticulo());
+				ResultSet rs = stmt.executeQuery();
+				// Obtengo la cantidad de proveedores con ese rut
+				while (rs.next()) {
+					articulo.setTipoDeArticulo(model.Enumerados
+							.descripcionTipoArticuloAbreviado(rs
+									.getString("PRODUCT_TYPE")));
+					articulo.setControlDeVenta(model.Enumerados
+							.descripcionTipoVenta(rs.getString("SALE_CODE")));
+					articulo.setPrecioDeVenta(rs.getBigDecimal("UNIT_PRICE"));
+					articulo.setPrecioPublico(rs.getBigDecimal("SALE_PRICE"));
+					articulo.setCostoDeLista(rs.getBigDecimal("LIST_COST"));
+					articulo.setCostoReal(rs.getBigDecimal("LAST_COST"));
+					articulo.setCostoPonderado(rs.getBigDecimal("AVG_COST"));
+					articulo.setStock(rs.getLong("STOCK"));
+					
+					TipoIva ti = new TipoIva();
+					ti.setTipoIVA(rs.getString("tax_type_id").charAt(0));
+					ti.setValorIVA(rs.getBigDecimal("iva_value"));
+					ti.setValorTributo(rs.getBigDecimal("tax_value"));
+					ti.setResguardoIVA(rs.getBigDecimal("iva_voucher"));
+					ti.setResguardoIRAE(rs.getBigDecimal("irae_voucher"));
+					ti.setIndicadorFacturacion(rs.getInt("billing_indicator"));
+					articulo.setTipoIva(ti);
+				}
+				articulosRet.add(articulo);
+				rs.close();
+				stmt.close();
 			}
-			rs.close();
-			stmt.close();
 			c.close();
+			
+			return articulosRet;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
@@ -512,51 +527,60 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public DTProducto getDatosArticuloVenta(int idArticulo) throws Excepciones {
-		DTProducto articulo = new DTProducto();
+	public List<DTProducto> getDatosArticuloVenta(List<DTBusquedaArticuloSolr> articulos) throws Excepciones {
+		List<DTProducto> productosRet = new ArrayList<DTProducto>();
+		
 		PreparedStatement stmt = null;
 		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR, RECIPE_PRICE, RECIPE_DISCOUNT, COMERCIALNAME "
 				+ "FROM PRODUCTS p "
 				+ "INNER JOIN tax_types tt ON p.tax_type_id = tt.tax_type_id "
 				+ "LEFT JOIN suppliers s ON s.supplier_id = p.brand_id "
-
 				+ "WHERE PRODUCT_ID = ?";
 		try {
 			Connection c = Conexion.getConnection();
-			stmt = c.prepareStatement(query);
-			stmt.setInt(1, idArticulo);
-			ResultSet rs = stmt.executeQuery();
-			// Obtengo la cantidad de proveedores con ese rut
-			while (rs.next()) {
+			
+			Iterator<DTBusquedaArticuloSolr> it = articulos.iterator();
+			while (it.hasNext()) {
+				DTBusquedaArticuloSolr dtBusquedaArticuloSolr = (DTBusquedaArticuloSolr) it
+						.next();
+				DTProducto articulo = new DTProducto(dtBusquedaArticuloSolr);
+			
+				stmt = c.prepareStatement(query);
+				stmt.setInt(1, dtBusquedaArticuloSolr.getIdArticulo());
+				ResultSet rs = stmt.executeQuery();
+				// Obtengo la cantidad de proveedores con ese rut
+				while (rs.next()) {
+					
+					articulo.setPrecioVenta(rs.getBigDecimal("SALE_PRICE"));
+					articulo.setPsicofarmaco(rs.getBoolean("IS_PSYCHOTROPIC"));
+					articulo.setEstupefaciente(rs.getBoolean("IS_NARCOTIC"));
+					articulo.setStock(rs.getInt("STOCK"));
+					articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
+					articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
+					articulo.setIndicadorFacturacion(rs.getInt("BILLING_INDICATOR"));
+					articulo.setPrecioReceta(rs.getBigDecimal("RECIPE_PRICE"));
+					articulo.setDescuentoReceta(rs.getBigDecimal("RECIPE_DISCOUNT"));
+					if (articulo.getDescuentoReceta() == null){
+						articulo.setDescuentoReceta(new BigDecimal(0));
+					}
+					articulo.setDescuentoReceta(articulo.getDescuentoReceta().multiply(new BigDecimal(100)));
+					articulo.setLaboratorio(rs.getString("COMERCIALNAME"));
+					articulo.setCantidad(0);
+					articulo.setRecetaBlanca(false);
+	
+				}  
+				rs.close();
+				stmt.close();
 				
-				articulo.setPrecioVenta(rs.getBigDecimal("SALE_PRICE"));
-				articulo.setPsicofarmaco(rs.getBoolean("IS_PSYCHOTROPIC"));
-				articulo.setEstupefaciente(rs.getBoolean("IS_NARCOTIC"));
-				articulo.setStock(rs.getInt("STOCK"));
-				articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
-				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
-				articulo.setIndicadorFacturacion(rs.getInt("BILLING_INDICATOR"));
-				articulo.setPrecioReceta(rs.getBigDecimal("RECIPE_PRICE"));
-				articulo.setDescuentoReceta(rs.getBigDecimal("RECIPE_DISCOUNT"));
-				if (articulo.getDescuentoReceta() == null){
-					articulo.setDescuentoReceta(new BigDecimal(0));
-				}
-				articulo.setDescuentoReceta(articulo.getDescuentoReceta().multiply(new BigDecimal(100)));
-				articulo.setLaboratorio(rs.getString("COMERCIALNAME"));
-
-			}  
-			rs.close();
-			stmt.close();
+				productosRet.add(articulo);
+			}
 			c.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 
-		articulo.setCantidad(0);
-		articulo.setRecetaBlanca(false);
-
-		return articulo;
+		return productosRet;
 	}
 	
 	@Override
