@@ -1,31 +1,32 @@
 package scheduler;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
-
 import javax.servlet.ServletContextEvent;
-
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
-
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 
 import javax.servlet.ServletContextListener;
-
+/**
+ * 
+ * @author santiago
+ * Se ejecuta automaticamente al iniciar el servidor
+ * se lee el archivo alertaStock.properties para leer la expreciin cron
+ * si el archivo no existe se crea y se guarda la exprecion crontime 
+ * que esta ene le codfigo
+ * Se crea un Job que se dispara cuadno se cumple la espresion cron
+ *  
+ */
 public class StockInitializer implements ServletContextListener {
 
 	Scheduler sched;
@@ -47,6 +48,9 @@ public class StockInitializer implements ServletContextListener {
 		try {
 			sched = new StdSchedulerFactory().getScheduler();
 
+			/**
+			 * se crea el Job alertaStock
+			 */
 			JobDetail job = newJob(StockJob.class).withIdentity("alertaStock",
 					"grupo01").build();
 			try {
@@ -56,19 +60,17 @@ public class StockInitializer implements ServletContextListener {
 
 				try {
 					output = new FileOutputStream("alertaStock.properties");
-					prop.setProperty("expresionCron", "0 25 20 * * ? *");
+					prop.setProperty("expresionCron", "0 33 16 * * ? *");
 					prop.store(output, null);
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					return;
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
+				
+				}catch (IOException e1) {
 					e1.printStackTrace();
 				}
 
 			} finally {
-		        
+		        /**
+		         * se setea el Job con la ecpresion cron 
+		         */
 				String cron = prop.getProperty("expresionCron");
 				CronTrigger trigger = newTrigger()
 						.withIdentity("trigger01", "grupo01")
@@ -78,7 +80,6 @@ public class StockInitializer implements ServletContextListener {
 				sched.start();
 			}
 		} catch (SchedulerException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
 

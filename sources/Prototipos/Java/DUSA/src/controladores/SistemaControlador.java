@@ -191,6 +191,15 @@ public class SistemaControlador implements ISistema {
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 
 	}
+	
+	@Override
+	public DTProducto buscarArticulosPorCodigo(String codigo)throws Excepciones {
+		if (user.tienePermiso(casoDeUso.buscarArticulo))
+			return FabricaLogica.getIStock().buscarArticulosVentaPorCodigo(codigo);
+		else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+
+	}
 
 	@Override
 	public List<DTProveedor> obtenerMarcas() throws Excepciones {

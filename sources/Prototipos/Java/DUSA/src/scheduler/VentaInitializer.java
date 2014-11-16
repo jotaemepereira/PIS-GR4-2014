@@ -1,7 +1,6 @@
 package scheduler;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +16,16 @@ import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
 import static org.quartz.CronScheduleBuilder.cronSchedule;
 import javax.servlet.ServletContextListener;
-
+/**
+ * 
+ * @author santiago
+ * Se ejecuta automaticamente al iniciar el servidor
+ * se lee el archivo ventaStock.properties para leer la expreciin cron
+ * si el archivo no existe se crea y se guarda la exprecion crontime 
+ * que esta ene le codfigo
+ * Se crea un Job que se dispara cuadno se cumple la espresion cron
+ *  
+ */
 public class VentaInitializer implements ServletContextListener {
 	
 	Scheduler sched;
@@ -26,7 +34,6 @@ public class VentaInitializer implements ServletContextListener {
 	public void contextDestroyed(ServletContextEvent arg0) {
 	}
 
-	//Se ejecuta cuando se iniciar el servidor web
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 				
@@ -46,14 +53,9 @@ public class VentaInitializer implements ServletContextListener {
 
 				try {
 					output = new FileOutputStream("ventaStock.properties");
-					prop.setProperty("expresionCron", "0 23 21 * * ? *");
+					prop.setProperty("expresionCron", "0 4 18 * * ? *");
 					prop.store(output, null);
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					return;
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 
@@ -67,7 +69,6 @@ public class VentaInitializer implements ServletContextListener {
 				sched.start();
 			}
 		} catch (SchedulerException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
 

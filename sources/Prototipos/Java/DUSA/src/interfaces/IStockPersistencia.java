@@ -152,6 +152,8 @@ public interface IStockPersistencia {
 
 	public List<DTProducto> getDatosArticuloVenta(List<DTBusquedaArticuloSolr> articulos) throws Excepciones;
 
+	public DTProducto getDatosArticuloVentaPorCodigo(String codigo) throws Excepciones;
+	
 	/**
 	 * En base a lo encontrado usando solr, complementa los datos para ese artícuo
 	 * @param articulos - la lista de los articulos con los datos parciales

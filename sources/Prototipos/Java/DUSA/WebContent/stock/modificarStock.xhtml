@@ -31,7 +31,7 @@
 						<div class="panel-heading">
 							<h3 class="panel-title">Modificar stock</h3>
 						</div>
-						<p:messages id="msgs"/>
+						<p:messages id="msgs" autoUpdate="true"/>
 
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
@@ -58,7 +58,7 @@
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<p:dataTable var="articuloBusqueda" id="tableBusqueda"
 												value="#{modificarStockBean.resBusqueda}" rowIndexVar="rowIndex"
-												emptyMessage="No se encontraron artículos">
+												emptyMessage="No se encontraron artículos" >
 												<div class="row">
 													<p:column headerText="Descripción"
 														styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3">
@@ -85,12 +85,14 @@
 															style="width: 50px;">
 														</h:outputText>
 													</p:column>
+													
 													<!-- Se ingresa el nuevo stock -->
 													<p:column headerText="Nuevo stock" style="width: 50px;">
 														<p:inputText value="#{modificarStockBean.nuevoStock[rowIndex]}"
-																	style="width: 50px;" validatorMessage="El valor de nuevo stock debe ser un entero.">
-															<f:validateDoubleRange minimum="-9223372036854775808"
-																maximum="9223372036854775807" />
+																	style="width: 50px;" 
+																	converterMessage="El valor del nuevo stock debe ser un entero."
+																	validatorMessage="El valor del nuevo stock debe ser un entero.">
+																<f:validateLongRange minimum="-922337203685477" maximum="92233720368547" />
 														</p:inputText> 
 													</p:column>
 												</div>
@@ -100,7 +102,7 @@
 									<div style="margin-top: 15px;">
 										Motivo:
 										<p:inputText value="#{modificarStockBean.motivo}"
-											style="width: 350px; margin: 15px 0;">
+											style="width: 350px; margin: 15px 0;" maxlength="250">
 											<f:ajax event="change" execute="@this" />
 										</p:inputText>
 									</div>

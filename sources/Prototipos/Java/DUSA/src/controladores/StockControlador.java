@@ -249,6 +249,13 @@ public class StockControlador implements IStock {
 		return FabricaPersistencia.getStockPersistencia()
 				.getDatosArticuloVenta(lista);
 	}
+	
+	@Override
+	public DTProducto buscarArticulosVentaPorCodigo(String codigo)
+			throws Excepciones {
+			return FabricaPersistencia.getStockPersistencia()
+					.getDatosArticuloVentaPorCodigo(codigo);
+	}
 
 	@Override
 	public void actualizarStock(Date fecha) throws Excepciones {
@@ -256,10 +263,27 @@ public class StockControlador implements IStock {
 
 		Mail m;
 
+		/**
+		 * se traen todos los artículos que tuvieron cambios desde la fecha que
+		 * se recibe por  parámetro hasta el día de hoy
+		 */
 		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
-		
+		/**
+		 * si un artículo bajó su precio o cambió su estado de dado de baja a dejar de estarlo
+		 * se agrega a la lista de cambios para ser enviado por mail
+		 */
 		List<Cambio> cambios = FabricaPersistencia.getStockPersistencia().obtenerCambios(articulos);
 		
+		
+		/**
+		 * Se lee el mail y password del correo emisor
+		 * y mails de los receptores en caso de que no existan 
+		 * del archivo .properties
+		 * en caso de que no existan estas propiedades se crean
+		 * Finalmente se actualiza al fecha de fechaUltimaActualizacion
+		 * al día de hoy
+		 * 
+		 */
 		
 		OutputStream output;
 		try {

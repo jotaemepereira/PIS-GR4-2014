@@ -14,6 +14,15 @@ public class DTBusquedaArticulo extends DTBusquedaArticuloSolr {
 	private BigDecimal costoPonderado;
 	private TipoIva tipoIva;
 	private long stock;
+	private long nuevoStock;
+	
+	public void setNuevoStock(long nuevoStock) {
+		this.nuevoStock = nuevoStock;
+	}
+	
+	public long getNuevoStock() {
+		return nuevoStock;
+	}
 	
 	public DTBusquedaArticulo(DTBusquedaArticuloSolr busqueda){                    
 		super(busqueda.getAccionesTerapeuticas(), busqueda.getCodigoBarras(), busqueda.getDescripcion(), busqueda.getDroga(), busqueda.getIdArticulo(), busqueda.getMarca(), busqueda.getPresentacion(), busqueda.getNumeroProducto_proveedor());
