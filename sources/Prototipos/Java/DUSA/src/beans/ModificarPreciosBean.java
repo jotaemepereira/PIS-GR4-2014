@@ -1,7 +1,6 @@
 package beans;
 
 import interfaces.ISistema;
-import interfaces.IStock;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -13,15 +12,12 @@ import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 
 import model.Articulo;
 import controladores.Excepciones;
-import controladores.FabricaLogica;
-import controladores.FabricaServicios;
-import controladores.FabricaSistema;
-import datatypes.DTBusquedaArticulo;
-import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTProveedor;
 
 @ManagedBean
@@ -32,7 +28,7 @@ public class ModificarPreciosBean implements Serializable {
 
 	private long proveedor;
 	private List<Articulo> articulosDelProveedor;
-	private List<Articulo> compararModificados;
+	private List<BigDecimal> compararModificados;
 	private List<DTProveedor> listaProveedores;
 	private Map<Integer, DTProveedor> proveedores;
 	private ISistema instanciaSistema;
@@ -83,14 +79,16 @@ public class ModificarPreciosBean implements Serializable {
 	public ModificarPreciosBean() {
 		this.listaProveedores = new ArrayList<DTProveedor>();
 		this.articulosDelProveedor = new ArrayList<Articulo>();
-		this.compararModificados = new ArrayList<Articulo>();
 	}
 
 	public void getArticulosProveedor() {
 		try {
 				articulosDelProveedor = instanciaSistema.obtenerArticulosDelProveedor(proveedor);
-				compararModificados.addAll(articulosDelProveedor);		
-			} catch (Excepciones e) {
+				compararModificados = new ArrayList<BigDecimal>();
+				for (int i=0; i < articulosDelProveedor.size(); i++) {
+					compararModificados.add(articulosDelProveedor.get(i).getPrecioUnitario());
+				}	
+		} catch (Excepciones e) {
 				e.printStackTrace();
 				FacesContext context = FacesContext.getCurrentInstance();
 				context.addMessage(null, new FacesMessage(
@@ -116,18 +114,21 @@ public class ModificarPreciosBean implements Serializable {
 		}
 	}
 	
-	private boolean seModificoElArticulo(int position, BigDecimal precio) {
-		Articulo art = compararModificados.get(position);
-		return (art.getPrecioUnitario() == precio);
+	private int seModificoElArticulo(int position, BigDecimal precio) {
+		return (compararModificados.get(position).compareTo(precio)) ;
 	}
+	
 	public void enviarPrecios() {
-		
 		FacesContext context = FacesContext.getCurrentInstance();
 		Map<Long, BigDecimal> modificacionPrecios = new HashMap<Long, BigDecimal>();
+		long cambios = 0;
 		
-		for (Articulo a : articulosDelProveedor) {
-			if (seModificoElArticulo(articulosDelProveedor.indexOf(a), a.getPrecioUnitario()))
-				modificacionPrecios.put(a.getIdArticulo(), a.getPrecioUnitario());
+		for (int i=0; i < articulosDelProveedor.size(); i++) {
+			Articulo a = articulosDelProveedor.get(i);
+			if (seModificoElArticulo(i, a.getPrecioUnitario()) != 0) {
+				modificacionPrecios.put(a.getIdArticulo(), a.getPrecioUnitario()); 
+				cambios += 1;
+			}
 		}
 		
 		try {
@@ -135,7 +136,6 @@ public class ModificarPreciosBean implements Serializable {
 			this.instanciaSistema.modificarPrecioArticulos(modificacionPrecios);
 			this.articulosDelProveedor.clear();
 			
-			long cambios = modificacionPrecios.size();
 			String controlPlural = (cambios == 1) ? " artículo.":" artículos.";
 			
 			context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, 
