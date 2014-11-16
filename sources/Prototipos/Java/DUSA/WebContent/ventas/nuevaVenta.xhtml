@@ -274,8 +274,8 @@
 					</p:inputText>
 				</p:outputPanel>
 				<p:outputPanel
-					style="padding: 0; margin: 0; text-align: right; width:50%;">
-					<p:outputPanel
+					style="padding: 0; margin: 10px 0; text-align: left; ">
+					<p:outputPanel style="margin-right: 5px;"
 						rendered="#{ventaBean.articuloSeleccionado.descuentoReceta.intValue() > 0}">
 						<p:selectBooleanCheckbox
 							value="#{ventaBean.articuloSeleccionado.recetaBlanca}">
@@ -283,7 +283,7 @@
 						</p:selectBooleanCheckbox>
 						<img src="../Images/receta_blanca.png" />
 					</p:outputPanel>
-					<p:outputPanel
+					<p:outputPanel style="margin-right: 5px;"
 						rendered="#{ventaBean.articuloSeleccionado.psicofarmaco}">
 						<p:selectBooleanCheckbox
 							value="#{ventaBean.articuloSeleccionado.recetaVerde}">

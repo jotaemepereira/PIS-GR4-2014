@@ -11,11 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-
 import javax.mail.MessagingException;
-
-import model.Articulo;
-import model.Cambio;
 import model.Mail;
 import model.PocasVentas;
 import model.Venta;

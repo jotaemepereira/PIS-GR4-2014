@@ -1,32 +1,26 @@
 package beans;
 
 import interfaces.ISistema;
-import interfaces.IStock;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-
-import org.primefaces.context.RequestContext;
 
 import model.Enumerados;
 import model.LineaVenta;
 import model.Usuario;
 import model.Venta;
+
+import org.primefaces.context.RequestContext;
+
 import controladores.Excepciones;
-import controladores.FabricaLogica;
-import controladores.SistemaControlador;
 import datatypes.DTProducto;
 
 @ManagedBean
@@ -127,13 +121,11 @@ public class VentaBean implements Serializable {
 			return;
 		}
 
-		List<DTProducto> lv = new ArrayList<DTProducto>();
 		try {
-			lv = this.instanciaSistema.buscarArticulosVenta(codigoBusqueda);
+			DTProducto p = this.instanciaSistema.buscarArticulosPorCodigo(codigoBusqueda);
 
-			if (lv.size() > 0) {
-				DTProducto dtVenta = (DTProducto) lv.get(0);
-				articuloSeleccionado = dtVenta;
+			if (p != null) {
+				articuloSeleccionado = p;
 				RequestContext.getCurrentInstance().execute(
 						"PF('ventaDialog').show();");
 			} else {

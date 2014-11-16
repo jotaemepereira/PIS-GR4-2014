@@ -26,6 +26,7 @@ import org.apache.solr.common.SolrDocumentList;
 
 import Util.NamedParameterStatement;
 import controladores.Excepciones;
+import controladores.FabricaPersistencia;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
@@ -308,7 +309,7 @@ public class PStockControlador implements IStockPersistencia {
 						"DESCRIPTION id BARCODE DROGAS PRESENTATION ACCIONES_TERAPEUTICAS MARCA");
 		parameters.set("start", 0);
 		parameters.set("rows", 100);
-		parameters.set("sort", "DESCRIPTION DESC");
+		//parameters.set("sort", "DESCRIPTION DESC");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
@@ -392,7 +393,7 @@ public class PStockControlador implements IStockPersistencia {
 		parameters.set("start", 0);
 		parameters.set("rows", 100);
 		parameters.set("fq", "SUPPLIER_DATA: \"" + proveedor + "#*\"");
-		parameters.set("sort", "DESCRIPTION DESC");
+		//parameters.set("sort", "DESCRIPTION DESC");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
@@ -560,13 +561,54 @@ public class PStockControlador implements IStockPersistencia {
 		articulo.setCantidad(0);
 		articulo.setRecetaBlanca(false);
 
-		/*
-		 * BigDecimal desc1 = new BigDecimal(10); BigDecimal desc2 = new
-		 * BigDecimal(30); BigDecimal desc3 = new BigDecimal(50);
-		 * articulo.setDescuento1(desc1); articulo.setDescuento2(desc2);
-		 * articulo.setDescuento3(desc3);
-		 */
-
+		return articulo;
+	}
+	
+	@Override
+	public DTProducto getDatosArticuloVentaPorCodigo(String codigo) throws Excepciones {
+		DTProducto articulo = null;
+		PreparedStatement stmt = null;
+		String query = "SELECT BARCODE, PRESENTATION, PRODUCT_ID, SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR, RECIPE_PRICE, RECIPE_DISCOUNT, P.DESCRIPTION, COMERCIALNAME "
+				+ "FROM PRODUCTS p "
+				+ "INNER JOIN tax_types tt ON p.tax_type_id = tt.tax_type_id "
+				+ "LEFT JOIN suppliers s ON s.supplier_id = p.brand_id "
+				+ "WHERE BARCODE = '" + codigo + "'";
+		try {
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				articulo = new DTProducto();
+				articulo.setProductId(rs.getInt("PRODUCT_ID"));
+				articulo.setPrecioVenta(rs.getBigDecimal("SALE_PRICE"));
+				articulo.setDescripcion(rs.getString("DESCRIPTION"));
+				articulo.setPresentacion(rs.getString("PRESENTATION"));
+				articulo.setCodigoBarras(rs.getString("BARCODE"));
+				articulo.setPsicofarmaco(rs.getBoolean("IS_PSYCHOTROPIC"));
+				articulo.setEstupefaciente(rs.getBoolean("IS_NARCOTIC"));
+				articulo.setStock(rs.getInt("STOCK"));
+				articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
+				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
+				articulo.setIndicadorFacturacion(rs.getInt("BILLING_INDICATOR"));
+				articulo.setPrecioReceta(rs.getBigDecimal("RECIPE_PRICE"));
+				articulo.setDescuentoReceta(rs.getBigDecimal("RECIPE_DISCOUNT"));
+				if (articulo.getDescuentoReceta() == null){
+					articulo.setDescuentoReceta(new BigDecimal(0));
+				}
+				articulo.setDescuentoReceta(articulo.getDescuentoReceta().multiply(new BigDecimal(100)));
+				articulo.setLaboratorio(rs.getString("COMERCIALNAME"));
+				articulo.setCantidad(0);
+				articulo.setRecetaBlanca(false);
+				articulo.setRecetaVerde(false);
+				articulo.setRecetaVerde(false);
+			}  
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		}
 		return articulo;
 	}
 

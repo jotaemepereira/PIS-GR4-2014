@@ -285,6 +285,13 @@ public class StockControlador implements IStock {
 
 		return articulos;
 	}
+	
+	@Override
+	public DTProducto buscarArticulosVentaPorCodigo(String codigo)
+			throws Excepciones {
+			return FabricaPersistencia.getStockPersistencia()
+					.getDatosArticuloVentaPorCodigo(codigo);
+	}
 
 	@Override
 	public void actualizarStock(Date fecha) throws Excepciones {

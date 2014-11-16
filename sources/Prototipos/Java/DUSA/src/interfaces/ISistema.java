@@ -152,6 +152,19 @@ public interface ISistema {
 	 */
 	public List<DTProducto> buscarArticulosVenta(String busqueda)
 			throws Excepciones;
+	
+	/**
+	 * Busca el articulo con el codigo ingresado y devuelve los
+	 * datos necesarios para la venta
+	 * 
+	 * @param codigo
+	 *            - string ingresado
+	 * @return List<DTVenta> Lista de articulos encontrados
+	 * @throws Excepciones
+	 * @author Sebastian Caballero
+	 */
+	public DTProducto buscarArticulosPorCodigo(String codigo)
+			throws Excepciones;
 
 	/**
 	 * Retorna todos los proveedores activos existentes en el sistema marcados
