@@ -19,19 +19,17 @@
 		</f:facet>
 	</h:head>
 	<h:body>
-		<h:form id="form1">
+		<h:form>
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
 			#{loginBean.redirectIfNotLoggedIn()}
 			#{modificarPreciosBean.setISistema(loginBean.instanciaSistema)}
-			<p:focus></p:focus>
 			<div class="vpanel_right">
 				<div class="wrapper">
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title">Modificar precios</h3>
 						</div>
-						<p:messages id="msgs" autoUpdate="true"/>
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
 								<div class="container-fluid">
@@ -60,8 +58,7 @@
 													<h:outputText value="#{articulos.descripcion}" />
 												</p:column>
 												<p:column headerText="Precio" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-													<p:inputMask value="#{articulos.precioUnitario}" 
-														mask="999.99"/>
+													<p:inputMask value="#{articulos.precioUnitario}"/>
 												</p:column>
 												</div>
 											</p:dataTable>
