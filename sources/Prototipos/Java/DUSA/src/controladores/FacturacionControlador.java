@@ -94,12 +94,23 @@ public class FacturacionControlador implements IFacturacion {
 			throws Exception {
 		
 		Mail m;
-
+		
 		IFacturacionPersistencia fp = FabricaPersistencia.getInstanciaFacturacionPersistencia();
+
+		// Se obtiene la lista de artículos que tuvieron pocas ventas
 		List<PocasVentas> pv = fp.articulosConPocasVentasEnLosUltimosMeses(mesesAtras);   
 		
-		OutputStream output;
+		/**
+		 * Se lee el mail y password del correo emisor
+		 * y mails de los receptores en caso de que no existan 
+		 * del archivo .properties
+		 * en caso de que no existan estas propiedades se crean
+		 * Finalmente se actualiza al fecha de fechaUltimaActualizacion
+		 * al día de hoy
+		 * 
+		 */
 		
+		OutputStream output;
 		FileInputStream in;
 		Properties prop = new Properties();
 		String mailEmisor = null;
