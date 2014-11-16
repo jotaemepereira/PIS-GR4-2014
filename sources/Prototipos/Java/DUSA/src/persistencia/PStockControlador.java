@@ -533,8 +533,9 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public DTProducto getDatosArticuloVenta(int idArticulo) throws Excepciones {
-		DTProducto articulo = new DTProducto();
+	public List<DTProducto> getDatosArticuloVenta(List<DTBusquedaArticuloSolr> articulos) throws Excepciones {
+		List<DTProducto> productosRet = new ArrayList<DTProducto>();
+		
 		PreparedStatement stmt = null;
 		String query = "SELECT SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR, RECIPE_PRICE, RECIPE_DISCOUNT, COMERCIALNAME "
 				+ "FROM PRODUCTS p "
@@ -544,47 +545,49 @@ public class PStockControlador implements IStockPersistencia {
 				+ "WHERE PRODUCT_ID = ?";
 		try {
 			Connection c = Conexion.getConnection();
-			stmt = c.prepareStatement(query);
-			stmt.setInt(1, idArticulo);
-			ResultSet rs = stmt.executeQuery();
-			// Obtengo la cantidad de proveedores con ese rut
-			while (rs.next()) {
+			
+			Iterator<DTBusquedaArticuloSolr> it = articulos.iterator();
+			while (it.hasNext()) {
+				DTBusquedaArticuloSolr dtBusquedaArticuloSolr = (DTBusquedaArticuloSolr) it
+						.next();
+				DTProducto articulo = new DTProducto(dtBusquedaArticuloSolr);
+			
+				stmt = c.prepareStatement(query);
+				stmt.setInt(1, dtBusquedaArticuloSolr.getIdArticulo());
+				ResultSet rs = stmt.executeQuery();
+				// Obtengo la cantidad de proveedores con ese rut
+				while (rs.next()) {
+					
+					articulo.setPrecioVenta(rs.getBigDecimal("SALE_PRICE"));
+					articulo.setPsicofarmaco(rs.getBoolean("IS_PSYCHOTROPIC"));
+					articulo.setEstupefaciente(rs.getBoolean("IS_NARCOTIC"));
+					articulo.setStock(rs.getInt("STOCK"));
+					articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
+					articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
+					articulo.setIndicadorFacturacion(rs.getInt("BILLING_INDICATOR"));
+					articulo.setPrecioReceta(rs.getBigDecimal("RECIPE_PRICE"));
+					articulo.setDescuentoReceta(rs.getBigDecimal("RECIPE_DISCOUNT"));
+					if (articulo.getDescuentoReceta() == null){
+						articulo.setDescuentoReceta(new BigDecimal(0));
+					}
+					articulo.setDescuentoReceta(articulo.getDescuentoReceta().multiply(new BigDecimal(100)));
+					articulo.setLaboratorio(rs.getString("COMERCIALNAME"));
+					articulo.setCantidad(0);
+					articulo.setRecetaBlanca(false);
+	
+				}  
+				rs.close();
+				stmt.close();
 				
-				articulo.setPrecioVenta(rs.getBigDecimal("SALE_PRICE"));
-				articulo.setPsicofarmaco(rs.getBoolean("IS_PSYCHOTROPIC"));
-				articulo.setEstupefaciente(rs.getBoolean("IS_NARCOTIC"));
-				articulo.setStock(rs.getInt("STOCK"));
-				articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
-				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
-				articulo.setIndicadorFacturacion(rs.getInt("BILLING_INDICATOR"));
-				articulo.setPrecioReceta(rs.getBigDecimal("RECIPE_PRICE"));
-				articulo.setDescuentoReceta(rs.getBigDecimal("RECIPE_DISCOUNT"));
-				if (articulo.getDescuentoReceta() == null){
-					articulo.setDescuentoReceta(new BigDecimal(0));
-				}
-				articulo.setDescuentoReceta(articulo.getDescuentoReceta().multiply(new BigDecimal(100)));
-				articulo.setLaboratorio(rs.getString("COMERCIALNAME"));
-
-			}  
-			rs.close();
-			stmt.close();
+				productosRet.add(articulo);
+			}
 			c.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
 
-		articulo.setCantidad(0);
-		articulo.setRecetaBlanca(false);
-
-		/*
-		 * BigDecimal desc1 = new BigDecimal(10); BigDecimal desc2 = new
-		 * BigDecimal(30); BigDecimal desc3 = new BigDecimal(50);
-		 * articulo.setDescuento1(desc1); articulo.setDescuento2(desc2);
-		 * articulo.setDescuento3(desc3);
-		 */
-
-		return articulo;
+		return productosRet;
 	}
 
 	@Override

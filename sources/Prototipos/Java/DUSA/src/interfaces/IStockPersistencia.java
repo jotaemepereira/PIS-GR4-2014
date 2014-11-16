@@ -150,7 +150,7 @@ public interface IStockPersistencia {
 	 */
 	public Articulo obtenerArticuloConId(long idArticulo) throws Excepciones;
 
-	public DTProducto getDatosArticuloVenta(int idArticulo) throws Excepciones;
+	public List<DTProducto> getDatosArticuloVenta(List<DTBusquedaArticuloSolr> articulos) throws Excepciones;
 
 	/**
 	 * En base a lo encontrado usando solr, complementa los datos para ese artícuo
