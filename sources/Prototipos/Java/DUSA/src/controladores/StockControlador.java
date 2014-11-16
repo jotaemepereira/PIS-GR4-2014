@@ -42,6 +42,7 @@ import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTProducto;
+import datatypes.DTVencimiento;
 import controladores.FabricaPersistencia;
 
 public class StockControlador implements IStock {
@@ -57,6 +58,8 @@ public class StockControlador implements IStock {
 					Excepciones.ADVERTENCIA_DATOS));
 		}
 		FabricaPersistencia.getStockPersistencia().persistirArticulo(articulo);
+		// indexacion de solr del producto nuevo
+		FabricaPersistencia.getStockPersistencia().deltaImportSolr();
 	}
 
 	public List<Articulo> buscarArticulo(String descripcion) {
@@ -282,6 +285,13 @@ public class StockControlador implements IStock {
 
 		return articulos;
 	}
+	
+	@Override
+	public DTProducto buscarArticulosVentaPorCodigo(String codigo)
+			throws Excepciones {
+			return FabricaPersistencia.getStockPersistencia()
+					.getDatosArticuloVentaPorCodigo(codigo);
+	}
 
 	@Override
 	public void actualizarStock(Date fecha) throws Excepciones {
@@ -383,7 +393,8 @@ public class StockControlador implements IStock {
 	@Override
 	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones {
 		FabricaPersistencia.getStockPersistencia().modificarArticulo(articulo);
-
+		// indexacion de solr del producto modificado
+		FabricaPersistencia.getStockPersistencia().deltaImportSolr();
 	}
 
 	@Override
@@ -416,6 +427,19 @@ public class StockControlador implements IStock {
 		// TODO Auto-generated method stub
 		FabricaPersistencia.getStockPersistencia().
 			modificarPreciosDeArticulo(preciosModificados);
+		
+	}
+
+	@Override
+	public List<DTVencimiento> articulosQueSeVencenEnPeriodo(Date desde,
+			Date hasta) throws Excepciones {
+		return FabricaPersistencia.getStockPersistencia().articulosQueSeVencenEnPeriodo(desde, hasta);
+	}
+
+	@Override
+	public void modificarVencimientosDeArticulos(Map<Long, Date> cambios) throws Excepciones {
+		FabricaPersistencia.getStockPersistencia().modificarVencimientosDeArticulos(cambios);
+		FabricaPersistencia.getStockPersistencia().deltaImportSolr();
 		
 	}
 	

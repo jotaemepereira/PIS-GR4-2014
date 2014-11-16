@@ -11,6 +11,7 @@ import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTProducto;
+import datatypes.DTVencimiento;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
@@ -152,6 +153,8 @@ public interface IStockPersistencia {
 
 	public DTProducto getDatosArticuloVenta(int idArticulo) throws Excepciones;
 
+	public DTProducto getDatosArticuloVentaPorCodigo(String codigo) throws Excepciones;
+	
 	/**
 	 * En base a lo encontrado usando solr, complementa los datos para ese artícuo
 	 * @param articulo - los datos parciales del articulo
@@ -247,6 +250,23 @@ public interface IStockPersistencia {
 	 * @author Victoria Díaz
 	 */
 	void movimientoStockCompra(Orden orden) throws Excepciones;
+	
+	/**
+	 * Devuelve una lista con información de artículos los que su fecha de vencimiento más cercano está entre
+	 * desde y hasta
+	 * @param desde
+	 * @param hasta
+	 * @return
+	 * @throws Excepciones
+	 */
+	public List<DTVencimiento> articulosQueSeVencenEnPeriodo(Date desde, Date hasta) throws Excepciones;
+
+	/**
+	 * Recibe un map con los cambios de vencimientos a realizar y los periste.
+	 * @param cambios
+	 * @throws Excepciones
+	 */
+	public void modificarVencimientosDeArticulos(Map<Long, Date> cambios) throws Excepciones;
 
 }
 

@@ -26,11 +26,13 @@ import org.apache.solr.common.SolrDocumentList;
 
 import Util.NamedParameterStatement;
 import controladores.Excepciones;
+import controladores.FabricaPersistencia;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTProducto;
+import datatypes.DTVencimiento;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
@@ -169,8 +171,6 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.close();
 				c.close();
 
-				// indexacion de solr del producto nuevo
-				deltaImportSolr();
 			} catch (Exception e) {
 				// Hago rollback de las cosas y lanzo excepcion
 				c.rollback();
@@ -309,7 +309,7 @@ public class PStockControlador implements IStockPersistencia {
 						"DESCRIPTION id BARCODE DROGAS PRESENTATION ACCIONES_TERAPEUTICAS MARCA");
 		parameters.set("start", 0);
 		parameters.set("rows", 100);
-		parameters.set("sort", "DESCRIPTION DESC");
+		//parameters.set("sort", "DESCRIPTION DESC");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
@@ -393,7 +393,7 @@ public class PStockControlador implements IStockPersistencia {
 		parameters.set("start", 0);
 		parameters.set("rows", 100);
 		parameters.set("fq", "SUPPLIER_DATA: \"" + proveedor + "#*\"");
-		parameters.set("sort", "DESCRIPTION DESC");
+		//parameters.set("sort", "DESCRIPTION DESC");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
@@ -561,13 +561,54 @@ public class PStockControlador implements IStockPersistencia {
 		articulo.setCantidad(0);
 		articulo.setRecetaBlanca(false);
 
-		/*
-		 * BigDecimal desc1 = new BigDecimal(10); BigDecimal desc2 = new
-		 * BigDecimal(30); BigDecimal desc3 = new BigDecimal(50);
-		 * articulo.setDescuento1(desc1); articulo.setDescuento2(desc2);
-		 * articulo.setDescuento3(desc3);
-		 */
-
+		return articulo;
+	}
+	
+	@Override
+	public DTProducto getDatosArticuloVentaPorCodigo(String codigo) throws Excepciones {
+		DTProducto articulo = null;
+		PreparedStatement stmt = null;
+		String query = "SELECT BARCODE, PRESENTATION, PRODUCT_ID, SALE_PRICE, IS_PSYCHOTROPIC, IS_NARCOTIC, STOCK, IVA_VALUE, TAX_VALUE, BILLING_INDICATOR, RECIPE_PRICE, RECIPE_DISCOUNT, P.DESCRIPTION, COMERCIALNAME "
+				+ "FROM PRODUCTS p "
+				+ "INNER JOIN tax_types tt ON p.tax_type_id = tt.tax_type_id "
+				+ "LEFT JOIN suppliers s ON s.supplier_id = p.brand_id "
+				+ "WHERE BARCODE = '" + codigo + "'";
+		try {
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				articulo = new DTProducto();
+				articulo.setProductId(rs.getInt("PRODUCT_ID"));
+				articulo.setPrecioVenta(rs.getBigDecimal("SALE_PRICE"));
+				articulo.setDescripcion(rs.getString("DESCRIPTION"));
+				articulo.setPresentacion(rs.getString("PRESENTATION"));
+				articulo.setCodigoBarras(rs.getString("BARCODE"));
+				articulo.setPsicofarmaco(rs.getBoolean("IS_PSYCHOTROPIC"));
+				articulo.setEstupefaciente(rs.getBoolean("IS_NARCOTIC"));
+				articulo.setStock(rs.getInt("STOCK"));
+				articulo.setIrae(rs.getBigDecimal("TAX_VALUE"));
+				articulo.setIva(rs.getBigDecimal("IVA_VALUE"));
+				articulo.setIndicadorFacturacion(rs.getInt("BILLING_INDICATOR"));
+				articulo.setPrecioReceta(rs.getBigDecimal("RECIPE_PRICE"));
+				articulo.setDescuentoReceta(rs.getBigDecimal("RECIPE_DISCOUNT"));
+				if (articulo.getDescuentoReceta() == null){
+					articulo.setDescuentoReceta(new BigDecimal(0));
+				}
+				articulo.setDescuentoReceta(articulo.getDescuentoReceta().multiply(new BigDecimal(100)));
+				articulo.setLaboratorio(rs.getString("COMERCIALNAME"));
+				articulo.setCantidad(0);
+				articulo.setRecetaBlanca(false);
+				articulo.setRecetaVerde(false);
+				articulo.setRecetaVerde(false);
+			}  
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
+		}
 		return articulo;
 	}
 
@@ -1525,8 +1566,6 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.close();
 				c.close();
 
-				// indexacion de solr del producto modificado
-				deltaImportSolr();
 			} catch (Exception e) {
 				// Hago rollback de las cosas y lanzo excepcion
 				c.rollback();
@@ -1901,6 +1940,63 @@ public class PStockControlador implements IStockPersistencia {
 			c.close();
 		} catch (Exception e) {
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+	}
+	
+	public List<DTVencimiento> articulosQueSeVencenEnPeriodo(Date desde, Date hasta) throws Excepciones{
+		List<DTVencimiento> ret = null;
+		PreparedStatement stmt = null;
+		String query = "SELECT p.product_id, p.description, p.stock, p.nearest_due_date "
+				+ "FROM products p "
+				+ "WHERE p.authorization_type = 'S' AND "
+				+ "p.nearest_due_date BETWEEN ? AND ?;";
+		try{
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			ret = new ArrayList<DTVencimiento>();
+			stmt.setTimestamp(1, new Timestamp(desde.getTime()));
+			stmt.setTimestamp(2, new Timestamp(hasta.getTime()));
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()){
+				DTVencimiento nuevo = new DTVencimiento();
+				nuevo.setIdArticulo(rs.getLong("product_id"));
+				nuevo.setDescripcion(rs.getString("description"));
+				nuevo.setStock(rs.getLong("stock"));
+				nuevo.setVencimientoMasCercano(rs.getTimestamp("nearest_due_date"));
+				ret.add(nuevo);
+			}
+			
+		} catch (Exception e){
+			e.printStackTrace();
+			throw (new  Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+		return ret;
+	}
+
+	@Override
+	public void modificarVencimientosDeArticulos(Map<Long, Date> cambios) throws Excepciones {
+		PreparedStatement stmt = null;
+		String query = "UPDATE products SET NEAREST_DUE_DATE = ?, last_modified = LOCALTIMESTAMP "
+				+ "WHERE product_id = ?;";
+		try{
+			Connection c = Conexion.getConnection();
+			c.setAutoCommit(false);
+			
+			for (Long id : cambios.keySet()){
+				stmt = c.prepareStatement(query);
+				stmt.setTimestamp(1, new Timestamp(cambios.get(id).getTime()));
+				stmt.setLong(2, id);
+				stmt.executeUpdate();
+			}			
+			
+			c.commit();
+			c.setAutoCommit(true);
+			stmt.close();
+		} catch (Exception e){
+			e.printStackTrace();
+			throw (new  Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
 	}

@@ -32,6 +32,7 @@ public class ModificarPreciosBean implements Serializable {
 
 	private long proveedor;
 	private List<Articulo> articulosDelProveedor;
+	private List<Articulo> compararModificados;
 	private List<DTProveedor> listaProveedores;
 	private Map<Integer, DTProveedor> proveedores;
 	private ISistema instanciaSistema;
@@ -82,17 +83,18 @@ public class ModificarPreciosBean implements Serializable {
 	public ModificarPreciosBean() {
 		this.listaProveedores = new ArrayList<DTProveedor>();
 		this.articulosDelProveedor = new ArrayList<Articulo>();
+		this.compararModificados = new ArrayList<Articulo>();
 	}
 
 	public void getArticulosProveedor() {
 		try {
-			articulosDelProveedor = instanciaSistema.obtenerArticulosDelProveedor(proveedor);
-		} catch (Excepciones e) {
-			
-			e.printStackTrace();
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+				articulosDelProveedor = instanciaSistema.obtenerArticulosDelProveedor(proveedor);
+				compararModificados.addAll(articulosDelProveedor);		
+			} catch (Excepciones e) {
+				e.printStackTrace();
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 		}
 	}
 
@@ -114,13 +116,18 @@ public class ModificarPreciosBean implements Serializable {
 		}
 	}
 	
+	private boolean seModificoElArticulo(int position, BigDecimal precio) {
+		Articulo art = compararModificados.get(position);
+		return (art.getPrecioUnitario() == precio);
+	}
 	public void enviarPrecios() {
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		Map<Long, BigDecimal> modificacionPrecios = new HashMap<Long, BigDecimal>();
 		
 		for (Articulo a : articulosDelProveedor) {
-			modificacionPrecios.put(a.getIdArticulo(), a.getPrecioUnitario());
+			if (seModificoElArticulo(articulosDelProveedor.indexOf(a), a.getPrecioUnitario()))
+				modificacionPrecios.put(a.getIdArticulo(), a.getPrecioUnitario());
 		}
 		
 		try {

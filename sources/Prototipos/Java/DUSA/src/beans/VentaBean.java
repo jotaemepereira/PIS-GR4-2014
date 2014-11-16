@@ -4,7 +4,6 @@ import interfaces.ISistema;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +12,14 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-
-import org.primefaces.context.RequestContext;
 
 import model.Enumerados;
 import model.LineaVenta;
 import model.Usuario;
 import model.Venta;
+
+import org.primefaces.context.RequestContext;
+
 import controladores.Excepciones;
 import datatypes.DTProducto;
 
@@ -110,7 +109,7 @@ public class VentaBean implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e
 							.getMessage(), ""));
 		}
-		descripcionBusqueda = "";	
+		descripcionBusqueda = "";
 		codigoBusqueda = "";
 	}
 
@@ -122,14 +121,18 @@ public class VentaBean implements Serializable {
 			return;
 		}
 
-		List<DTProducto> lv = new ArrayList<DTProducto>();
 		try {
-			lv = this.instanciaSistema.buscarArticulosVenta(codigoBusqueda);
+			DTProducto p = this.instanciaSistema.buscarArticulosPorCodigo(codigoBusqueda);
 
-			if (lv.size() > 0) {
-				DTProducto dtVenta = (DTProducto) lv.get(0);
-				articuloSeleccionado = dtVenta;
-				RequestContext.getCurrentInstance().execute("PF('ventaDialog').show();");
+			if (p != null) {
+				articuloSeleccionado = p;
+				RequestContext.getCurrentInstance().execute(
+						"PF('ventaDialog').show();");
+			} else {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								"Código no encontrado!", ""));
 			}
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
@@ -138,14 +141,14 @@ public class VentaBean implements Serializable {
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e
 							.getMessage(), ""));
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e
 							.getMessage(), ""));
 		}
-		
+
 		codigoBusqueda = "";
 		descripcionBusqueda = "";
 	}
@@ -173,10 +176,8 @@ public class VentaBean implements Serializable {
 						new BigDecimal(v.getCantidad()));
 
 				if (v.isRecetaBlanca()) {
-					subLinea = subLinea.multiply(
-							(new BigDecimal(100)).subtract(v
-									.getDescuentoReceta())).divide(
-							new BigDecimal(100));
+					subLinea = subLinea.multiply(v.getDescuentoReceta())
+							.divide(new BigDecimal(100));
 				}
 
 				subLinea = subLinea.multiply((new BigDecimal(100)).subtract(
@@ -212,7 +213,7 @@ public class VentaBean implements Serializable {
 								null,
 								new FacesMessage(
 										FacesMessage.SEVERITY_ERROR,
-										"el descuento ingresado debe ser un numero entre 0 y 100",
+										"El descuento ingresado debe ser un número entre 0 y 100",
 										""));
 			}
 		}
@@ -282,7 +283,6 @@ public class VentaBean implements Serializable {
 				venta.setEstadoVenta(String
 						.valueOf(Enumerados.EstadoVenta.PENDIENTE));
 
-				
 				this.instanciaSistema.registrarNuevaVenta(venta);
 				FacesContext.getCurrentInstance().addMessage(
 						null,
@@ -300,8 +300,8 @@ public class VentaBean implements Serializable {
 
 		}
 	}
-	
-	private void prepararVenta(){
+
+	private void prepararVenta() {
 		List<LineaVenta> lineas = convertirProductoALinea(lineasVenta);
 		venta.setLineas(lineas);
 
@@ -310,8 +310,7 @@ public class VentaBean implements Serializable {
 		usr = this.instanciaSistema.obtenerUsuarioLogueado();
 		venta.setUsuario(usr);
 		// TODO ver como se elige la forma de pago.
-		venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO
-				.toString());
+		venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO.toString());
 		venta.setCantidadLineas(lineas.size());
 
 		venta.setMontoNetoGravadoIvaMinimo(montoNetoGravadoIvaMinimo);
@@ -322,8 +321,7 @@ public class VentaBean implements Serializable {
 		venta.setMontoNoGravado(montoNoGravado);
 
 		venta.setMontoTotal(total);
-		venta.setMontoTotalAPagar(total.setScale(0,
-				BigDecimal.ROUND_HALF_UP));
+		venta.setMontoTotalAPagar(total.setScale(0, BigDecimal.ROUND_HALF_UP));
 	}
 
 	private List<LineaVenta> convertirProductoALinea(List<DTProducto> param) {
@@ -337,11 +335,13 @@ public class VentaBean implements Serializable {
 
 			lv.setDescuento(new BigDecimal(0));
 			if (p.isRecetaBlanca()) {
-				lv.setDescuento(p.getPrecioVenta().multiply(p.getDescuentoReceta()).divide(new BigDecimal(100)));
+				lv.setDescuento(p.getPrecioVenta()
+						.multiply((new BigDecimal(100)).subtract(p.getDescuentoReceta()))
+						.divide(new BigDecimal(100)));
 			}
-			lv.setDescuento(lv.getDescuento().add(p.getPrecioVenta()
-					.multiply(p.getDescuento())
-					.divide(new BigDecimal(100))));
+			lv.setDescuento(lv.getDescuento().add(
+					p.getPrecioVenta().multiply(p.getDescuento())
+							.divide(new BigDecimal(100))));
 
 			lv.setLinea(i);
 			lv.setPrecio(p.getPrecioVenta().subtract(lv.getDescuento()));
@@ -372,7 +372,6 @@ public class VentaBean implements Serializable {
 		} else {
 
 			try {
-
 
 				prepararVenta();
 				venta.setEstadoVenta(String
@@ -469,7 +468,7 @@ public class VentaBean implements Serializable {
 		df.setMinimumFractionDigits(0);
 
 		if (v.isRecetaBlanca()) {
-			descuento = df.format(v.getDescuentoReceta()) + "%";
+			descuento = df.format((new BigDecimal(100)).subtract(v.getDescuentoReceta())) + "%";
 		}
 
 		if (v.getDescuento().compareTo(new BigDecimal(0)) > 0) {
