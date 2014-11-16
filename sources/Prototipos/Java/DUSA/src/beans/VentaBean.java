@@ -126,6 +126,7 @@ public class VentaBean implements Serializable {
 
 			if (p != null) {
 				articuloSeleccionado = p;
+				articuloSeleccionado.setCantidad(1);
 				RequestContext.getCurrentInstance().execute(
 						"PF('ventaDialog').show();");
 			} else {
