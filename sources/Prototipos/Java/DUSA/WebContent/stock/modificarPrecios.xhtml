@@ -31,8 +31,6 @@
 						<div class="panel-heading">
 							<h3 class="panel-title">Modificar precios</h3>
 						</div>
-						<p:messages id="msgs" />
-
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
 								<div class="container-fluid">
@@ -53,6 +51,7 @@
 										update="tableArticulos, Submit">
 									</p:commandButton>
 									</div>
+									<p:messages id="msgs" showIcon="false" globalOnly="true" />
 									<p:dataTable var="articulos" id="tableArticulos" 
 												value="#{modificarPreciosBean.articulosDelProveedor}" emptyMessage="No se encontraron registros.">
 											<div class="row">
@@ -60,14 +59,16 @@
 													<h:outputText value="#{articulos.descripcion}" />
 												</p:column>
 												<p:column headerText="Precio" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-													<h:inputText value="#{articulos.precioUnitario}"/>
+													<p:inputMask value="#{articulos.precioUnitario}" 
+														mask="999.99"/>
 												</p:column>
 												</div>
 											</p:dataTable>
 								<p:commandButton 
 										id="Submit"
 										value="Enviar precios"
-										actionListener="#{modificarPreciosBean.enviarPrecios}">
+										actionListener="#{modificarPreciosBean.enviarPrecios}"
+										update="msgs" >
 								</p:commandButton>
 								</div>
 							</h:panelGroup>
