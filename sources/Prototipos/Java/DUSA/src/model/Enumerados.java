@@ -45,7 +45,11 @@ public class Enumerados {
 	    obtenerTiposDGI,
 	    obtenerTiposIva,
 	    obtenerUsuarioLogueado,
-	    alertaVencimiento
+	    alertaVencimiento,
+	    modificarPrecioArticulo,
+	    obtenerArticulosProveedor,
+	    articulosVencenPeriodo,
+	    modifVencimDeArticulos
 	}
 	/**
 	 * Informacion básica del proveedor DUSA para uso de distintos casos de uso. 
