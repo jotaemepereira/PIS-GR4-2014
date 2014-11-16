@@ -202,6 +202,20 @@ public interface IStock {
 	 * @param fecha
 	 * @throws Excepciones
 	 */
+	
+	
+	/**
+	 * @author santiago 
+	 * @param fecha
+	 * @throws Excepciones
+	 * fecha es la correspondiente a la última actualización 
+	 * se traen todos los artículos que fueron dados de alta o sufriron
+	 * cambios desde fecha hasta el día de hoy
+	 * Si los artículos no existen se insertan en la bd 
+	 * si ya existen se chequean los cambios en caso de que haya dismunuído el precio
+	 * o el estado cambie, dejando de estar dado de baja se agregan a cambios 
+	 * estos cambios se envían por mail a los correos especificados en el .properties
+	 */
 	public void actualizarStock(Date fecha) throws Excepciones;
 	
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;

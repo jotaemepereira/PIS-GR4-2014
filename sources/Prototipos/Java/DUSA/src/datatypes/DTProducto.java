@@ -32,6 +32,16 @@ public class DTProducto implements Serializable {
 	private BigDecimal descuentoReceta = new BigDecimal(0);
 	private int indicadorFacturacion;
 	
+	public DTProducto(){}
+	
+	public DTProducto(DTBusquedaArticuloSolr articulo){
+		this.descripcion = articulo.getDescripcion();
+		this.productId = articulo.getIdArticulo();
+		this.barcode = articulo.getCodigoBarras();
+		this.presentacion = articulo.getPresentacion();
+		this.principioActivo = articulo.getDroga();
+	}
+	
 
 	public int getProductId() {
 		return productId;

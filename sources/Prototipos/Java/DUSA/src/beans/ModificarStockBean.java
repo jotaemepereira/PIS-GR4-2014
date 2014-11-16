@@ -12,8 +12,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.ViewHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.Validator;
+import javax.faces.validator.ValidatorException;
 
 import model.Enumerados.tipoMovimientoDeStock;
 
@@ -25,7 +28,7 @@ import datatypes.DTBusquedaArticulo;
 
 @ManagedBean
 @ViewScoped
-public class ModificarStockBean implements Serializable{
+public class ModificarStockBean implements Serializable, Validator{
 
 	/**
 	 * 
@@ -180,6 +183,7 @@ public class ModificarStockBean implements Serializable{
 				nuevoStock = new long[resBusqueda.size()];
 				for (int i = 0; i < resBusqueda.size(); i++) {
 					nuevoStock[i] = resBusqueda.get(i).getStock();
+					resBusqueda.get(i).setNuevoStock(nuevoStock[i]);
 				}
 			}
 			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
@@ -220,6 +224,42 @@ public class ModificarStockBean implements Serializable{
 			contexto.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
 					e.getMessage(), ""));
+		}
+	}
+	
+	@Override
+	public void validate(FacesContext arg0, UIComponent arg1, Object arg2)
+			throws ValidatorException {
+		
+		String aValidar = (String) arg2;
+		
+		try {
+			
+			 Long.parseLong(aValidar);
+			
+		} catch (Exception e) {
+			
+			FacesMessage mensajeAMostrar = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hola", "");
+			arg0.addMessage(null, mensajeAMostrar);
+//			throw new ValidatorException(mensajeAMostrar);
+		}
+	}
+	/**
+	 * Método para validar la entrada en la cantidad de stock del artículo.
+	 */
+	public void validarEntradaStock (FacesContext context, UIComponent component, Object value) throws ValidatorException { 
+		
+		String aValidar = (String) value;
+		
+		try {
+			
+			 Long.parseLong(aValidar);
+			
+		} catch (Exception e) {
+			
+			FacesMessage mensajeAMostrar = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hola", "");
+			context.addMessage(null, mensajeAMostrar);
+//			throw new ValidatorException(mensajeAMostrar);
 		}
 	}
 

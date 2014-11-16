@@ -5,7 +5,6 @@ import interfaces.ISeleccionador;
 import interfaces.IServicio;
 import interfaces.IStock;
 import interfaces.IStockPersistencia;
-import interfaces.IUsuarioPersistencia;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
@@ -18,7 +17,6 @@ import model.Pedido;
 import model.TipoIva;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,7 +31,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 
 import persistencia.PStockControlador;
 import datatypes.DTBusquedaArticuloSolr;
@@ -151,33 +148,13 @@ public class StockControlador implements IStock {
 		return lPedidos;
 	}
 
-	private List<DTBusquedaArticulo> getDatosArticulosBuscados(
-			List<DTBusquedaArticuloSolr> encontrados) throws Excepciones {
-		List<DTBusquedaArticulo> articulos = new ArrayList<DTBusquedaArticulo>();
-
-		Iterator<DTBusquedaArticuloSolr> it = encontrados.iterator();
-		while (it.hasNext()) {
-			DTBusquedaArticuloSolr dtBusquedaArticulo = it
-					.next();
-
-			DTBusquedaArticulo articulo = new DTBusquedaArticulo(
-					dtBusquedaArticulo);
-			FabricaPersistencia.getStockPersistencia().buscarArticulosId(
-					articulo);
-
-			articulos.add(articulo);
-		}
-
-		return articulos;
-	}
-
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda)
 			throws Excepciones {
-		List<DTBusquedaArticuloSolr> encontrados = FabricaPersistencia
-				.getStockPersistencia().buscarArticulosSolr(busqueda);
+		IStockPersistencia isp = FabricaPersistencia.getStockPersistencia();
+		List<DTBusquedaArticuloSolr> encontrados = isp.buscarArticulosSolr(busqueda);
 
-		return getDatosArticulosBuscados(encontrados);
+		return isp.getDatosArticulosBuscados(encontrados);
 	}
 
 	@Override
@@ -246,6 +223,8 @@ public class StockControlador implements IStock {
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
 		//grabarTiposIVA();
+		//System.out.println("***** ACCIONES TER ****");
+		//FabricaPersistencia.getStockPersistencia().fullImportSolr();
 		return FabricaPersistencia.getStockPersistencia()
 				.obtenerAccionesTerapeuticas();
 	}
@@ -264,26 +243,11 @@ public class StockControlador implements IStock {
 	@Override
 	public List<DTProducto> buscarArticulosVenta(String busqueda)
 			throws Excepciones {
-		List<DTProducto> articulos = new ArrayList<DTProducto>();
 		List<DTBusquedaArticuloSolr> lista = FabricaPersistencia
 				.getStockPersistencia().buscarArticulosSolr(busqueda);
 
-		Iterator<DTBusquedaArticuloSolr> it = lista.iterator();
-
-		while (it.hasNext()) {
-			DTBusquedaArticuloSolr articuloB = it
-					.next();
-			DTProducto articuloV = FabricaPersistencia.getStockPersistencia()
-					.getDatosArticuloVenta(articuloB.getIdArticulo());
-			articuloV.setDescripcion(articuloB.getDescripcion());
-			articuloV.setProductId(articuloB.getIdArticulo());
-			articuloV.setBarcode(articuloB.getCodigoBarras());
-			articuloV.setPresentacion(articuloB.getPresentacion());
-			articuloV.setPrincipioActivo(articuloB.getDroga());
-			articulos.add(articuloV);
-		}
-
-		return articulos;
+		return FabricaPersistencia.getStockPersistencia()
+				.getDatosArticuloVenta(lista);
 	}
 	
 	@Override
@@ -299,10 +263,27 @@ public class StockControlador implements IStock {
 
 		Mail m;
 
+		/**
+		 * se traen todos los artículos que tuvieron cambios desde la fecha que
+		 * se recibe por  parámetro hasta el día de hoy
+		 */
 		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
-		
+		/**
+		 * si un artículo bajó su precio o cambió su estado de dado de baja a dejar de estarlo
+		 * se agrega a la lista de cambios para ser enviado por mail
+		 */
 		List<Cambio> cambios = FabricaPersistencia.getStockPersistencia().obtenerCambios(articulos);
 		
+		
+		/**
+		 * Se lee el mail y password del correo emisor
+		 * y mails de los receptores en caso de que no existan 
+		 * del archivo .properties
+		 * en caso de que no existan estas propiedades se crean
+		 * Finalmente se actualiza al fecha de fechaUltimaActualizacion
+		 * al día de hoy
+		 * 
+		 */
 		
 		OutputStream output;
 		try {
@@ -400,11 +381,10 @@ public class StockControlador implements IStock {
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda,
 			long proveedor) throws Excepciones {
-		List<DTBusquedaArticuloSolr> encontrados = FabricaPersistencia
-				.getStockPersistencia()
-				.buscarArticulosSolr(busqueda, proveedor);
+		IStockPersistencia isp = FabricaPersistencia.getStockPersistencia();
+		List<DTBusquedaArticuloSolr> encontrados = isp.buscarArticulosSolr(busqueda, proveedor);
 
-		return getDatosArticulosBuscados(encontrados);
+		return isp.getDatosArticulosBuscados(encontrados);
 	}
 
 	@Override
