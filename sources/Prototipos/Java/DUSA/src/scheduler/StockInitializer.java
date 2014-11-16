@@ -7,6 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;
@@ -38,6 +41,8 @@ public class StockInitializer implements ServletContextListener {
 		Properties prop = new Properties();
 		OutputStream output = null; 
 		InputStream input = null;
+		
+		
 
 		try {
 			sched = new StdSchedulerFactory().getScheduler();
