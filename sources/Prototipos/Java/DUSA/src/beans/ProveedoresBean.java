@@ -177,7 +177,7 @@ public class ProveedoresBean implements Serializable {
 							Excepciones.MENSAJE_RUT_ERRONEO, ""));
 					return;
 				}
-				System.out.println("SELECCIONO CI");
+				
 				// Inicializo los coefcientes en el orden correcto
 				int[] arrCoefs = { 2, 9, 8, 7, 6, 3, 4, 1 };
 				int suma = 0;
@@ -214,7 +214,7 @@ public class ProveedoresBean implements Serializable {
 				}
 
 			} else if (tipoDocumento.equals("R")) { // en caso de rut
-				System.out.println("SELECCIONO RUT");
+				
 				int[] digitos = new int[RUT.length()];
 				int factor;
 				int suma = 0;
@@ -238,11 +238,11 @@ public class ProveedoresBean implements Serializable {
 						digitoVerificador = 1;
 					}
 				} catch (Exception e) {
+					e.printStackTrace();
 					digitoVerificador = -1;
 				}
 				char verificadorRUT = RUT.charAt(RUT.length() - 1);
-				System.out.println("digito ingresado: " + verificadorRUT
-						+ " calculado: " + digitoVerificador);
+				
 				if (Integer.parseInt("" + verificadorRUT) != digitoVerificador) {
 					context.addMessage(null, new FacesMessage(
 							FacesMessage.SEVERITY_ERROR,
@@ -312,7 +312,7 @@ public class ProveedoresBean implements Serializable {
 	 * @author Victoria Díaz
 	 */
 	public void cancelarAltaProveedor() {
-		System.out.println("********** CANCELAR PROVEEDOR ************");
+		
 		this.direccion = "";
 		this.nombreComercial = "";
 		this.razonSocial = "";

@@ -324,7 +324,6 @@ public class ComprasBean implements Serializable {
 		if (factura.getOrdenDeCompra() == 0) {
 			BigDecimal total = factura.getMontoTotalAPagar().add(
 					factura.getMontoNoFacturable());
-			System.out.println("TOTALES: " + total + " " + totalFactura);
 			if (totalFactura.compareTo(total) != 0) {
 				context.addMessage(
 						null,
@@ -435,7 +434,6 @@ public class ComprasBean implements Serializable {
 		// En caso que se haya dado que hay algún artúculo con costo de lista <
 		// precio unitario, muestro el popup con los mismos
 		if (!alertasPrecios.isEmpty()) {
-			System.out.println("alerta");
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAlerta').show()");
 		}
@@ -534,8 +532,7 @@ public class ComprasBean implements Serializable {
 		try {
 			busquedaArticulos = this.instanciaSistema.buscarArticulos(busqueda,
 					this.proveedorSeleccionado);
-			System.out.println("CANTIDAD ENCONTRADA: "
-					+ busquedaArticulos.size());
+		
 		} catch (Excepciones e) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage(

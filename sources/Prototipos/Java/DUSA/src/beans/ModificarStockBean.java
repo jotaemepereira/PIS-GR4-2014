@@ -186,7 +186,7 @@ public class ModificarStockBean implements Serializable, Validator{
 					resBusqueda.get(i).setNuevoStock(nuevoStock[i]);
 				}
 			}
-			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
+			
 		} catch (Excepciones e) {
 			
 			e.printStackTrace();
@@ -241,7 +241,6 @@ public class ModificarStockBean implements Serializable, Validator{
 			
 			FacesMessage mensajeAMostrar = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Hola", "");
 			arg0.addMessage(null, mensajeAMostrar);
-//			throw new ValidatorException(mensajeAMostrar);
 		}
 	}
 	/**
@@ -323,6 +322,7 @@ public class ModificarStockBean implements Serializable, Validator{
 							ex.getMessage(),
 							""));
 		} catch (Exception e) {
+			e.printStackTrace();
 			contexto.addMessage(
 					null,
 					new FacesMessage(

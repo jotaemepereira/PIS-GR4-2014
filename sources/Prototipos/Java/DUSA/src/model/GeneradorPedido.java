@@ -54,7 +54,7 @@ public class GeneradorPedido {
 			}
 		}
 		
-		System.out.println("Duro: " + (int) ((Calendar.getInstance().getTimeInMillis() - ini) / 1000));
+		
 		return pedido;
 	}
 	

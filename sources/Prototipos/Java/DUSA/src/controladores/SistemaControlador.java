@@ -88,16 +88,6 @@ public class SistemaControlador implements ISistema {
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 	}
 
-//	public void actualizarStock(Date fecha) {
-//		System.out.println("actualizarStock");
-//		try {
-//			FabricaLogica.getIStock().actualizarStock(fecha);
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones {
 
@@ -184,7 +174,7 @@ public class SistemaControlador implements ISistema {
 	}
 	@Override
 	public List<DTProducto> buscarArticulosVenta(String busqueda) throws Excepciones {
-		System.out.println("********* BUSCAR ************** " + busqueda);
+		
 		if (user.tienePermiso(casoDeUso.buscarArticulo))
 			return FabricaLogica.getIStock().buscarArticulosVenta(busqueda);
 		else
@@ -353,14 +343,6 @@ public class SistemaControlador implements ISistema {
 		
 		List<Venta> vPendientes = null;
 		if (user.tienePermiso(casoDeUso.listarVentasPendientes)) {
-			
-//			try {
-				vPendientes = FabricaLogica.getIFacturacion().listarVentasPendientes();
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-
 
 		} else {
 			

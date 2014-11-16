@@ -49,7 +49,7 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 			stmt.close();
 			c.close();
 		} catch ( Exception e ) {
-			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 	}
@@ -74,7 +74,7 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 			stmt.close();
 			c.close();
 		} catch ( Exception e ) {
-			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		return (cant > 0);
@@ -100,7 +100,7 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 			stmt.close();
 			c.close();
 		} catch ( Exception e ) {
-			System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+			e.printStackTrace();
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		return (cant > 0);
@@ -126,6 +126,7 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 				ret.put(nuevo.getIdProveedor(), nuevo);
 			}
 		} catch (Exception e){
+			e.printStackTrace();
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		return ret;		
@@ -151,6 +152,7 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 				ret.add(nuevo);
 			}
 		} catch (Exception e){
+			e.printStackTrace();
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		return ret;		
@@ -179,6 +181,7 @@ public class PProveedoresControlador implements IProveedoresPersistencia {
 			stmt.close();
 			c.close();
 		} catch ( Exception e ) {
+			e.printStackTrace();
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		return (cant > 0);

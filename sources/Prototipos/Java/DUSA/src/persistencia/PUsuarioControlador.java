@@ -54,6 +54,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 
 
 		} catch (Exception e){
+			e.printStackTrace();
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 
@@ -80,6 +81,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 
 
 		} catch (Exception e){
+			e.printStackTrace();
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 		/**
@@ -106,6 +108,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 			c.close();
 
 		} catch (Exception e){
+			e.printStackTrace();
 			throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 		}
 
@@ -138,6 +141,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 
 
 			} catch (Exception e){
+				e.printStackTrace();
 				throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 			}
 		}
@@ -163,6 +167,7 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 				c.close();
 
 			} catch (Exception e){
+				e.printStackTrace();
 				throw(new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));
 			}
 		}

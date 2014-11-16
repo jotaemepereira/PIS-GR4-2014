@@ -51,9 +51,8 @@ public class PComprasControlador implements IComprasPersistencia {
 					stmt.close();
 					stmt.close();
 				} catch (Exception e) {
-					
-					c.close();
 					e.printStackTrace();
+					c.close();
 					throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 							Excepciones.ERROR_SISTEMA));
 				}
@@ -87,9 +86,9 @@ public class PComprasControlador implements IComprasPersistencia {
 				
 				stmt.close();
 			} catch (Exception e) {
-				
-				c.close();
 				e.printStackTrace();
+
+				c.close();
 				throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 						Excepciones.ERROR_SISTEMA));
 			}

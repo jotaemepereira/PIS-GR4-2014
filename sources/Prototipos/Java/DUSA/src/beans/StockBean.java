@@ -666,7 +666,7 @@ public class StockBean implements Serializable {
 
 		try {
 			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);
-			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
+			
 		} catch (Excepciones e) {
 			e.printStackTrace();
 		}

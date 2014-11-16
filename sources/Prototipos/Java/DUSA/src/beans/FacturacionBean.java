@@ -90,6 +90,7 @@ public class FacturacionBean implements Serializable {
 								Excepciones.MENSAJE_NO_CORROBORADO_OK, ""));
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -121,6 +122,7 @@ public class FacturacionBean implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							ex.getMessage(), ""));
 		} catch (Exception e) {
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -146,6 +148,7 @@ public class FacturacionBean implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							ex.getMessage(), ""));
 		} catch (Exception e) {
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,

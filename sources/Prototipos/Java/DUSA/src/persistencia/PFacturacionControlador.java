@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -12,9 +11,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.naming.NamingException;
-
 import controladores.Excepciones;
 import controladores.FabricaPersistencia;
 import model.Articulo;
@@ -165,13 +161,15 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 						+ Enumerados.EstadoVenta.PENDIENTE + "'";
 				st.executeUpdate(sqlUpdate);
 			} catch (Exception e) {
-				throw e;
+				e.printStackTrace();
+				throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+						Excepciones.ERROR_SISTEMA));
 			} finally {
 				st.close();
 				con.close();
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA);
 		}
@@ -299,7 +297,9 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				return v;
 			} catch (Exception e) {
 				con.rollback();
-				throw e;
+				e.printStackTrace();
+				throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+						Excepciones.ERROR_SISTEMA));
 			} finally {
 				st.close();
 				con.close();
@@ -338,7 +338,11 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			}
 
 		} catch (Exception e) {
-			throw e;
+			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+
+			
 		} finally {
 			st.close();
 			con.rollback();

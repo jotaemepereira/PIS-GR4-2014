@@ -7,12 +7,10 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-
 import controladores.Excepciones;
 import controladores.FabricaSistema;
 import model.Enumerados;
@@ -358,7 +356,6 @@ public class LoginBean implements Serializable {
 							""));
 			this.instanciaSistema = null;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 
 		}
@@ -377,7 +374,7 @@ public class LoginBean implements Serializable {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("../login.jsf");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error al cargar la página.", ""));
 		}
 	}
@@ -388,6 +385,7 @@ public class LoginBean implements Serializable {
 				FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/DUSA/stock/busquedaArticulo.jsf");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error al cargar la página.", ""));
 		}
 	}
@@ -398,6 +396,7 @@ public class LoginBean implements Serializable {
 				FacesContext.getCurrentInstance().getExternalContext().redirect("../login.jsf");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error al cargar la página.", ""));
 		}
 	}

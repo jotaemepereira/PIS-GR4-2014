@@ -64,7 +64,6 @@ public class FacturacionControlador implements IFacturacion {
 				
 				XMLUtil.jaxbObjectToXML(venta);
 			} catch (Exception e) {
-				
 				e.printStackTrace();
 				throw new Excepciones(Excepciones.MENSAJE_ERROR_IMPRESION_FACTURA, Excepciones.ERROR_SISTEMA);
 			}

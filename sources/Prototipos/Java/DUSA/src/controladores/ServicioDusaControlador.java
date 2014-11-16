@@ -157,8 +157,8 @@ public class ServicioDusaControlador implements IServicio {
 					userTest, passTest, dPedido);
 
 			MensajeError error = resPedido.getMensaje();
-			System.out.println("Realizar pedido respuesta: "
-					+ error.getMensaje());
+			
+			
 		} catch (Exception e) {
 			
 			e.printStackTrace();
@@ -220,6 +220,7 @@ public class ServicioDusaControlador implements IServicio {
 				ret.add(transformarTipoIVA(di));
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}

@@ -5,7 +5,6 @@ import interfaces.ISeleccionador;
 import interfaces.IServicio;
 import interfaces.IStock;
 import interfaces.IStockPersistencia;
-import interfaces.IUsuarioPersistencia;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
@@ -16,9 +15,7 @@ import model.LineaPedido;
 import model.Mail;
 import model.Pedido;
 import model.TipoIva;
-
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,10 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-
 import persistencia.PStockControlador;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
@@ -79,7 +73,7 @@ public class StockControlador implements IStock {
 			articulo = FabricaPersistencia.getStockPersistencia()
 					.obtenerArticuloConId(id.longValue());
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 			e.printStackTrace();
 		}
 
@@ -361,7 +355,7 @@ public class StockControlador implements IStock {
 		FabricaPersistencia.getStockPersistencia().fullImportSolr();
 		
 		} catch (IOException | MessagingException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 

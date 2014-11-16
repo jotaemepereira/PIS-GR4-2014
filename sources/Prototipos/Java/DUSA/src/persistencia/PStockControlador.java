@@ -13,9 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.naming.NamingException;
-
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -23,10 +21,8 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-
 import Util.NamedParameterStatement;
 import controladores.Excepciones;
-import controladores.FabricaPersistencia;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
@@ -179,11 +175,9 @@ public class PStockControlador implements IStockPersistencia {
 						Excepciones.ERROR_SISTEMA));
 			}
 		} catch (NamingException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			throw (new Excepciones("Error sistema", Excepciones.ERROR_SISTEMA));
 		}
@@ -243,6 +237,7 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
@@ -313,13 +308,13 @@ public class PStockControlador implements IStockPersistencia {
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
-			System.out.println(response);
+			
 			Long cant = response.getNumFound();
 			if (cant > 100) {
 				cant = (long) 100;
 			}
 			for (int i = 0; i < cant; i++) {
-				System.out.println(response.get(i));
+				
 
 				SolrDocument item = response.get(i);
 
@@ -397,13 +392,13 @@ public class PStockControlador implements IStockPersistencia {
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
-			System.out.println(response);
+			
 			Long cant = response.getNumFound();
 			if (cant > 100) {
 				cant = (long) 100;
 			}
 			for (int i = 0; i < cant; i++) {
-				System.out.println(response.get(i));
+				
 
 				SolrDocument item = response.get(i);
 
@@ -455,8 +450,8 @@ public class PStockControlador implements IStockPersistencia {
 					articulo.setNumeroProducto_proveedor(0);
 				}
 
-				System.out.println("numero2: "
-						+ articulo.getNumeroProducto_proveedor());
+				
+				
 				listaArticulos.add(articulo);
 			}
 		} catch (SolrServerException e) {
@@ -626,7 +621,7 @@ public class PStockControlador implements IStockPersistencia {
 		QueryResponse response;
 		try {
 			response = solr.query(parameters);
-			System.out.println(response);
+			
 		} catch (SolrServerException e) {
 			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
@@ -648,7 +643,7 @@ public class PStockControlador implements IStockPersistencia {
 		SolrDocumentList response;
 		try {
 			response = solr.query(parameters).getResults();
-			System.out.println(response);
+			
 		} catch (SolrServerException e) {
 			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
@@ -889,6 +884,7 @@ public class PStockControlador implements IStockPersistencia {
 			rs.close();
 			stmt.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
@@ -918,6 +914,7 @@ public class PStockControlador implements IStockPersistencia {
 			rs.close();
 			stmt.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
@@ -1040,6 +1037,7 @@ public class PStockControlador implements IStockPersistencia {
 			rs.close();
 			stmt.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
@@ -1071,6 +1069,7 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
@@ -1099,6 +1098,7 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
@@ -1123,6 +1123,7 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.executeUpdate();
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		} finally{
@@ -1268,7 +1269,7 @@ public class PStockControlador implements IStockPersistencia {
 		query += "unit_price='" + articulo.getPrecioUnitario() + "' ";
 		query += ",LAST_MODIFIED = LOCALTIMESTAMP ";
 		query += "WHERE PRODUCT_ID =" + articulo.getIdArticulo() +";";
-		System.out.println(query);
+		
 		Connection c = null;
 		
 		try {
@@ -1280,7 +1281,6 @@ public class PStockControlador implements IStockPersistencia {
 			c.close();
 
 		} catch (NamingException | SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -1910,6 +1910,7 @@ public class PStockControlador implements IStockPersistencia {
 			stmt.close();
 			c.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
@@ -1939,6 +1940,7 @@ public class PStockControlador implements IStockPersistencia {
 
 			c.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
