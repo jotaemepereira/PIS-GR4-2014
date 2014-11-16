@@ -36,7 +36,7 @@ public class PredecirCantidadDesde implements IPredictor {
 		IFacturacionPersistencia fp = FabricaPersistencia
 				.getInstanciaFacturacionPersistencia();
 		return new ArrayList<DTLineaPedido>(
-				fp.obtenerCantidadVendidaDeArticulosDeDusa(fechaDesde,
+				fp.obtenerCantidadVendidaDesdeUltimoPedido(fechaDesde,
 						new Date(Calendar.getInstance().getTimeInMillis())).values());
 	}
 

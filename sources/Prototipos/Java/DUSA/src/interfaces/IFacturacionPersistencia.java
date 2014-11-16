@@ -61,4 +61,15 @@ public interface IFacturacionPersistencia {
 	 * @throws Excepciones
 	 */
 	public Map<Long, DTLineaPedido> obtenerCantidadVendidaDeArticulosDeDusa(Date desde, Date hasta) throws Excepciones;
+
+	/**
+	 * Devuelve un map con clave idArticulo y los datos de los articulos mas la cantidad vendida en el período (desde, hasta)
+	 * Toma solo ventas facturadas y artículos que los provea DUSA.
+	 * @param desde
+	 * @param hasta
+	 * @return
+	 * @throws Excepciones
+	 */
+	public Map<Long, DTLineaPedido> obtenerCantidadVendidaDesdeUltimoPedido(Date fechaDesde,
+			Date date) throws Excepciones;
 }
