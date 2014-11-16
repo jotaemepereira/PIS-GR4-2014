@@ -67,7 +67,8 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 		Map<Long, DTLineaPedido> mapaCantidadesAPedir = null;
 		Map<Long, DTLineaPedido> mapaCantVendidaAnosAnteriores;
 		Map<Long, SimpleRegression> mapaRectas = new HashMap<Long, SimpleRegression>();
-
+		List<DTLineaPedido> ret = null;
+		
 		final Calendar hoy = Calendar.getInstance();
 		Calendar desde = Calendar.getInstance();
 		Calendar hasta = Calendar.getInstance();
@@ -164,7 +165,16 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 			}
 		}
 		
-		return new ArrayList<DTLineaPedido>(mapaCantidadesAPedir.values());
+		/*
+		 * Devuelvo solo los artículos que tienen una cantidad predecida.
+		 */
+		ret = new ArrayList<DTLineaPedido>();
+		for(DTLineaPedido linea : mapaCantidadesAPedir.values()){
+			if (linea.getCantidad() > 0){
+				ret.add(linea);
+			}
+		}
+		return ret;
 
 	}
 
