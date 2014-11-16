@@ -37,6 +37,7 @@
 								<div class="container-fluid">
 								<!-- Componente Wizard para manejar los distintos pasos -->
 									<p:wizard flowListener="#{modificarStockBean.onFlowProcess}" id="wizardID" widgetVar="varWizar" nextLabel="Siguiente" backLabel="Atras">
+									
 									<!-- Busco artículo a desarmar -->
 										<p:tab id="paso1" title="Artículo a desarmar">
 											<div class="row" style="margin-bottom: 1%;">
@@ -59,6 +60,7 @@
 											<div class="row"
 												style="margin-bottom: 1%; text-align: center;">
 												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+												
 												<!-- Tabla de articulos de la busqueda-->
 													<p:dataTable var="articuloBusqueda" id="tableBusqueda"
 														value="#{modificarStockBean.resBusqueda}"
@@ -96,6 +98,7 @@
 												</div>
 											</div>
 										</p:tab>
+										
 										<!-- Busco artículo a generar -->
 										<p:tab id="paso2" title="Artículo destino">
 											<div class="row" style="margin-bottom: 1%;">
@@ -156,6 +159,7 @@
 												</div>
 											</div>
 										</p:tab>
+										
 										<!-- Información del desarme -->
 										<p:tab id="paso3" title="Desarme">
 
