@@ -309,7 +309,6 @@ public class PStockControlador implements IStockPersistencia {
 						"DESCRIPTION id BARCODE DROGAS PRESENTATION ACCIONES_TERAPEUTICAS MARCA");
 		parameters.set("start", 0);
 		parameters.set("rows", 100);
-		//parameters.set("sort", "DESCRIPTION DESC");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
@@ -393,7 +392,6 @@ public class PStockControlador implements IStockPersistencia {
 		parameters.set("start", 0);
 		parameters.set("rows", 100);
 		parameters.set("fq", "SUPPLIER_DATA: \"" + proveedor + "#*\"");
-		//parameters.set("sort", "DESCRIPTION DESC");
 
 		try {
 			SolrDocumentList response = solr.query(parameters).getResults();
@@ -403,8 +401,6 @@ public class PStockControlador implements IStockPersistencia {
 				cant = (long) 100;
 			}
 			for (int i = 0; i < cant; i++) {
-				System.out.println(response.get(i));
-
 				SolrDocument item = response.get(i);
 
 				DTBusquedaArticuloSolr articulo = new DTBusquedaArticuloSolr();
@@ -455,8 +451,6 @@ public class PStockControlador implements IStockPersistencia {
 					articulo.setNumeroProducto_proveedor(0);
 				}
 
-				System.out.println("numero2: "
-						+ articulo.getNumeroProducto_proveedor());
 				listaArticulos.add(articulo);
 			}
 		} catch (SolrServerException e) {
@@ -542,7 +536,6 @@ public class PStockControlador implements IStockPersistencia {
 				+ "FROM PRODUCTS p "
 				+ "INNER JOIN tax_types tt ON p.tax_type_id = tt.tax_type_id "
 				+ "LEFT JOIN suppliers s ON s.supplier_id = p.brand_id "
-
 				+ "WHERE PRODUCT_ID = ?";
 		try {
 			Connection c = Conexion.getConnection();

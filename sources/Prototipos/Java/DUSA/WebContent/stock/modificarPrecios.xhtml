@@ -38,9 +38,9 @@
 										filterMatchMode="contains" required="false">
 										<f:selectItem itemLabel="Seleccione proveedor"
 											itemValue="#{null}" />
-										<f:selectItems value="#{modificarPreciosBean.listaProveedores}"
-											var="p" itemLabel="#{p.nombreComercial}"
-											itemValue="#{p.idProveedor}" />
+										<f:selectItems
+											value="#{modificarPreciosBean.listaProveedores}" var="p"
+											itemLabel="#{p.nombreComercial}" itemValue="#{p.idProveedor}" />
 										<f:ajax event="change" execute="@this" />
 									</p:selectOneMenu>
 									<div class="btn-group-vertical">
