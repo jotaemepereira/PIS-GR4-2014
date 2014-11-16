@@ -65,6 +65,8 @@ public class Excepciones extends Exception {
 	public static String MENSAJE_CANT_IGUALES					= "No hay cambios ingresados.";
 	public static String MENSAJE_SELECCIONE_ARTICULO			= "Por favor, busque y/o seleccione un artículo para continuar.";
 	
+	//Mensajes alertas por vencimiento
+	public static String MENSAJE_OK_ALERTA_VENCIMIENTO			= "Las modificaciones se realizaron correctamente.";
 	
 	public Excepciones(String message, int errorCode){
         super(message);

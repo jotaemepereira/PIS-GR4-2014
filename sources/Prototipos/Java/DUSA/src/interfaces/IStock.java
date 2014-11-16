@@ -15,6 +15,7 @@ import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProducto;
+import datatypes.DTVencimiento;
 
 public interface IStock {
 
@@ -206,5 +207,22 @@ public interface IStock {
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
 	
 	public void modificarPreciodeArticulos(Map<Long, BigDecimal> preciosModificados) throws Excepciones;
+	
+	/**
+	 * Devuelve una lista con información de artículos los que su fecha de vencimiento más cercano está entre
+	 * desde y hasta
+	 * @param desde
+	 * @param hasta
+	 * @return
+	 * @throws Excepciones
+	 */
+	public List<DTVencimiento> articulosQueSeVencenEnPeriodo(Date desde, Date hasta) throws Excepciones;
+
+	/**
+	 * Recibe un map con los cambios de vencimientos a realizar y los periste.
+	 * @param cambios
+	 * @throws Excepciones
+	 */
+	public void modificarVencimientosDeArticulos(Map<Long, Date> cambios) throws Excepciones;
 	
 }

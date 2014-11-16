@@ -1,6 +1,7 @@
 package controladores;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTTiposDGI;
 import datatypes.DTProducto;
+import datatypes.DTVencimiento;
 import model.AccionTer;
 import model.Actividad;
 import model.Articulo;
@@ -422,6 +424,30 @@ public class SistemaControlador implements ISistema {
 			Operacion operacion = user.getOperacion(casoDeUso.modificarPrecioArticulo);
 			Actividad act = new Actividad(operacion, user.getNombre());
 			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+		} else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+	}
+
+	@Override
+	public List<DTVencimiento> articulosQueSeVencenEnPeriodo(Date desde,
+			Date hasta) throws Excepciones {
+		if (user.tienePermiso(casoDeUso.alertaVencimiento)){
+			return FabricaLogica.getIStock().articulosQueSeVencenEnPeriodo(desde, hasta);
+		} else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+	}
+
+	@Override
+	public void modificarVencimientosDeArticulos(Map<Long, Date> cambios)
+			throws Excepciones {
+		if (user.tienePermiso(casoDeUso.alertaVencimiento)){
+			
+			FabricaLogica.getIStock().modificarVencimientosDeArticulos(cambios);
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.alertaVencimiento);
+			Actividad act = new Actividad(operacion, user.getNombre());			
 			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
 		} else
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
