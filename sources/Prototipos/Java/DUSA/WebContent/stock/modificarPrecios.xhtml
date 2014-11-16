@@ -60,6 +60,8 @@
 												<p:column headerText="Precio" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
 													<p:inputText id="precio" value="#{articulos.precioUnitario}" 
 														validatorMessage="El largo debe ser menor a 15."
+														requiredMessage="El campo no puede ser vacío."
+														converterMessage="El valor no puede contener caracteres."
 														required="true">
 														<f:validateLength
 															maximum="15"/>
