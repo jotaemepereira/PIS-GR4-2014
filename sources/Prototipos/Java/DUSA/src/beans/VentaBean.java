@@ -129,8 +129,8 @@ public class VentaBean implements Serializable {
 			if (lv.size() > 0) {
 				DTProducto dtVenta = (DTProducto) lv.get(0);
 				articuloSeleccionado = dtVenta;
+				RequestContext.getCurrentInstance().execute("PF('ventaDialog').show();");
 			}
-			RequestContext.getCurrentInstance().execute("PF('ventaDialog').show();");
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
