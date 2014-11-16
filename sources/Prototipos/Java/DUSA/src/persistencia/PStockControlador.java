@@ -468,8 +468,10 @@ public class PStockControlador implements IStockPersistencia {
 	}
 
 	@Override
-	public void buscarArticulosId(DTBusquedaArticulo articulo)
+	public List<DTBusquedaArticulo> getDatosArticulosBuscados(List<DTBusquedaArticuloSolr> articulos)
 			throws Excepciones {
+		List<DTBusquedaArticulo> articulosRet = new ArrayList<DTBusquedaArticulo>();
+		
 		PreparedStatement stmt = null;
 
 		String query = "SELECT p.UNIT_PRICE, p.SALE_PRICE, p.LIST_COST, p.LAST_COST, p.AVG_COST, p.SALE_CODE, p.PRODUCT_TYPE, p.STOCK, p.TAX_TYPE_ID, ";
@@ -479,35 +481,50 @@ public class PStockControlador implements IStockPersistencia {
 		query += "WHERE p.PRODUCT_ID = ?";
 		try {
 			Connection c = Conexion.getConnection();
-			stmt = c.prepareStatement(query);
-			stmt.setInt(1, articulo.getIdArticulo());
-			ResultSet rs = stmt.executeQuery();
-			// Obtengo la cantidad de proveedores con ese rut
-			while (rs.next()) {
-				articulo.setTipoDeArticulo(model.Enumerados
-						.descripcionTipoArticuloAbreviado(rs
-								.getString("PRODUCT_TYPE")));
-				articulo.setControlDeVenta(model.Enumerados
-						.descripcionTipoVenta(rs.getString("SALE_CODE")));
-				articulo.setPrecioDeVenta(rs.getBigDecimal("UNIT_PRICE"));
-				articulo.setPrecioPublico(rs.getBigDecimal("SALE_PRICE"));
-				articulo.setCostoDeLista(rs.getBigDecimal("LIST_COST"));
-				articulo.setCostoReal(rs.getBigDecimal("LAST_COST"));
-				articulo.setCostoPonderado(rs.getBigDecimal("AVG_COST"));
-				articulo.setStock(rs.getLong("STOCK"));
+			
+			Iterator<DTBusquedaArticuloSolr> it = articulos.iterator();
+			while (it.hasNext()) {
+				// Obtengo el articulo de la lista
+				DTBusquedaArticuloSolr itArticulo = (DTBusquedaArticuloSolr) it
+						.next();
 				
-				TipoIva ti = new TipoIva();
-				ti.setTipoIVA(rs.getString("tax_type_id").charAt(0));
-				ti.setValorIVA(rs.getBigDecimal("iva_value"));
-				ti.setValorTributo(rs.getBigDecimal("tax_value"));
-				ti.setResguardoIVA(rs.getBigDecimal("iva_voucher"));
-				ti.setResguardoIRAE(rs.getBigDecimal("irae_voucher"));
-				ti.setIndicadorFacturacion(rs.getInt("billing_indicator"));
-				articulo.setTipoIva(ti);
+				// Lo casteo a DTBusquedaArticulo
+				DTBusquedaArticulo articulo = new DTBusquedaArticulo(itArticulo);
+				
+				// Traigo los datos
+				stmt = c.prepareStatement(query);
+				stmt.setInt(1, articulo.getIdArticulo());
+				ResultSet rs = stmt.executeQuery();
+				// Obtengo la cantidad de proveedores con ese rut
+				while (rs.next()) {
+					articulo.setTipoDeArticulo(model.Enumerados
+							.descripcionTipoArticuloAbreviado(rs
+									.getString("PRODUCT_TYPE")));
+					articulo.setControlDeVenta(model.Enumerados
+							.descripcionTipoVenta(rs.getString("SALE_CODE")));
+					articulo.setPrecioDeVenta(rs.getBigDecimal("UNIT_PRICE"));
+					articulo.setPrecioPublico(rs.getBigDecimal("SALE_PRICE"));
+					articulo.setCostoDeLista(rs.getBigDecimal("LIST_COST"));
+					articulo.setCostoReal(rs.getBigDecimal("LAST_COST"));
+					articulo.setCostoPonderado(rs.getBigDecimal("AVG_COST"));
+					articulo.setStock(rs.getLong("STOCK"));
+					
+					TipoIva ti = new TipoIva();
+					ti.setTipoIVA(rs.getString("tax_type_id").charAt(0));
+					ti.setValorIVA(rs.getBigDecimal("iva_value"));
+					ti.setValorTributo(rs.getBigDecimal("tax_value"));
+					ti.setResguardoIVA(rs.getBigDecimal("iva_voucher"));
+					ti.setResguardoIRAE(rs.getBigDecimal("irae_voucher"));
+					ti.setIndicadorFacturacion(rs.getInt("billing_indicator"));
+					articulo.setTipoIva(ti);
+				}
+				articulosRet.add(articulo);
+				rs.close();
+				stmt.close();
 			}
-			rs.close();
-			stmt.close();
 			c.close();
+			
+			return articulosRet;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA));

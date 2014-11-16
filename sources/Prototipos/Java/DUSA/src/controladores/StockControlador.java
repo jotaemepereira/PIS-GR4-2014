@@ -5,7 +5,6 @@ import interfaces.ISeleccionador;
 import interfaces.IServicio;
 import interfaces.IStock;
 import interfaces.IStockPersistencia;
-import interfaces.IUsuarioPersistencia;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
@@ -18,7 +17,6 @@ import model.Pedido;
 import model.TipoIva;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,7 +31,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 
 import persistencia.PStockControlador;
 import datatypes.DTBusquedaArticuloSolr;
@@ -151,33 +148,13 @@ public class StockControlador implements IStock {
 		return lPedidos;
 	}
 
-	private List<DTBusquedaArticulo> getDatosArticulosBuscados(
-			List<DTBusquedaArticuloSolr> encontrados) throws Excepciones {
-		List<DTBusquedaArticulo> articulos = new ArrayList<DTBusquedaArticulo>();
-
-		Iterator<DTBusquedaArticuloSolr> it = encontrados.iterator();
-		while (it.hasNext()) {
-			DTBusquedaArticuloSolr dtBusquedaArticulo = it
-					.next();
-
-			DTBusquedaArticulo articulo = new DTBusquedaArticulo(
-					dtBusquedaArticulo);
-			FabricaPersistencia.getStockPersistencia().buscarArticulosId(
-					articulo);
-
-			articulos.add(articulo);
-		}
-
-		return articulos;
-	}
-
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda)
 			throws Excepciones {
-		List<DTBusquedaArticuloSolr> encontrados = FabricaPersistencia
-				.getStockPersistencia().buscarArticulosSolr(busqueda);
+		IStockPersistencia isp = FabricaPersistencia.getStockPersistencia();
+		List<DTBusquedaArticuloSolr> encontrados = isp.buscarArticulosSolr(busqueda);
 
-		return getDatosArticulosBuscados(encontrados);
+		return isp.getDatosArticulosBuscados(encontrados);
 	}
 
 	@Override
@@ -393,11 +370,10 @@ public class StockControlador implements IStock {
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda,
 			long proveedor) throws Excepciones {
-		List<DTBusquedaArticuloSolr> encontrados = FabricaPersistencia
-				.getStockPersistencia()
-				.buscarArticulosSolr(busqueda, proveedor);
+		IStockPersistencia isp = FabricaPersistencia.getStockPersistencia();
+		List<DTBusquedaArticuloSolr> encontrados = isp.buscarArticulosSolr(busqueda, proveedor);
 
-		return getDatosArticulosBuscados(encontrados);
+		return isp.getDatosArticulosBuscados(encontrados);
 	}
 
 	@Override

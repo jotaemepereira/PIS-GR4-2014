@@ -9,7 +9,6 @@ import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
-import datatypes.DTProveedor;
 import datatypes.DTProducto;
 import datatypes.DTVencimiento;
 import model.AccionTer;
@@ -155,11 +154,11 @@ public interface IStockPersistencia {
 
 	/**
 	 * En base a lo encontrado usando solr, complementa los datos para ese artícuo
-	 * @param articulo - los datos parciales del articulo
+	 * @param articulos - la lista de los articulos con los datos parciales
 	 * @author Victoria Díaz
 	 * @throws Excepciones 
 	 */
-	void buscarArticulosId(DTBusquedaArticulo articulo) throws Excepciones;
+	public List<DTBusquedaArticulo> getDatosArticulosBuscados(List<DTBusquedaArticuloSolr> articulos) throws Excepciones;
 
 	/**
 	 * Retorna los distintos tipos de iva existentes en el sistema.
