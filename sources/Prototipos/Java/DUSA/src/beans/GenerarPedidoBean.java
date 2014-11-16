@@ -149,7 +149,7 @@ public class GenerarPedidoBean implements Serializable{
 			
 			pedidos = this.instanciaSistema.generarPedidoEnBaseAHistorico(5);
 		} catch (Exception e) {
-
+			e.printStackTrace();
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
@@ -206,7 +206,7 @@ public class GenerarPedidoBean implements Serializable{
 	
 	public void enviarPedido() {
 		
-		System.out.println("******* ENVIAR PEDIDO ********");
+		
 		FacesContext context = FacesContext.getCurrentInstance();
 
 		if (pedidos.isEmpty()) {
@@ -266,7 +266,7 @@ public class GenerarPedidoBean implements Serializable{
 	}
 
 	public void cancelarPedido() {
-		System.out.println("******* CANCELAR PEDIDO ********");
+		
 		pedidos.clear();
 		disableDesdeUltimoPedido = false;
 		disablePrediccionDePedido = false;

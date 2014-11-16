@@ -4,23 +4,18 @@ import interfaces.ISistema;
 
 import java.io.Serializable;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import javax.swing.text.DateFormatter;
-
 import controladores.Excepciones;
 import datatypes.DTVencimiento;
-import model.Articulo;
-import model.Venta;
+
 
 @ManagedBean
 @ViewScoped

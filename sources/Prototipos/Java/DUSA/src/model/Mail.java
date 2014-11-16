@@ -33,7 +33,7 @@ public class Mail {
 		while(it.hasNext()){
 			contenido += (it.next().toString());
 			this.contenido += "\n";
-			System.out.println("ADENTRO DE MAIL:    "  + this.contenido);
+			
 		}
 				
 	}
@@ -46,7 +46,7 @@ public void setContenidoPocasVentas (List<PocasVentas> pv ){
 		while(it.hasNext()){
 			contenido += (it.next().toString());
 			this.contenido += "\n";
-			System.out.println("ADENTRO DE MAIL:    "  + this.contenido);
+		
 		}
 				
 	}

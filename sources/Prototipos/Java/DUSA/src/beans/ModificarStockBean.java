@@ -181,7 +181,7 @@ public class ModificarStockBean implements Serializable{
 					resBusqueda.get(i).setNuevoStock(nuevoStock[i]);
 				}
 			}
-			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
+			
 		} catch (Excepciones e) {
 			
 			e.printStackTrace();
@@ -219,8 +219,11 @@ public class ModificarStockBean implements Serializable{
 			contexto.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
 					e.getMessage(), ""));
+
 		}
 	}
+	
+	
 
 	public void confirmarCambioStock() {
 		FacesContext contexto = FacesContext.getCurrentInstance();
@@ -282,6 +285,7 @@ public class ModificarStockBean implements Serializable{
 							ex.getMessage(),
 							""));
 		} catch (Exception e) {
+			e.printStackTrace();
 			contexto.addMessage(
 					null,
 					new FacesMessage(

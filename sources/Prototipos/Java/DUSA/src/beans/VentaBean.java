@@ -1,25 +1,20 @@
 package beans;
 
 import interfaces.ISistema;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-
 import model.Enumerados;
 import model.LineaVenta;
 import model.Usuario;
 import model.Venta;
-
 import org.primefaces.context.RequestContext;
-
 import controladores.Excepciones;
 import datatypes.DTProducto;
 
@@ -80,6 +75,7 @@ public class VentaBean implements Serializable {
 						.getExternalContext().getInitParameter("CODIGO_TIMBRE");
 
 			} catch (Exception e) {
+				e.printStackTrace();
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -474,7 +470,7 @@ public class VentaBean implements Serializable {
 		} else {
 
 			try {
-
+  
 				prepararVenta();
 				venta.setEstadoVenta(String
 						.valueOf(Enumerados.EstadoVenta.PERDIDA));
