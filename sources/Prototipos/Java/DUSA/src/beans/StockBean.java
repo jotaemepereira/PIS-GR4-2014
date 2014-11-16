@@ -929,8 +929,6 @@ public class StockBean implements Serializable {
 				FacesContext context = FacesContext.getCurrentInstance();
 				context.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, ex.getMessage(), ""));
-				
-				System.out.println("ACA tiro error");
 			}
 		}
 	}
