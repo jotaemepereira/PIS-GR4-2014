@@ -120,6 +120,8 @@
 														icon="ui-icon-search" ajax="true" title="Ver Detalle">
 														<f:setPropertyActionListener value="#{venta}"
 															target="#{ventaBean.articuloSeleccionado}" />
+														<f:setPropertyActionListener value="1"
+															target="#{ventaBean.articuloSeleccionado.cantidad}" />
 													</p:commandButton>
 												</p:column>
 											</p:dataTable>
@@ -260,9 +262,9 @@
 			</p:ajaxStatus>
 		</h:form>
 
-		<p:dialog header="Informacion Producto" widgetVar="ventaDialog" onShow="selectCantidad()"
-			global="true" modal="true" showEffect="fade" hideEffect="fade"
-			resizable="false">
+		<p:dialog header="Informacion Producto" widgetVar="ventaDialog"
+			onShow="selectCantidad()" global="true" modal="true"
+			showEffect="fade" hideEffect="fade" resizable="false">
 			<h:form id="ventaDetail">
 				<p:outputPanel style="padding: 0; margin: 0;">
 					<p:outputLabel for="cant" value="Cantidad:" style="width:100%" />
@@ -325,9 +327,8 @@
 				</p:outputPanel>
 
 				<p:commandButton value="Agregar" update=":form1"
-					actionListener="#{ventaBean.agregarLineaVenta()}" process="@this"
-					styleClass="btn btn-default pull-right"
-					oncomplete="PF('ventaDialog').hide()" icon="ui-icon-check">
+					actionListener="#{ventaBean.agregarArticuloSeleccionado()}" process="@this"
+					styleClass="btn btn-default pull-right" icon="ui-icon-check">
 
 				</p:commandButton>
 			</h:form>
