@@ -112,6 +112,9 @@ public interface IStock {
 	public List<DTProducto> buscarArticulosVenta(String busqueda)
 			throws Excepciones;
 
+	public DTProducto buscarArticulosVentaPorCodigo(String codigo)
+			throws Excepciones;
+
 	/**
 	 * retorna los articulos que coincidan con el string ingresado
 	 * 

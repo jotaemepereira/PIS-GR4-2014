@@ -68,10 +68,6 @@
 						</div>
 						<p:messages id="msgs" />
 						<p:focus for="codigoLector" />
-						<p:remoteCommand name="buscarArticulo" update="@form"
-							actionListener="#{ventaBean.buscarArticulos()}" />
-						<p:remoteCommand name="buscarArticuloLector"
-							actionListener="#{ventaBean.buscarArticuloLector()}" update="@form :ventaDetail" />
 						<div class="panel-body">
 							<div class="container-fluid">
 								<h:panelGroup layout="block" id="panel">
@@ -82,18 +78,21 @@
 
 											<div class="row"
 												style="padding-left: 15px; margin-bottom: 5px">
-												<p:inputText id="descripcion2"
+												<p:remoteCommand name="buscarArticulo" update="@form"
+													actionListener="#{ventaBean.buscarArticulos}" />
+
+												<p:inputText id="codigoBusqueda"
 													style="vertical-align: 8px; margin-right: 5px;"
 													value="#{ventaBean.descripcionBusqueda}"
 													placeholder="Buscar Articulo..."
 													styleClass="col-xs-9 col-sm-10 col-md-11 col-lg-11"
-													onkeypress="if (event.keyCode == 13) { buscarArticulo(); e.preventDefault(); return false; }">
+													onkeypress="keypressBusqueda(event)">
 													<f:ajax event="change" execute="@this" />
 												</p:inputText>
 
 												<p:commandButton value="" id="ajax3" update="TablaVentas"
 													icon="ui-icon-search" style="width: 35px; height: 31px;"
-													onclick="buscarArticulos();"
+													onclick="buscarArticulo()"
 													styleClass="ui-priority-primary col-xs-3 col-sm-2 col-md-1 col-lg-1 " />
 
 											</div>
@@ -130,12 +129,14 @@
 										<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
 
 											<div style="margin-bottom: 2px">
+												<p:remoteCommand name="buscarArticuloLector"
+													update="@form :ventaDetail"
+													actionListener="#{ventaBean.buscarArticuloLector}" />
 												<p:inputText id="codigoLector"
 													style="vertical-align: 8px; margin-right: 5px; width:100%"
 													value="#{ventaBean.codigoBusqueda}"
 													placeholder="Codigo Articulo..."
-													onkeypress="if (event.keyCode == 13) { buscarArticuloLector(); e.preventDefault(); return false; }">
-													<f:ajax event="change" execute="@this" />
+													onkeypress="keypressLector(event)">
 												</p:inputText>
 											</div>
 
@@ -273,8 +274,8 @@
 					</p:inputText>
 				</p:outputPanel>
 				<p:outputPanel
-					style="padding: 0; margin: 0; text-align: right; width:50%;">
-					<p:outputPanel
+					style="padding: 0; margin: 10px 0; text-align: left; ">
+					<p:outputPanel style="margin-right: 5px;"
 						rendered="#{ventaBean.articuloSeleccionado.descuentoReceta.intValue() > 0}">
 						<p:selectBooleanCheckbox
 							value="#{ventaBean.articuloSeleccionado.recetaBlanca}">
@@ -282,7 +283,7 @@
 						</p:selectBooleanCheckbox>
 						<img src="../Images/receta_blanca.png" />
 					</p:outputPanel>
-					<p:outputPanel
+					<p:outputPanel style="margin-right: 5px;"
 						rendered="#{ventaBean.articuloSeleccionado.psicofarmaco}">
 						<p:selectBooleanCheckbox
 							value="#{ventaBean.articuloSeleccionado.recetaVerde}">
@@ -325,8 +326,7 @@
 				</p:outputPanel>
 
 				<p:commandButton value="Agregar" update=":form1"
-					actionListener="#{ventaBean.agregarLineaVenta()}"
-					process="@this,descuento,cant,descImportantes"
+					actionListener="#{ventaBean.agregarLineaVenta()}" process="@this"
 					styleClass="btn btn-default pull-right"
 					oncomplete="PF('ventaDialog').hide()" icon="ui-icon-check">
 
