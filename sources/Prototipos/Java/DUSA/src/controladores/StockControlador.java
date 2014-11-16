@@ -58,6 +58,8 @@ public class StockControlador implements IStock {
 					Excepciones.ADVERTENCIA_DATOS));
 		}
 		FabricaPersistencia.getStockPersistencia().persistirArticulo(articulo);
+		// indexacion de solr del producto nuevo
+		FabricaPersistencia.getStockPersistencia().deltaImportSolr();
 	}
 
 	public List<Articulo> buscarArticulo(String descripcion) {
@@ -384,7 +386,8 @@ public class StockControlador implements IStock {
 	@Override
 	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones {
 		FabricaPersistencia.getStockPersistencia().modificarArticulo(articulo);
-
+		// indexacion de solr del producto modificado
+		FabricaPersistencia.getStockPersistencia().deltaImportSolr();
 	}
 
 	@Override

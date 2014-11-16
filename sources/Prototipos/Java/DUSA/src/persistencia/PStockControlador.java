@@ -170,8 +170,6 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.close();
 				c.close();
 
-				// indexacion de solr del producto nuevo
-				deltaImportSolr();
 			} catch (Exception e) {
 				// Hago rollback de las cosas y lanzo excepcion
 				c.rollback();
@@ -1526,8 +1524,6 @@ public class PStockControlador implements IStockPersistencia {
 				stmt.close();
 				c.close();
 
-				// indexacion de solr del producto modificado
-				deltaImportSolr();
 			} catch (Exception e) {
 				// Hago rollback de las cosas y lanzo excepcion
 				c.rollback();
