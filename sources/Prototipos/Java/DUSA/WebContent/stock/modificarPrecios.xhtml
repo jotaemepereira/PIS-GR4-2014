@@ -47,7 +47,7 @@
 									<p:commandButton 
 										actionListener="#{modificarPreciosBean.getArticulosProveedor}"
 										value="Obtener artículos"
-										update="tableArticulos, Submit">
+										update="tableArticulos msgs">
 									</p:commandButton>
 									</div>
 									<p:messages id="msgs" showIcon="false" globalOnly="true" />
@@ -58,7 +58,15 @@
 													<h:outputText value="#{articulos.descripcion}" />
 												</p:column>
 												<p:column headerText="Precio" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-													<p:inputMask value="#{articulos.precioUnitario}"/>
+													<p:inputText id="precio" value="#{articulos.precioUnitario}" 
+														validatorMessage="El largo debe ser menor a 15."
+														required="true">
+														<f:validateLength
+															maximum="15"/>
+														<f:validateRequired
+															for="precio"/>
+													</p:inputText>
+													<p:message for="precio" display="text" />
 												</p:column>
 												</div>
 											</p:dataTable>
@@ -66,7 +74,7 @@
 										id="Submit"
 										value="Enviar precios"
 										actionListener="#{modificarPreciosBean.enviarPrecios}"
-										update="msgs" >
+										update="tableArticulos msgs" >
 								</p:commandButton>
 								</div>
 							</h:panelGroup>
