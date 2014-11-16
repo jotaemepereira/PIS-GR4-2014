@@ -384,6 +384,12 @@ public class SistemaControlador implements ISistema {
 		if (user.tienePermiso(casoDeUso.cancelarVentaPendiente)) {
 			
 			FabricaLogica.getIFacturacion().facturarVenta(idVenta);
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.cancelarVentaPendiente);
+			Actividad act = new Actividad(operacion, user.getNombre());
+			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
 		} else {
 			
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));

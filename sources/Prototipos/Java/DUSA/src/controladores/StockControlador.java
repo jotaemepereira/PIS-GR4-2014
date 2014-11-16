@@ -294,6 +294,7 @@ public class StockControlador implements IStock {
 		
 		List<Cambio> cambios = FabricaPersistencia.getStockPersistencia().obtenerCambios(articulos);
 		
+		
 		OutputStream output;
 		try {
 		FileInputStream in = new FileInputStream("alertaStock.properties");
@@ -331,6 +332,7 @@ public class StockControlador implements IStock {
 			m.setDestinatarios(receptores);
 			m.Enviar();
 		}
+		FabricaPersistencia.getStockPersistencia().fullImportSolr();
 		
 		} catch (IOException | MessagingException e) {
 			// TODO Auto-generated catch block
