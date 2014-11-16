@@ -31,6 +31,7 @@ import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTProducto;
+import datatypes.DTVencimiento;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
@@ -1901,6 +1902,63 @@ public class PStockControlador implements IStockPersistencia {
 			c.close();
 		} catch (Exception e) {
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+	}
+	
+	public List<DTVencimiento> articulosQueSeVencenEnPeriodo(Date desde, Date hasta) throws Excepciones{
+		List<DTVencimiento> ret = null;
+		PreparedStatement stmt = null;
+		String query = "SELECT p.product_id, p.description, p.stock, p.nearest_due_date "
+				+ "FROM products p "
+				+ "WHERE p.authorization_type = 'S' AND "
+				+ "p.nearest_due_date BETWEEN ? AND ?;";
+		try{
+			Connection c = Conexion.getConnection();
+			stmt = c.prepareStatement(query);
+			ret = new ArrayList<DTVencimiento>();
+			stmt.setTimestamp(1, new Timestamp(desde.getTime()));
+			stmt.setTimestamp(2, new Timestamp(hasta.getTime()));
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()){
+				DTVencimiento nuevo = new DTVencimiento();
+				nuevo.setIdArticulo(rs.getLong("product_id"));
+				nuevo.setDescripcion(rs.getString("description"));
+				nuevo.setStock(rs.getLong("stock"));
+				nuevo.setVencimientoMasCercano(rs.getTimestamp("nearest_due_date"));
+				ret.add(nuevo);
+			}
+			
+		} catch (Exception e){
+			e.printStackTrace();
+			throw (new  Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+		}
+		return ret;
+	}
+
+	@Override
+	public void modificarVencimientosDeArticulos(Map<Long, Date> cambios) throws Excepciones {
+		PreparedStatement stmt = null;
+		String query = "UPDATE products SET NEAREST_DUE_DATE = ?, last_modified = LOCALTIMESTAMP "
+				+ "WHERE product_id = ?;";
+		try{
+			Connection c = Conexion.getConnection();
+			c.setAutoCommit(false);
+			
+			for (Long id : cambios.keySet()){
+				stmt = c.prepareStatement(query);
+				stmt.setTimestamp(1, new Timestamp(cambios.get(id).getTime()));
+				stmt.setLong(2, id);
+				stmt.executeUpdate();
+			}			
+			
+			c.commit();
+			c.setAutoCommit(true);
+			stmt.close();
+		} catch (Exception e){
+			e.printStackTrace();
+			throw (new  Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
 		}
 	}
