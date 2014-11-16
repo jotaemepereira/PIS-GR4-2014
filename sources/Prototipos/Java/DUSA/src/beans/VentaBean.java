@@ -85,7 +85,7 @@ public class VentaBean implements Serializable {
 		}
 	}
 
-	public void buscarArticulos(ActionEvent event) {
+	public void buscarArticulos() {
 
 		// Busqueda con solr
 		resultadoBusqueda = new ArrayList<DTProducto>();
@@ -129,8 +129,8 @@ public class VentaBean implements Serializable {
 			if (lv.size() > 0) {
 				DTProducto dtVenta = (DTProducto) lv.get(0);
 				articuloSeleccionado = dtVenta;
+				RequestContext.getCurrentInstance().execute("PF('ventaDialog').show();");
 			}
-
 		} catch (Excepciones e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -138,7 +138,14 @@ public class VentaBean implements Serializable {
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, e
 							.getMessage(), ""));
+		} catch(Exception e) {
+			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, e
+							.getMessage(), ""));
 		}
+		
 		codigoBusqueda = "";
 		descripcionBusqueda = "";
 	}
