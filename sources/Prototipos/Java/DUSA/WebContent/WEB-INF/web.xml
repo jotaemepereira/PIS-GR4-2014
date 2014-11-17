@@ -36,6 +36,10 @@
     <param-value>3</param-value>
   </context-param>
   <context-param>
+    <param-name>CODIGO_TIMBRE</param-name>
+    <param-value>XXX90</param-value>
+  </context-param>
+  <context-param>
     <param-name>CANT_DIAS_HABILES</param-name>
     <param-value>24</param-value>
   </context-param>

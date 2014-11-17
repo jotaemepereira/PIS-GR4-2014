@@ -16,7 +16,6 @@ import javax.faces.context.FacesContext;
 import controladores.Excepciones;
 import datatypes.DTVencimiento;
 
-
 @ManagedBean
 @ViewScoped
 public class AlertaVencimientoBean implements Serializable {
@@ -30,9 +29,27 @@ public class AlertaVencimientoBean implements Serializable {
 
 	public void articulosQueSeVencenEnPeriodo() {
 		try {
-			articulos = instanciaSistema.articulosQueSeVencenEnPeriodo(
-					fechaDesde, fechaHasta);
-			nuevosVencimientos = new Date[articulos.size()];
+			if (fechaDesde == null || fechaHasta == null) {
+				FacesContext.getCurrentInstance().addMessage(
+						null,
+						new FacesMessage(
+								FacesMessage.SEVERITY_ERROR,
+								"Tiene que ingresar ambas fechas.",
+								""));
+			} else {
+				if (fechaDesde.after(fechaHasta)) {
+					FacesContext.getCurrentInstance().addMessage(
+							null,
+							new FacesMessage(
+									FacesMessage.SEVERITY_ERROR,
+									"La fecha 'desde' tiene que ser anterior a 'hasta'.",
+									""));
+				} else {
+					articulos = instanciaSistema.articulosQueSeVencenEnPeriodo(
+							fechaDesde, fechaHasta);
+					nuevosVencimientos = new Date[articulos.size()];
+				}
+			}
 		} catch (Excepciones e) {
 			e.printStackTrace();
 			FacesContext contexto = FacesContext.getCurrentInstance();
@@ -80,14 +97,7 @@ public class AlertaVencimientoBean implements Serializable {
 			}
 		}
 	}
-
-	public void cancelar() {
-		fechaDesde = null;
-		fechaHasta = null;
-		articulos = null;
-		nuevosVencimientos = null;
-	}
-
+	
 	public String parseFecha(Date fecha) {
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		return df.format(fecha);
