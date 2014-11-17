@@ -22,7 +22,7 @@
 		<h:form>
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
-			#{loginBean.redirectIfNotLoggedIn()}
+			#{loginBean.redirectIfNotLoggedIn("stock/modificarPrecios.jsf")}
 			#{modificarPreciosBean.setISistema(loginBean.instanciaSistema)}
 			<div class="vpanel_right">
 				<div class="wrapper">

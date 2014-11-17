@@ -36,7 +36,7 @@
 				actionListener="#{proveedoresBean.altaProveedor}" />
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/proveedores.xhtml" />
-			#{loginBean.redirectIfNotLoggedIn()}
+			#{loginBean.redirectIfNotLoggedIn("proveedores/altaProveedor.jsf")}
         	#{proveedoresBean.setISistema(loginBean.instanciaSistema)}
 			<p:focus></p:focus>
 			<div class="vpanel_right">
