@@ -617,13 +617,15 @@
 													<div class="row">
 														<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 															<p:selectOneMenu id="tipoIVA"
+																requiredMessage="Dato Requerido."
 																value="#{stockBean.tipoIvaSeleccionado}"
-																style="height: 100%" required="false">
+																style="height: 100%" required="true">
 																<f:selectItem itemLabel="Seleccione tipo de IVA"
 																	itemValue="#{null}" />
 																<f:selectItems value="#{stockBean.tiposIVA}" var="t"
 																	itemLabel="#{t.descripcion}" itemValue="#{t.tipoIVA}" />
 															</p:selectOneMenu>
+															<p:message for="tipoIVA" display="text" />
 														</div>
 													</div>
 												</div>
