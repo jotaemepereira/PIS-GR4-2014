@@ -298,6 +298,11 @@ public class StockBean implements Serializable {
 								.multiply(
 										new BigDecimal(1).subtract(articulo
 												.getPorcentajeDescuentoReceta())));
+					} else if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.FIJO) {
+						articulo.setPorcentajeDescuentoReceta(articulo
+								.getPrecioConReceta().divide(
+										articulo.getPrecioUnitario(), 5,
+										RoundingMode.DOWN));
 					}
 				} else {
 					articulo.setPorcentajeDescuentoReceta(BigDecimal.ZERO);
@@ -631,6 +636,8 @@ public class StockBean implements Serializable {
 				if (articulo.getTipoIva().getTipoIVA() == model.Enumerados.tiposIVA.PSICOFARMACOS
 						|| articulo.getTipoIva().getTipoIVA() == model.Enumerados.tiposIVA.MEDICAMENTOS) {
 					tipoIvaSeleccionado = model.Enumerados.tiposIVA.IVA10;
+				} else if (articulo.getTipoIva().getTipoIVA() == model.Enumerados.tiposIVA.IVA22TRIBUTO) {
+					tipoIvaSeleccionado = model.Enumerados.tiposIVA.IVA22;
 				} else {
 					tipoIvaSeleccionado = articulo.getTipoIva().getTipoIVA();
 				}
@@ -642,6 +649,8 @@ public class StockBean implements Serializable {
 				} else if (articulo.getPorcentajeDescuentoReceta().compareTo(
 						new BigDecimal(0.60)) == 0) {
 					this.descuentoRecetaSeleccionado = Enumerados.descuentosReceta.CUARENTA;
+				} else {
+					this.descuentoRecetaSeleccionado = Enumerados.descuentosReceta.FIJO;
 				}
 			}
 			this.articuloSinCambios = new Articulo(articulo);
