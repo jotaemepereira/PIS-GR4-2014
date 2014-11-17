@@ -22,13 +22,13 @@ public class Conexion {
 			e.printStackTrace();
 		}
 
-		//        String user = FacesContext.getCurrentInstance().getExternalContext()
-		//                .getInitParameter("DBUSER");
-		//        String password = FacesContext.getCurrentInstance()
-		//                .getExternalContext().getInitParameter("DBPWD");
-		//        String connection = FacesContext.getCurrentInstance()
-		//                .getExternalContext().getInitParameter("CONNSTRING");
-		//        return DriverManager.getConnection(connection, user, password);
+        String user = FacesContext.getCurrentInstance().getExternalContext()
+                .getInitParameter("DBUSER");
+        String password = FacesContext.getCurrentInstance()
+                .getExternalContext().getInitParameter("DBPWD");
+        String connection = FacesContext.getCurrentInstance()
+                .getExternalContext().getInitParameter("CONNSTRING");
+        return DriverManager.getConnection(connection, user, password);
 		
 		
 		/*
@@ -43,11 +43,10 @@ public class Conexion {
         String password = "root";
         String connection = "jdbc:postgresql://localhost:5432/pisgr4";
         return DriverManager.getConnection(connection, user, password);
-        
         */
 
 		//	return DriverManager.getConnection("jdbc:postgresql://localhost:5432/pisgr4", "root", "root");
-
+/*
 		if (basicDataSource == null) {
 			
 			String driverClassName = FacesContext.getCurrentInstance()
@@ -72,12 +71,12 @@ public class Conexion {
 		// conexion, en realidad se le está indicando al pool que esa conexion
 		//queda libre y la vuelve a tomar.
 		
-		Connection conexion = basicDataSource.getConnection();
+		Connection conexion = basicDataSource.getConnection();*/
 		//Estado inicial que se espera da la conexion.
 		
-		conexion.setAutoCommit(true);
+		//conexion.setAutoCommit(true);
 		
-		return conexion;
+		//return conexion;
 	}
 
 }
