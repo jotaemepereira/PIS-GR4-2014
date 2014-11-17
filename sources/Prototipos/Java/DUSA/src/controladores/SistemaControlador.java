@@ -238,6 +238,24 @@ public class SistemaControlador implements ISistema {
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 
 	}
+	
+	@Override
+	public long registrarVentaPerdida(Venta v) throws Excepciones {
+		if (user.tienePermiso(casoDeUso.registrarVentaPerdida)) {
+			
+			long idVenta = FabricaLogica.getIFacturacion().registrarNuevaVenta(v);
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.registrarVentaPerdida);
+			Actividad act = new Actividad(operacion, user.getNombre());
+			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+			
+			return idVenta;
+		} else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+
+	}
 
 	@Override
 	public List<TipoIva> obtenerTiposIva() throws Excepciones {

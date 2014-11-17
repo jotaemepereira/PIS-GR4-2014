@@ -57,7 +57,7 @@
 
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/compras.xhtml" />
-			#{loginBean.redirectIfNotLoggedIn()}
+			#{loginBean.redirectIfNotLoggedIn("compras/ingresarCompra.jsf")}
         	#{comprasBean.setISistema(loginBean.instanciaSistema)}
         	
 			<p:focus></p:focus>

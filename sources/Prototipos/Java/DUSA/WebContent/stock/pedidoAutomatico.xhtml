@@ -40,13 +40,11 @@
 	<h:body>
 		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
 		<h:form id="form1">
-			<!--  SE ESCUCHA EL SHORTCUT PARA ENVIAR EL PEDIDO  -->
 			<p:hotkey bind="Ctrl+return" update="panel msgs"
 				actionListener="#{generarPedidoBean.enviarPedido}" />
-				
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
-			#{loginBean.redirectIfNotLoggedIn()}
+			#{loginBean.redirectIfNotLoggedIn("stock/pedidoAutomatico.jsf")}
         	#{generarPedidoBean.setISistema(loginBean.instanciaSistema)}
 			<!--		-->
 			<p:focus></p:focus>
@@ -65,21 +63,15 @@
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
 								<div class="container-fluid">
-								
-									<!--   BOTONES PARA ELEGIR EL TIPO DE PEDIDO   -->
 									<div class="row">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"
 											style="text-align: center;">
-											
-											<!-- BOTON PARA PEDIDO DESDE EL UTLIMO PEDIDO -->
 											<h:commandButton id="btn1" value="Desde el último pedido"
 												update="btn1 btn2 show-hide"
 												actionListener="#{generarPedidoBean.desdeUltimoPedido}"
 												styleClass="btn btn-default elegirTipo"
 												style="margin:0 2% 10px 0;"
 												disabled="${generarPedidoBean.disableDesdeUltimoPedido}" />
-												
-											<!--  BOTON DE PREDICCION DE PEDIDO  -->
 											<h:commandButton id="btn2" value="Predicción de pedido"
 												update="btn1 btn2 show-hide"
 												actionListener="#{generarPedidoBean.prediccionDePedido}"
@@ -91,94 +83,114 @@
 											</h:commandButton>
 										</div>
 									</div>
-									
-									<div class="row" style="margin-bottom: 1%;text-align:center;">
-										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-											<p:dataTable var="pedido" id="tablePedido" 
-												value="#{generarPedidoBean.pedidos}" emptyMessage="No se encontraron registros.">
-												<!-- rendered="${generarPedidoBean.disablePrediccionDePedido || generarPedidoBean.disableDesdeUltimoPedido}" -->
-												<div class="row">
-													<p:column headerText="Numero artículo" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-														<h:outputText value="#{pedido.numeroArticulo}" />
-													</p:column>
-													
-													<p:column headerText="Nombre artículo" styleClass="hidden-xs col-sm-2 col-md-3 col-lg-2">
-														<h:outputText value="#{pedido.descripcionArticulo}" />
-													</p:column>
-					
-													<p:column headerText="Precio unitario" styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
-														<h:outputText value="#{pedido.precioUnitario}" />
-													</p:column>
-													
-													<p:column headerText="Precio ponderado promedio" styleClass="hidden-xs hidden-sm col-md-2 col-lg-2">
-														<h:outputText value="#{pedido.precioPonderado}" />
-													</p:column>
-													
-													<p:column headerText="Stock mínimo por día" styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
-														<h:outputText value="#{pedido.stockMinimo}" />
-														
-													</p:column>
-													
-													<p:column headerText="Stock actual" styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
-														<h:outputText value="#{pedido.stockActual}" />
-														
-													</p:column>
-													
-													<p:column headerText="Cantidad" styleClass="col-xs-4 col-sm-3 col-md-2 col-lg-2">
-													
-															<p:inputText value="#{pedido.cantidad}"
-																	styleClass="form-control" style="text-align: center"
-																	converterMessage="La cantidad del arículo debe ser un entero mayor que cero."
-																	validatorMessage="La cantidad del arículo debe ser un entero mayor que cero.">
-																<f:validateLongRange minimum="0" maximum="2147483647"/>
-																
-																<p:ajax listener="#{generarPedidoBean.nuevoSubtotal(pedido)}"
-																			update="subtotal" process="@this" />
-															</p:inputText>
-													        <!-- <p:inputMask id="cantidad" mask="?9999" styleClass="form-control" style="text-align: center" readonly="false" value="#{pedido.cantidad}">
-															</p:inputMask> -->
-															
-													</p:column>
-													
-													<p:column headerText="Subtotal" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-2">
-														<h:outputText value="#{pedido.subtotal}" id="subtotal">
-															<f:convertNumber pattern="#0.00" />
-														</h:outputText>
-													</p:column>
-													
-													<p:column headerText="Eliminar" styleClass="col-xs-2 col-sm-2 col-md-1 col-lg-1">
-														<p:commandButton icon="ui-icon-close" title="Eliminar" tabindex="-1"
-															actionListener="#{generarPedidoBean.removeItem(pedido)}" update="tablePedido">
-															<p:confirm header="Confirmación" message="¿Está seguro que desea eliminar el artículo?" icon="ui-icon-alert" />
-														</p:commandButton>
-													</p:column>
-												</div>
-											</p:dataTable>
-										</div>
-									</div>
-									<div class="row" style="margin-bottom: 1%;">
-										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-											<div class="btn-group pull-right">
-												<p:commandButton value="Pedido" update="btn1 btn2 msgs show-hide"
-													styleClass="btn btn-success" actionListener="#{generarPedidoBean.enviarPedido}" />
-												<p:commandButton value="Cancelar" update="btn1 btn2 msgs show-hide"
-													styleClass="btn btn-default" actionListener="#{generarPedidoBean.cancelarPedido}" >
-													<p:confirm header="Confirmación" message="¿Está seguro que desea cancelar el pedido?" icon="ui-icon-alert" />
-												</p:commandButton>
+
+									<h:panelGroup id="show-hide" layout="block"
+										class="${generarPedidoBean.hideElement}">
+										<div class="row">
+											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+												<p:outputLabel value="Forma de Pago:" />
+												<p:selectOneRadio id="tipoDocumento"
+													value="#{generarPedidoBean.formaDePago}">
+													<f:selectItem itemLabel="Contado" itemValue="contado" />
+													<f:selectItem itemLabel="Credito" itemValue="credito" />
+												</p:selectOneRadio>
 											</div>
 										</div>
-										
-										<!--   BOTONES PARA CANCELAR O CONFIRMAR EL PEDIDO   -->
+
+										<div class="row"
+											style="margin-bottom: 1%; text-align: center;">
+											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+												<p:dataTable var="pedido" id="tablePedido"
+													value="#{generarPedidoBean.pedidos}"
+													emptyMessage="No se encontraron registros.">
+													<div class="row">
+														<p:column headerText="Numero artículo"
+															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+															<h:outputText value="#{pedido.numeroArticulo}" />
+														</p:column>
+
+														<p:column headerText="Nombre artículo"
+															styleClass="hidden-xs col-sm-2 col-md-3 col-lg-2">
+															<h:outputText value="#{pedido.descripcionArticulo}" />
+														</p:column>
+
+														<p:column headerText="Precio unitario"
+															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+															<h:outputText value="#{pedido.precioUnitario}" />
+														</p:column>
+
+														<p:column headerText="Precio ponderado promedio"
+															styleClass="hidden-xs hidden-sm col-md-2 col-lg-2">
+															<h:outputText value="#{pedido.precioPonderado}" />
+														</p:column>
+
+														<p:column headerText="Stock mínimo por día"
+															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+															<h:outputText value="#{pedido.stockMinimo}" />
+
+														</p:column>
+
+														<p:column headerText="Stock actual"
+															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+															<h:outputText value="#{pedido.stockActual}" />
+
+														</p:column>
+
+														<p:column rendered="#{generarPedidoBean.esHistorico}"
+															headerText="Predicción por ventas recientes"
+															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+															<h:outputText value="#{pedido.prediccionVentasAnt}" />
+
+														</p:column>
+
+														<p:column rendered="#{generarPedidoBean.esHistorico}"
+															headerText="Promedio ventas de años anteriores"
+															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
+															<h:outputText value="#{pedido.promedioVendidoAnosAnt}" />
+
+														</p:column>
+
+														<p:column headerText="Cantidad"
+															styleClass="col-xs-4 col-sm-3 col-md-2 col-lg-2">
+															<p:inputMask id="cantidad" mask="?9999"
+																styleClass="form-control" style="text-align: center"
+																readonly="false" value="#{pedido.cantidad}">
+																<p:ajax
+																	listener="#{generarPedidoBean.nuevoSubtotal(pedido)}"
+																	update="subtotal" process="@this" />
+															</p:inputMask>
+
+														</p:column>
+
+														<p:column headerText="Subtotal"
+															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-2">
+															<h:outputText value="#{pedido.subtotal}" id="subtotal">
+																<f:convertNumber pattern="#0.00" />
+															</h:outputText>
+														</p:column>
+
+														<p:column headerText="Eliminar"
+															styleClass="col-xs-2 col-sm-2 col-md-1 col-lg-1">
+															<p:commandButton icon="ui-icon-close" title="Eliminar"
+																tabindex="-1"
+																actionListener="#{generarPedidoBean.removeItem(pedido)}"
+																update="tablePedido">
+																<p:confirm header="Confirmación"
+																	message="¿Está seguro que desea eliminar el artículo?"
+																	icon="ui-icon-alert" />
+															</p:commandButton>
+														</p:column>
+													</div>
+												</p:dataTable>
+											</div>
+										</div>
 										<div class="row" style="margin-bottom: 1%;">
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 												<div class="btn-group pull-right">
-												 	<!--  BOTON DE CONFIRMAR EL PEDIDO  -->
 													<p:commandButton value="Pedido"
 														update="btn1 btn2 msgs show-hide"
 														styleClass="btn btn-success"
 														actionListener="#{generarPedidoBean.enviarPedido}" />
-														
-													<!--  BOTON DE CANCELAR EL PEDIDO  -->
 													<p:commandButton value="Cancelar"
 														update="btn1 btn2 msgs show-hide"
 														styleClass="btn btn-default"
@@ -198,8 +210,6 @@
 					</div>
 				</div>
 			</div>
-			
-			<!--  GIFT DE LOADER PARA CUANDO SE ENVIA UNA PETICION AJAX  -->
 			<p:ajaxStatus
 				style="width:64px;height:64px;position:fixed;right:5px;bottom:5px"
 				id="ajaxStatusPanel0">
@@ -214,7 +224,6 @@
 
 		</h:form>
 
-		<!--  DIALOGO DE CONFIRMACIÓN PARA ELIMINAR UN ARTICULO O CANCELAR EL PEDIDO -->
 		<p:confirmDialog id="confirmDialog" global="true" showEffect="fade"
 			hideEffect="fade" widgetVar="confirmDialog">
 

@@ -9,7 +9,7 @@ public class LineaPedido {
 
 	Long 	idArticulo;
 	Long	numeroArticulo;
-	int 	cantidad;
+	long 	cantidad;
 	
 	public LineaPedido() {
 		
@@ -18,7 +18,7 @@ public class LineaPedido {
 		this.cantidad = 0;
 	}
 	
-	public LineaPedido(Long articulo, Long numArticulo,int cant) {
+	public LineaPedido(Long articulo, Long numArticulo,long cant) {
 		
 		this.idArticulo = articulo;
 		this.numeroArticulo = numArticulo;
@@ -43,11 +43,11 @@ public class LineaPedido {
 		this.numeroArticulo = numeroArticulo;
 	}
 	
-	public int getCantidad() {
+	public long getCantidad() {
 		return cantidad;
 	}
 	
-	public void setCantidad(int cantidad) {
+	public void setCantidad(long cantidad) {
 		this.cantidad = cantidad;
 	}
 }

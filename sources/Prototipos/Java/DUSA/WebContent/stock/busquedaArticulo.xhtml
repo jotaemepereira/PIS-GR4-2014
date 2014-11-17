@@ -23,7 +23,7 @@
 			<!-- 			<p:hotkey bind="Ctrl+return" update="panel msgs" actionListener=""/> -->
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
-			#{loginBean.redirectIfNotLoggedIn()}
+			#{loginBean.redirectIfNotLoggedIn("stock/busquedaArticulo.jsf")}
         	#{busquedaArticuloBean.setISistema(loginBean.instanciaSistema)}
 			<p:focus></p:focus>
 			<div class="vpanel_right">

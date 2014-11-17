@@ -63,9 +63,5 @@ public class StockJob implements Job {
 			} catch (IOException | Excepciones | java.text.ParseException e) {
 				e.printStackTrace();
 			}
-			
-					
-			
 	}		 
-		
 }

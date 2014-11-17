@@ -179,6 +179,8 @@ public interface ISistema {
 	 * @author José Aguerre
 	 */
 	public long registrarNuevaVenta(Venta v) throws Excepciones;
+	
+	public long registrarVentaPerdida(Venta v) throws Excepciones;
 
 	/**
 	 * Registra en el sistema la venta v
