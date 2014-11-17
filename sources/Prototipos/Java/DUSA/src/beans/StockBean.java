@@ -651,6 +651,7 @@ public class StockBean implements Serializable {
 					this.descuentoRecetaSeleccionado = Enumerados.descuentosReceta.CUARENTA;
 				} else {
 					this.descuentoRecetaSeleccionado = Enumerados.descuentosReceta.FIJO;
+					this.noPrecioFijo = false;
 				}
 			}
 			this.articuloSinCambios = new Articulo(articulo);
