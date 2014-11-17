@@ -61,6 +61,7 @@ public class StockBean implements Serializable {
 	private Articulo articulo = new Articulo();
 	private boolean noEsMedicamento;
 	private String radioPrecioVenta;
+	private boolean noPrecioFijo;
 
 	// Modificación
 	private boolean modificacion;
@@ -101,7 +102,7 @@ public class StockBean implements Serializable {
 	// Busqueda de proveedores
 	private String busquedaProveedor = "";
 	private List<Articulo> articulosDelProveedor;
-	
+
 	/* Operaciones para Alta de Artículo */
 
 	public void altaArticulo() {
@@ -127,7 +128,13 @@ public class StockBean implements Serializable {
 							|| articulo.isEsPsicofarmaco()) {
 						ti.setTipoIVA(model.Enumerados.tiposIVA.PSICOFARMACOS);
 					} else {
-						ti.setTipoIVA(model.Enumerados.tiposIVA.MEDICAMENTOS);
+						if (tipoIvaSeleccionado == model.Enumerados.tiposIVA.IVA10) {
+							ti.setTipoIVA(model.Enumerados.tiposIVA.MEDICAMENTOS);
+						} else if (tipoIvaSeleccionado == model.Enumerados.tiposIVA.IVA22) {
+							ti.setTipoIVA(model.Enumerados.tiposIVA.IVA22TRIBUTO);
+						} else {
+							ti.setTipoIVA(tipoIvaSeleccionado);
+						}
 					}
 				} else {
 					ti.setTipoIVA(tipoIvaSeleccionado);
@@ -138,26 +145,30 @@ public class StockBean implements Serializable {
 				if (descuentoRecetaSeleccionado != 0) {
 					if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.VEINTICINCO) {
 						articulo.setPorcentajeDescuentoReceta(new BigDecimal(
-								0.25));
+								0.75));
 						articulo.setPrecioConReceta(articulo
 								.getPrecioUnitario()
 								.multiply(
 										new BigDecimal(1).subtract(articulo
 												.getPorcentajeDescuentoReceta())));
-					}else if(descuentoRecetaSeleccionado == Enumerados.descuentosReceta.CUARENTA){
+					} else if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.CUARENTA) {
 						articulo.setPorcentajeDescuentoReceta(new BigDecimal(
-								0.40));
+								0.60));
 						articulo.setPrecioConReceta(articulo
 								.getPrecioUnitario()
 								.multiply(
 										new BigDecimal(1).subtract(articulo
 												.getPorcentajeDescuentoReceta())));
+					} else if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.FIJO) {
+						articulo.setPorcentajeDescuentoReceta(articulo
+								.getPrecioConReceta().divide(
+										articulo.getPrecioUnitario(), 5,
+										RoundingMode.DOWN));
 					}
-				}else{
+				} else {
 					articulo.setPorcentajeDescuentoReceta(BigDecimal.ZERO);
 					articulo.setPrecioConReceta(BigDecimal.ZERO);
 				}
-					
 
 				/* Cargo el precio de venta según corresponda */
 
@@ -256,7 +267,13 @@ public class StockBean implements Serializable {
 							|| articulo.isEsPsicofarmaco()) {
 						ti.setTipoIVA(model.Enumerados.tiposIVA.PSICOFARMACOS);
 					} else {
-						ti.setTipoIVA(model.Enumerados.tiposIVA.MEDICAMENTOS);
+						if (tipoIvaSeleccionado == model.Enumerados.tiposIVA.IVA10) {
+							ti.setTipoIVA(model.Enumerados.tiposIVA.MEDICAMENTOS);
+						} else if (tipoIvaSeleccionado == model.Enumerados.tiposIVA.IVA22) {
+							ti.setTipoIVA(model.Enumerados.tiposIVA.IVA22TRIBUTO);
+						} else {
+							ti.setTipoIVA(tipoIvaSeleccionado);
+						}
 					}
 				} else {
 					ti.setTipoIVA(tipoIvaSeleccionado);
@@ -267,26 +284,26 @@ public class StockBean implements Serializable {
 				if (descuentoRecetaSeleccionado != 0) {
 					if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.VEINTICINCO) {
 						articulo.setPorcentajeDescuentoReceta(new BigDecimal(
-								0.25));
+								0.75));
 						articulo.setPrecioConReceta(articulo
 								.getPrecioUnitario()
 								.multiply(
 										new BigDecimal(1).subtract(articulo
 												.getPorcentajeDescuentoReceta())));
-					}else if(descuentoRecetaSeleccionado == Enumerados.descuentosReceta.CUARENTA){
+					} else if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.CUARENTA) {
 						articulo.setPorcentajeDescuentoReceta(new BigDecimal(
-								0.40));
+								0.60));
 						articulo.setPrecioConReceta(articulo
 								.getPrecioUnitario()
 								.multiply(
 										new BigDecimal(1).subtract(articulo
 												.getPorcentajeDescuentoReceta())));
 					}
-				}else{
+				} else {
 					articulo.setPorcentajeDescuentoReceta(BigDecimal.ZERO);
 					articulo.setPrecioConReceta(BigDecimal.ZERO);
 				}
-				
+
 				/* Cargo el precio de venta según corresponda */
 
 				/*
@@ -335,7 +352,7 @@ public class StockBean implements Serializable {
 				 * articulo en el sistema y en caso de error lo muestro
 				 */
 				instanciaSistema.modificarArticulo(articuloModificado);
-				
+
 				// si todo bien aviso y vacio el formulario
 				context.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_INFO,
@@ -375,16 +392,17 @@ public class StockBean implements Serializable {
 	 * campos que sufrieron cambios.
 	 */
 	private void procesarCambios() {
-		// Si el articulo deja de ser de tipo medicamento se modifican los campos correspondientes
+		// Si el articulo deja de ser de tipo medicamento se modifican los
+		// campos correspondientes
 		// a articulos que son medicamentos
-		if (articulo.getTipoArticulo() != Enumerados.tipoArticulo.MEDICAMENTO){
+		if (articulo.getTipoArticulo() != Enumerados.tipoArticulo.MEDICAMENTO) {
 			articulo.setEsEstupefaciente(false);
 			articulo.setEsPsicofarmaco(false);
-			articulo.setCodigoVenta((char)0x00);
+			articulo.setCodigoVenta((char) 0x00);
 			articulo.setPorcentajeDescuentoReceta(BigDecimal.ZERO);
 			articulo.setPrecioConReceta(BigDecimal.ZERO);
 		}
-		
+
 		articulo.setClave1Modificado(articuloSinCambios.getClave1().compareTo(
 				articulo.getClave1()) != 0);
 		articulo.setClave2Modificado(articuloSinCambios.getClave2().compareTo(
@@ -423,10 +441,10 @@ public class StockBean implements Serializable {
 				.getPrecioUnitario().compareTo(articulo.getPrecioUnitario()) != 0);
 		articulo.setPrecioVentaModificado(articuloSinCambios.getPrecioVenta()
 				.compareTo(articulo.getPrecioVenta()) != 0);
-		if (articuloSinCambios.getPresentacion() != null){
-		articulo.setPresentacionModificado(articuloSinCambios.getPresentacion()
-				.compareTo(articulo.getPresentacion()) != 0);
-		}else{
+		if (articuloSinCambios.getPresentacion() != null) {
+			articulo.setPresentacionModificado(articuloSinCambios
+					.getPresentacion().compareTo(articulo.getPresentacion()) != 0);
+		} else {
 			articulo.setPresentacionModificado(true);
 		}
 		articulo.setStockMinimoModificado(articuloSinCambios.getStockMinimo() != articulo
@@ -446,8 +464,8 @@ public class StockBean implements Serializable {
 						instanciaSistema.obtenerUsuarioLogueado().getNombre()) != 0);
 		articulo.setVencimientoMasCercanoModificado(articuloSinCambios
 				.getVencimientoMasCercano().compareTo(
-						articulo.getVencimientoMasCercano()) != 0);		
-		
+						articulo.getVencimientoMasCercano()) != 0);
+
 		// Chequeo cambios en proveedores
 		procesarProveedores();
 		// Chequeo cambios en drogas
@@ -587,32 +605,20 @@ public class StockBean implements Serializable {
 
 	/* Manejo del componente wizard en modificarArticulo.xhtml */
 	public String onFlowProcess(FlowEvent event) {
-		
+
 		String siguienteTab;
 		if (event.getNewStep().equals("tabModificacion")) {
 			if (articuloSeleccionado != null) {
-				
-				//Chequeo permiso para modificar artículo
-//				Usuario usuariActual = this.instanciaSistema.obtenerUsuarioLogueado();
-//				if (usuariActual.tienePermiso(casoDeUso.modificarArticulo)) {
-					
-					this.modificacion = true;
-					cargarArticuloParaModificacion();
-					siguienteTab = event.getNewStep();
-//				} else {
-//					
-//					FacesContext context = FacesContext.getCurrentInstance();
-//					context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, Excepciones.USUARIO_INVALIDO, ""));
-//					RequestContext.getCurrentInstance().update("msgs");
-//					siguienteTab = event.getOldStep();
-//				}
+				this.modificacion = true;
+				cargarArticuloParaModificacion();
+				siguienteTab = event.getNewStep();
 			} else {
 				siguienteTab = event.getOldStep();
 			}
 		} else {
 			siguienteTab = event.getNewStep();
 		}
-		
+
 		return siguienteTab;
 	}
 
@@ -627,6 +633,15 @@ public class StockBean implements Serializable {
 					tipoIvaSeleccionado = model.Enumerados.tiposIVA.IVA10;
 				} else {
 					tipoIvaSeleccionado = articulo.getTipoIva().getTipoIVA();
+				}
+			}
+			if (articulo.getTipoArticulo() == Enumerados.tipoArticulo.MEDICAMENTO) {
+				if (articulo.getPorcentajeDescuentoReceta().compareTo(
+						new BigDecimal(0.75)) == 0) {
+					this.descuentoRecetaSeleccionado = Enumerados.descuentosReceta.VEINTICINCO;
+				} else if (articulo.getPorcentajeDescuentoReceta().compareTo(
+						new BigDecimal(0.60)) == 0) {
+					this.descuentoRecetaSeleccionado = Enumerados.descuentosReceta.CUARENTA;
 				}
 			}
 			this.articuloSinCambios = new Articulo(articulo);
@@ -666,7 +681,7 @@ public class StockBean implements Serializable {
 
 		try {
 			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);
-			
+
 		} catch (Excepciones e) {
 			e.printStackTrace();
 		}
@@ -674,30 +689,32 @@ public class StockBean implements Serializable {
 
 	/* Fin Operaciones para Modificación de Artículo */
 
-	
 	/* Modificar precio de articulos */
-	
+
 	public void buscarProveedores() {
 		FacesContext context = FacesContext.getCurrentInstance();
 
 		if (busquedaProveedor.equals("")) {
 			return;
 		}
-		
+
 		articulosDelProveedor = new ArrayList<Articulo>();
 		long idProveedor = Long.parseLong(busquedaProveedor);
-		
+
 		try {
-			articulosDelProveedor = this.instanciaSistema.
-					obtenerArticulosDelProveedor(idProveedor);
-		}
-		catch (Excepciones e) {
+			articulosDelProveedor = this.instanciaSistema
+					.obtenerArticulosDelProveedor(idProveedor);
+		} catch (Excepciones e) {
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 		}
 	}
-	/* Operaciones de la tabla de proveedores tanto para el Alta como la Modificación */
-	
+
+	/*
+	 * Operaciones de la tabla de proveedores tanto para el Alta como la
+	 * Modificación
+	 */
+
 	/*
 	 * Operaciones de la tabla de proveedores tanto para el Alta como la
 	 * Modificación
@@ -841,6 +858,14 @@ public class StockBean implements Serializable {
 		}
 	}
 
+	public void descuentoRecetaChange() {
+		if (descuentoRecetaSeleccionado == model.Enumerados.descuentosReceta.FIJO) {
+			this.noPrecioFijo = false;
+		} else {
+			this.noPrecioFijo = true;
+		}
+	}
+
 	public void cargarFormasVenta() {
 		if (formasVenta.isEmpty()) {
 			DTFormasVenta fv = new DTFormasVenta();
@@ -872,6 +897,10 @@ public class StockBean implements Serializable {
 			dr.setTipoDescuento(Enumerados.descuentosReceta.CUARENTA);
 			dr.setDescripcion(Enumerados.descuentosRecetaDesc.CUARENTA);
 			descuentosReceta.add(dr);
+			dr = new DTDescuentoReceta();
+			dr.setTipoDescuento(Enumerados.descuentosReceta.FIJO);
+			dr.setDescripcion(Enumerados.descuentosRecetaDesc.FIJO);
+			descuentosReceta.add(dr);
 		}
 	}
 
@@ -898,7 +927,7 @@ public class StockBean implements Serializable {
 		this.instanciaSistema = s;
 
 		if (this.instanciaSistema != null) {
-			
+
 			try {
 				// Cargo las marcas de la base de datos
 				cargarMarcas();
@@ -925,7 +954,7 @@ public class StockBean implements Serializable {
 				cargarTiposIva();
 
 			} catch (Excepciones ex) {
-				
+
 				FacesContext context = FacesContext.getCurrentInstance();
 				context.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, ex.getMessage(), ""));
@@ -941,6 +970,7 @@ public class StockBean implements Serializable {
 		this.tiposIVA = new ArrayList<TipoIva>();
 		this.noEsMedicamento = true;
 		this.radioPrecioVenta = "$";
+		this.noPrecioFijo = true;
 	}
 
 	public DTBusquedaArticulo getArticuloSeleccionado() {
@@ -1139,7 +1169,7 @@ public class StockBean implements Serializable {
 	public void setBusqueda(String busqueda) {
 		this.busqueda = busqueda;
 	}
-	
+
 	public String getBusquedaProveedor() {
 		return busquedaProveedor;
 	}
@@ -1147,12 +1177,20 @@ public class StockBean implements Serializable {
 	public void setBusquedaProveedor(String busquedaProveedor) {
 		this.busquedaProveedor = busquedaProveedor;
 	}
-	
+
 	public List<Articulo> getArticulosDelProveedor() {
 		return articulosDelProveedor;
 	}
 
 	public void setArticulosDelProveedor(List<Articulo> articulosDelProveedor) {
 		this.articulosDelProveedor = articulosDelProveedor;
+	}
+
+	public boolean isNoPrecioFijo() {
+		return noPrecioFijo;
+	}
+
+	public void setNoPrecioFijo(boolean precioFijo) {
+		this.noPrecioFijo = precioFijo;
 	}
 }

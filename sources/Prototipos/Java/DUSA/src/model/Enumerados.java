@@ -71,11 +71,13 @@ public class Enumerados {
 	public final class descuentosReceta {
 		public static final short VEINTICINCO = 1;
 		public static final short CUARENTA = 2;
+		public static final short FIJO = 3;
 	}
 	
 	public final class descuentosRecetaDesc {
 		public static final String VEINTICINCO = "25%";
 		public static final String CUARENTA = "40%";
+		public static final String FIJO = "Precio fijo";
 	}
 	
 	public final class modoFacturacion{
