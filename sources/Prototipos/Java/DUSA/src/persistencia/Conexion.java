@@ -12,23 +12,26 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 public class Conexion {
 	
 	private static BasicDataSource basicDataSource;
+	private static String driverParam = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("DRIVER");
+	private static String dbuserParam = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("DBUSER");
+	private static String dbpwdParam = FacesContext.getCurrentInstance().getExternalContext().getInitParameter("DBPWD");
+	private static String dbconnstringParam =FacesContext.getCurrentInstance().getExternalContext().getInitParameter("CONNSTRING");
 	
 	public static Connection getConnection() throws NamingException, SQLException {
 		
 		try {
-			Class.forName(FacesContext.getCurrentInstance()
-					.getExternalContext().getInitParameter("DRIVER"));
+			Class.forName(driverParam);//FacesContext.getCurrentInstance().getExternalContext().getInitParameter("DRIVER")
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
-        String user = FacesContext.getCurrentInstance().getExternalContext()
-                .getInitParameter("DBUSER");
-        String password = FacesContext.getCurrentInstance()
-                .getExternalContext().getInitParameter("DBPWD");
-        String connection = FacesContext.getCurrentInstance()
-                .getExternalContext().getInitParameter("CONNSTRING");
-        return DriverManager.getConnection(connection, user, password);
+//        String user = FacesContext.getCurrentInstance().getExternalContext()
+//                .getInitParameter("DBUSER");
+//        String password = FacesContext.getCurrentInstance()
+//                .getExternalContext().getInitParameter("DBPWD");
+//        String connection = FacesContext.getCurrentInstance()
+//                .getExternalContext().getInitParameter("CONNSTRING");
+        return DriverManager.getConnection(dbconnstringParam, dbuserParam, dbpwdParam);
 		
 		
 		/*
