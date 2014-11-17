@@ -50,7 +50,6 @@
 													<p:calendar id="fechaDesde"
 														value="#{alertaVencimientoBean.fechaDesde}"
 														pattern="dd-MM-yyyy" mask="true" />
-													<p:message for="fechaDesde" display="text" />
 												</div>
 											</div>
 										</div>
@@ -65,7 +64,6 @@
 													<p:calendar id="fechaHasta"
 														value="#{alertaVencimientoBean.fechaHasta}"
 														pattern="dd-MM-yyyy" mask="true" />
-													<p:message for="fechaHasta" display="text" />
 												</div>
 											</div>
 										</div>
@@ -103,9 +101,8 @@
 														</h:outputText>
 													</p:column>
 
-													<p:column headerText="Nuevo vencimiento"
-														style="width: 50px;">
-														<p:calendar
+													<p:column headerText="Nuevo vencimiento" style="width: 80px">
+														<p:calendar style="width: 90%;" converterMessage="Fecha mal formada"
 															value="#{alertaVencimientoBean.nuevosVencimientos[rowIndex]}"
 															pattern="dd-MM-yyyy" mask="true" />
 													</p:column>
@@ -121,9 +118,6 @@
 													styleClass="btn btn-success" update=":form1"
 													value="Confirmar">
 												</h:commandButton>
-												<h:commandButton value="Cancelar" update="panel"
-													actionListener="#{alertaVencimientoBean.cancelar}"
-													styleClass="btn btn-default" immediate="true" />
 											</div>
 										</div>
 									</div>

@@ -32,6 +32,7 @@ public class GenerarPedidoBean implements Serializable{
 	private Boolean disablePrediccionDePedido = false;
 	private String hideElement = "hidden";
 	private String formaDePago = "contado";
+	private Boolean esHistorico;
 	
 	// Getters y setters
 	public static long getSerialversionuid() {
@@ -78,6 +79,14 @@ public class GenerarPedidoBean implements Serializable{
 		this.formaDePago = formaDePago;
 	}
 	
+	public Boolean getEsHistorico() {
+		return esHistorico;
+	}
+
+	public void setEsHistorico(Boolean esHistorico) {
+		this.esHistorico = esHistorico;
+	}
+	
 	//Métodos
 	/**
 	 * Utilizado en el xhtml por el loginBean
@@ -95,10 +104,11 @@ public class GenerarPedidoBean implements Serializable{
 		disablePrediccionDePedido = true;
 		disableDesdeUltimoPedido = true;
 		hideElement = "visible";
+		esHistorico = false;
 		pedidos.clear();
 
 		try {
-//			this.instanciaSistema.actualizarStock();
+			
 			pedidos = this.instanciaSistema
 					.generarPedidoEnBaseAPedidoAnterior();
 
@@ -112,27 +122,6 @@ public class GenerarPedidoBean implements Serializable{
 			disablePrediccionDePedido = false;
 			hideElement = "hidden";
 		}
-
-		/*
-		 * DTLineaPedido dt = new DTLineaPedido(); dt.setCantidad(5);
-		 * dt.setIdArticulo(5); dt.setNumeroArticulo(5); //
-		 * dt.setNombreArticulo("Ernex"); dt.setDescripcionArticulo("Ernex");
-		 * dt.setPrecioPonderado(40); dt.setPrecioUnitario(40);
-		 * dt.setStockMinimo(9); dt.setSubtotal(200); pedidos.add(dt);
-		 * 
-		 * dt = new DTLineaPedido(); dt.setCantidad(1); dt.setIdArticulo(6);
-		 * dt.setNumeroArticulo(6); // dt.setNombreArticulo("Alerfast");
-		 * dt.setDescripcionArticulo("Alerfast"); dt.setPrecioPonderado(70);
-		 * dt.setPrecioUnitario(70); dt.setStockMinimo(4); dt.setSubtotal(70);
-		 * pedidos.add(dt);
-		 * 
-		 * dt = new DTLineaPedido(); dt.setCantidad(4); dt.setIdArticulo(7);
-		 * dt.setNumeroArticulo(7); // dt.setNombreArticulo("Alerfast forte");
-		 * dt.setDescripcionArticulo("Alerfast forte");
-		 * dt.setPrecioPonderado(90); dt.setPrecioUnitario(90);
-		 * dt.setStockMinimo(4); dt.setSubtotal(360); pedidos.add(dt);
-		 */
-
 	}
 
 	/**
@@ -143,13 +132,14 @@ public class GenerarPedidoBean implements Serializable{
 		disablePrediccionDePedido = true;
 		disableDesdeUltimoPedido = true;
 		hideElement = "visible";
+		esHistorico = true;
 		pedidos.clear();
 
 		try {
 			
 			pedidos = this.instanciaSistema.generarPedidoEnBaseAHistorico(5);
 		} catch (Exception e) {
-			e.printStackTrace();
+
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
@@ -157,32 +147,6 @@ public class GenerarPedidoBean implements Serializable{
 			disablePrediccionDePedido = false;
 			hideElement = "hidden";
 		}
-		/*
-		 * DTLineaPedido dt = new DTLineaPedido(); dt.setCantidad(3);
-		 * dt.setIdArticulo(1); dt.setNumeroArticulo(1); //
-		 * dt.setNombreArticulo("Perifar 400");
-		 * dt.setDescripcionArticulo("Perifar 400"); dt.setPrecioPonderado(45);
-		 * dt.setPrecioUnitario(45); dt.setStockMinimo(7); dt.setSubtotal(135);
-		 * pedidos.add(dt);
-		 * 
-		 * dt = new DTLineaPedido(); dt.setCantidad(2); dt.setIdArticulo(2);
-		 * dt.setNumeroArticulo(2); // dt.setNombreArticulo("Aspirina");
-		 * dt.setDescripcionArticulo("Aspirina"); dt.setPrecioPonderado(50);
-		 * dt.setPrecioUnitario(50); dt.setStockMinimo(9); dt.setSubtotal(100);
-		 * pedidos.add(dt);
-		 * 
-		 * dt = new DTLineaPedido(); dt.setCantidad(3); dt.setIdArticulo(3);
-		 * dt.setNumeroArticulo(3); // dt.setNombreArticulo("Buscapina");
-		 * dt.setDescripcionArticulo("Buscapina"); dt.setPrecioPonderado(30);
-		 * dt.setPrecioUnitario(30); dt.setStockMinimo(7); dt.setSubtotal(90);
-		 * pedidos.add(dt);
-		 * 
-		 * dt = new DTLineaPedido(); dt.setCantidad(6); dt.setIdArticulo(4);
-		 * dt.setNumeroArticulo(4); // dt.setNombreArticulo("Biogrip");
-		 * dt.setDescripcionArticulo("Biogrip"); dt.setPrecioPonderado(10);
-		 * dt.setPrecioUnitario(10); dt.setStockMinimo(10); dt.setSubtotal(60);
-		 * pedidos.add(dt);
-		 */
 	}
 	
 	/**
@@ -205,7 +169,6 @@ public class GenerarPedidoBean implements Serializable{
 	}
 	
 	public void enviarPedido() {
-		
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 
