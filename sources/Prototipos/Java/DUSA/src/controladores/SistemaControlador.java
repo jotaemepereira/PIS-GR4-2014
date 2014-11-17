@@ -362,6 +362,7 @@ public class SistemaControlador implements ISistema {
 		List<Venta> vPendientes = null;
 		if (user.tienePermiso(casoDeUso.listarVentasPendientes)) {
 
+			vPendientes = FabricaLogica.getIFacturacion().listarVentasPendientes();
 		} else {
 			
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
