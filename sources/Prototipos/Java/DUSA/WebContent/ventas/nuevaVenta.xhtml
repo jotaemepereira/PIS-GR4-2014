@@ -57,7 +57,7 @@
 				actionListener="#{ventaBean.facturarVenta}" />
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/ventas.xhtml" />
-			#{loginBean.redirectIfNotLoggedIn()}
+			#{loginBean.redirectIfNotLoggedIn("ventas/nuevaVenta.jsf")}
         	#{ventaBean.setISistema(loginBean.instanciaSistema)}
 			
 			<div class="vpanel_right">

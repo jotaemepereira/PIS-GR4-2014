@@ -93,15 +93,15 @@ public class VentaBean implements Serializable {
 				resultadoBusqueda = this.instanciaSistema
 						.buscarArticulosVenta(descripcionBusqueda);
 
-				for (DTProducto dtVenta : resultadoBusqueda) {
-					if (dtVenta.getPrecioReceta() == null
-							|| dtVenta.getPrecioReceta().equals(
-									new BigDecimal(0))) {
-						dtVenta.setRecetaBlanca(false);
-					} else {
-						dtVenta.setRecetaBlanca(true);
-					}
-				}
+//				for (DTProducto dtVenta : resultadoBusqueda) {
+//					if (dtVenta.getPrecioReceta() == null
+//							|| dtVenta.getPrecioReceta().equals(
+//									new BigDecimal(0))) {
+//						dtVenta.setRecetaBlanca(false);
+//					} else {
+//						dtVenta.setRecetaBlanca(true);
+//					}
+//				}
 
 			} catch (Excepciones e) {
 				// TODO Auto-generated catch block
@@ -475,7 +475,7 @@ public class VentaBean implements Serializable {
 				venta.setEstadoVenta(String
 						.valueOf(Enumerados.EstadoVenta.PERDIDA));
 
-				this.instanciaSistema.registrarNuevaVenta(venta);
+				this.instanciaSistema.registrarVentaPerdida(venta);
 				FacesContext.getCurrentInstance().addMessage(
 						null,
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
