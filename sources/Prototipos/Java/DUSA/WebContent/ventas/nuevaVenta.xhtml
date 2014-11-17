@@ -97,7 +97,7 @@
 
 											</div>
 
-											<p:dataTable id="TablaVentas" var="venta"
+											<p:dataTable id="TablaVentas" var="venta" emptyMessage="No hay datos."
 												value="#{ventaBean.resultadoBusqueda}" rowIndexVar="index">
 
 												<p:column headerText="Descripcion"
@@ -142,7 +142,7 @@
 												</p:inputText>
 											</div>
 
-											<p:dataTable id="TablaVentas2" var="venta2"
+											<p:dataTable id="TablaVentas2" var="venta2" emptyMessage="No hay datos."
 												value="#{ventaBean.lineasVenta}" rowIndexVar="index">
 
 												<p:column headerText="Cantidad" style="text-align: center;">
