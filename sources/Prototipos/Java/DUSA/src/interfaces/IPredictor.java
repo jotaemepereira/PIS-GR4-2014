@@ -1,6 +1,9 @@
 package interfaces;
 
+import java.util.List;
+
 import controladores.Excepciones;
+import datatypes.DTLineaPedido;
 
 /**  
 * @author Santiago
@@ -9,10 +12,9 @@ import controladores.Excepciones;
 public interface IPredictor {
 	
 	/**
-	 * @author Guille, Santiago
-	 * @param idArticulo identificador del articulo a predecir
-	 * @return Predice la cantidad que se necesite del artículo con id "idArticulo".  
+	 * @author Guille, Santiago, Jmaguerre
+	 * @return Predice la cantidad que se necesita de todos los artículos de DUSA  
 	 * @throws Excepciones
 	 */
-	public int predecir(Long idArticulo) throws Excepciones;
+	public List<DTLineaPedido> predecir() throws Excepciones;
 }

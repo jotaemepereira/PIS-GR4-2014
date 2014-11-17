@@ -35,6 +35,22 @@
     <param-name>MODO_FACTURACION</param-name>
     <param-value>3</param-value>
   </context-param>
+  <context-param>
+    <param-name>CANT_DIAS_HABILES</param-name>
+    <param-value>24</param-value>
+  </context-param>
+  <context-param>
+    <param-name>CANT_ANIOS_ANTERIORES</param-name>
+    <param-value>2</param-value>
+  </context-param>
+  <context-param>
+    <param-name>PONDERADOR_DIAS_HABILES</param-name>
+    <param-value>0.7</param-value>
+  </context-param>
+  <context-param>
+    <param-name>PONDERADOR_ANIOS_ANTERIORES</param-name>
+    <param-value>0.3</param-value>
+  </context-param>
     <context-param>
     <param-name>PathFacturacion</param-name>
     <param-value></param-value>
