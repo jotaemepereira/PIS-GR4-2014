@@ -5,7 +5,6 @@ import interfaces.ISeleccionador;
 import interfaces.IServicio;
 import interfaces.IStock;
 import interfaces.IStockPersistencia;
-import interfaces.IUsuarioPersistencia;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
@@ -16,12 +15,11 @@ import model.LineaPedido;
 import model.Mail;
 import model.Pedido;
 import model.TipoIva;
-
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,18 +28,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-
 import persistencia.PStockControlador;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
-import datatypes.DTProduct;
 import datatypes.DTProveedor;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
+import datatypes.DTVencimiento;
 import controladores.FabricaPersistencia;
 
 public class StockControlador implements IStock {
@@ -57,6 +52,8 @@ public class StockControlador implements IStock {
 					Excepciones.ADVERTENCIA_DATOS));
 		}
 		FabricaPersistencia.getStockPersistencia().persistirArticulo(articulo);
+		// indexacion de solr del producto nuevo
+		FabricaPersistencia.getStockPersistencia().deltaImportSolr();
 	}
 
 	public List<Articulo> buscarArticulo(String descripcion) {
@@ -76,7 +73,7 @@ public class StockControlador implements IStock {
 			articulo = FabricaPersistencia.getStockPersistencia()
 					.obtenerArticuloConId(id.longValue());
 		} catch (Exception e) {
-			// TODO: handle exception
+			
 			e.printStackTrace();
 		}
 
@@ -148,33 +145,13 @@ public class StockControlador implements IStock {
 		return lPedidos;
 	}
 
-	private List<DTBusquedaArticulo> getDatosArticulosBuscados(
-			List<DTBusquedaArticuloSolr> encontrados) throws Excepciones {
-		List<DTBusquedaArticulo> articulos = new ArrayList<DTBusquedaArticulo>();
-
-		Iterator<DTBusquedaArticuloSolr> it = encontrados.iterator();
-		while (it.hasNext()) {
-			DTBusquedaArticuloSolr dtBusquedaArticulo = it
-					.next();
-
-			DTBusquedaArticulo articulo = new DTBusquedaArticulo(
-					dtBusquedaArticulo);
-			FabricaPersistencia.getStockPersistencia().buscarArticulosId(
-					articulo);
-
-			articulos.add(articulo);
-		}
-
-		return articulos;
-	}
-
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda)
 			throws Excepciones {
-		List<DTBusquedaArticuloSolr> encontrados = FabricaPersistencia
-				.getStockPersistencia().buscarArticulosSolr(busqueda);
+		IStockPersistencia isp = FabricaPersistencia.getStockPersistencia();
+		List<DTBusquedaArticuloSolr> encontrados = isp.buscarArticulosSolr(busqueda);
 
-		return getDatosArticulosBuscados(encontrados);
+		return isp.getDatosArticulosBuscados(encontrados);
 	}
 
 	@Override
@@ -242,12 +219,9 @@ public class StockControlador implements IStock {
 
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
-//		grabarTiposIVA();
-//		Calendar cal = Calendar.getInstance();  //Get current date/month i.e 27 Feb, 2012
-//		cal.add(Calendar.MONTH, -3);   //Go to date, 6 months ago 27 July, 2011
-//		cal.set(Calendar.DAY_OF_MONTH, 1); 
-//		(new StockControlador()).actualizarStock(cal.getTime());
-//		(new PStockControlador()).fullImportSolr();
+		//grabarTiposIVA();
+		//System.out.println("***** ACCIONES TER ****");
+		//FabricaPersistencia.getStockPersistencia().fullImportSolr();
 		return FabricaPersistencia.getStockPersistencia()
 				.obtenerAccionesTerapeuticas();
 	}
@@ -264,29 +238,20 @@ public class StockControlador implements IStock {
 	}
 
 	@Override
-	public List<DTVenta> buscarArticulosVenta(String busqueda)
+	public List<DTProducto> buscarArticulosVenta(String busqueda)
 			throws Excepciones {
-		List<DTVenta> articulos = new ArrayList<DTVenta>();
 		List<DTBusquedaArticuloSolr> lista = FabricaPersistencia
 				.getStockPersistencia().buscarArticulosSolr(busqueda);
 
-		Iterator<DTBusquedaArticuloSolr> it = lista.iterator();
-
-		while (it.hasNext()) {
-			DTBusquedaArticuloSolr articuloB = it
-					.next();
-			DTVenta articuloV = FabricaPersistencia.getStockPersistencia()
-					.getDatosArticuloVenta(articuloB.getIdArticulo());
-			articuloV.setDescripcion(articuloB.getDescripcion());
-			articuloV.setProductId(articuloB.getIdArticulo());
-			articuloV.setBarcode(articuloB.getCodigoBarras());
-			articuloV.setPresentacion(articuloB.getPresentacion());
-			articuloV.setPrincipioActivo(articuloB.getDroga());
-			articuloV.setLaboratorio(articuloB.getMarca());
-			articulos.add(articuloV);
-		}
-
-		return articulos;
+		return FabricaPersistencia.getStockPersistencia()
+				.getDatosArticuloVenta(lista);
+	}
+	
+	@Override
+	public DTProducto buscarArticulosVentaPorCodigo(String codigo)
+			throws Excepciones {
+			return FabricaPersistencia.getStockPersistencia()
+					.getDatosArticuloVentaPorCodigo(codigo);
 	}
 
 	@Override
@@ -295,10 +260,28 @@ public class StockControlador implements IStock {
 
 		Mail m;
 
+		/**
+		 * se traen todos los artículos que tuvieron cambios desde la fecha que
+		 * se recibe por  parámetro hasta el día de hoy
+		 */
 		List<Articulo> articulos = FabricaServicios.getIServicios().obtenerActualizacionDeStock(fecha);
-		
+		/**
+		 * si un artículo bajó su precio o cambió su estado de dado de baja a dejar de estarlo
+		 * se agrega a la lista de cambios para ser enviado por mail
+		 */
 		List<Cambio> cambios = FabricaPersistencia.getStockPersistencia().obtenerCambios(articulos);
-
+		
+		
+		/**
+		 * Se lee el mail y password del correo emisor
+		 * y mails de los receptores en caso de que no existan 
+		 * del archivo .properties
+		 * en caso de que no existan estas propiedades se crean
+		 * Finalmente se actualiza al fecha de fechaUltimaActualizacion
+		 * al día de hoy
+		 * 
+		 */
+		
 		OutputStream output;
 		try {
 		FileInputStream in = new FileInputStream("alertaStock.properties");
@@ -336,9 +319,10 @@ public class StockControlador implements IStock {
 			m.setDestinatarios(receptores);
 			m.Enviar();
 		}
+		FabricaPersistencia.getStockPersistencia().fullImportSolr();
 		
 		} catch (IOException | MessagingException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}                      
@@ -386,17 +370,17 @@ public class StockControlador implements IStock {
 	@Override
 	public void modificarArticulo(DTModificacionArticulo articulo) throws Excepciones {
 		FabricaPersistencia.getStockPersistencia().modificarArticulo(articulo);
-
+		// indexacion de solr del producto modificado
+		FabricaPersistencia.getStockPersistencia().deltaImportSolr();
 	}
 
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda,
-			int proveedor) throws Excepciones {
-		List<DTBusquedaArticuloSolr> encontrados = FabricaPersistencia
-				.getStockPersistencia()
-				.buscarArticulosSolr(busqueda, proveedor);
+			long proveedor) throws Excepciones {
+		IStockPersistencia isp = FabricaPersistencia.getStockPersistencia();
+		List<DTBusquedaArticuloSolr> encontrados = isp.buscarArticulosSolr(busqueda, proveedor);
 
-		return getDatosArticulosBuscados(encontrados);
+		return isp.getDatosArticulosBuscados(encontrados);
 	}
 
 	@Override
@@ -414,11 +398,24 @@ public class StockControlador implements IStock {
 	}
 
 	@Override
-	public void modificarPreciodeArticulos(Map<Long, Integer> preciosModificados)
+	public void modificarPreciodeArticulos(Map<Long, BigDecimal> preciosModificados)
 			throws Excepciones {
 		// TODO Auto-generated method stub
 		FabricaPersistencia.getStockPersistencia().
 			modificarPreciosDeArticulo(preciosModificados);
+		
+	}
+
+	@Override
+	public List<DTVencimiento> articulosQueSeVencenEnPeriodo(Date desde,
+			Date hasta) throws Excepciones {
+		return FabricaPersistencia.getStockPersistencia().articulosQueSeVencenEnPeriodo(desde, hasta);
+	}
+
+	@Override
+	public void modificarVencimientosDeArticulos(Map<Long, Date> cambios) throws Excepciones {
+		FabricaPersistencia.getStockPersistencia().modificarVencimientosDeArticulos(cambios);
+		FabricaPersistencia.getStockPersistencia().deltaImportSolr();
 		
 	}
 	

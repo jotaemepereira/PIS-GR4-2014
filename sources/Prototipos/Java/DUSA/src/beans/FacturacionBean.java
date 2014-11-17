@@ -90,6 +90,7 @@ public class FacturacionBean implements Serializable {
 								Excepciones.MENSAJE_NO_CORROBORADO_OK, ""));
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -121,6 +122,7 @@ public class FacturacionBean implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							ex.getMessage(), ""));
 		} catch (Exception e) {
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -146,6 +148,7 @@ public class FacturacionBean implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							ex.getMessage(), ""));
 		} catch (Exception e) {
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(
 					null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -167,13 +170,11 @@ public class FacturacionBean implements Serializable {
 	}
 
 	public BigDecimal calculcarSubtotal(LineaVenta lv) {
-		if (lv.getDescuento().compareTo(new BigDecimal(0)) == 0) {
-			return (lv.getPrecio().multiply(new BigDecimal(lv.getCantidad())));
-		}
-
-		return (lv.getPrecio().multiply(new BigDecimal(lv.getCantidad())))
-				.multiply(((new BigDecimal(100)).subtract(lv.getDescuento()))
-						.divide(new BigDecimal(100)));
+		return lv.getPrecio().multiply(new BigDecimal(lv.getCantidad()));
+	}
+	
+	public BigDecimal calcularPrecioSinDescuento(LineaVenta lv) {
+		return lv.getPrecio().add(lv.getDescuento());
 	}
 
 	public void toggleCheck(int index) {

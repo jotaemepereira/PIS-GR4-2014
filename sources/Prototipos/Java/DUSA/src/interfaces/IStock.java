@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +14,8 @@ import model.TipoIva;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
-import datatypes.DTProduct;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
+import datatypes.DTVencimiento;
 
 public interface IStock {
 
@@ -109,7 +110,10 @@ public interface IStock {
 	
 	
 
-	public List<DTVenta> buscarArticulosVenta(String busqueda)
+	public List<DTProducto> buscarArticulosVenta(String busqueda)
+			throws Excepciones;
+
+	public DTProducto buscarArticulosVentaPorCodigo(String codigo)
 			throws Excepciones;
 
 	/**
@@ -178,7 +182,7 @@ public interface IStock {
 	 * @throws Excepciones
 	 * @author Victoria Díaz
 	 */
-	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones;
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, long proveedor) throws Excepciones;
 
 	/**
 	 * Devuelve un artículo con todos sus datos, sus proveedores, drogas y acciones terapéuticas.
@@ -198,10 +202,41 @@ public interface IStock {
 	 * @param fecha
 	 * @throws Excepciones
 	 */
+	
+	
+	/**
+	 * @author santiago 
+	 * @param fecha
+	 * @throws Excepciones
+	 * fecha es la correspondiente a la última actualización 
+	 * se traen todos los artículos que fueron dados de alta o sufriron
+	 * cambios desde fecha hasta el día de hoy
+	 * Si los artículos no existen se insertan en la bd 
+	 * si ya existen se chequean los cambios en caso de que haya dismunuído el precio
+	 * o el estado cambie, dejando de estar dado de baja se agregan a cambios 
+	 * estos cambios se envían por mail a los correos especificados en el .properties
+	 */
 	public void actualizarStock(Date fecha) throws Excepciones;
 	
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
 	
-	public void modificarPreciodeArticulos(Map<Long, Integer> preciosModificados) throws Excepciones;
+	public void modificarPreciodeArticulos(Map<Long, BigDecimal> preciosModificados) throws Excepciones;
+	
+	/**
+	 * Devuelve una lista con información de artículos los que su fecha de vencimiento más cercano está entre
+	 * desde y hasta
+	 * @param desde
+	 * @param hasta
+	 * @return
+	 * @throws Excepciones
+	 */
+	public List<DTVencimiento> articulosQueSeVencenEnPeriodo(Date desde, Date hasta) throws Excepciones;
+
+	/**
+	 * Recibe un map con los cambios de vencimientos a realizar y los periste.
+	 * @param cambios
+	 * @throws Excepciones
+	 */
+	public void modificarVencimientosDeArticulos(Map<Long, Date> cambios) throws Excepciones;
 	
 }

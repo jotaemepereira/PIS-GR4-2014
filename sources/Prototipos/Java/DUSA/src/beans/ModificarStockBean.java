@@ -2,6 +2,7 @@ package beans;
 
 import interfaces.ISistema;
 
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,7 +18,6 @@ import javax.faces.context.FacesContext;
 
 import model.Enumerados.tipoMovimientoDeStock;
 
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
 import controladores.Excepciones;
@@ -154,12 +154,10 @@ public class ModificarStockBean implements Serializable{
 		//Si no se selecciona un artículo se notifica y se mantiene el wizard en el mismo paso (tab).
 		if ((event.getNewStep().equals("paso2") && this.articuloSeleccionado == null) || 
 			(event.getNewStep().equals("paso3") && this.articuloParaDesarme == null)){
-			//TODO:La notificación no se esta desplegando correctamente.
+			
 			FacesContext contexto = FacesContext.getCurrentInstance();
 			contexto.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
 					Excepciones.MENSAJE_SELECCIONE_ARTICULO, ""));
-			
-			RequestContext.getCurrentInstance().update("msgs");
 			return event.getOldStep();
 		}
 		
@@ -180,9 +178,10 @@ public class ModificarStockBean implements Serializable{
 				nuevoStock = new long[resBusqueda.size()];
 				for (int i = 0; i < resBusqueda.size(); i++) {
 					nuevoStock[i] = resBusqueda.get(i).getStock();
+					resBusqueda.get(i).setNuevoStock(nuevoStock[i]);
 				}
 			}
-			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
+			
 		} catch (Excepciones e) {
 			
 			e.printStackTrace();
@@ -220,8 +219,11 @@ public class ModificarStockBean implements Serializable{
 			contexto.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR,
 					e.getMessage(), ""));
+
 		}
 	}
+	
+	
 
 	public void confirmarCambioStock() {
 		FacesContext contexto = FacesContext.getCurrentInstance();
@@ -283,6 +285,7 @@ public class ModificarStockBean implements Serializable{
 							ex.getMessage(),
 							""));
 		} catch (Exception e) {
+			e.printStackTrace();
 			contexto.addMessage(
 					null,
 					new FacesMessage(

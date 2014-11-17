@@ -38,32 +38,53 @@ public class ComprasBean implements Serializable {
 	private ISistema instanciaSistema;
 
 	private static final long serialVersionUID = 1L;
-
+	
+	// Habilita/deshabilita los botones de seleccion del tipo de ingreso 
 	private Boolean disableBotones = false;
+	// Deshabilita los inputs en el caso de la factura automatica
 	private Boolean facturaAutomatica = false;
+	// En el caso que sea una factura o remito no electronicos, deshabilita el campo
 	private Boolean serieFactura = false;
+	// Oculta el panel de la factura hasta que no se seleccione un tipo de ingreso de factura
 	private String hideTable = "hidden";
+	// Habilita el combo de seleccion de factura automatica solo para el caso de las facturas automaticas dusa
 	private String selectFacturaDUSA = "hidden";
+	// Habilita el combo de seleccion de proveedores en el caso del ingreso manual
 	private String selectProveedores = "hidden";
 
+	// Lista de proveedores del sistema
 	private List<DTProveedor> proveedores;
+	// Proveedor seleccionado en el combo para el ingreso manual
 	private int proveedorSeleccionado;
+	// Deshabilita el combo de proveedores una vez seleccionado un proveedor y agregado un articulo
 	private Boolean disableProveedores = false;
 
+	// Contiene el resultado de la busqueda de los articulos
 	private List<DTBusquedaArticulo> busquedaArticulos;
+	// String a buscar para un articulo
 	private String busqueda;
 
+	// Map con las facturas de dusa para el caso de las facturas automaticas
 	private Map<Long, DTComprobanteFactura> mapFacturasDUSA = new HashMap<Long, DTComprobanteFactura>();
+	// Lista de facturas automaticas que se muestra en el combo
 	private List<DTComprobanteFactura> facturasDUSA = new ArrayList<DTComprobanteFactura>();
+	// Guarda la orden de compra seleccionada para la factura automatica
 	private long ordenDeCompraDUSA;
+	
+	// Factura actual
 	private DTComprobanteFactura factura = new DTComprobanteFactura();
+	// Total de la factura ingresada por el usuario
 	private BigDecimal totalFactura = new BigDecimal(0);
 
+	// Guarda los tipos de dgi del sistema
 	private Map<Integer, DTTiposDGI> mapTiposDGI = new HashMap<Integer, DTTiposDGI>();
+	// Guarda los tipos de dgi para mostrar en la pantalla en el combo
 	private List<DTTiposDGI> tiposDGI = new ArrayList<DTTiposDGI>();
 
-	List<DTLineaFacturaCompra> alertasPrecios = new ArrayList<DTLineaFacturaCompra>();
+	// Guarda los productos a hacer alertas por precios
+	private List<DTLineaFacturaCompra> alertasPrecios = new ArrayList<DTLineaFacturaCompra>();
 
+	// Guarda la fecha actual
 	private Date hoy = new Date();
 
 	/*************************
@@ -303,7 +324,6 @@ public class ComprasBean implements Serializable {
 		if (factura.getOrdenDeCompra() == 0) {
 			BigDecimal total = factura.getMontoTotalAPagar().add(
 					factura.getMontoNoFacturable());
-			System.out.println("TOTALES: " + total + " " + totalFactura);
 			if (totalFactura.compareTo(total) != 0) {
 				context.addMessage(
 						null,
@@ -350,6 +370,9 @@ public class ComprasBean implements Serializable {
 				}
 				detalle.setPrecioUnitario(linea.getPrecioUnitario());
 				detalle.setProductId(linea.getProductId());
+				detalle.setAvg_cost(linea.getAvg_cost());
+				detalle.setStock(linea.getStock());
+				detalle.setTipoIVA(linea.getTipoIVA());
 
 				detalles.add(detalle);
 			} catch (Excepciones e) {
@@ -411,7 +434,6 @@ public class ComprasBean implements Serializable {
 		// En caso que se haya dado que hay algún artúculo con costo de lista <
 		// precio unitario, muestro el popup con los mismos
 		if (!alertasPrecios.isEmpty()) {
-			System.out.println("alerta");
 			RequestContext.getCurrentInstance().execute(
 					"PF('dialogAlerta').show()");
 		}
@@ -471,6 +493,12 @@ public class ComprasBean implements Serializable {
 	 *            - articulo
 	 */
 	public void agregarArticulo(DTBusquedaArticulo articulo) {
+		if(articulo == null){
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, Excepciones.MENSAJE_ERROR_SISTEMA, ""));
+		}
+		
 		DTLineaFacturaCompra linea = new DTLineaFacturaCompra();
 
 		linea.setDescripcion(articulo.getDescripcion());
@@ -483,6 +511,8 @@ public class ComprasBean implements Serializable {
 		linea.setTotal(new BigDecimal(0));
 		linea.setPrecioUnitario(new BigDecimal(0));
 		linea.setTipoIVA(articulo.getTipoIva());
+		linea.setAvg_cost(articulo.getCostoPonderado());
+		linea.setStock(articulo.getStock());
 
 		List<DTLineaFacturaCompra> detalle = factura.getDetalle();
 		detalle.add(linea);
@@ -502,8 +532,7 @@ public class ComprasBean implements Serializable {
 		try {
 			busquedaArticulos = this.instanciaSistema.buscarArticulos(busqueda,
 					this.proveedorSeleccionado);
-			System.out.println("CANTIDAD ENCONTRADA: "
-					+ busquedaArticulos.size());
+		
 		} catch (Excepciones e) {
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage(
@@ -518,7 +547,6 @@ public class ComprasBean implements Serializable {
 	 * corresponde
 	 */
 	public void calcularTotalArticulo(DTLineaFacturaCompra detalle) {
-		System.out.println("calcular");
 		// Saco el valor anterior de la suma del subtotal
 		factura.setSubtotalProdctos(factura.getSubtotalProdctos().subtract(
 				detalle.getTotal()));
@@ -576,17 +604,15 @@ public class ComprasBean implements Serializable {
 
 				iva = neto.multiply(detalleF.getTipoIVA().getValorIVA()
 						.divide(new BigDecimal(100)));
-				factura.setTotalIvaMinimo(iva);
+				factura.setTotalIvaMinimo(factura.getTotalIvaMinimo().add(iva));
 
 				retenidoIVA = iva.multiply(detalleF.getTipoIVA()
 						.getResguardoIVA().divide(new BigDecimal(100)));
-				factura.setMontoRetenidoIVA(retenidoIVA);
+				factura.setMontoRetenidoIVA(factura.getMontoRetenidoIVA().add(retenidoIVA));
 
 				retenidoIRAE = neto.multiply(detalleF.getTipoIVA()
 						.getResguardoIRAE().divide(new BigDecimal(100)));
-				factura.setMontoRetenidoIRAE(retenidoIRAE);
-
-				System.out.println(tributo + " - " + neto + " - " + iva);
+				factura.setMontoRetenidoIRAE(factura.getMontoRetenidoIRAE().add(retenidoIRAE));
 
 				break;
 			case 3: // IVA basico
@@ -602,15 +628,15 @@ public class ComprasBean implements Serializable {
 
 				iva = neto.multiply(detalleF.getTipoIVA().getValorIVA()
 						.divide(new BigDecimal(100)));
-				factura.setTotalIvaBasico(iva);
+				factura.setTotalIvaBasico(factura.getTotalIvaBasico().add(iva));
 
 				retenidoIVA = iva.multiply(detalleF.getTipoIVA()
 						.getResguardoIVA().divide(new BigDecimal(100)));
-				factura.setMontoRetenidoIVA(retenidoIVA);
+				factura.setMontoRetenidoIVA(factura.getMontoRetenidoIVA().add(retenidoIVA));
 
 				retenidoIRAE = neto.multiply(detalleF.getTipoIVA()
 						.getResguardoIRAE().divide(new BigDecimal(100)));
-				factura.setMontoRetenidoIRAE(retenidoIRAE);
+				factura.setMontoRetenidoIRAE(factura.getMontoRetenidoIRAE().add(retenidoIRAE));
 				break;
 			default:
 				break;
@@ -639,7 +665,6 @@ public class ComprasBean implements Serializable {
 					"PF('dialogArticulo').show()");
 			disableProveedores = true;
 		}
-
 	}
 
 	/**

@@ -4,12 +4,13 @@ import interfaces.ISistema;
 
 import java.io.IOException;
 import java.io.Serializable;
-
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-
 import controladores.Excepciones;
 import controladores.FabricaSistema;
 import model.Enumerados;
@@ -39,7 +40,8 @@ public class LoginBean implements Serializable {
 					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.generPeEnBaseAPedAnt))
 					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.genPedEnBaseAHist))
 					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.bajaArticulo))
-					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarArticulo))) {
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.modificarArticulo))
+					|| (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.alertaVencimiento))) {
 				return ""; }
 			else return "display : none";}
 		return "";
@@ -288,6 +290,14 @@ public class LoginBean implements Serializable {
 			else return "display : none"; }
 		return "";
 	}
+	
+	public String getAlertaVencimientoRet() {
+		if (instanciaSistema != null) {
+			if (instanciaSistema.obtenerUsuarioLogueado().tienePermiso(Enumerados.casoDeUso.alertaVencimiento))
+				return "";
+			else return "display : none"; }
+		return "";
+	}
 
 	public long getIdUsuario() {
 		return idUsuario;
@@ -307,7 +317,26 @@ public class LoginBean implements Serializable {
 	}
 
 	public void setContrasenia(String contrasenia) {
-		this.contrasenia = contrasenia;
+		// se transforma la contrasenia de texto plano a md5
+		String plaintext = contrasenia;
+		MessageDigest m=null;
+		try {
+			m = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e3) {
+			// TODO Auto-generated catch block
+			e3.printStackTrace();
+		}
+		m.reset();
+		m.update(plaintext.getBytes());
+		byte[] digest = m.digest();
+		BigInteger bigInt = new BigInteger(1,digest);
+		String hashtext = bigInt.toString(16);
+		// Now we need to zero pad it if you actually want the full 32 chars.
+		while(hashtext.length() < 32 ){
+		  hashtext = "0"+hashtext;
+		}
+
+		this.contrasenia = hashtext;
 	}
 
 	public void iniciarSesion() {
@@ -327,7 +356,6 @@ public class LoginBean implements Serializable {
 							""));
 			this.instanciaSistema = null;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 
 		}
@@ -346,7 +374,7 @@ public class LoginBean implements Serializable {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("../login.jsf");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error al cargar la página.", ""));
 		}
 	}
@@ -357,6 +385,7 @@ public class LoginBean implements Serializable {
 				FacesContext.getCurrentInstance().getExternalContext().redirect("http://localhost:8080/DUSA/stock/busquedaArticulo.jsf");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error al cargar la página.", ""));
 		}
 	}
@@ -367,6 +396,7 @@ public class LoginBean implements Serializable {
 				FacesContext.getCurrentInstance().getExternalContext().redirect("../login.jsf");
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ha ocurrido un error al cargar la página.", ""));
 		}
 	}

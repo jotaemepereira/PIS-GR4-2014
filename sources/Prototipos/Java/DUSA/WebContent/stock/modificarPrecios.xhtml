@@ -19,64 +19,65 @@
 		</f:facet>
 	</h:head>
 	<h:body>
-		<h:form id="form1">
+		<h:form>
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/stock.xhtml" />
 			#{loginBean.redirectIfNotLoggedIn()}
-			#{stockBean.setISistema(loginBean.instanciaSistema)}
-			<p:focus></p:focus>
+			#{modificarPreciosBean.setISistema(loginBean.instanciaSistema)}
 			<div class="vpanel_right">
 				<div class="wrapper">
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title">Modificar precios</h3>
 						</div>
-						<p:messages id="msgs" />
-
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
 								<div class="container-fluid">
-
-									<div class="row" style="margin-bottom: 1%;">
-										<div class="col-xs-9 col-sm-9 col-md-9 col-lg-9">
-											<p:outputLabel for="busqueda" value="Buscar:" />
-											<p:inputText id="busqueda" styleClass="form-control"
-												value="#{stockBean.busquedaProveedor}" style="height: 100%"
-												required="false" />
-										</div>
-											<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3"
-											style="bottom: -26px;">
-											<div class="btn-group ">
-												<h:commandButton value="Buscar" update="panel"
-													actionListener="#{stockBean.buscarProveedores}"
-													class="btn btn-default" />
-											</div>
-										</div>
-										<div class="row" style="margin-bottom: 1%; text-align: center;">
-										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-											<p:dataTable var="articuloBusqueda" id="tableBusqueda"
-												value="#{stockBean.articulosDelProveedor}" rowIndexVar="rowIndex"
-												emptyMessage="No se encontraron artículos">
-												<div class="row">
-													<p:column headerText="Descripción"
-														styleClass="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-														<h:outputText value="#{}" />
-													</p:column>
-
-													<p:column headerText="Marca"
-														styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-														<h:outputText value="#{}" />
-													</p:column>
-
-													<p:column headerText="Precio"
-														styleClass="col-xs-3 col-xs-2 col-md-2 col-lg-1">
-														<h:outputText value="#{}" />
-													</p:column>
+									<p:selectOneMenu id="proveedor"
+										value="#{modificarPreciosBean.proveedor}" filter="true"
+										filterMatchMode="contains" required="false">
+										<f:selectItem itemLabel="Seleccione proveedor"
+											itemValue="#{null}" />
+										<f:selectItems
+											value="#{modificarPreciosBean.listaProveedores}" var="p"
+											itemLabel="#{p.nombreComercial}" itemValue="#{p.idProveedor}" />
+										<f:ajax event="change" execute="@this" />
+									</p:selectOneMenu>
+									<div class="btn-group-vertical">
+									<p:commandButton 
+										actionListener="#{modificarPreciosBean.getArticulosProveedor}"
+										value="Obtener artículos"
+										update="tableArticulos msgs">
+									</p:commandButton>
+									</div>
+									<p:messages id="msgs" showIcon="false" globalOnly="true" />
+									<p:dataTable var="articulos" id="tableArticulos" 
+												value="#{modificarPreciosBean.articulosDelProveedor}" emptyMessage="No se encontraron registros.">
+											<div class="row">
+												<p:column headerText="Descripcion" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+													<h:outputText value="#{articulos.descripcion}" />
+												</p:column>
+												<p:column headerText="Precio" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+													<p:inputText id="precio" value="#{articulos.precioUnitario}" 
+														validatorMessage="El largo debe ser menor a 15."
+														requiredMessage="El campo no puede ser vacío."
+														converterMessage="El valor no puede contener caracteres."
+														required="true">
+														<f:validateLength
+															maximum="15"/>
+														<f:validateRequired
+															for="precio"/>
+													</p:inputText>
+													<p:message for="precio" display="text" />
+												</p:column>
 												</div>
 											</p:dataTable>
-										</div>
-									</div>
-									</div>
+								<p:commandButton 
+										id="Submit"
+										value="Enviar precios"
+										actionListener="#{modificarPreciosBean.enviarPrecios}"
+										update="tableArticulos msgs" >
+								</p:commandButton>
 								</div>
 							</h:panelGroup>
 						</div>

@@ -11,11 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-
 import javax.mail.MessagingException;
-
-import model.Articulo;
-import model.Cambio;
 import model.Mail;
 import model.PocasVentas;
 import model.Venta;
@@ -68,7 +64,6 @@ public class FacturacionControlador implements IFacturacion {
 				
 				XMLUtil.jaxbObjectToXML(venta);
 			} catch (Exception e) {
-				
 				e.printStackTrace();
 				throw new Excepciones(Excepciones.MENSAJE_ERROR_IMPRESION_FACTURA, Excepciones.ERROR_SISTEMA);
 			}
@@ -98,12 +93,23 @@ public class FacturacionControlador implements IFacturacion {
 			throws Exception {
 		
 		Mail m;
-
+		
 		IFacturacionPersistencia fp = FabricaPersistencia.getInstanciaFacturacionPersistencia();
+
+		// Se obtiene la lista de artículos que tuvieron pocas ventas
 		List<PocasVentas> pv = fp.articulosConPocasVentasEnLosUltimosMeses(mesesAtras);   
 		
-		OutputStream output;
+		/**
+		 * Se lee el mail y password del correo emisor
+		 * y mails de los receptores en caso de que no existan 
+		 * del archivo .properties
+		 * en caso de que no existan estas propiedades se crean
+		 * Finalmente se actualiza al fecha de fechaUltimaActualizacion
+		 * al día de hoy
+		 * 
+		 */
 		
+		OutputStream output;
 		FileInputStream in;
 		Properties prop = new Properties();
 		String mailEmisor = null;

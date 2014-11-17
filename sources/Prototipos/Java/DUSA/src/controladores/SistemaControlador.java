@@ -1,5 +1,7 @@
 package controladores;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -9,7 +11,8 @@ import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTTiposDGI;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
+import datatypes.DTVencimiento;
 import model.AccionTer;
 import model.Actividad;
 import model.Articulo;
@@ -85,16 +88,6 @@ public class SistemaControlador implements ISistema {
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 	}
 
-//	public void actualizarStock(Date fecha) {
-//		System.out.println("actualizarStock");
-//		try {
-//			FabricaLogica.getIStock().actualizarStock(fecha);
-//		}
-//		catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-
 	@Override
 	public List<DTBusquedaArticulo> buscarArticulos(String busqueda) throws Excepciones {
 
@@ -106,7 +99,7 @@ public class SistemaControlador implements ISistema {
 	}
 
 	@Override
-	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, int proveedor) throws Excepciones {
+	public List<DTBusquedaArticulo> buscarArticulos(String busqueda, long proveedor) throws Excepciones {
 		
 		if (user.tienePermiso(casoDeUso.buscarArticulo))
 			return FabricaLogica.getIStock().buscarArticulos(busqueda, proveedor);
@@ -180,10 +173,19 @@ public class SistemaControlador implements ISistema {
 
 	}
 	@Override
-	public List<DTVenta> buscarArticulosVenta(String busqueda) throws Excepciones {
-		System.out.println("********* BUSCAR ************** " + busqueda);
+	public List<DTProducto> buscarArticulosVenta(String busqueda) throws Excepciones {
+		
 		if (user.tienePermiso(casoDeUso.buscarArticulo))
 			return FabricaLogica.getIStock().buscarArticulosVenta(busqueda);
+		else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+
+	}
+	
+	@Override
+	public DTProducto buscarArticulosPorCodigo(String codigo)throws Excepciones {
+		if (user.tienePermiso(casoDeUso.buscarArticulo))
+			return FabricaLogica.getIStock().buscarArticulosVentaPorCodigo(codigo);
 		else
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 
@@ -221,10 +223,18 @@ public class SistemaControlador implements ISistema {
 
 	@Override
 	public long registrarNuevaVenta(Venta v) throws Excepciones {
-		if (user.tienePermiso(casoDeUso.registrarNuevaVenta))
-			return FabricaLogica.getIFacturacion().registrarNuevaVenta(v);
-			//TODO:Se persiste actividad de esto?
-		else
+		if (user.tienePermiso(casoDeUso.registrarNuevaVenta)) {
+			
+			long idVenta = FabricaLogica.getIFacturacion().registrarNuevaVenta(v);
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.registrarNuevaVenta);
+			Actividad act = new Actividad(operacion, user.getNombre());
+			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+			
+			return idVenta;
+		} else
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 
 	}
@@ -314,7 +324,7 @@ public class SistemaControlador implements ISistema {
 	public Map<Long, DTComprobanteFactura> obtenerFacturasDUSA() throws Excepciones {
 		
 		if (user.tienePermiso(casoDeUso.obtenerFacturasDUSA))
-			return FabricaLogica.getInstanciaCompras().obtenerFacturasDUSA();
+			return FabricaLogica.getInstanciaCompras().obtenerFacturasDUSA(user.getNombre());
 		else
 			throw new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS);
 	}
@@ -333,14 +343,6 @@ public class SistemaControlador implements ISistema {
 		
 		List<Venta> vPendientes = null;
 		if (user.tienePermiso(casoDeUso.listarVentasPendientes)) {
-			
-//			try {
-				vPendientes = FabricaLogica.getIFacturacion().listarVentasPendientes();
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-
 
 		} else {
 			
@@ -373,17 +375,64 @@ public class SistemaControlador implements ISistema {
 		if (user.tienePermiso(casoDeUso.cancelarVentaPendiente)) {
 			
 			FabricaLogica.getIFacturacion().facturarVenta(idVenta);
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.cancelarVentaPendiente);
+			Actividad act = new Actividad(operacion, user.getNombre());
+			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
 		} else {
 			
 			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
-		}
-		
+		}		
 	}
 
 	@Override
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor)
 			throws Excepciones {
 	 return FabricaLogica.getIStock().obtenerArticulosDelProveedor(idProveedor);
+	}
+	
+	
+	@Override
+	public void modificarPrecioArticulos(Map<Long, BigDecimal> articulosInfo)
+			throws Excepciones {
+		
+		if (user.tienePermiso(casoDeUso.modificarPrecioArticulo)) {
+			
+			FabricaLogica.getIStock().modificarPreciodeArticulos(articulosInfo);
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.modificarPrecioArticulo);
+			Actividad act = new Actividad(operacion, user.getNombre());
+			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+		} else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+	}
+
+	@Override
+	public List<DTVencimiento> articulosQueSeVencenEnPeriodo(Date desde,
+			Date hasta) throws Excepciones {
+		if (user.tienePermiso(casoDeUso.alertaVencimiento)){
+			return FabricaLogica.getIStock().articulosQueSeVencenEnPeriodo(desde, hasta);
+		} else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
+	}
+
+	@Override
+	public void modificarVencimientosDeArticulos(Map<Long, Date> cambios)
+			throws Excepciones {
+		if (user.tienePermiso(casoDeUso.alertaVencimiento)){
+			
+			FabricaLogica.getIStock().modificarVencimientosDeArticulos(cambios);
+			
+			//Registro actividad del usuario
+			Operacion operacion = user.getOperacion(casoDeUso.alertaVencimiento);
+			Actividad act = new Actividad(operacion, user.getNombre());			
+			FabricaPersistencia.getInstanciaUsuaruiPersistencia().registrarActividad(act);
+		} else
+			throw(new Excepciones(Excepciones.MENSAJE_USUARIO_NO_TIENE_PERMISOS, Excepciones.USUARIO_NO_TIENE_PERMISOS));
 	}
 
 }

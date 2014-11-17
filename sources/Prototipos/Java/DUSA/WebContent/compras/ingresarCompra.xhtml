@@ -66,7 +66,7 @@
 				<div class="wrapper">
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title">Alta de proveedor</h3>
+							<h3 class="panel-title">Ingresar compra</h3>
 						</div>
 
 						<!-- PANEL PARA MENSAJES -->
@@ -97,7 +97,7 @@
 												disabled="${comprasBean.disableBotones}" process="@this"
 												oncomplete="actualizarBotones();" />
 											<span data-toggle="tooltip"
-												title="Para obtener las últimas facturas es necesario tener conexión a internet."
+												title="Para obtener las &uacute;ltimas facturas es necesario tener conexi&oacute;n a internet."
 												class="glyphicon glyphicon-question-sign"
 												style="margin-left: 1%;" />
 										</div>
@@ -111,7 +111,7 @@
 
 											<!--      SELECT DE ORDENES DE COMPR1A EN EL CASO DE FACTURA AUTOMATICA DUSA -->
 											<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-												<p:outputLabel value="Órdenes de compra DUSA: *" />
+												<p:outputLabel value="&Oacute;rdenes de compra DUSA: *" />
 												<p:selectOneMenu id="facturar"
 													value="#{comprasBean.ordenDeCompraDUSA}" filter="true"
 													filterMatchMode="contains" required="false"
@@ -238,7 +238,7 @@
 															<p:inputText styleClass="form-control"
 																value="#{detalle.precioUnitario}"
 																disabled="${comprasBean.facturaAutomatica}"
-																validatorMessage="El precio unitario de un artículo debe ser mayor a cero">
+																validatorMessage="El precio unitario de un art&iacute;culo debe ser mayor a cero">
 																<f:validateDoubleRange minimum="0.0"
 																	maximum="9999999999.99" />
 																<p:ajax
@@ -251,7 +251,7 @@
 															<p:inputText styleClass="form-control"
 																value="#{detalle.descuento}"
 																disabled="${comprasBean.facturaAutomatica}"
-																validatorMessage="El descuento de un artículo debe ser entre 0 y 100">
+																validatorMessage="El descuento de un art&iacute;culo debe ser entre 0 y 100">
 																<f:validateDoubleRange minimum="0" maximum="100" />
 																<p:ajax
 																	listener="#{comprasBean.calcularTotalArticulo(detalle)}"
@@ -307,7 +307,7 @@
 												<span data-toggle="tooltip" title="Atajo: Ctrl+a"
 													class="glyphicon glyphicon-question-sign"
 													style="float: right; margin-left: 1%;" />
-												<p:commandButton value="Agregar artículo"
+												<p:commandButton value="Agregar art&iacute;culo"
 													styleClass="btn btn-default agregarArticulo"
 													style="float:right"
 													actionListener="${comprasBean.dialogArticulos}"
@@ -389,7 +389,7 @@
 												<!-- tributo iva basico -->
 												<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 													<div class="row">
-														<p:outputLabel value="IVA básico"
+														<p:outputLabel value="IVA b&aacute;sico"
 															styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 														<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
 															<h:outputText
@@ -401,7 +401,7 @@
 												<!-- monto neto iva basico -->
 												<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 													<div class="row">
-														<p:outputLabel value="Gravado IVA básico."
+														<p:outputLabel value="Gravado IVA b&aacute;sico."
 															styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 														<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
 															<h:outputText
@@ -413,7 +413,7 @@
 												<!-- total iva basico -->
 												<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 													<div class="row">
-														<p:outputLabel value="IVA básico."
+														<p:outputLabel value="IVA b&aacute;sico."
 															styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 														<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
 															<h:outputText id="totalIvaBasico"
@@ -465,7 +465,7 @@
 														<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
 															<p:inputText styleClass="form-control"
 																value="${comprasBean.factura.montoNoFacturable}"
-																style="width:100%;"
+																style="width:100%;" disabled="${comprasBean.facturaAutomatica}"
 																validatorMessage="El redondeo excede el límite máximo.">
 																<f:validateDoubleRange minimum="-9999999999.99"
 																	maximum="9999999999.99" />
@@ -478,7 +478,7 @@
 														<p:outputLabel value="Total"
 															styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6" />
 														<div class=" col-xs-6 col-sm-6 col-md-6 col-lg-6">
-															<p:inputText id="total" styleClass="form-control"
+															<p:inputText id="total" styleClass="form-control" disabled="${comprasBean.facturaAutomatica}"
 																value="${comprasBean.totalFactura}" style="width:100%"
 																validatorMessage="El total debe ser mayor a cero">
 																<f:validateDoubleRange minimum="0.0"
@@ -504,8 +504,8 @@
 														styleClass="btn btn-default" process="@this"
 														actionListener="${comprasBean.cancelarIngresarCompra}"
 														oncomplete="actualizarBotones();">
-														<p:confirm header="Confirmación"
-															message="¿Está seguro que desea cancelar el ingreso de la factura?"
+														<p:confirm header="Confirmaci&oacute;n"
+															message="&#191;Est&aacute; seguro que desea cancelar el ingreso de la factura?"
 															icon="ui-icon-alert" />
 													</p:commandButton>
 												</div>
@@ -546,7 +546,7 @@
 		</p:confirmDialog>
 
 		<!--  DIALOGO DE SELECCION DE ARTICULO  -->
-		<p:dialog header="Seleccione un artículo" widgetVar="dialogArticulo"
+		<p:dialog header="Seleccione un art&iacute;culo" widgetVar="dialogArticulo"
 			minHeight="40" style="max-width:90%" closeOnEscape="true"
 			id="dialogArticulo"
 			onHide="$('.tablePedido').find('input').first().trigger('focus');"
@@ -583,13 +583,13 @@
 										value="#{articuloBusqueda.numeroProducto_proveedor}" />
 								</p:column>
 
-								<p:column headerText="Descripción"
+								<p:column headerText="Descripci&oacute;n"
 									styleClass="col-xs-4 col-sm-4 col-md-4 col-lg-4"
 									style="text-align:center">
 									<h:outputText value="#{articuloBusqueda.descripcion}" />
 								</p:column>
 
-								<p:column headerText="Presentación"
+								<p:column headerText="Presentaci&oacute;n"
 									styleClass="col-xs-4 col-sm-4 col-md-4 col-lg-4"
 									style="text-align:center">
 									<h:outputText value="#{articuloBusqueda.presentacion}" />
@@ -599,7 +599,7 @@
 									styleClass="col-xs-2 col-sm-2 col-md-2 col-lg-2"
 									style="text-align:center">
 									<p:commandButton icon="ui-icon-plusthick"
-										update=":form1:tablePedido" title="agregar artículo"
+										update=":form1:tablePedido" title="agregar art&iacute;culo"
 										actionListener="${comprasBean.agregarArticulo(articuloBusqueda)}"
 										styleClass="btn-default" style="margin:0 2% 10px 0;" />
 								</p:column>
@@ -619,10 +619,10 @@
 				<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 					<p:dataTable var="articulo" id="tableAlerta"
 						value="#{comprasBean.alertasPrecios}"
-						emptyMessage="No se encontraron artículos"
+						emptyMessage="No se encontraron art&iacute;culos"
 						style="overflow-y:scroll; height: 75vh">
 						<div class="row">
-							<p:column headerText="Artículo"
+							<p:column headerText="Art&iacute;culo"
 								styleClass="col-xs-6 col-sm-6 col-md-6 col-lg-6"
 								style="text-align:center">
 								<h:outputText value="#{articulo.descripcion}" />

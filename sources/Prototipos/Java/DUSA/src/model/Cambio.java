@@ -44,7 +44,7 @@ public class Cambio {
 		result += " y su precio actual: ";
 		result += this.precioAtual.toString();
 	}
-	System.out.print("IMPRIMO EL CAMBIO" + result);
+	
 	return result;
 	
 		

@@ -68,11 +68,9 @@ public class BusquedaArticuloBean implements Serializable {
 		try {
 			//Se realiza la busqueda
 			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);
-			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
+			
 		} catch (Excepciones e) {
 			//Se imprime y notifica del error
-			e.printStackTrace();
-			
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -12,9 +11,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.naming.NamingException;
-
 import controladores.Excepciones;
 import controladores.FabricaPersistencia;
 import model.Articulo;
@@ -27,20 +23,6 @@ import model.Venta;
 import interfaces.IFacturacionPersistencia;
 
 public class PFacturacionControlador implements IFacturacionPersistencia {
-	
-//	Connection con;
-	
-	public PFacturacionControlador() {
-//		try {
-//			con = Conexion.getConnection();
-//		} catch (NamingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-	}
 
 	@Override
 	public List<Venta> listarVentasPendientes() throws Excepciones {
@@ -156,7 +138,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 						Excepciones.ERROR_SISTEMA);
 			} finally {
 				st.close();
-//				con.close();
+				con.close();
 			}
 		} catch (Exception e) {
 
@@ -179,13 +161,15 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 						+ Enumerados.EstadoVenta.PENDIENTE + "'";
 				st.executeUpdate(sqlUpdate);
 			} catch (Exception e) {
-				throw e;
+				e.printStackTrace();
+				throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+						Excepciones.ERROR_SISTEMA));
 			} finally {
 				st.close();
 				con.close();
 			}
 		} catch (Exception e) {
-
+			e.printStackTrace();
 			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA);
 		}
@@ -313,7 +297,9 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				return v;
 			} catch (Exception e) {
 				con.rollback();
-				throw e;
+				e.printStackTrace();
+				throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+						Excepciones.ERROR_SISTEMA));
 			} finally {
 				st.close();
 				con.close();
@@ -352,7 +338,11 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			}
 
 		} catch (Exception e) {
-			throw e;
+			e.printStackTrace();
+			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA));
+
+			
 		} finally {
 			st.close();
 			con.rollback();
@@ -374,7 +364,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 
 		try {
 
-//			con = Conexion.getConnection();
+			con = Conexion.getConnection();
 			String sql = "SELECT distinct p.product_id "
 					+ "FROM sale_details sd "
 					+ "INNER JOIN products_suppliers ps ON sd.product_id = ps.product_id "
@@ -401,7 +391,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			}
 
 			stmt.close();
-//			con.close();
+			con.close();
 		} catch (Exception e) {
 
 			e.printStackTrace();

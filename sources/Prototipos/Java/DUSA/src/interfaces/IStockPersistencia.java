@@ -1,5 +1,6 @@
 package interfaces;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -8,12 +9,13 @@ import controladores.Excepciones;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTModificacionArticulo;
-import datatypes.DTProveedor;
-import datatypes.DTVenta;
+import datatypes.DTProducto;
+import datatypes.DTVencimiento;
 import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
 import model.Droga;
+import model.Orden;
 import model.OrdenDetalle;
 import model.Pedido;
 import model.TipoIva;
@@ -79,7 +81,7 @@ public interface IStockPersistencia {
 	 * @return lista de articulos encontrados
 	 * @throws Excepciones
 	 */
-	List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda, int proveedor) throws Excepciones;
+	List<DTBusquedaArticuloSolr> buscarArticulosSolr(String busqueda, long proveedor) throws Excepciones;
 	
 	/**
 	 * realiza la reindexacion total de solr
@@ -148,15 +150,17 @@ public interface IStockPersistencia {
 	 */
 	public Articulo obtenerArticuloConId(long idArticulo) throws Excepciones;
 
-	public DTVenta getDatosArticuloVenta(int idArticulo) throws Excepciones;
+	public List<DTProducto> getDatosArticuloVenta(List<DTBusquedaArticuloSolr> articulos) throws Excepciones;
 
+	public DTProducto getDatosArticuloVentaPorCodigo(String codigo) throws Excepciones;
+	
 	/**
 	 * En base a lo encontrado usando solr, complementa los datos para ese artícuo
-	 * @param articulo - los datos parciales del articulo
+	 * @param articulos - la lista de los articulos con los datos parciales
 	 * @author Victoria Díaz
 	 * @throws Excepciones 
 	 */
-	void buscarArticulosId(DTBusquedaArticulo articulo) throws Excepciones;
+	public List<DTBusquedaArticulo> getDatosArticulosBuscados(List<DTBusquedaArticuloSolr> articulos) throws Excepciones;
 
 	/**
 	 * Retorna los distintos tipos de iva existentes en el sistema.
@@ -234,8 +238,34 @@ public interface IStockPersistencia {
 	
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor) throws Excepciones;
 
-	public void modificarPreciosDeArticulo(Map<Long, Integer> preciosModificados)
+	public void modificarPreciosDeArticulo(Map<Long, BigDecimal> preciosModificados)
 			throws Excepciones;
+
+	/**
+	 * Se actualiza la tabla de movimientos de stock para el detalle de una compra
+	 * 
+	 * @param detalles - lista de detalles de una compra
+	 * @throws Excepciones
+	 * @author Victoria Díaz
+	 */
+	void movimientoStockCompra(Orden orden) throws Excepciones;
+	
+	/**
+	 * Devuelve una lista con información de artículos los que su fecha de vencimiento más cercano está entre
+	 * desde y hasta
+	 * @param desde
+	 * @param hasta
+	 * @return
+	 * @throws Excepciones
+	 */
+	public List<DTVencimiento> articulosQueSeVencenEnPeriodo(Date desde, Date hasta) throws Excepciones;
+
+	/**
+	 * Recibe un map con los cambios de vencimientos a realizar y los periste.
+	 * @param cambios
+	 * @throws Excepciones
+	 */
+	public void modificarVencimientosDeArticulos(Map<Long, Date> cambios) throws Excepciones;
 
 }
 

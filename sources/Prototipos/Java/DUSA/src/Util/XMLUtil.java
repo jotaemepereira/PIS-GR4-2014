@@ -18,9 +18,7 @@ public class XMLUtil {
 			// for pretty-print XML in JAXB
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-			// Write to System.out for debugging
-			// m.marshal(v, System.out);
-
+			
 			// Write to File
 			String path = FacesContext.getCurrentInstance()
             .getExternalContext().getInitParameter("PathFacturacion");

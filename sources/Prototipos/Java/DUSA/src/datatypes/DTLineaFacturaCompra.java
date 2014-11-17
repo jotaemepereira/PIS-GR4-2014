@@ -19,6 +19,8 @@ public class DTLineaFacturaCompra {
 	private long productId;
 	private BigDecimal total;
 	private TipoIva tipoIVA;
+	private BigDecimal avg_cost;
+	private long stock;
 
 	public DTLineaFacturaCompra() {
 	}
@@ -125,5 +127,21 @@ public class DTLineaFacturaCompra {
 
 	public void setTipoIVA(TipoIva tipoIVA) {
 		this.tipoIVA = tipoIVA;
+	}
+
+	public BigDecimal getAvg_cost() {
+		return avg_cost;
+	}
+
+	public void setAvg_cost(BigDecimal avg_cost) {
+		this.avg_cost = avg_cost;
+	}
+
+	public long getStock() {
+		return stock;
+	}
+
+	public void setStock(long stock) {
+		this.stock = stock;
 	}
 }

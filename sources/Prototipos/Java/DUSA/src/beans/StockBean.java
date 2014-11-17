@@ -666,7 +666,7 @@ public class StockBean implements Serializable {
 
 		try {
 			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);
-			System.out.println("CANTIDAD ENCONTRADA: " + resBusqueda.size());
+			
 		} catch (Excepciones e) {
 			e.printStackTrace();
 		}
@@ -929,8 +929,6 @@ public class StockBean implements Serializable {
 				FacesContext context = FacesContext.getCurrentInstance();
 				context.addMessage(null, new FacesMessage(
 						FacesMessage.SEVERITY_ERROR, ex.getMessage(), ""));
-				
-				System.out.println("ACA tiro error");
 			}
 		}
 	}

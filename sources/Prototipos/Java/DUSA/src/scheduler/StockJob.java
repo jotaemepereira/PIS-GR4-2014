@@ -15,9 +15,19 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import controladores.Excepciones;
 import controladores.FabricaLogica;
-
+/**
+ * 
+ * @author santiago
+ * Se lee las propiedades del archivo alertaStock.properties 
+ * es seguro que el archivo existe porque antes de ser invocada 
+ * la opereacion execute se chequea la existencia del archivo y si no existe 
+ * se crea
+ * 
+ * Se lee la fecha de ultima actualizacion si esta propiedad no existe 
+ * se toma un mensa de anterioridad a la fecha del dia
+ *
+ */
 public class StockJob implements Job {
-
 
 	@Override
 	public void execute(JobExecutionContext context)
@@ -51,7 +61,6 @@ public class StockJob implements Job {
 				
 
 			} catch (IOException | Excepciones | java.text.ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
