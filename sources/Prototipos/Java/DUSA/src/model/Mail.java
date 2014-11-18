@@ -44,7 +44,10 @@ public void setContenidoPocasVentas (List<PocasVentas> pv ){
 		this.contenido += "Se informa que se hicieron pocas ventas en los siguientes productos:";
 		this.contenido += "\n" + "\n";
 		while(it.hasNext()){
-			contenido += (it.next().toString());
+			PocasVentas p = it.next();
+			contenido += ("Descripción Articulo: " + p.getDesc() +
+					     "   Mínimo de Stock: " + p.getMin() + 
+					     "   Cantidad Vendida: " + p.getCantVendida());
 			this.contenido += "\n";
 		
 		}
