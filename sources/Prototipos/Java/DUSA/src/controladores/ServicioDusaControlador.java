@@ -101,10 +101,9 @@ public class ServicioDusaControlador implements IServicio {
 		articulo.setPorcentajePrecioVenta(new BigDecimal(0));
 		articulo.setPrecioVenta(productoDT.getPrecioVenta());
 
-		articulo.setStatus((productoDT.getHabilitado() > 1) ? true : false);
+		char habilitado = Character.toChars(productoDT.getHabilitado())[0];
+		articulo.setStatus((habilitado == Enumerados.habilitado.HABILITADO) ? true : false);
 
-		// TODO ver que pasa con esto Jaguerre
-		// LE AGREGO LA PARTE DEL IVA QUE ESTABA HARDCODEADO
 		TipoIva tipoIva = new TipoIva();
 		char c = productoDT.getTipoIVA().charAt(0);
 		tipoIva.setTipoIVA(c);
@@ -157,7 +156,6 @@ public class ServicioDusaControlador implements IServicio {
 					userTest, passTest, dPedido);
 
 			MensajeError error = resPedido.getMensaje();
-			
 			
 		} catch (Exception e) {
 			
@@ -332,8 +330,7 @@ public class ServicioDusaControlador implements IServicio {
 				gCalendar.setTime(ultimaFactura);
 			} else {
 				Calendar c = Calendar.getInstance();
-				c.add(Calendar.DAY_OF_YEAR, -60); // TODO: cambiar a una fecha
-													// más cercana
+				c.add(Calendar.DAY_OF_YEAR, -2);
 				Date date = c.getTime();
 				gCalendar.setTime(date);
 			}
