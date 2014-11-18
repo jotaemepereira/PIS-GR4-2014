@@ -607,6 +607,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			stmt.setTimestamp(2, new Timestamp(hasta.getTime()));
 			stmt.setTimestamp(3, new Timestamp(desde.getTime()));
 			stmt.setTimestamp(4, new Timestamp(hasta.getTime()));
+			
 			ResultSet rs = stmt.executeQuery();
 						
 			// Recorro el resultado de la consulta y cargo la lista con los valores correspondientes
@@ -654,6 +655,9 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			PreparedStatement stmt = con.prepareStatement(sql);			
 			stmt.setTimestamp(1, new Timestamp(desde.getTime()));
 			stmt.setTimestamp(2, new Timestamp(hasta.getTime()));
+			
+			System.out.println(stmt.toString());
+			
 			ResultSet rs = stmt.executeQuery();
 						
 			// Recorro el resultado de la consulta y cargo la lista con los valores correspondientes
