@@ -52,7 +52,7 @@
 		<link href="../CSS/bootstrap.min.css" rel="stylesheet" />
 		<link href="../CSS/bootstrap-theme.min.css" rel="stylesheet" />
 		<h:form id="form1">
-			<p:hotkey bind="Ctrl+return" update="panel msgs"
+			<p:hotkey bind="Ctrl+return" update="panel msgs :tableAlerta :formBusqueda"
 				actionListener="${comprasBean.ingresarCompra}" />
 
 			<ui:include src="../cabezal.xhtml" />
@@ -72,7 +72,7 @@
 						<!-- PANEL PARA MENSAJES -->
 						<p:messages id="msgs" autoUpdate="true" />
 
-						<p:remoteCommand name="ingresarCompra" update="panel msgs"
+						<p:remoteCommand name="ingresarCompra" update="panel msgs :tableAlerta :formBusqueda"
 							actionListener="${comprasBean.ingresarCompra}" />
 
 						<div class="panel-body">
