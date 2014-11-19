@@ -577,31 +577,32 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		Connection con = null;
 		Map<Long, DTLineaPedido> ret;
 
-		String sql = "(SELECT p.product_id, p.description, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number, sum(sd.quantity) as total " 
-				+ "FROM sales s " 
+		String sql = "(SELECT p.product_id, p.description, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number, sum(sd.quantity) as total "
+				+ "FROM sales s "
 				+ "JOIN sale_details sd ON s.sale_id = sd.sale_id " 
-				+ "JOIN products p ON sd.product_id = p.product_id  "
-				+ "JOIN products_suppliers ps ON sd.product_id = p.product_id "
-				+ "WHERE  "
-				+ "((s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
+				+ "JOIN products p ON sd.product_id = p.product_id "
+				+ "JOIN products_suppliers ps ON p.product_id = ps.product_id "
+				+ "WHERE "
+				+ "(s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
 				+ "AND  "
-				+ "ps.supplier_id = ?) " 
-				+ "GROUP BY p.product_id, p.stock, p.minimum_stock, ps.product_number ORDER BY p.description) "
-				+ "UNION  "
-				+ "(SELECT p1.product_id, p1.description, p1.stock, p1.minimum_stock, p1.unit_price, p1.avg_cost, ps1.product_number, 0 as total " 
-				+ "FROM products p1 "
-				+ "JOIN products_suppliers ps1 ON ps1.product_id = p1.product_id  "
-				+ "	WHERE p1.product_id NOT IN (SELECT p.product_id " 
-				+ "	FROM sales s  "
+				+ "(ps.supplier_id = ?) "
+				+ "GROUP BY p.product_id, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number ORDER BY p.description) "
+				+ "UNION "
+				+ "(SELECT p1.product_id, p1.description, p1.stock, p1.minimum_stock, p1.unit_price, p1.avg_cost, ps.product_number, 0 as total "
+				+ "	FROM products p1 "
+				+ "	JOIN products_suppliers ps ON p1.product_id = ps.product_id "
+				+ "	WHERE p1.product_id NOT IN (SELECT p.product_id "
+				+ "	FROM sales s "
 				+ "	JOIN sale_details sd ON s.sale_id = sd.sale_id " 
-				+ "	JOIN products p ON sd.product_id = p.product_id  "
-				+ " JOIN products_suppliers ps2 ON ps2.product_id = p.product_id  "
-				+ "	WHERE  "
-				+ "	((s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
+				+ "	JOIN products p ON sd.product_id = p.product_id "
+				+ "	JOIN products_suppliers ps ON p.product_id = ps.product_id "
+				+ "	WHERE "
+				+ "	(s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
 				+ "	AND  "
-				+ "	ps2.supplier_id = ?) " 
+				+ "	(ps.supplier_id = ?) "
 				+ "	GROUP BY p.product_id)) "
-				+ "ORDER BY description";
+				+ "ORDER BY total DESC "
+				+ "LIMIT 300 ";
 
 		try {
 			con = Conexion.getConnection();
@@ -649,11 +650,11 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				+ "FROM sales s "
 				+ "JOIN sale_details sd ON s.sale_id = sd.sale_id "
 				+ "JOIN products p ON sd.product_id = p.product_id "
-				+ "JOIN products_suppliers ps ON sd.product_id = p.product_id  "
+				+ "JOIN products_suppliers ps ON ps.product_id = p.product_id "
 				+ "WHERE ((s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
-				+ "AND ( ps.supplier_id = ?)) "
-				+ "GROUP BY p.product_id, p.stock, p.minimum_stock, ps.product_number "
-				+ "ORDER BY p.description;";
+				+ "AND (ps.supplier_id = ?)) "
+				+ "GROUP BY p.product_id, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number "
+				+ "ORDER BY p.description; ";
 
 		try {
 			con = Conexion.getConnection();
