@@ -45,7 +45,7 @@ public class ModificarStockBean implements Serializable{
 	private String motivo;
 	private long nuevoStockSeleccionado;
 	private long nuevoStockDesarme;
-	private long[] nuevoStock;
+	private Long[] nuevoStock;
 	
 	
 	//Getters y Seters
@@ -126,11 +126,11 @@ public class ModificarStockBean implements Serializable{
 		this.nuevoStockDesarme = nuevoStockDesarme;
 	}
 	
-	public long[] getNuevoStock() {
+	public Long[] getNuevoStock() {
 		return nuevoStock;
 	}
 	
-	public void setNuevoStock(long[] nuevoStock) {
+	public void setNuevoStock(Long[] nuevoStock) {
 		this.nuevoStock = nuevoStock;
 	}
 	
@@ -175,7 +175,7 @@ public class ModificarStockBean implements Serializable{
 			resBusqueda = this.instanciaSistema.buscarArticulos(busqueda);
 			if (resBusqueda != null && resBusqueda.size() > 0) {
 				//Se carga el stock para modificar
-				nuevoStock = new long[resBusqueda.size()];
+				nuevoStock = new Long[resBusqueda.size()];
 				for (int i = 0; i < resBusqueda.size(); i++) {
 					nuevoStock[i] = resBusqueda.get(i).getStock();
 					resBusqueda.get(i).setNuevoStock(nuevoStock[i]);

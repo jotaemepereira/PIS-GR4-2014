@@ -32,7 +32,7 @@ public class FacturacionBean implements Serializable {
 
 	private List<Venta> ventas;
 	private Venta ventaSeleccionada;
-	private boolean[] lineasCheck;
+	private Boolean[] lineasCheck;
 	private boolean facturacionControlada = false;
 
 	/**
@@ -158,7 +158,7 @@ public class FacturacionBean implements Serializable {
 
 	public void cargarFactura(Venta v) {
 		ventaSeleccionada = v;
-		lineasCheck = new boolean[v.getCantidadLineas()];
+		lineasCheck = new Boolean[v.getCantidadLineas()];
 		for (int i = 0; i < v.getCantidadLineas(); i++) {
 			lineasCheck[i] = false;
 		}
@@ -205,11 +205,11 @@ public class FacturacionBean implements Serializable {
 		this.facturacionControlada = facturacionControlada;
 	}
 
-	public boolean[] getLineasCheck() {
+	public Boolean[] getLineasCheck() {
 		return lineasCheck;
 	}
 
-	public void setLineasCheck(boolean[] lineasCheck) {
+	public void setLineasCheck(Boolean[] lineasCheck) {
 		this.lineasCheck = lineasCheck;
 	}
 

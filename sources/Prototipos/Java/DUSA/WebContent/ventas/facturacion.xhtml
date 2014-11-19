@@ -20,7 +20,7 @@
 	</h:head>
 	<h:body>
 		<h:form id="form1">
-			<p:growl id="messages" showDetail="true" globalOnly="true" />
+			<p:growl id="messages" showDetail="true" globalOnly="true" autoUpdate="true" />
 			<ui:include src="../cabezal.xhtml" />
 			<ui:include src="../menuVertical/ventas.xhtml" />
 			#{loginBean.redirectIfNotLoggedIn("ventas/facturacion.jsf")}
