@@ -13,90 +13,9 @@
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>DUSA</title>
 		</f:facet>
-		<script src="JS/Sale.js"></script>
 	</h:head>
 	<h:body>
-		<h:form id="form1">
-			<p:growl id="messages" showDetail="true" />
-			<div class="header">
-				<div class="hnav">
-					<a href="#1">
-						<div class="hnav_item" style="margin-top: -1px;">
-							<div class="hnav_item_img">
-								<img src="Images/caja.png" alt="" />
-							</div>
-							<div class="hnav_item_text">Caja</div>
-							<div class="clearBoth"></div>
-						</div>
-					</a>
-					<p:commandLink ajax="true"
-						actionListener="#{navBean.navAPagina('/stock/listado.xhtml')}"
-						update="@form">
-						<div class="hnav_item" style="margin-top: -1px;">
-							<div class="hnav_item_img">
-								<img src="Images/stock.png" alt="" />
-							</div>
-							<div class="hnav_item_text">Stock</div>
-							<div class="clearBoth"></div>
-						</div>
-					</p:commandLink>
-					<a href="#3">
-						<div class="hnav_item" style="margin-top: -1px;">
-							<div class="hnav_item_img">
-								<img src="Images/clientes.png" alt="" />
-							</div>
-							<div class="hnav_item_text">Cliente</div>
-							<div class="clearBoth"></div>
-						</div>
-					</a>
-					<p:commandLink ajax="true"
-						actionListener="#{navBean.navAPagina('/ventas/nueva.xhtml')}"
-						update="@form">
-						<div class="hnav_item" style="margin-top: -1px;">
-							<div class="hnav_item_img">
-								<img src="Images/ventas.png" alt="" />
-							</div>
-							<div class="hnav_item_text">Ventas</div>
-							<div class="clearBoth"></div>
-						</div>
-					</p:commandLink>
-					<div class="clearBoth"></div>
-				</div>
-				<div class="login">
 
-					<img src="Images/user.png" alt="" />
-					<h:outputLabel id="logged_user">
-						<a href="#" id="logged_user_a">Sebastian Caballero</a>
-					</h:outputLabel>
-					<p:overlayPanel id="logged_user_panel" for="logged_user"
-						hideEffect="fade">
-						<div>
-							<a href="#">Mis datos</a>
-						</div>
-						<div>
-							<p:commandLink actionListener="#{sesionBean.logOut}" ajax="true">
-								<h:outputText value="Salir" />
-							</p:commandLink>
-						</div>
-					</p:overlayPanel>
-
-				</div>
-			</div>
-			<div class="content">
-				<ui:include src="#{navBean.page}" />
-			</div>
-			<p:ajaxStatus
-				style="width:64px;height:64px;position:fixed;right:5px;bottom:5px"
-				id="ajaxStatusPanel0">
-				<f:facet name="start">
-					<h:graphicImage value="Images/ajax_loading_big.gif" />
-				</f:facet>
-
-				<f:facet name="complete">
-					<h:outputText value="" />
-				</f:facet>
-			</p:ajaxStatus>
-		</h:form>
 	</h:body>
 
 </f:view>
