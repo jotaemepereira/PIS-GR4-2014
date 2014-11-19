@@ -600,9 +600,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				+ "	(s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
 				+ "	AND  "
 				+ "	(ps.supplier_id = ?) "
-				+ "	GROUP BY p.product_id)) "
-				+ "ORDER BY description "
-				+ "LIMIT 300 ";
+				+ "	GROUP BY p.product_id)) ";
 
 		try {
 			con = Conexion.getConnection();
