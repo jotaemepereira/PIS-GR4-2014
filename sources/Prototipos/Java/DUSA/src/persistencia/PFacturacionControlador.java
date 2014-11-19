@@ -601,7 +601,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				+ "	AND  "
 				+ "	(ps.supplier_id = ?) "
 				+ "	GROUP BY p.product_id)) "
-				+ "ORDER BY total DESC "
+				+ "ORDER BY description "
 				+ "LIMIT 300 ";
 
 		try {
