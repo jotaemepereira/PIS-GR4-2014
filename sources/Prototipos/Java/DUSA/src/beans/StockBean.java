@@ -468,9 +468,13 @@ public class StockBean implements Serializable {
 				.compareTo(
 						instanciaSistema.obtenerUsuarioLogueado().getNombre()) != 0);
 		if (articuloSinCambios.getVencimientoMasCercano() != null) {
+			if (articulo.getVencimientoMasCercano() != null){
 			articulo.setVencimientoMasCercanoModificado(articuloSinCambios
 					.getVencimientoMasCercano().compareTo(
 							articulo.getVencimientoMasCercano()) != 0);
+			}else {
+				articulo.setVencimientoMasCercanoModificado(true);
+			}
 		}
 
 		// Chequeo cambios en proveedores
