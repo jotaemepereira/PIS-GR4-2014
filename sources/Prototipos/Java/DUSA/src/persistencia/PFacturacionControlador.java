@@ -577,37 +577,40 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		Connection con = null;
 		Map<Long, DTLineaPedido> ret;
 
-		String sql = "(SELECT p.product_id, p.description, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, sum(sd.quantity) as total " 
-				+ "FROM sales s " 
+		String sql = "(SELECT p.product_id, p.description, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number, sum(sd.quantity) as total "
+				+ "FROM sales s "
 				+ "JOIN sale_details sd ON s.sale_id = sd.sale_id " 
-				+ "JOIN products p ON sd.product_id = p.product_id  "
-				+ "WHERE  "
-				+ "((s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
-				+ "OR  "
-				+ "(s.sale_status IS NULL AND s.sale_date IS NULL)) AND ( 1 IN (SELECT ps.supplier_id FROM products_suppliers ps WHERE ps.product_id = p.product_id)) " 
-				+ "GROUP BY p.product_id, p.stock, p.minimum_stock ORDER BY p.description) "
-				+ "UNION  "
-				+ "(SELECT p1.product_id, p1.description, p1.stock, p1.minimum_stock, p1.unit_price, p1.avg_cost, 0 as total " 
+				+ "JOIN products p ON sd.product_id = p.product_id "
+				+ "JOIN products_suppliers ps ON p.product_id = ps.product_id "
+				+ "WHERE "
+				+ "(s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
+				+ "AND  "
+				+ "(ps.supplier_id = ?) "
+				+ "GROUP BY p.product_id, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number ORDER BY p.description) "
+				+ "UNION "
+				+ "(SELECT p1.product_id, p1.description, p1.stock, p1.minimum_stock, p1.unit_price, p1.avg_cost, ps.product_number, 0 as total "
 				+ "	FROM products p1 "
-				+ "	WHERE p1.product_id NOT IN (SELECT p.product_id " 
-				+ "	FROM sales s  "
+				+ "	JOIN products_suppliers ps ON p1.product_id = ps.product_id "
+				+ "	WHERE p1.product_id NOT IN (SELECT p.product_id "
+				+ "	FROM sales s "
 				+ "	JOIN sale_details sd ON s.sale_id = sd.sale_id " 
-				+ "	JOIN products p ON sd.product_id = p.product_id  "
-				+ "	WHERE  "
-				+ "	((s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
-				+ "	OR  "
-				+ "	(s.sale_status IS NULL AND s.sale_date IS NULL)) AND ( 1 IN (SELECT ps.supplier_id FROM products_suppliers ps WHERE ps.product_id = p.product_id)) " 
-				+ "	GROUP BY p.product_id)) "
-				+ "ORDER BY description";
+				+ "	JOIN products p ON sd.product_id = p.product_id "
+				+ "	JOIN products_suppliers ps ON p.product_id = ps.product_id "
+				+ "	WHERE "
+				+ "	(s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
+				+ "	AND  "
+				+ "	(ps.supplier_id = ?) "
+				+ "	GROUP BY p.product_id)) ";
 
 		try {
 			con = Conexion.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);			
 			stmt.setTimestamp(1, new Timestamp(desde.getTime()));
 			stmt.setTimestamp(2, new Timestamp(hasta.getTime()));
-			stmt.setTimestamp(3, new Timestamp(desde.getTime()));
-			stmt.setTimestamp(4, new Timestamp(hasta.getTime()));
-			
+			stmt.setInt(3, Enumerados.infoDUSA.proveedorID);
+			stmt.setTimestamp(4, new Timestamp(desde.getTime()));
+			stmt.setTimestamp(5, new Timestamp(hasta.getTime()));
+			stmt.setInt(6, Enumerados.infoDUSA.proveedorID);
 			ResultSet rs = stmt.executeQuery();
 						
 			// Recorro el resultado de la consulta y cargo la lista con los valores correspondientes
@@ -620,7 +623,9 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				nuevo.setStockMinimo(rs.getLong("minimum_stock"));
 				nuevo.setPrecioUnitario(rs.getBigDecimal("unit_price"));
 				nuevo.setPrecioPonderado(rs.getBigDecimal("avg_cost"));
+				nuevo.setNumeroArticulo(rs.getLong("product_number"));
 				nuevo.setCantidad(rs.getLong("total"));
+				nuevo.setSubtotal((new BigDecimal(nuevo.getCantidad())).multiply(nuevo.getPrecioUnitario()));
 				ret.put(nuevo.getIdArticulo(), nuevo);
 			}
 
@@ -639,25 +644,22 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		Connection con = null;
 		Map<Long, DTLineaPedido> ret;
 
-		String sql = "SELECT p.product_id, p.description, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, sum(sd.quantity) as total "
+		String sql = "SELECT p.product_id, p.description, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number, sum(sd.quantity) as total "
 				+ "FROM sales s "
 				+ "JOIN sale_details sd ON s.sale_id = sd.sale_id "
 				+ "JOIN products p ON sd.product_id = p.product_id "
-				+ "WHERE ((s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) OR (s.sale_status IS NULL AND s.sale_date IS NULL)) "
-				+ "AND ( 1 IN (SELECT ps.supplier_id "
-				+ "FROM products_suppliers ps "
-				+ "WHERE ps.product_id = p.product_id)) "
-				+ "GROUP BY p.product_id, p.stock, p.minimum_stock "
-				+ "ORDER BY p.description;";
+				+ "JOIN products_suppliers ps ON ps.product_id = p.product_id "
+				+ "WHERE ((s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
+				+ "AND (ps.supplier_id = ?)) "
+				+ "GROUP BY p.product_id, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number "
+				+ "ORDER BY p.description; ";
 
 		try {
 			con = Conexion.getConnection();
-			PreparedStatement stmt = con.prepareStatement(sql);			
+			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setTimestamp(1, new Timestamp(desde.getTime()));
 			stmt.setTimestamp(2, new Timestamp(hasta.getTime()));
-			
-			System.out.println(stmt.toString());
-			
+			stmt.setInt(3, Enumerados.infoDUSA.proveedorID);
 			ResultSet rs = stmt.executeQuery();
 						
 			// Recorro el resultado de la consulta y cargo la lista con los valores correspondientes
@@ -671,6 +673,8 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				nuevo.setPrecioUnitario(rs.getBigDecimal("unit_price"));
 				nuevo.setPrecioPonderado(rs.getBigDecimal("avg_cost"));
 				nuevo.setCantidad(rs.getLong("total"));
+				nuevo.setNumeroArticulo(rs.getLong("product_number"));
+				nuevo.setSubtotal((new BigDecimal(nuevo.getCantidad())).multiply(nuevo.getPrecioUnitario()));
 				ret.put(nuevo.getIdArticulo(), nuevo);
 			}
 

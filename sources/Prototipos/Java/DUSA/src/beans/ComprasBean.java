@@ -60,7 +60,7 @@ public class ComprasBean implements Serializable {
 	private Boolean disableProveedores = false;
 
 	// Contiene el resultado de la busqueda de los articulos
-	private List<DTBusquedaArticulo> busquedaArticulos;
+	private List<DTBusquedaArticulo> busquedaArticulos = new ArrayList<DTBusquedaArticulo>();
 	// String a buscar para un articulo
 	private String busqueda;
 
@@ -306,6 +306,17 @@ public class ComprasBean implements Serializable {
 	public void ingresarCompra() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		alertasPrecios.clear();
+		
+		// En el caso que sea una factura de dusa, verifico que se haya seleccionado una
+		if((facturaAutomatica == true) && (ordenDeCompraDUSA == 0)){
+			context.addMessage(
+					null,
+					new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"Para continar es necesario seleccionar una factura a ingresar",
+							""));
+			return;
+		}
 
 		// Para el caso de los comprobantes electronicos verifico que se haya
 		// ingresado una serie
@@ -451,6 +462,8 @@ public class ComprasBean implements Serializable {
 		factura = new DTComprobanteFactura();
 		serieFactura = false;
 		totalFactura = new BigDecimal(0);
+		busqueda = "";
+		busquedaArticulos.clear();
 	}
 
 	/**
@@ -523,7 +536,7 @@ public class ComprasBean implements Serializable {
 	 * Busca articulos utilizando Solr, filtrando por el proveedor seleccionado
 	 */
 	public void buscarArticulos() {
-		busquedaArticulos = new ArrayList<DTBusquedaArticulo>();
+		busquedaArticulos.clear();
 
 		if (busqueda.equals("")) {
 			return;

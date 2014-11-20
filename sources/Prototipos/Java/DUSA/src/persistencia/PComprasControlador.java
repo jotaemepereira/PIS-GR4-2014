@@ -29,25 +29,26 @@ public class PComprasControlador implements IComprasPersistencia {
 		try {
 			c = Conexion.getConnection();
 			c.setAutoCommit(false);
-			
-			// En el caso que sea una factura de DUSA verifico que no exista en el sistema
-			if(orden.getOrdenDeCompra() != 0){
+
+			// En el caso que sea una factura de DUSA verifico que no exista en
+			// el sistema
+			if (orden.getOrdenDeCompra() != 0) {
 				String query = "SELECT COUNT(order_id) cant FROM orders WHERE dusa_order_id = :dusa_order_id";
-				
+
 				try {
 					stmt = new NamedParameterStatement(c, query);
-					
+
 					stmt.setLong("dusa_order_id", orden.getOrdenDeCompra());
-					
+
 					ResultSet rs = stmt.executeQuery();
 					while (rs.next()) {
-						if(rs.getInt("cant") > 0){
-							
+						if (rs.getInt("cant") > 0) {
+
 							c.close();
 							return;
 						}
 					}
-					
+
 					stmt.close();
 					stmt.close();
 				} catch (Exception e) {
@@ -57,34 +58,40 @@ public class PComprasControlador implements IComprasPersistencia {
 							Excepciones.ERROR_SISTEMA));
 				}
 			}
-			
-			// Verifico que no haya otra factura ingresada en el sistema con ese tipo, serie y numero
+
+			// Verifico que no haya otra factura ingresada en el sistema con ese
+			// tipo, serie y numero
 			String query = "SELECT COUNT(order_id) cant ";
 			query += "FROM orders ";
 			query += "WHERE dgi_type_id = :dgi_type_id ";
-			if((orden.getSerieCFE() != null) && (!orden.getSerieCFE().equals("")))
+			if ((orden.getSerieCFE() != null)
+					&& (!orden.getSerieCFE().equals("")))
 				query += "AND serial = :serial ";
 			query += "AND order_number = :order_number ";
-			
+
 			try {
 				stmt = new NamedParameterStatement(c, query);
-				
+
 				stmt.setInt("dgi_type_id", orden.getTipoCFE());
-				if((orden.getSerieCFE() != null) && (!orden.getSerieCFE().equals("")))
+				if ((orden.getSerieCFE() != null)
+						&& (!orden.getSerieCFE().equals("")))
 					stmt.setString("serial", orden.getSerieCFE());
 				stmt.setInt("order_number", orden.getNumeroCFE());
-				
+
 				ResultSet rs = stmt.executeQuery();
 				while (rs.next()) {
-					if (rs.getInt("cant") > 0){
-						
+					if (rs.getInt("cant") > 0) {
+
 						c.close();
-						throw (new Excepciones(Excepciones.MENSAJE_FACTURA_DUPLICADA,
+						throw (new Excepciones(
+								Excepciones.MENSAJE_FACTURA_DUPLICADA,
 								Excepciones.ERROR_SISTEMA));
 					}
 				}
-				
+
 				stmt.close();
+			} catch (Excepciones e) {
+				throw e;
 			} catch (Exception e) {
 				e.printStackTrace();
 
@@ -92,7 +99,7 @@ public class PComprasControlador implements IComprasPersistencia {
 				throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 						Excepciones.ERROR_SISTEMA));
 			}
-			
+
 			// Primero inserto la orden
 			query = "INSERT INTO orders (supplier_id, username, dgi_type_id, serial, order_number, order_date, payment_type, not_taxed_amount, taxed_minimum_net_amount, taxed_basic_net_amount, minimum_tax_total, basic_tax_total, total_amount, iva_withheld_amount, irae_withheld_amount, not_billable_amount, taxed_minimum_amount, taxed_basic_amount, total, detail_quantity, dusa_order_id, is_processed) ";
 			query += "VALUES (:supplier_id, :username, :dgi_type_id, :serial, :order_number, :order_date, :payment_type, :not_taxed_amount, :taxed_minimum_net_amount, :taxed_basic_net_amount, :minimum_tax_total, :basic_tax_total, :total_amount, :iva_withheld_amount, :irae_withheld_amount, :not_billable_amount, :taxed_minimum_amount, :taxed_basic_amount, :total, :detail_quantity, :dusa_order_id, :is_processed) ";
@@ -109,12 +116,14 @@ public class PComprasControlador implements IComprasPersistencia {
 				stmt.setTimestamp("order_date", new Timestamp(orden
 						.getFechaComprobante().getTime()));
 				stmt.setString("payment_type", orden.getFormaDePago());
-				stmt.setBigDecimal("not_taxed_amount", orden.getMontoNoGravado());
+				stmt.setBigDecimal("not_taxed_amount",
+						orden.getMontoNoGravado());
 				stmt.setBigDecimal("taxed_minimum_net_amount",
 						orden.getMontoNetoGravadoIvaMinimo());
 				stmt.setBigDecimal("taxed_basic_net_amount",
 						orden.getMontoNetoGravadoIvaBasico());
-				stmt.setBigDecimal("minimum_tax_total", orden.getTotalIvaMinimo());
+				stmt.setBigDecimal("minimum_tax_total",
+						orden.getTotalIvaMinimo());
 				stmt.setBigDecimal("basic_tax_total", orden.getTotalIvaBasico());
 				stmt.setBigDecimal("total_amount", orden.getMontoTotal());
 				stmt.setBigDecimal("iva_withheld_amount",
@@ -153,7 +162,8 @@ public class PComprasControlador implements IComprasPersistencia {
 					stmt.setLong("order_id", key);
 					stmt.setInt("line", ordenDetalle.getNumeroLinea());
 					stmt.setLong("product_id", ordenDetalle.getProductId());
-					stmt.setLong("product_number", ordenDetalle.getNumeroArticulo());
+					stmt.setLong("product_number",
+							ordenDetalle.getNumeroArticulo());
 					stmt.setBigDecimal("cost", ordenDetalle.getPrecioUnitario());
 					stmt.setInt("quantity", ordenDetalle.getCantidad());
 					stmt.setBigDecimal("discount", ordenDetalle.getDescuento());
@@ -166,21 +176,22 @@ public class PComprasControlador implements IComprasPersistencia {
 					stmt.close();
 				}
 			} catch (Exception e) {
-				
+
 				c.close();
 				e.printStackTrace();
 				throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 						Excepciones.ERROR_SISTEMA));
 			}
-			
+
 			c.commit();
 			c.close();
-			
-		} catch (Excepciones ex){
-			//Por lo tanto ya se imprimio el error y envio a logica la excepcion.  
+
+		} catch (Excepciones ex) {
+			// Por lo tanto ya se imprimio el error y envio a logica la
+			// excepcion.
 			throw ex;
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
 					Excepciones.ERROR_SISTEMA));
@@ -200,7 +211,7 @@ public class PComprasControlador implements IComprasPersistencia {
 			stmt = new NamedParameterStatement(c, query);
 			stmt.setBoolean("is_processed", true);
 			stmt.setLong("dusa_order_id", orden.getOrdenDeCompra());
-			
+
 			stmt.executeUpdate();
 
 			stmt.close();
@@ -327,7 +338,8 @@ public class PComprasControlador implements IComprasPersistencia {
 				stmtDetalle = c.prepareStatement(queryDetalle);
 				stmtDetalle.setLong(1, factura.getIdOrden());
 
-				// Para cada detalle, lo guardo y lo agrego al detalle de la factura
+				// Para cada detalle, lo guardo y lo agrego al detalle de la
+				// factura
 				ResultSet rsDetalle = stmtDetalle.executeQuery();
 				while (rsDetalle.next()) {
 					DTLineaFacturaCompra detalle = new DTLineaFacturaCompra();
@@ -358,17 +370,19 @@ public class PComprasControlador implements IComprasPersistencia {
 					BigDecimal total = precio.multiply(cantidad).multiply(
 							descuento);
 					detalle.setTotal(total);
-					
+
 					TipoIva ti = new TipoIva();
 					ti.setTipoIVA(rsDetalle.getString("tax_type_id").charAt(0));
 					ti.setValorIVA(rsDetalle.getBigDecimal("iva_value"));
 					ti.setValorTributo(rsDetalle.getBigDecimal("tax_value"));
 					ti.setResguardoIVA(rsDetalle.getBigDecimal("iva_voucher"));
 					ti.setResguardoIRAE(rsDetalle.getBigDecimal("irae_voucher"));
-					ti.setIndicadorFacturacion(rsDetalle.getInt("billing_indicator"));
+					ti.setIndicadorFacturacion(rsDetalle
+							.getInt("billing_indicator"));
 					detalle.setTipoIVA(ti);
 
-					factura.setSubtotalProdctos(factura.getSubtotalProdctos().add(total));
+					factura.setSubtotalProdctos(factura.getSubtotalProdctos()
+							.add(total));
 					factura.getDetalle().add(detalle);
 				}
 

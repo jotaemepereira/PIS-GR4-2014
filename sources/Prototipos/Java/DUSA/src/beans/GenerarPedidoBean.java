@@ -1,6 +1,7 @@
 package beans;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -156,7 +157,7 @@ public class GenerarPedidoBean implements Serializable{
 	 */
 	public void nuevoSubtotal(DTLineaPedido item) {
 
-		item.setSubtotal(item.getCantidad() * item.getPrecioUnitario().floatValue());
+		item.setSubtotal( (new BigDecimal(item.getCantidad())).multiply(item.getPrecioUnitario()));
 	}
 
 	/**
