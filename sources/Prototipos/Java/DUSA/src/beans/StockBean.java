@@ -149,16 +149,14 @@ public class StockBean implements Serializable {
 						articulo.setPrecioConReceta(articulo
 								.getPrecioUnitario()
 								.multiply(
-										new BigDecimal(1).subtract(articulo
-												.getPorcentajeDescuentoReceta())));
+										articulo.getPorcentajeDescuentoReceta()));
 					} else if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.CUARENTA) {
 						articulo.setPorcentajeDescuentoReceta(new BigDecimal(
 								0.60));
 						articulo.setPrecioConReceta(articulo
 								.getPrecioUnitario()
 								.multiply(
-										new BigDecimal(1).subtract(articulo
-												.getPorcentajeDescuentoReceta())));
+										articulo.getPorcentajeDescuentoReceta()));
 					} else if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.FIJO) {
 						articulo.setPorcentajeDescuentoReceta(articulo
 								.getPrecioConReceta().divide(
@@ -288,16 +286,14 @@ public class StockBean implements Serializable {
 						articulo.setPrecioConReceta(articulo
 								.getPrecioUnitario()
 								.multiply(
-										new BigDecimal(1).subtract(articulo
-												.getPorcentajeDescuentoReceta())));
+										articulo.getPorcentajeDescuentoReceta()));
 					} else if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.CUARENTA) {
 						articulo.setPorcentajeDescuentoReceta(new BigDecimal(
 								0.60));
 						articulo.setPrecioConReceta(articulo
 								.getPrecioUnitario()
 								.multiply(
-										new BigDecimal(1).subtract(articulo
-												.getPorcentajeDescuentoReceta())));
+										articulo.getPorcentajeDescuentoReceta()));
 					} else if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.FIJO) {
 						articulo.setPorcentajeDescuentoReceta(articulo
 								.getPrecioConReceta().divide(
@@ -468,11 +464,11 @@ public class StockBean implements Serializable {
 				.compareTo(
 						instanciaSistema.obtenerUsuarioLogueado().getNombre()) != 0);
 		if (articuloSinCambios.getVencimientoMasCercano() != null) {
-			if (articulo.getVencimientoMasCercano() != null){
-			articulo.setVencimientoMasCercanoModificado(articuloSinCambios
-					.getVencimientoMasCercano().compareTo(
-							articulo.getVencimientoMasCercano()) != 0);
-			}else {
+			if (articulo.getVencimientoMasCercano() != null) {
+				articulo.setVencimientoMasCercanoModificado(articuloSinCambios
+						.getVencimientoMasCercano().compareTo(
+								articulo.getVencimientoMasCercano()) != 0);
+			} else {
 				articulo.setVencimientoMasCercanoModificado(true);
 			}
 		}
