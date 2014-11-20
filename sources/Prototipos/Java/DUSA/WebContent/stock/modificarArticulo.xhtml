@@ -31,15 +31,15 @@
 						<div class="panel-heading">
 							<h3 class="panel-title">Modificación de artículo</h3>
 						</div>
-						
+
 						<!-- PANEL PARA MENSAJES -->
 						<p:messages id="msgs" showIcon="false" globalOnly="true" />
-						
+
 						<div class="panel-body">
 							<h:panelGroup layout="block" id="panel">
 								<p:wizard flowListener="#{stockBean.onFlowProcess}"
 									showNavBar="false" widgetVar="wiz">
-									
+
 									<!-- TAB DE BUSQUEDA -->
 									<p:tab id="tabBusqueda" title="Búsqueda"
 										titleStyle="display:none">
@@ -102,6 +102,7 @@
 												<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
 													<h:outputLink value="#" onclick="PF('wiz').next();">
 														<i class="fa fa-pencil-square-o fa-2x"></i>
+														Modificar
 														<p:ajax update="msgs" />
 													</h:outputLink>
 												</div>
@@ -114,7 +115,7 @@
 									<p:tab id="tabModificacion" title="Modificación"
 										titleStyle="display:none">
 										<div class="container-fluid">
-										
+
 											<!-- FILA DE DESCRIPCION Y BARCODE -->
 											<div class="row" style="margin-bottom: 1%;">
 												<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -148,7 +149,7 @@
 													</div>
 												</div>
 											</div>
-											
+
 											<!-- FILA DE CLAVES DE BUSQUEDA -->
 											<div class="row" style="margin-bottom: 1%;">
 												<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -215,7 +216,7 @@
 													</div>
 												</div>
 											</div>
-											
+
 											<!-- FILA DE TIPO Y MARCA -->
 											<div class="row" style="margin-bottom: 1%;">
 												<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -265,7 +266,7 @@
 													</div>
 												</div>
 											</div>
-											
+
 											<!-- PANEL DE PROVEEDORES -->
 											<div class="panel panel-default">
 												<div class="panel-heading">
@@ -358,7 +359,7 @@
 													</div>
 												</div>
 											</div>
-											
+
 											<!-- FILA DE PRESENTACION DROGAS Y ACCIONES TERAPEUTICAS -->
 											<div class="row" style="margin-bottom: 1%;">
 												<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
@@ -412,7 +413,10 @@
 														<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 															<p:selectBooleanCheckbox id="psicofarmaco"
 																value="#{stockBean.articulo.esPsicofarmaco}"
-																disabled="#{stockBean.noEsMedicamento}" />
+																disabled="#{stockBean.noEsMedicamento}">
+																<p:ajax listener="#{stockBean.checkChange}"
+																	process="@this tipoArticulo" update="tipoIVA"></p:ajax>
+															</p:selectBooleanCheckbox>
 														</div>
 													</div>
 												</div>
@@ -427,7 +431,10 @@
 														<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 															<p:selectBooleanCheckbox id="estupefaciente"
 																value="#{stockBean.articulo.esEstupefaciente}"
-																disabled="#{stockBean.noEsMedicamento}" />
+																disabled="#{stockBean.noEsMedicamento}">
+																<p:ajax listener="#{stockBean.checkChange}"
+																	process="@this tipoArticulo" update="tipoIVA"></p:ajax>
+															</p:selectBooleanCheckbox>
 														</div>
 													</div>
 												</div>
@@ -513,6 +520,9 @@
 														required="true">
 														<f:convertNumber type="number" maxIntegerDigits="10"
 															maxFractionDigits="2" locale="es_UY" />
+														<p:ajax listener="#{stockBean.precioChange}"
+															update="precioFijoReceta descuentoReceta precioVenta porcentajePrecioVenta"
+															process="@this precioVenta porcentajePrecioVenta"></p:ajax>
 													</p:inputText>
 													<p:message for="precioPublico" display="text" />
 												</div>
@@ -539,6 +549,9 @@
 														disabled="#{stockBean.radioPrecioVenta != '$'}">
 														<f:convertNumber type="number" maxIntegerDigits="10"
 															maxFractionDigits="2" locale="es_UY" />
+														<p:ajax listener="#{stockBean.precioVentaChange}"
+															update="porcentajePrecioVenta"
+															process="@this precioPublico"></p:ajax>
 													</p:inputText>
 													<p:message for="precioVenta" display="text" />
 												</div>
@@ -584,6 +597,8 @@
 														converterMessage="Dato Inválido." style="height: 100%"
 														disabled="#{stockBean.radioPrecioVenta != '%'}">
 														<f:convertNumber type="percent" locale="es_UY" />
+														<p:ajax listener="#{stockBean.porcentajeChange}"
+															update="precioVenta" process="@this precioPublico"></p:ajax>
 													</p:inputText>
 													<p:message for="porcentajePrecioVenta" display="text" />
 												</div>
@@ -610,6 +625,8 @@
 																<f:selectItems value="#{stockBean.descuentosReceta}"
 																	var="f" itemLabel="#{f.descripcion}"
 																	itemValue="#{f.tipoDescuento}" />
+																<p:ajax listener="#{stockBean.descuentoRecetaChange}"
+																	update="precioFijoReceta" process="@this precioPublico"></p:ajax>
 															</p:selectOneMenu>
 															<p:message for="descuentoReceta" display="text" />
 														</div>
@@ -640,6 +657,7 @@
 															<p:selectOneMenu id="tipoIVA"
 																requiredMessage="Dato Requerido."
 																value="#{stockBean.tipoIvaSeleccionado}"
+																disabled="#{stockBean.tipoIvaDisabled}"
 																style="height: 100%" required="true">
 																<f:selectItem itemLabel="Seleccione tipo de IVA"
 																	itemValue="#{null}" />

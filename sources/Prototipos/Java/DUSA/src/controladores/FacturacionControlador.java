@@ -36,7 +36,10 @@ public class FacturacionControlador implements IFacturacion {
 		Venta venta = ifp.facturarVenta(ventaId);
 
 		if (venta == null) {
-			return false;
+			System.out.println("ERROR: VENTA VACIA EN FACTURAR");
+			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
+					Excepciones.ERROR_SISTEMA);
+			//return false;
 		}
 		// Creo factura
 		try {

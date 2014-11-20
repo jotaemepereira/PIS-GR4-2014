@@ -62,6 +62,7 @@ public class StockBean implements Serializable {
 	private boolean noEsMedicamento;
 	private String radioPrecioVenta;
 	private boolean noPrecioFijo;
+	private boolean tipoIvaDisabled;
 
 	// Modificación
 	private boolean modificacion;
@@ -149,16 +150,14 @@ public class StockBean implements Serializable {
 						articulo.setPrecioConReceta(articulo
 								.getPrecioUnitario()
 								.multiply(
-										new BigDecimal(1).subtract(articulo
-												.getPorcentajeDescuentoReceta())));
+										articulo.getPorcentajeDescuentoReceta()));
 					} else if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.CUARENTA) {
 						articulo.setPorcentajeDescuentoReceta(new BigDecimal(
 								0.60));
 						articulo.setPrecioConReceta(articulo
 								.getPrecioUnitario()
 								.multiply(
-										new BigDecimal(1).subtract(articulo
-												.getPorcentajeDescuentoReceta())));
+										articulo.getPorcentajeDescuentoReceta()));
 					} else if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.FIJO) {
 						articulo.setPorcentajeDescuentoReceta(articulo
 								.getPrecioConReceta().divide(
@@ -288,16 +287,14 @@ public class StockBean implements Serializable {
 						articulo.setPrecioConReceta(articulo
 								.getPrecioUnitario()
 								.multiply(
-										new BigDecimal(1).subtract(articulo
-												.getPorcentajeDescuentoReceta())));
+										articulo.getPorcentajeDescuentoReceta()));
 					} else if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.CUARENTA) {
 						articulo.setPorcentajeDescuentoReceta(new BigDecimal(
 								0.60));
 						articulo.setPrecioConReceta(articulo
 								.getPrecioUnitario()
 								.multiply(
-										new BigDecimal(1).subtract(articulo
-												.getPorcentajeDescuentoReceta())));
+										articulo.getPorcentajeDescuentoReceta()));
 					} else if (descuentoRecetaSeleccionado == Enumerados.descuentosReceta.FIJO) {
 						articulo.setPorcentajeDescuentoReceta(articulo
 								.getPrecioConReceta().divide(
@@ -468,9 +465,13 @@ public class StockBean implements Serializable {
 				.compareTo(
 						instanciaSistema.obtenerUsuarioLogueado().getNombre()) != 0);
 		if (articuloSinCambios.getVencimientoMasCercano() != null) {
-			articulo.setVencimientoMasCercanoModificado(articuloSinCambios
-					.getVencimientoMasCercano().compareTo(
-							articulo.getVencimientoMasCercano()) != 0);
+			if (articulo.getVencimientoMasCercano() != null) {
+				articulo.setVencimientoMasCercanoModificado(articuloSinCambios
+						.getVencimientoMasCercano().compareTo(
+								articulo.getVencimientoMasCercano()) != 0);
+			} else {
+				articulo.setVencimientoMasCercanoModificado(true);
+			}
 		}
 
 		// Chequeo cambios en proveedores
@@ -638,11 +639,16 @@ public class StockBean implements Serializable {
 				if (articulo.getTipoIva().getTipoIVA() == model.Enumerados.tiposIVA.PSICOFARMACOS
 						|| articulo.getTipoIva().getTipoIVA() == model.Enumerados.tiposIVA.MEDICAMENTOS) {
 					tipoIvaSeleccionado = model.Enumerados.tiposIVA.IVA10;
+					tipoIvaDisabled = true;
 				} else if (articulo.getTipoIva().getTipoIVA() == model.Enumerados.tiposIVA.IVA22TRIBUTO) {
 					tipoIvaSeleccionado = model.Enumerados.tiposIVA.IVA22;
+					tipoIvaDisabled = false;
 				} else {
 					tipoIvaSeleccionado = articulo.getTipoIva().getTipoIVA();
+					tipoIvaDisabled = false;
 				}
+			} else {
+				tipoIvaDisabled = false;
 			}
 			if (articulo.getTipoArticulo() == Enumerados.tipoArticulo.MEDICAMENTO) {
 				if (articulo.getPorcentajeDescuentoReceta().compareTo(
@@ -870,11 +876,73 @@ public class StockBean implements Serializable {
 		}
 	}
 
+	public void checkChange() {
+		if (this.articulo.isEsPsicofarmaco() || this.articulo.isEsEstupefaciente()) {
+			this.tipoIvaSeleccionado = model.Enumerados.tiposIVA.IVA10;
+			this.tipoIvaDisabled = true;
+		} else {
+			this.tipoIvaDisabled = false;
+			this.tipoIvaSeleccionado = 0x00;
+		}
+	}
+
+	public void precioChange() {
+		if (this.articulo.getPrecioUnitario() != null) {
+			if (this.descuentoRecetaSeleccionado == model.Enumerados.descuentosReceta.VEINTICINCO) {
+				this.articulo.setPrecioConReceta(this.articulo
+						.getPrecioUnitario().multiply(new BigDecimal(0.75)));
+			} else if (this.descuentoRecetaSeleccionado == model.Enumerados.descuentosReceta.CUARENTA) {
+				this.articulo.setPrecioConReceta(this.articulo
+						.getPrecioUnitario().multiply(new BigDecimal(0.60)));
+			} else {
+				this.articulo.setPrecioConReceta(null);
+			}
+
+			if (this.radioPrecioVenta.compareTo("$") == 0) {
+				if (this.articulo.getPrecioVenta() != null) {
+					if (this.articulo.getPrecioUnitario().compareTo(
+							BigDecimal.ZERO) != 0)
+						this.articulo.setPorcentajePrecioVenta(this.articulo
+								.getPrecioVenta().divide(
+										this.articulo.getPrecioUnitario(), 5,
+										RoundingMode.DOWN));
+				}
+			} else {
+				if (this.articulo.getPorcentajePrecioVenta() != null) {
+					if (this.articulo.getPrecioUnitario().compareTo(
+							BigDecimal.ZERO) != 0)
+						this.articulo.setPrecioVenta(this.articulo
+								.getPrecioUnitario().multiply(
+										this.articulo
+												.getPorcentajePrecioVenta()));
+				}
+			}
+		}
+	}
+
 	public void descuentoRecetaChange() {
 		if (descuentoRecetaSeleccionado == model.Enumerados.descuentosReceta.FIJO) {
 			this.noPrecioFijo = false;
-		} else {
+			this.articulo.setPrecioConReceta(BigDecimal.ZERO);
+		} else if ((descuentoRecetaSeleccionado == model.Enumerados.descuentosReceta.VEINTICINCO)
+				|| (descuentoRecetaSeleccionado == model.Enumerados.descuentosReceta.CUARENTA)) {
 			this.noPrecioFijo = true;
+			if (this.articulo.getPrecioUnitario() != null) {
+				if (this.articulo.getPrecioUnitario()
+						.compareTo(BigDecimal.ZERO) != 0) {
+					if (descuentoRecetaSeleccionado == model.Enumerados.descuentosReceta.VEINTICINCO) {
+						this.articulo.setPrecioConReceta(this.articulo
+								.getPrecioUnitario().multiply(
+										new BigDecimal(0.75)));
+					} else {
+						this.articulo.setPrecioConReceta(this.articulo
+								.getPrecioUnitario().multiply(
+										new BigDecimal(0.60)));
+					}
+				}
+			}
+		} else {
+			this.articulo.setPrecioConReceta(null);
 		}
 	}
 
@@ -983,6 +1051,24 @@ public class StockBean implements Serializable {
 		this.noEsMedicamento = true;
 		this.radioPrecioVenta = "$";
 		this.noPrecioFijo = true;
+	}
+
+	public void precioVentaChange() {
+		if (this.articulo.getPrecioUnitario() != null) {
+			if (this.articulo.getPrecioUnitario().compareTo(BigDecimal.ZERO) != 0)
+				this.articulo.setPorcentajePrecioVenta(this.articulo
+						.getPrecioVenta().divide(
+								this.articulo.getPrecioUnitario(), 5,
+								RoundingMode.DOWN));
+		}
+	}
+
+	public void porcentajeChange() {
+		if (this.articulo.getPrecioUnitario() != null) {
+			if (this.articulo.getPrecioUnitario().compareTo(BigDecimal.ZERO) != 0)
+				this.articulo.setPrecioVenta(this.articulo.getPrecioUnitario()
+						.multiply(this.articulo.getPorcentajePrecioVenta()));
+		}
 	}
 
 	public DTBusquedaArticulo getArticuloSeleccionado() {
@@ -1204,5 +1290,13 @@ public class StockBean implements Serializable {
 
 	public void setNoPrecioFijo(boolean precioFijo) {
 		this.noPrecioFijo = precioFijo;
+	}
+
+	public boolean isTipoIvaDisabled() {
+		return tipoIvaDisabled;
+	}
+
+	public void setTipoIvaDisabled(boolean tipoIvaDisabled) {
+		this.tipoIvaDisabled = tipoIvaDisabled;
 	}
 }

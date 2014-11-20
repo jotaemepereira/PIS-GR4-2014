@@ -393,7 +393,7 @@ public class SistemaControlador implements ISistema {
 	
 		if (user.tienePermiso(casoDeUso.cancelarVentaPendiente)) {
 			
-			FabricaLogica.getIFacturacion().facturarVenta(idVenta);
+			FabricaLogica.getIFacturacion().cancelarVenta(idVenta);
 			
 			//Registro actividad del usuario
 			Operacion operacion = user.getOperacion(casoDeUso.cancelarVentaPendiente);

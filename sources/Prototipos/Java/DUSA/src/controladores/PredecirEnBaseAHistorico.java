@@ -7,6 +7,7 @@ import interfaces.IStockPersistencia;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
+import Util.DTLineaPedidoComparador;
 import datatypes.DTLineaPedido;
 
 /**
@@ -168,14 +170,22 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 
 		/*
 		 * Devuelvo solo los artículos que tienen una cantidad predecida.
+		 * Y trunco el resultado en 150 artículos.
 		 */
 		ret = new ArrayList<DTLineaPedido>();
 		for (DTLineaPedido linea : mapaCantidadesAPedir.values()) {
 			if (linea.getCantidad() > 0) {
+				linea.setSubtotal(linea.getPrecioUnitario().multiply(new BigDecimal(linea.getCantidad())));
 				ret.add(linea);
 			}
 		}
-		return ret;
+		// Ordeno la lista por cantidad predecida
+		Collections.sort(ret, new DTLineaPedidoComparador());
+		// Devuelvo los primeros 150 artículos
+		if (ret.size() < 150)
+			return ret;
+		else
+			return ret.subList(0, 150);
 
 	}
 

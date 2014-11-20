@@ -57,7 +57,7 @@ public class Enumerados {
 	 */
 	public final class infoDUSA {
 		
-		public static final int proveedorID = 1;//Supongo que será el primer proveedor a ingresar en el sistema final.
+		public static final int proveedorID = 1;//Se supone que será el primer proveedor a ingresar en el sistema.
 		public static final String nombreComercial = "DUSA";
 	}
 	
