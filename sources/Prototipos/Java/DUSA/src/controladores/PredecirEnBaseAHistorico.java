@@ -175,6 +175,7 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 		ret = new ArrayList<DTLineaPedido>();
 		for (DTLineaPedido linea : mapaCantidadesAPedir.values()) {
 			if (linea.getCantidad() > 0) {
+				linea.setSubtotal(linea.getPrecioUnitario().multiply(new BigDecimal(linea.getCantidad())));
 				ret.add(linea);
 			}
 		}
