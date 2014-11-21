@@ -223,43 +223,43 @@ public class StockControlador implements IStock {
 		
 		OutputStream output;
 		try {
-		FileInputStream in = new FileInputStream("alertaStock.properties");
-		Properties prop = new Properties();
-		prop.load(in);
-		String mailEmisor = prop.getProperty("mailEmisor");
-		String passEmisor = prop.getProperty("passEmisor");
-		String receptores = prop.getProperty("mailReceptores");
-		
-		in.close();
-		if (mailEmisor==null)
-			mailEmisor = "dusapis";
-		if (passEmisor ==null)
-			passEmisor = "grupo4grupo4";
-		if (receptores == null)
-			receptores = "dusapis@gmail.com";
-		
-		output = new FileOutputStream("alertaStock.properties");
-		Date date = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
-		String sDate = sdf.format(date);
-		prop.setProperty("fechaUltimaActualizacion", sDate);
-		prop.setProperty("mailEmisor",mailEmisor);
-		prop.setProperty("passEmisor",passEmisor);
-		prop.setProperty("mailReceptores",receptores);
-		prop.store(output, null);
+			FileInputStream in = new FileInputStream("alertaStock.properties");
+			Properties prop = new Properties();
+			prop.load(in);
+			String mailEmisor = prop.getProperty("mailEmisor");
+			String passEmisor = prop.getProperty("passEmisor");
+			String receptores = prop.getProperty("mailReceptores");
+
+			in.close();
+			if (mailEmisor==null)
+				mailEmisor = "dusapis";
+			if (passEmisor ==null)
+				passEmisor = "grupo4grupo4";
+			if (receptores == null)
+				receptores = "dusapis@gmail.com";
+
+			output = new FileOutputStream("alertaStock.properties");
+			Date date = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
+			String sDate = sdf.format(date);
+			prop.setProperty("fechaUltimaActualizacion", sDate);
+			prop.setProperty("mailEmisor",mailEmisor);
+			prop.setProperty("passEmisor",passEmisor);
+			prop.setProperty("mailReceptores",receptores);
+			prop.store(output, null);
 
 
-		if (cambios.size()!=0){
-			
-			m = new Mail();
-			m.setAsunto("cambio en productos de DUSA");   
-			m.setContenido(cambios);
-			m.setEmisor(mailEmisor, passEmisor);
-			m.setDestinatarios(receptores);
-			m.Enviar();
-		}
-		FabricaPersistencia.getStockPersistencia().fullImportSolr();
-		
+			if (cambios.size()!=0){
+
+				m = new Mail();
+				m.setAsunto("cambio en productos de DUSA");   
+				m.setContenido(cambios);
+				m.setEmisor(mailEmisor, passEmisor);
+				m.setDestinatarios(receptores);
+				m.Enviar();
+			}
+			FabricaPersistencia.getStockPersistencia().fullImportSolr();
+
 		} catch (IOException | MessagingException e) {
 			
 			e.printStackTrace();

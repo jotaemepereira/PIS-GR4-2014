@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Properties;
 
 import interfaces.ISistema;
 
@@ -14,6 +15,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import Util.ConfiguracionUtil;
 import model.LineaPedido;
 import model.Pedido;
 import model.Enumerados.TipoFormaDePago;
@@ -138,12 +140,31 @@ public class GenerarPedidoBean implements Serializable{
 
 		try {
 			
-			pedidos = this.instanciaSistema.generarPedidoEnBaseAHistorico(5);
-		} catch (Exception e) {
+			Properties info = ConfiguracionUtil.generarPedidoConfiguracion();
+			
+			if (!info.isEmpty()) {
+				
+				Integer dias = Integer.parseInt(info.getProperty("dias_a_predecir"));
+				pedidos = this.instanciaSistema.generarPedidoEnBaseAHistorico(dias.intValue());
+			} else {
+				
+				throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
+			}
+			
+		} catch (Excepciones e) {
 
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+			disableDesdeUltimoPedido = false;
+			disablePrediccionDePedido = false;
+			hideElement = "hidden";
+		} catch (Exception e1) {
+			
+			e1.printStackTrace();
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage(
+					FacesMessage.SEVERITY_ERROR, Excepciones.MENSAJE_ERROR_SISTEMA, ""));
 			disableDesdeUltimoPedido = false;
 			disablePrediccionDePedido = false;
 			hideElement = "hidden";
