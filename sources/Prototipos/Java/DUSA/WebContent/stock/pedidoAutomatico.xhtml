@@ -55,7 +55,7 @@
 						<div class="panel-heading">
 							<h3 class="panel-title">Pedido Automático</h3>
 						</div>
-						<p:messages id="msgs" />
+						<p:messages id="msgs" autoUpdate="true" showIcon="false"/>
 
 						<p:remoteCommand name="enviarPedido" update="panel msgs"
 							actionListener="#{generarPedidoBean.enviarPedido}" />
@@ -112,55 +112,71 @@
 													emptyMessage="No se encontraron registros." >
 													
 													<div class="row">
-														<p:column headerText="Nombre artículo" sortBy="descripcionArticulo"
+														<p:column headerText="Nombre artículo" sortBy="#{pedido.descripcionArticulo}"
 															styleClass="hidden-xs col-sm-2 col-md-3 col-lg-2">
 															<h:outputText value="#{pedido.descripcionArticulo}" />
 														</p:column>
+														
+														<p:column headerText="Laboratorio" sortBy="#{pedido.nombreLaboratorio}"
+															styleClass="hidden-xs col-sm-2 col-md-3 col-lg-2">
+															<h:outputText value="#{pedido.nombreLaboratorio}" />
+														</p:column>
 
-														<p:column headerText="Precio unitario" sortBy="precioUnitario"
+														<p:column headerText="Precio unitario" sortBy="#{pedido.precioUnitario}"
 															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 															<h:outputText value="#{pedido.precioUnitario}" />
 														</p:column>
 
-														<p:column headerText="Stock mínimo por día"
+														<p:column headerText="Stock mínimo por día" sortBy="#{pedido.stockMinimo}"
 															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 															<h:outputText value="#{pedido.stockMinimo}" />
 
 														</p:column>
 
-														<p:column headerText="Stock actual" sortBy="stockActual"
+														<p:column headerText="Stock actual" sortBy="#{pedido.stockActual}"
 															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 															<h:outputText value="#{pedido.stockActual}" />
 
 														</p:column>
 
-														<p:column rendered="#{generarPedidoBean.esHistorico}" sortBy="prediccionVentasAnt"
+														<p:column rendered="#{generarPedidoBean.esHistorico}" sortBy="#{pedido.prediccionVentasAnt}"
 															headerText="Predicción por ventas recientes"
 															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 															<h:outputText value="#{pedido.prediccionVentasAnt}" />
 
 														</p:column>
 
-														<p:column rendered="#{generarPedidoBean.esHistorico}" sortBy="promedioVendidoAnosAnt"
+														<p:column rendered="#{generarPedidoBean.esHistorico}" sortBy="#{pedido.promedioVendidoAnosAnt}"
 															headerText="Promedio ventas de años anteriores"
 															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 															<h:outputText value="#{pedido.promedioVendidoAnosAnt}" />
 
 														</p:column>
 
-														<p:column headerText="Cantidad" sortBy="cantidad"
+														<p:column headerText="Cantidad"
+															sortBy="#{pedido.cantidad}"
 															styleClass="col-xs-4 col-sm-3 col-md-2 col-lg-2">
-															<p:inputMask id="cantidad" mask="?9999"
+
+															<p:inputText value="#{pedido.cantidad}" required="true"
+																styleClass="form-control" style="text-align: center"
+																converterMessage="La cantidad del arículo debe ser un número entero y mayor que cero."
+																validatorMessage="La cantidad del arículo debe ser un número entero y mayor que cero.">
+																<f:validateLongRange minimum="0" maximum="2147483647" />
+																<p:ajax
+																	listener="#{generarPedidoBean.nuevoSubtotal(pedido)}"
+																	update="subtotal" process="@this" />
+															</p:inputText>
+															<!-- <p:inputMask id="cantidad" mask="?9999"
 																styleClass="form-control" style="text-align: center"
 																readonly="false" value="#{pedido.cantidad}">
 																<p:ajax
 																	listener="#{generarPedidoBean.nuevoSubtotal(pedido)}"
 																	update="subtotal" process="@this" />
-															</p:inputMask>
+															</p:inputMask> -->
 
 														</p:column>
 
-														<p:column headerText="Subtotal" sortBy="subtotal"
+														<p:column headerText="Subtotal" sortBy="#{pedido.subtotal}"
 															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-2">
 															<h:outputText value="#{pedido.subtotal}" id="subtotal">
 																<f:convertNumber pattern="#0.00" />
