@@ -630,6 +630,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			}
 
 			stmt.close();
+			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
@@ -679,6 +680,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 			}
 
 			stmt.close();
+			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
