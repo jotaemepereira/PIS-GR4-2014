@@ -105,24 +105,14 @@
 													emptyMessage="No se encontraron registros." >
 													
 													<div class="row">
-														<p:column headerText="Numero artículo"
-															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-															<h:outputText value="#{pedido.numeroArticulo}" />
-														</p:column>
-
-														<p:column headerText="Nombre artículo"
+														<p:column headerText="Nombre artículo" sortBy="descripcionArticulo"
 															styleClass="hidden-xs col-sm-2 col-md-3 col-lg-2">
 															<h:outputText value="#{pedido.descripcionArticulo}" />
 														</p:column>
 
-														<p:column headerText="Precio unitario"
+														<p:column headerText="Precio unitario" sortBy="precioUnitario"
 															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 															<h:outputText value="#{pedido.precioUnitario}" />
-														</p:column>
-
-														<p:column headerText="Precio ponderado promedio"
-															styleClass="hidden-xs hidden-sm col-md-2 col-lg-2">
-															<h:outputText value="#{pedido.precioPonderado}" />
 														</p:column>
 
 														<p:column headerText="Stock mínimo por día"
@@ -131,27 +121,27 @@
 
 														</p:column>
 
-														<p:column headerText="Stock actual"
+														<p:column headerText="Stock actual" sortBy="stockActual"
 															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 															<h:outputText value="#{pedido.stockActual}" />
 
 														</p:column>
 
-														<p:column rendered="#{generarPedidoBean.esHistorico}"
+														<p:column rendered="#{generarPedidoBean.esHistorico}" sortBy="prediccionVentasAnt"
 															headerText="Predicción por ventas recientes"
 															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 															<h:outputText value="#{pedido.prediccionVentasAnt}" />
 
 														</p:column>
 
-														<p:column rendered="#{generarPedidoBean.esHistorico}"
+														<p:column rendered="#{generarPedidoBean.esHistorico}" sortBy="promedioVendidoAnosAnt"
 															headerText="Promedio ventas de años anteriores"
 															styleClass="hidden-xs hidden-sm col-md-1 col-lg-1">
 															<h:outputText value="#{pedido.promedioVendidoAnosAnt}" />
 
 														</p:column>
 
-														<p:column headerText="Cantidad"
+														<p:column headerText="Cantidad" sortBy="cantidad"
 															styleClass="col-xs-4 col-sm-3 col-md-2 col-lg-2">
 															<p:inputMask id="cantidad" mask="?9999"
 																styleClass="form-control" style="text-align: center"
@@ -163,7 +153,7 @@
 
 														</p:column>
 
-														<p:column headerText="Subtotal"
+														<p:column headerText="Subtotal" sortBy="subtotal"
 															styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-2">
 															<h:outputText value="#{pedido.subtotal}" id="subtotal">
 																<f:convertNumber pattern="#0.00" />
