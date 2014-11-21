@@ -12,12 +12,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import model.Enumerados.infoDUSA;
+
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
+import Util.ConfiguracionUtil;
 import Util.DTLineaPedidoComparador;
 import datatypes.DTLineaPedido;
 
@@ -51,6 +55,8 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 			.getInitParameter("CANT_ANIOS_ANTERIORES"));;
 	final long CANT_MILISEC_EN_UN_DIA = 1000 * 60 * 60 * 24;
 	private int diasApredecir = 0;
+	private int limiteTablaAMostrar;
+	
 	IFacturacionPersistencia fp;
 	IStockPersistencia st;
 
@@ -59,7 +65,15 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 		this.diasApredecir = diasAPredecir;
 		fp = FabricaPersistencia.getInstanciaFacturacionPersistencia();
 		st = FabricaPersistencia.getStockPersistencia();
-
+		
+		Properties info = ConfiguracionUtil.generarPedidoConfiguracion();
+		if (!info.isEmpty()) {
+			
+			this.limiteTablaAMostrar = Integer.parseInt(info.getProperty("limite_articulos_mostrar"));
+		} else {
+			//Programacion defensiva
+			this.limiteTablaAMostrar = 150;
+		}
 	}
 
 	@Override
@@ -181,11 +195,12 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 		}
 		// Ordeno la lista por cantidad predecida
 		Collections.sort(ret, new DTLineaPedidoComparador());
-		// Devuelvo los primeros 150 artículos
-		if (ret.size() < 150)
+		// Devuelvo la cantidad a mostrar en UI
+		
+		if (ret.size() < this.limiteTablaAMostrar)
 			return ret;
 		else
-			return ret.subList(0, 150);
+			return ret.subList(0, this.limiteTablaAMostrar);
 
 	}
 
