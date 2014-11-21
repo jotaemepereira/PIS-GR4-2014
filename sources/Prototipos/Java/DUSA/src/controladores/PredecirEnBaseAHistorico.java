@@ -184,7 +184,6 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 
 		/*
 		 * Devuelvo solo los artículos que tienen una cantidad predecida.
-		 * Y trunco el resultado en 150 artículos.
 		 */
 		ret = new ArrayList<DTLineaPedido>();
 		for (DTLineaPedido linea : mapaCantidadesAPedir.values()) {
@@ -195,8 +194,10 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 		}
 		// Ordeno la lista por cantidad predecida
 		Collections.sort(ret, new DTLineaPedidoComparador());
-		// Devuelvo la cantidad a mostrar en UI
 		
+		/*
+		 *  Devuelvo la cantidad a mostrar en UI
+		 */
 		if (ret.size() < this.limiteTablaAMostrar)
 			return ret;
 		else
@@ -283,13 +284,18 @@ public class PredecirEnBaseAHistorico implements IPredictor {
 									item.getIdArticulo())
 									.getCantPredecidaMinimosCuadrados() * P1)));
 			/*
-			 * Calculo la cantidad a pedir. Si resulta menor a cero se fija en
-			 * cero, de lo contrario se fija el resultado del algoritmo
+			 * Sa calcula cuanto se necesita pedir segun el stock actual.
+			 * Si la cantidad predecida es menor que el stock minimo, se toma el stock minimo, para la resta.
+			 * Si el stock actual es negativo se toma, en la resta, cero para no pedir una cantidad en exceso. 
 			 */
 			long cantAPedir = (long) Math.ceil(Math.max(cantidadPredecida,
 					item.getStockMinimo())
-					- item.getStockActual());
-
+					- Math.max(0, item.getStockActual()));
+			
+			/*
+			 * Calculo la cantidad a pedir. Si resulta menor a cero se fija en
+			 * cero, de lo contrario se fija el resultado del algoritmo
+			 */
 			if (cantAPedir < 0) {
 				mapaCantidadesAPedir.get(item.getIdArticulo()).setCantidad(0);
 			} else {
