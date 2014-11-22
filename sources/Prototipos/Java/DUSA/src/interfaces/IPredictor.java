@@ -1,3 +1,6 @@
+/**
+ * Interfaz para implementar, distintos tipos de estrategias, para generar un pedido. 
+ */
 package interfaces;
 
 import java.util.List;

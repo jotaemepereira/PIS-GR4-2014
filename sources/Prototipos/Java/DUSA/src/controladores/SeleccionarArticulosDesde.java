@@ -1,3 +1,8 @@
+/**
+ * Implementacion de ISeleccionador para optener todos los articulos de DUSA, con ventas entre fechaDesde hasta hoy.
+ * 
+ * Actualmente no se esta usando en la estrategia de generara pedido (si inicializando), para optimizar los tiempos al generar pedido.  
+ */
 package controladores;
 
 
