@@ -1,5 +1,9 @@
 package beans;
 
+/**
+ * Clase que controla la presentación relacionada con las nuevas ventas
+ */
+
 import interfaces.ISistema;
 import java.io.Serializable;
 import java.math.BigDecimal;
