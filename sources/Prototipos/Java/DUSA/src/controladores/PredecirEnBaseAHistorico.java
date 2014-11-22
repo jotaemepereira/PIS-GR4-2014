@@ -17,8 +17,6 @@ import java.util.Properties;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import model.Enumerados.infoDUSA;
-
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import Util.ConfiguracionUtil;

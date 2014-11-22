@@ -1,3 +1,7 @@
+/**
+ * Controla las operaciones del modulo stock del sistema
+ */
+
 package controladores;
 
 import interfaces.IPredictor;
@@ -9,9 +13,7 @@ import model.AccionTer;
 import model.Articulo;
 import model.Cambio;
 import model.Droga;
-import model.Enumerados;
 import model.GeneradorPedido;
-import model.LineaPedido;
 import model.Mail;
 import model.Pedido;
 import model.TipoIva;
@@ -21,10 +23,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -34,7 +34,6 @@ import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
-import datatypes.DTProveedor;
 import datatypes.DTProducto;
 import datatypes.DTVencimiento;
 import controladores.FabricaPersistencia;
@@ -158,20 +157,21 @@ public class StockControlador implements IStock {
 
 	@Override
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones {
-		//grabarTiposIVA();
-		//System.out.println("***** ACCIONES TER ****");
-		//FabricaPersistencia.getStockPersistencia().fullImportSolr();
 		return FabricaPersistencia.getStockPersistencia()
 				.obtenerAccionesTerapeuticas();
 	}
 
+	/**
+	 * Trae los tipos de iva desde el webservice de dusa y los guarda en la base de datos
+	 * 
+	 * No se utiliza la funcion en el sistema, fue utilizada en el momento de desarrollar
+	 */
 	private void grabarTiposIVA() {
 		try {
 			List<TipoIva> lista = FabricaServicios.getIServicios()
 					.obtenerTiposIva();
 			FabricaPersistencia.getStockPersistencia().persistirTiposIva(lista);
 		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -331,7 +331,6 @@ public class StockControlador implements IStock {
 	@Override
 	public List<Articulo> obtenerArticulosDelProveedor(long idProveedor)
 			throws Excepciones {
-		// TODO Auto-generated method stub
 		return FabricaPersistencia.getStockPersistencia().
 				obtenerArticulosDelProveedor(idProveedor);
 		
@@ -340,7 +339,6 @@ public class StockControlador implements IStock {
 	@Override
 	public void modificarPreciodeArticulos(Map<Long, BigDecimal> preciosModificados)
 			throws Excepciones {
-		// TODO Auto-generated method stub
 		FabricaPersistencia.getStockPersistencia().
 			modificarPreciosDeArticulo(preciosModificados);
 		
