@@ -109,16 +109,21 @@ public class GenerarPedidoBean implements Serializable{
 		hideElement = "visible";
 		esHistorico = false;
 		pedidos.clear();
-
+		
+		FacesContext context = FacesContext.getCurrentInstance();
 		try {
 			
-			pedidos = this.instanciaSistema
-					.generarPedidoEnBaseAPedidoAnterior();
+			pedidos = this.instanciaSistema.generarPedidoEnBaseAPedidoAnterior();
+			
+			if (pedidos.isEmpty()) {
+				
+				context.addMessage(null, new FacesMessage(
+						FacesMessage.SEVERITY_INFO, Excepciones.MENSAJE_PEDIDO_VACIO_ATERIOR, ""));
+			}
 
 		} catch (Exception e) {
 			//Imprimo y notifico error generado
 			e.printStackTrace();
-			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 			disableDesdeUltimoPedido = false;
@@ -138,6 +143,7 @@ public class GenerarPedidoBean implements Serializable{
 		esHistorico = true;
 		pedidos.clear();
 
+		FacesContext context = FacesContext.getCurrentInstance();
 		try {
 			
 			Properties info = ConfiguracionUtil.generarPedidoConfiguracion();
@@ -146,6 +152,12 @@ public class GenerarPedidoBean implements Serializable{
 				
 				Integer dias = Integer.parseInt(info.getProperty("dias_a_predecir"));
 				pedidos = this.instanciaSistema.generarPedidoEnBaseAHistorico(dias.intValue());
+				
+				if (pedidos.isEmpty()) {
+					
+					context.addMessage(null, new FacesMessage(
+							FacesMessage.SEVERITY_INFO, Excepciones.MENSAJE_PEDIDO_VACIO_HISTORICO, ""));
+				}
 			} else {
 				
 				throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA, Excepciones.ERROR_SISTEMA);
@@ -153,7 +165,6 @@ public class GenerarPedidoBean implements Serializable{
 			
 		} catch (Excepciones e) {
 
-			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 			disableDesdeUltimoPedido = false;
@@ -162,7 +173,6 @@ public class GenerarPedidoBean implements Serializable{
 		} catch (Exception e1) {
 			
 			e1.printStackTrace();
-			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage(
 					FacesMessage.SEVERITY_ERROR, Excepciones.MENSAJE_ERROR_SISTEMA, ""));
 			disableDesdeUltimoPedido = false;
