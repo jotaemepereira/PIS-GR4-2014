@@ -26,6 +26,8 @@ public class Excepciones extends Exception {
 	// Mensajes para pedido automático
 	public static String MENSAJE_OK_PEDIDO						= "El pedido fue enviado con éxito.";
 	public static String MENSAJE_PEDIDO_VACIO					= "Primero debes seleccionar un pedido.";
+	public static String MENSAJE_PEDIDO_VACIO_HISTORICO			= "No hay artículos en el sistema con bajos niveles de stock.";
+	public static String MENSAJE_PEDIDO_VACIO_ATERIOR			= "No hay suficientes ventas en el sistema para realizar una sugerencia de pedido.";
 	
 	// Mensajes para Artículo
 	public static String MENSAJE_ART_DUPLICADO					= "Ya existe un artículo en el sistema con esa descripción.";
