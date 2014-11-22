@@ -577,20 +577,22 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		Connection con = null;
 		Map<Long, DTLineaPedido> ret;
 
-		String sql = "(SELECT p.product_id, p.description, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number, sum(sd.quantity) as total "
+		String sql = "(SELECT p.product_id, p.description, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number, supp.comercialname, sum(sd.quantity) as total "
 				+ "FROM sales s "
 				+ "JOIN sale_details sd ON s.sale_id = sd.sale_id " 
 				+ "JOIN products p ON sd.product_id = p.product_id "
 				+ "JOIN products_suppliers ps ON p.product_id = ps.product_id "
+				+ "LEFT JOIN suppliers supp ON p.brand_id = supp.supplier_id "
 				+ "WHERE "
 				+ "(s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
 				+ "AND  "
 				+ "(ps.supplier_id = ?) "
-				+ "GROUP BY p.product_id, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number ORDER BY p.description) "
+				+ "GROUP BY p.product_id, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number, supp.comercialname ORDER BY p.description) "
 				+ "UNION "
-				+ "(SELECT p1.product_id, p1.description, p1.stock, p1.minimum_stock, p1.unit_price, p1.avg_cost, ps.product_number, 0 as total "
+				+ "(SELECT p1.product_id, p1.description, p1.stock, p1.minimum_stock, p1.unit_price, p1.avg_cost, ps.product_number, supp1.comercialname, 0 as total "
 				+ "	FROM products p1 "
 				+ "	JOIN products_suppliers ps ON p1.product_id = ps.product_id "
+				+ " LEFT JOIN suppliers supp1 ON p1.brand_id = supp1.supplier_id "
 				+ "	WHERE p1.product_id NOT IN (SELECT p.product_id "
 				+ "	FROM sales s "
 				+ "	JOIN sale_details sd ON s.sale_id = sd.sale_id " 
@@ -603,6 +605,7 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				+ "	GROUP BY p.product_id)) ";
 
 		try {
+			
 			con = Conexion.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);			
 			stmt.setTimestamp(1, new Timestamp(desde.getTime()));
@@ -626,10 +629,16 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				nuevo.setNumeroArticulo(rs.getLong("product_number"));
 				nuevo.setCantidad(rs.getLong("total"));
 				nuevo.setSubtotal((new BigDecimal(nuevo.getCantidad())).multiply(nuevo.getPrecioUnitario()));
+				
+				String laboratorio = rs.getString("comercialname");
+				if (laboratorio != null) {
+					nuevo.setNombreLaboratorio(laboratorio);
+				}
 				ret.put(nuevo.getIdArticulo(), nuevo);
 			}
 
 			stmt.close();
+			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
@@ -644,17 +653,19 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 		Connection con = null;
 		Map<Long, DTLineaPedido> ret;
 
-		String sql = "SELECT p.product_id, p.description, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number, sum(sd.quantity) as total "
+		String sql = "SELECT p.product_id, p.description, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number, supp.comercialname, sum(sd.quantity) as total "
 				+ "FROM sales s "
 				+ "JOIN sale_details sd ON s.sale_id = sd.sale_id "
 				+ "JOIN products p ON sd.product_id = p.product_id "
 				+ "JOIN products_suppliers ps ON ps.product_id = p.product_id "
+				+ "LEFT JOIN suppliers supp ON p.brand_id = supp.supplier_id "
 				+ "WHERE ((s.sale_status = 'F' AND s.sale_date BETWEEN ? and ?) "
 				+ "AND (ps.supplier_id = ?)) "
-				+ "GROUP BY p.product_id, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number "
+				+ "GROUP BY p.product_id, p.stock, p.minimum_stock, p.unit_price, p.avg_cost, ps.product_number, supp.comercialname "
 				+ "ORDER BY p.description; ";
 
 		try {
+			
 			con = Conexion.getConnection();
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setTimestamp(1, new Timestamp(desde.getTime()));
@@ -675,10 +686,16 @@ public class PFacturacionControlador implements IFacturacionPersistencia {
 				nuevo.setCantidad(rs.getLong("total"));
 				nuevo.setNumeroArticulo(rs.getLong("product_number"));
 				nuevo.setSubtotal((new BigDecimal(nuevo.getCantidad())).multiply(nuevo.getPrecioUnitario()));
+				
+				String laboratorio = rs.getString("comercialname");
+				if (laboratorio != null) {
+					nuevo.setNombreLaboratorio(laboratorio);
+				}
 				ret.put(nuevo.getIdArticulo(), nuevo);
 			}
 
 			stmt.close();
+			con.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw (new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
