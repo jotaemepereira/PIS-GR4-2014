@@ -1,3 +1,6 @@
+/**
+ * Realiza el manejo de usuarios con la base de datos
+ */
 package persistencia;
 
 import java.sql.Connection;

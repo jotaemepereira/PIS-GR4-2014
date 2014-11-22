@@ -1,3 +1,6 @@
+/**
+ * Realiza la conexion a la base de datos
+ */
 package persistencia;
 
 import java.sql.Connection;

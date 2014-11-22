@@ -1,3 +1,6 @@
+/**
+ * Se encarga de la persistencia del modulo compras
+ */
 package persistencia;
 
 import java.math.BigDecimal;
