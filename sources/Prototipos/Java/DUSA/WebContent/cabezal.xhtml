@@ -6,6 +6,7 @@
 
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="container-fluid">
+			<!-- LOGO SUPERIOR IZQUIERDO -->
 			<div class="navbar-header">
 				<a href="#"> <h:graphicImage
 						value="#{configuracionBean.rutaLogo}" style="height: 70px" />
@@ -14,28 +15,38 @@
 
 			<div class="collapse navbar-collapse"
 				id="bs-example-navbar-collapse-1">
+				
+				<!-- BARRA DE NAVEGACION SUPERIOR, CON LOS BOTONES --> 
 				<ul class="nav navbar-nav">
 					<li style="#{loginBean.getStockPermiso()}"><a href="../stock/pedidoAutomatico.jsf"><i
 							class="fa fa-cubes fa-3x"></i> Stock</a></li>
 					<li style="#{loginBean.getVentasPermiso()}"><a href="#{loginBean.indexVentasPorPermisos()}"><i
 							class="fa fa-shopping-cart fa-3x"></i> Ventas</a></li>
+					<!-- SE COMENTA EL BOTON DE MANEJO DE CLIENTES, DADO QUE NO SE HA IMPLEMENTADO -->	
 <!-- 					<li style="#{loginBean.getClientesPermiso()}"><a href="#"><i class="fa fa-users fa-3x"></i> Clientes</a></li> -->
 					<li style="#{loginBean.getProveedoresPermiso()}"><a href="../proveedores/altaProveedor.jsf"><i
 							class="fa fa-truck fa-3x"></i> Proveedores</a></li>
 					<li style="#{loginBean.getNuevaCompraRet()}"><a href="../compras/ingresarCompra.jsf"><i class="fa fa-list-alt fa-3x"></i>
 							Compras </a></li>
 				</ul>
+				<!-- PANEL DE USUARIO LOGEADO -->
 				<ul class="nav navbar-nav navbar-right">
-					<li class="login"><h:outputLabel id="logged_user">
+					
+					<li class="login">
+						<h:outputLabel id="logged_user">
 							<a href="#" id="logged_user_a"><i class="fa fa-user fa-2x"></i>
 								#{loginBean.getInstanciaSistema().obtenerUsuarioLogueado().getNombre()}</a>
-						</h:outputLabel></li>
+						</h:outputLabel>
+					</li>
+					
 					<p:overlayPanel id="logged_user_panel" for="logged_user"
 						hideEffect="fade">
 						<div>
+							<!-- NO SE IMPLEMENTA MANEJO DE USUARIO, ASI QUE NO REDIRECCIONA A NINGUN LADO -->
 							<a href="#">Mis datos</a>
 						</div>
 						<div>
+							<!-- BOTON DE LOGOUT -->
 							<p:commandLink actionListener="#{loginBean.cerrarSesion}" process="@this" ajax="true">
 								<h:outputText value="Salir" />
 							</p:commandLink>
@@ -43,8 +54,6 @@
 					</p:overlayPanel>
 				</ul>
 			</div>
-			<!-- /.navbar-collapse -->
 		</div>
-		<!-- /.container-fluid -->
 	</nav>
 </ui:composition>

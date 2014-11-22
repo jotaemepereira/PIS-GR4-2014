@@ -1,7 +1,6 @@
 /**
  * Controla las operaciones del modulo stock del sistema
  */
-
 package controladores;
 
 import interfaces.IPredictor;
