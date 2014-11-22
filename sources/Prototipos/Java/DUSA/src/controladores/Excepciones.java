@@ -1,34 +1,38 @@
+/**
+ * Clase encargada de controlar los mensajes de la interfaz de usuario ya sea por un error en el ingreso de algun campo como errores del sistema
+ */
+
 package controladores;
 
 public class Excepciones extends Exception {
-	
+
 	private static final long serialVersionUID = 4664456874499611218L;
-    
+
 	private int errorCode = 0;
-	
-	public static int ERROR_DATOS					= 0;
-	public static int ADVERTENCIA_DATOS				= 1;
-	public static int ERROR_SISTEMA					= 2;
-	public static int USUARIO_NO_TIENE_PERMISOS     = 3;
-	public static int ERROR_SIN_CONEXION    		= 4;
-	
+
+	public static int ERROR_DATOS = 0;
+	public static int ADVERTENCIA_DATOS = 1;
+	public static int ERROR_SISTEMA = 2;
+	public static int USUARIO_NO_TIENE_PERMISOS = 3;
+	public static int ERROR_SIN_CONEXION = 4;
+
 	// Mensajes generales
-	public static String MENSAJE_ERROR_SISTEMA					= "Ha ocurrido un error, por favor vuelva a intentarlo.";
-	public static String MENSAJE_OK_ALTA						= "El alta ha sido efectuada con éxito.";
-	public static String MENSAJE_OK_MODIFICACION				= "La modificación ha sido efectuada con éxito.";
-	public static String MENSAJE_ERROR_DATOS					= "Para continuar complete todos los campos obligatorios.";
-	
+	public static String MENSAJE_ERROR_SISTEMA = "Ha ocurrido un error, por favor vuelva a intentarlo.";
+	public static String MENSAJE_OK_ALTA = "El alta ha sido efectuada con éxito.";
+	public static String MENSAJE_OK_MODIFICACION = "La modificación ha sido efectuada con éxito.";
+	public static String MENSAJE_ERROR_DATOS = "Para continuar complete todos los campos obligatorios.";
+
 	// Mensajes para Proveedor
-	public static String MENSAJE_RUT_DUPLICADO					= "Ya existe un Proveedor en el sistema con ese documento.";
-	public static String MENSAJE_RUT_ERRONEO					= "El documento ingresado no es válido.";
-	public static String MENSAJE_NOMBRE_COMERCIAL_DUPLICADO		= "Ya existe un Proveedor en el sistema con ese Nombre Comercial.";
-     
+	public static String MENSAJE_RUT_DUPLICADO = "Ya existe un Proveedor en el sistema con ese documento.";
+	public static String MENSAJE_RUT_ERRONEO = "El documento ingresado no es válido.";
+	public static String MENSAJE_NOMBRE_COMERCIAL_DUPLICADO = "Ya existe un Proveedor en el sistema con ese Nombre Comercial.";
+
 	// Mensajes para pedido automático
-	public static String MENSAJE_OK_PEDIDO						= "El pedido fue enviado con éxito.";
-	public static String MENSAJE_PEDIDO_VACIO					= "Primero debes seleccionar un pedido.";
-	public static String MENSAJE_PEDIDO_VACIO_HISTORICO			= "No hay artículos en el sistema con bajos niveles de stock.";
-	public static String MENSAJE_PEDIDO_VACIO_ATERIOR			= "No hay suficientes ventas en el sistema para realizar una sugerencia de pedido.";
-	
+	public static String MENSAJE_OK_PEDIDO = "El pedido fue enviado con éxito.";
+	public static String MENSAJE_PEDIDO_VACIO = "Primero debes seleccionar un pedido.";
+	public static String MENSAJE_PEDIDO_VACIO_HISTORICO = "No hay artículos en el sistema con bajos niveles de stock.";
+	public static String MENSAJE_PEDIDO_VACIO_ATERIOR = "No hay suficientes ventas en el sistema para realizar una sugerencia de pedido.";
+
 	// Mensajes para Artículo
 	public static String MENSAJE_ART_DUPLICADO					= "Ya existe un artículo en el sistema con esa descripción.";
 	

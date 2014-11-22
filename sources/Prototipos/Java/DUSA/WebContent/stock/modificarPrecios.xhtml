@@ -26,13 +26,18 @@
 			#{modificarPreciosBean.setISistema(loginBean.instanciaSistema)}
 			<div class="vpanel_right">
 				<div class="wrapper">
+
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h3 class="panel-title">Modificar precios</h3>
 						</div>
 						<div class="panel-body">
+
+							<!-- PANEL PRINCIPAL -->
 							<h:panelGroup layout="block" id="panel">
 								<div class="container-fluid">
+
+									<!-- SELECCION DE ARTICULOS POR PROVEEDOR -->
 									<p:selectOneMenu id="proveedor"
 										value="#{modificarPreciosBean.proveedor}" filter="true"
 										filterMatchMode="contains" required="false">
@@ -43,41 +48,44 @@
 											itemLabel="#{p.nombreComercial}" itemValue="#{p.idProveedor}" />
 										<f:ajax event="change" execute="@this" />
 									</p:selectOneMenu>
+									<!-- BOTON PARA LA BUSQUEDA -->
 									<div class="btn-group-vertical">
-									<p:commandButton 
-										actionListener="#{modificarPreciosBean.getArticulosProveedor}"
-										value="Obtener artículos"
-										update="tableArticulos msgs">
-									</p:commandButton>
+										<p:commandButton
+											actionListener="#{modificarPreciosBean.getArticulosProveedor}"
+											value="Obtener artículos" update="tableArticulos msgs">
+										</p:commandButton>
 									</div>
 									<p:messages id="msgs" showIcon="false" globalOnly="true" />
-									<p:dataTable var="articulos" id="tableArticulos" 
-												value="#{modificarPreciosBean.articulosDelProveedor}" emptyMessage="No se encontraron registros.">
-											<div class="row">
-												<p:column headerText="Descripcion" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-													<h:outputText value="#{articulos.descripcion}" />
-												</p:column>
-												<p:column headerText="Precio" styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
-													<p:inputText id="precio" value="#{articulos.precioUnitario}" 
-														validatorMessage="El largo debe ser menor a 15."
-														requiredMessage="El campo no puede ser vacío."
-														converterMessage="El valor no puede contener caracteres."
-														required="true">
-														<f:validateLength
-															maximum="15"/>
-														<f:validateRequired
-															for="precio"/>
-													</p:inputText>
-													<p:message for="precio" display="text" />
-												</p:column>
-												</div>
-											</p:dataTable>
-								<p:commandButton 
-										id="Submit"
-										value="Enviar precios"
+
+									<!-- TABLA DE RESULTADOS DE LA BUSQUEDA -->
+									<p:dataTable var="articulos" id="tableArticulos"
+										value="#{modificarPreciosBean.articulosDelProveedor}"
+										emptyMessage="No se encontraron registros.">
+										<div class="row">
+											<p:column headerText="Descripcion"
+												styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+												<h:outputText value="#{articulos.descripcion}" />
+											</p:column>
+											<p:column headerText="Precio"
+												styleClass="col-xs-3 col-sm-2 col-md-1 col-lg-1">
+												<p:inputText id="precio" value="#{articulos.precioUnitario}"
+													validatorMessage="El largo debe ser menor a 15."
+													requiredMessage="El campo no puede ser vacío."
+													converterMessage="El valor no puede contener caracteres."
+													required="true">
+													<f:validateLength maximum="15" />
+													<f:validateRequired for="precio" />
+												</p:inputText>
+												<p:message for="precio" display="text" />
+											</p:column>
+										</div>
+									</p:dataTable>
+
+
+									<p:commandButton id="Submit" value="Enviar precios"
 										actionListener="#{modificarPreciosBean.enviarPrecios}"
-										update="tableArticulos msgs" >
-								</p:commandButton>
+										update="tableArticulos msgs">
+									</p:commandButton>
 								</div>
 							</h:panelGroup>
 						</div>

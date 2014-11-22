@@ -1,3 +1,6 @@
+/**
+ * Se encarga de la persistencia del módulo proveedores
+ */
 package persistencia;
 
 import java.sql.Connection;

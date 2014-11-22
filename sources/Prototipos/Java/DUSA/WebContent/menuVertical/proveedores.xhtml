@@ -4,6 +4,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 	
+	<!-- PANEL IZQUIERDO PARA EL MANEJO DE PROVEEDORES -->
 	<div class="vpanel_left">
 		<ul class="nav nav-pills nav-stacked">
 			<li style="#{loginBean.getAltaProveedorRet()}">
@@ -11,6 +12,8 @@
 					<span class="glyphicon glyphicon-plus"></span> Alta de proveedor
 				</a>
 			</li>
+			
+			<!-- SE COMENTA LOS BOTONES DE LOS CASOS DE USO QUE NO SE IMPLEMENTARON -->
 			<!-- 
 			<li style="#{loginBean.getModificarProveedorRet()}">
 				<a href="#">

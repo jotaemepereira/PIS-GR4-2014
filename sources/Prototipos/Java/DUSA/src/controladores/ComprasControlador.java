@@ -1,3 +1,6 @@
+/**
+ * Controla el modulo de compras del sistema
+ */
 package controladores;
 
 import java.util.Map;

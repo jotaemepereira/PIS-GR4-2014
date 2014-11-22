@@ -1,3 +1,6 @@
+/**
+ * Implementacion de IPredictor para generar un pedido, de articulos con ventas entre las fechas fechaDesde y hoy. 
+ */
 package controladores;
 
 import java.util.ArrayList;

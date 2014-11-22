@@ -1,3 +1,6 @@
+/**
+ * Controla el módulo de proveedores del sistema
+ */
 package controladores;
 
 import java.util.List;

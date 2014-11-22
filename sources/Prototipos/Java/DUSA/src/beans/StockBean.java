@@ -1,3 +1,7 @@
+/**
+ * Bean que maneja la lógica de las páginas
+ * alta y modificación de artículo.
+ */
 package beans;
 
 import interfaces.ISistema;

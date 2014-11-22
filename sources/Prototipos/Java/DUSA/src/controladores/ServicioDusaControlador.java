@@ -1,3 +1,7 @@
+/**
+ * Se encarga de la comunicación mediante webservices con DUSA
+ */
+
 package controladores;
 
 import java.math.BigDecimal;
@@ -50,7 +54,6 @@ public class ServicioDusaControlador implements IServicio {
 	 * @author Guille
 	 */
 
-	// private static int dusaId = 2; Ahora esta en enum infoDUSA
 	private static String userTest = "PIS2014";
 	private static String passTest = "uvM4-N39C-Jt01-mc9E-e95b";
 
@@ -58,38 +61,32 @@ public class ServicioDusaControlador implements IServicio {
 		return new WSConsultaStockService().getWSConsultaStockPort();
 	}
 
+	/**
+	 * Transforma un articulo recibido por el webservice, en el modelo articulo
+	 * interno
+	 * 
+	 * @param productoDT
+	 *            - data de producto recibida en el ws
+	 * @return Articulo - modelo articulo
+	 */
 	private Articulo transformarArticulo(DataInfoProducto productoDT) {
-
-		/*
-		 * //nos estarian sobrando protected String idLaboratorio; protected
-		 * String idLineaLaboratorio; protected String codigoLaboratorio;
-		 * protected int idProductoNoritel; protected int idPresentacionNoritel;
-		 * 
-		 * //ver el paso de tipos protected int habilitado;
-		 * productoDT.getTipoIVA()
-		 * 
-		 * //nos estarian sobrando ?? protected List<DataOferta> ofertas;
-		 * protected BigDecimal porcentajeDescuentoOferta; protected BigDecimal
-		 * precioOferta;
-		 * 
-		 * protected XMLGregorianCalendar fechaUltimaActualizacion; private Date
-		 * fechaUltimaModificacion;
-		 */
 
 		Articulo articulo = new Articulo();
 		articulo.setDescripcion(productoDT.getDescripcion());
 		articulo.setCostoLista(productoDT.getPrecioVenta());
 		articulo.setPrecioUnitario(productoDT.getPrecioPublico());
 		articulo.setTipoArticulo(model.Enumerados.tipoArticulo.MEDICAMENTO);
-		if(productoDT.getPrecioReceta() != null){
+		if (productoDT.getPrecioReceta() != null) {
 			articulo.setPrecioConReceta(productoDT.getPrecioReceta()
 					.getPrecioReceta());
-			
-			BigDecimal porcentaje = productoDT.getPrecioReceta()
-					.getPrecioReceta().divide(productoDT.getPrecioVenta(), 11, RoundingMode.FLOOR);
+
+			BigDecimal porcentaje = productoDT
+					.getPrecioReceta()
+					.getPrecioReceta()
+					.divide(productoDT.getPrecioVenta(), 11, RoundingMode.FLOOR);
 			articulo.setPorcentajeDescuentoReceta(porcentaje);
 		}
-		
+
 		articulo.setClave1(productoDT.getClave1());
 		articulo.setClave2(productoDT.getClave2());
 		articulo.setClave3(productoDT.getClave3());
@@ -102,18 +99,18 @@ public class ServicioDusaControlador implements IServicio {
 		articulo.setPrecioVenta(productoDT.getPrecioVenta());
 
 		char habilitado = Character.toChars(productoDT.getHabilitado())[0];
-		articulo.setStatus((habilitado == Enumerados.habilitado.HABILITADO) ? true : false);
+		articulo.setStatus((habilitado == Enumerados.habilitado.HABILITADO) ? true
+				: false);
 
 		TipoIva tipoIva = new TipoIva();
 		char c = productoDT.getTipoIVA().charAt(0);
 		tipoIva.setTipoIVA(c);
 		articulo.setTipoIva(tipoIva);
 
+		// TODO: Crear usuario interno del sistema para ejecuciones automáticas
 		Usuario usr = new Usuario();
 		usr.setNombre("Admin");
 		articulo.setUsuario(usr);
-		// articulo.setUltimoCosto();
-		// articulo.setVencimientoMasCercano();
 
 		// Proveedores
 		DTProveedor proveedor = new DTProveedor();
@@ -155,10 +152,11 @@ public class ServicioDusaControlador implements IServicio {
 			ResultRealizarPedido resPedido = wsPedido.realizarPedidoSimple(
 					userTest, passTest, dPedido);
 
+			// No se utiliza
 			MensajeError error = resPedido.getMensaje();
-			
+
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 			throw new Excepciones(Excepciones.MENSAJE_ERROR_CONEXION_WS,
 					Excepciones.ERROR_SIN_CONEXION);
@@ -225,6 +223,12 @@ public class ServicioDusaControlador implements IServicio {
 		return ret;
 	}
 
+	/**
+	 * Transforma un DataIVA recibido por el webservcie en un model TipoIva
+	 * 
+	 * @param di - data recibida por el ws
+	 * @return TipoIva - devuelve los datos recibidos mapeados al modelo interno
+	 */
 	private TipoIva transformarTipoIVA(DataIVA di) {
 		TipoIva ret = new TipoIva();
 		ret.setTipoIVA((char) (short) di.getTipoIVA());
@@ -238,6 +242,13 @@ public class ServicioDusaControlador implements IServicio {
 		return ret;
 	}
 
+	/**
+	 * Transforma un DataComprobante recibido por el webservice en un model Orden
+	 * 
+	 * @param comprobante - data recibida por el ws
+	 * @return Orden - devuelve los datos recibidos mapeados al modelo interno
+	 * @throws Excepciones
+	 */
 	private Orden transformarOrden(DataComprobante comprobante)
 			throws Excepciones {
 		Orden orden = new Orden();

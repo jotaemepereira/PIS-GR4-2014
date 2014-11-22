@@ -1,3 +1,7 @@
+/**
+ * Clase que se encarga de hacerle trim automáticamente a todos los strings
+ * que viajen de las páginas a la lógica.
+ */
 package Util;
 
 import javax.faces.component.UIComponent;

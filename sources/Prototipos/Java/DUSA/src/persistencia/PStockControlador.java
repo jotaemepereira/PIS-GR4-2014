@@ -1,3 +1,6 @@
+/**
+ * Se encarga de la persistencia del módulo de stock
+ */
 package persistencia;
 
 import java.math.BigDecimal;

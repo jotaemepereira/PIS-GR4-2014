@@ -1,3 +1,6 @@
+/**
+ * Controlador que implementa la capa de seguridad y registro de operaciones de usuario del sistema
+ */
 package controladores;
 
 import java.math.BigDecimal;

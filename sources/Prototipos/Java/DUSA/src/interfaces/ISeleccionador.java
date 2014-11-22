@@ -1,3 +1,9 @@
+/**
+ * Interfaz para implementar, distintos tipos de estrategias, al obtener los articulos
+ *  para generar pedido.
+ *  
+ *  Actualmente no se esta usando en la estrategia de generara pedido, para optimizar los tiempos.
+ */
 package interfaces;
 
 import java.util.List;

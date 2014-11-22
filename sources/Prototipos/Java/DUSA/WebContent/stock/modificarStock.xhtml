@@ -58,6 +58,7 @@
 
 									<div class="row" style="margin-bottom: 1%; text-align: center;">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+										
 											<!--  TABLA DONDE SE MUESTRA EL RESULTADO DE LA BUSQUEDA  -->
 											<p:dataTable var="articuloBusqueda" id="tableBusqueda"
 												value="#{modificarStockBean.resBusqueda}" rowIndexVar="rowIndex"
@@ -89,7 +90,7 @@
 														</h:outputText>
 													</p:column>
 													
-													<!-- Se ingresa el nuevo stock -->
+													<!-- SE INGRESA EL NUEVO STOCK -->
 													<p:column headerText="Nuevo stock" style="width: 50px;">
 														<p:inputText value="#{modificarStockBean.nuevoStock[rowIndex]}"
 																	style="width: 50px;" 

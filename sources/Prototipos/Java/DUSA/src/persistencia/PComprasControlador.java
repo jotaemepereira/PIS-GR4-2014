@@ -1,3 +1,6 @@
+/**
+ * Se encarga de la persistencia del modulo compras
+ */
 package persistencia;
 
 import java.math.BigDecimal;
@@ -286,9 +289,12 @@ public class PComprasControlador implements IComprasPersistencia {
 		Map<Long, DTComprobanteFactura> facturas = new HashMap<Long, DTComprobanteFactura>();
 		PreparedStatement stmtOrden = null;
 		PreparedStatement stmtDetalle = null;
+		
+		// Query para traer ordenes que no han sido procesadas aun
 		String queryOrden = "SELECT * FROM orders ";
 		queryOrden += "WHERE is_processed = ?";
 
+		// Query para traer el los detalles de una orden con los datos de los productos
 		String queryDetalle = "SELECT od.*, p.description, p.list_cost, p.avg_cost, p.stock, t.* ";
 		queryDetalle += "FROM order_details od ";
 		queryDetalle += "INNER JOIN products p ON p.product_id = od.product_id ";
@@ -305,7 +311,7 @@ public class PComprasControlador implements IComprasPersistencia {
 			while (rs.next()) {
 				DTComprobanteFactura factura = new DTComprobanteFactura();
 
-				// Guardo los datos de la factura
+				// Obtengo los datos de la factura
 				factura.setCantidadLineas(rs.getInt("detail_quantity"));
 				factura.setFechaComprobante(rs.getDate("order_date"));
 				factura.setFormaDePago(rs.getString("payment_type"));
@@ -338,7 +344,7 @@ public class PComprasControlador implements IComprasPersistencia {
 				stmtDetalle = c.prepareStatement(queryDetalle);
 				stmtDetalle.setLong(1, factura.getIdOrden());
 
-				// Para cada detalle, lo guardo y lo agrego al detalle de la
+				// Para cada detalle, lo obtengo y lo agrego al detalle de la
 				// factura
 				ResultSet rsDetalle = stmtDetalle.executeQuery();
 				while (rsDetalle.next()) {
