@@ -17,6 +17,15 @@ import model.PocasVentas;
 import model.Venta;
 import Util.XMLUtil;
 
+/**
+ * 
+ * Contiene todas las funciones de referentes a la facturacion de ventas
+ * y el reporte de articulos con pocas ventas.
+ * 
+ * Comunica VentaBean, FacturacionBean y VentaJob con FacturacionPersistencia
+ * para el acceso a base de datos.
+ *
+ */
 public class FacturacionControlador implements IFacturacion {
 
 	@Override

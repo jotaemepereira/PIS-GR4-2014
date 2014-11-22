@@ -34,52 +34,52 @@ public class Excepciones extends Exception {
 	public static String MENSAJE_PEDIDO_VACIO_ATERIOR = "No hay suficientes ventas en el sistema para realizar una sugerencia de pedido.";
 
 	// Mensajes para Artículo
-	public static String MENSAJE_ART_DUPLICADO = "Ya existe un artículo en el sistema con esa descripción.";
-
-	// Mensajes para el Login
-	public static String USUARIO_INVALIDO = "El nombre de usuario y/o la contraseña no son válidos.";
-
-	// Mensaje de no tiene permisos para realizar dicha operacion
-	public static String MENSAJE_USUARIO_NO_TIENE_PERMISOS = "El usuario logueado no tiene permisos para realizar la operacion.";
-
-	// Mensajes de conexion con webServices
-	public static String MENSAJE_ERROR_CONEXION_WS = "No se ha establecido conexión. Por favor, intentelo más tarde o verifique su conexión a internet.";
-
-	// Mensajes de facturacion
-	public static String MENSAJE_FACTURADA_OK = "Se facturó la venta correctamente.";
-	public static String MENSAJE_CANCELADA_OK = "Se venta ha sido cancelada correctamente.";
-	public static String MENSAJE_NO_CORROBORADO_OK = "Debe corroborar todos los items de la venta.";
-	public static String MENSAJE_ERROR_IMPRESION_FACTURA = "Ha ocurrido un error durante la impresión de la factura.";
-	public static String MENSAJE_FACTURA_FACTURADA = "La venta fue facturada con anterioridad.";
-
-	// Mensaje de ingresar compra
-	public static String MENSAJE_ERROR_TOTAL = "El total de la factura no puede ser 0.";
-	public static String MENSAJE_DETALLE_VACIO = "Es necesario ingresar al menos un artículo.";
-	public static String MENSAJE_FACTURA_DUPLICADA = "Ya existe en el sistema una factura con el mismo tipo, serie y numero.";
-	public static String MENSAJE_TIPO_REQUERIDO = "Para continuar es necesario ingeresar el tipo de factura";
-	public static String MENSAJE_SERIE_REQUERIDO = "Para continuar es necesario ingeresar la serie de factura";
-	public static String MENSAJE_NUMERO_REQUERIDO = "Para continuar es necesario ingeresar el numero de factura";
-	public static String MENSAJE_PROVEEDOR_VACIO = "Para continuar es necesario seleccionar un proveedor";
-	public static String MENSAJE_ERROR_FECHA = "La fecha seleccionada no puede ser posterior a la fecha actual.";
-	public static String MENSAJE_COMPRA_OK = "La compra ha sido realizada con éxito.";
-
-	// Modificar Stock
-	public static String MENSAJE_MOTIVO_VACIO = "Por favor, ingrese un motivo.";
-	public static String MENSAJE_CANT_INVALIDA_ORIGEN = "El nuevo stock del artículo origen debe ser menor al actual.";
-	public static String MENSAJE_CANT_INVALIDA_DESTINO = "El nuevo stock del artículo destino debe ser mayor al actual.";
-	public static String MENSAJE_DESARME_EXITO = "Desarme realizado con éxito.";
-	public static String MENSAJE_CANT_IGUALES = "No hay cambios ingresados.";
-	public static String MENSAJE_SELECCIONE_ARTICULO = "Por favor, busque y/o seleccione un artículo para continuar.";
-
-	// Mensajes alertas por vencimiento
-	public static String MENSAJE_OK_ALERTA_VENCIMIENTO = "Las modificaciones se realizaron correctamente.";
-
-	public Excepciones(String message, int errorCode) {
-		super(message);
-		this.errorCode = errorCode;
-	}
-
-	public int getErrorCode() {
-		return this.errorCode;
-	}
+	public static String MENSAJE_ART_DUPLICADO					= "Ya existe un artículo en el sistema con esa descripción.";
+	
+    // Mensajes para el Login
+	public static String USUARIO_INVALIDO						= "El nombre de usuario y/o la contraseña no son válidos.";
+	
+	//Mensaje de no tiene permisos para realizar dicha operacion 
+	public static String MENSAJE_USUARIO_NO_TIENE_PERMISOS 				= "El usuario logueado no tiene permisos para realizar la operacion.";
+	
+	//Mensajes de conexion con webServices
+	public static String MENSAJE_ERROR_CONEXION_WS						= "No se ha establecido conexión. Por favor, intentelo más tarde o verifique su conexión a internet.";
+	
+	//Mensajes de facturacion
+	public static String MENSAJE_FACTURADA_OK					= "Se facturó la venta correctamente.";
+	public static String MENSAJE_CANCELADA_OK					= "La venta ha sido cancelada correctamente.";
+	public static String MENSAJE_NO_CORROBORADO_OK				= "Debe corroborar todos los items de la venta.";
+	public static String MENSAJE_ERROR_IMPRESION_FACTURA		= "Ha ocurrido un error durante la impresión de la factura.";
+	public static String MENSAJE_FACTURA_FACTURADA				= "La venta fue facturada con anterioridad.";
+	
+	//Mensaje de ingresar compra
+	public static String MENSAJE_ERROR_TOTAL					= "El total de la factura no puede ser 0.";
+	public static String MENSAJE_DETALLE_VACIO					= "Es necesario ingresar al menos un artículo.";
+	public static String MENSAJE_FACTURA_DUPLICADA				= "Ya existe en el sistema una factura con el mismo tipo, serie y numero.";
+	public static String MENSAJE_TIPO_REQUERIDO					= "Para continuar es necesario ingeresar el tipo de factura";
+	public static String MENSAJE_SERIE_REQUERIDO				= "Para continuar es necesario ingeresar la serie de factura";
+	public static String MENSAJE_NUMERO_REQUERIDO				= "Para continuar es necesario ingeresar el numero de factura";
+	public static String MENSAJE_PROVEEDOR_VACIO				= "Para continuar es necesario seleccionar un proveedor";
+	public static String MENSAJE_ERROR_FECHA					= "La fecha seleccionada no puede ser posterior a la fecha actual.";
+	public static String MENSAJE_COMPRA_OK						= "La compra ha sido realizada con éxito.";
+	
+	//Modificar Stock
+	public static String MENSAJE_MOTIVO_VACIO					= "Por favor, ingrese un motivo.";
+	public static String MENSAJE_CANT_INVALIDA_ORIGEN			= "El nuevo stock del artículo origen debe ser menor al actual.";
+	public static String MENSAJE_CANT_INVALIDA_DESTINO			= "El nuevo stock del artículo destino debe ser mayor al actual.";
+	public static String MENSAJE_DESARME_EXITO					= "Desarme realizado con éxito.";
+	public static String MENSAJE_CANT_IGUALES					= "No hay cambios ingresados.";
+	public static String MENSAJE_SELECCIONE_ARTICULO			= "Por favor, busque y/o seleccione un artículo para continuar.";
+	
+	//Mensajes alertas por vencimiento
+	public static String MENSAJE_OK_ALERTA_VENCIMIENTO			= "Las modificaciones se realizaron correctamente.";
+	
+	public Excepciones(String message, int errorCode){
+        super(message);
+        this.errorCode = errorCode;
+    }
+     
+    public int getErrorCode(){
+        return this.errorCode;
+    }
 }

@@ -1,3 +1,6 @@
+/**
+ * Clase encargada de comparar los DTLineaPedido
+ */
 package Util;
 
 import java.util.Comparator;

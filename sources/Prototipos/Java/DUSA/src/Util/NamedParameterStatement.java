@@ -1,3 +1,7 @@
+/**
+ * Clase sacada de internet para utilizar los PreparedStatement
+ * con nombres en vez de por índice en la consulta
+ */
 package Util;
 
 import java.math.BigDecimal;

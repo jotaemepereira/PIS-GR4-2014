@@ -322,7 +322,7 @@
 					<p:inputText id="descuento"
 						value="#{ventaBean.articuloSeleccionado.descuento}"
 						style="width:50%">
-						<f:ajax event="change" execute="@this" />
+						<f:ajax event="change" execute="@this" render="descImportantes" />
 					</p:inputText>
 				</p:outputPanel>
 
