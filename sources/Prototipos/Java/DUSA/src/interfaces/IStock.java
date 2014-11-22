@@ -109,7 +109,7 @@ public interface IStock {
 	 */
 	
 	
-
+	
 	public List<DTProducto> buscarArticulosVenta(String busqueda)
 			throws Excepciones;
 

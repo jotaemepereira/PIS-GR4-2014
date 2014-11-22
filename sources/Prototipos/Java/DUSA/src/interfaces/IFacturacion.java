@@ -17,10 +17,11 @@ public interface IFacturacion {
 	 * conciderará la cantidad de ventas de cada artículos
 	 * @throws Exception
 	 * Sea la cantidad e ventas de un artículo en el período comprendido
-	 * entre la fecha actual y meses atrás. Se concidera que un artículo 
-	 * tiene pocas ventas si esta cantidad es menor  al valor mínimo stock 
+	 * entre la fecha actual y la variable mesesAtrás. Se concidera que un artículo 
+	 * tiene pocas ventas si esta cantidad es menor  al valor mínimoStock 
 	 * que se encuentra en la tabla de products. En este caso se crea un 
 	 * objeto del tipo PocasVentas para enviar dicha información por mail
+	 * utiliza el archivo de texto pocasVentas.properties
 	 *  
 	 */
 	public void articulosConPocasVentasEnLosUltimosMeses(int mesesAtras) throws Exception;

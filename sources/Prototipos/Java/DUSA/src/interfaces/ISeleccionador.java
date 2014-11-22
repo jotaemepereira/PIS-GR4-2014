@@ -20,8 +20,10 @@ public interface ISeleccionador {
 
 	/**
 	 * @author Guille, Santiago
-	 * @return Obtiene los id de artículos según implementación. Para generar pedido automático.
+	 * @return List <Long> lista de identificadores de artículos
 	 * @throws Excepciones
+	 * Obtiene los id de artículos según implementación de la interfaz
+	 * 	Se usan en la operación del sistema generar pedido automático.
 	 */
 	public List <Long> getIDArticulos() throws Excepciones;
 

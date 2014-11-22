@@ -199,11 +199,6 @@ public class ServicioDusaControlador implements IServicio {
 		return articulo;
 	}
 
-	@Override
-	public List<Articulo> obtenerArticulos() {
-		List<Articulo> articulos = new ArrayList<Articulo>();
-		return articulos;
-	}
 
 	@Override
 	public List<TipoIva> obtenerTiposIva() throws Excepciones {

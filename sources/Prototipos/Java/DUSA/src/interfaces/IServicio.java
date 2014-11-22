@@ -16,7 +16,18 @@ public interface IServicio {
 	 * @param p Pedido 
 	 */
 	public void realizarPedido (Pedido p) throws Excepciones;
-	public List<Articulo> obtenerArticulos() throws Excepciones;
+	
+	
+	
+	/**
+	 * Obtiene los artículos desde el  Web Service de DUSA. 
+	 * @param fecha fecha desde la cual se traerán todos los productos que fueron dados
+	 * de alta o sufriron cambios en su estado (diponibilidad precio etc)
+	 * @return List<Articulo> Lista con los artículso que devuelve Web Service
+	 * @throws Excepciones
+	 * @author santiago 
+	 * 
+	 */
 	public List<Articulo> obtenerActualizacionDeStock(java.util.Date fecha);
 	
 	/**
