@@ -94,7 +94,6 @@ public class VentaBean implements Serializable {
 						.buscarArticulosVenta(descripcionBusqueda);
 
 			} catch (Excepciones e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				FacesContext.getCurrentInstance().addMessage(
 						null,
@@ -130,7 +129,6 @@ public class VentaBean implements Serializable {
 								"Código no encontrado!", ""));
 			}
 		} catch (Excepciones e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(
 					null,
@@ -330,7 +328,6 @@ public class VentaBean implements Serializable {
 						new FacesMessage(FacesMessage.SEVERITY_INFO,
 								"# venta: " + (int)(id % 100), ""));
 			} catch (Excepciones e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				FacesContext.getCurrentInstance().addMessage(
 						null,
@@ -350,7 +347,6 @@ public class VentaBean implements Serializable {
 		Usuario usr = new Usuario();
 		usr = this.instanciaSistema.obtenerUsuarioLogueado();
 		venta.setUsuario(usr);
-		// TODO ver como se elige la forma de pago.
 		venta.setFormaDePago(Enumerados.TipoFormaDePago.CONTADO.toString());
 		venta.setCantidadLineas(lineas.size());
 
