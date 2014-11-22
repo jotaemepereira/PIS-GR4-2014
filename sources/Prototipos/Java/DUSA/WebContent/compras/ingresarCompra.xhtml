@@ -209,7 +209,7 @@
 													styleClass="calendario"
 													disabled="${comprasBean.facturaAutomatica}" required="true"
 													requiredMessage="Para continuar complete la fecha de la factura"
-													maxdate="{comprasBean.hoy}"
+													maxdate="{comprasBean.hoy}" pattern="dd/MM/yy"
 													validatorMessage="Para continuar ingrese una fecha válida."
 													converterMessage="Para continuar ingrese una fecha válida.">
 													<f:convertDateTime pattern="dd/MM/yy" />
