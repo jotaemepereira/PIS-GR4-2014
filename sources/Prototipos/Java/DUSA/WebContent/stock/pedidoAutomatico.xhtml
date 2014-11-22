@@ -46,7 +46,6 @@
 			<ui:include src="../menuVertical/stock.xhtml" />
 			#{loginBean.redirectIfNotLoggedIn("stock/pedidoAutomatico.jsf")}
         	#{generarPedidoBean.setISistema(loginBean.instanciaSistema)}
-			<!--		-->
 			<p:focus></p:focus>
 
 			<div class="vpanel_right">
@@ -166,13 +165,6 @@
 																	listener="#{generarPedidoBean.nuevoSubtotal(pedido)}"
 																	update="subtotal" process="@this" />
 															</p:inputText>
-															<!-- <p:inputMask id="cantidad" mask="?9999"
-																styleClass="form-control" style="text-align: center"
-																readonly="false" value="#{pedido.cantidad}">
-																<p:ajax
-																	listener="#{generarPedidoBean.nuevoSubtotal(pedido)}"
-																	update="subtotal" process="@this" />
-															</p:inputMask> -->
 
 														</p:column>
 

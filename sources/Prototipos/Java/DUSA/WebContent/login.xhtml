@@ -13,7 +13,6 @@
 		<link href="CSS/signin.css" rel="stylesheet"></link>
 
 		<title>Inicio de sesion</title>
-
 	</h:head>
 
 	<h:body>
@@ -21,13 +20,17 @@
 		<div class="container">
 
 			<h:form class="form-signin" role="form" id="form1">
+			<!-- CONTROL DE USUARIO LOGUEADO -->
 			#{loginBean.redirectIfLoggedIn()}
-			<p:focus></p:focus> 
-			<p:messages id="msgs" showIcon="false" globalOnly="true" />
+			<p:focus></p:focus>
+				<p:messages id="msgs" showIcon="false" globalOnly="true" />
+				<!-- LOGO DEL SISTEMA -->
 				<div class="text-center">
 					<img src="Images/Drcurita.png" style="height: 150px; width: 120px"></img>
 				</div>
 				<h2 class="form-signin-heading">Iniciar sesión</h2>
+				
+				<!-- CAMPO DE NOMBRE DE USUARIO -->
 				<p:inputText id="nomUsuario" value="#{loginBean.nomUsuario}"
 					type="text" styleClass="form-control"
 					placeholder="Nombre de usuario" required="true"
@@ -35,18 +38,21 @@
 					<f:ajax event="change" execute="@this" />
 				</p:inputText>
 				<p:message for="nomUsuario" display="text" />
+				
+				<!-- CAMPO DE CONTRASEÑA DEL SISTEMA -->
 				<p:inputText id="contrasenia" value="#{loginBean.contrasenia}"
 					type="password" styleClass="form-control" placeholder="Contraseña"
-					required="true" requiredMessage="Dato Requerido." >
+					required="true" requiredMessage="Dato Requerido.">
 
 					<f:ajax event="change" execute="@this" />
 				</p:inputText>
 				<p:message for="contrasenia" display="text" />
+				
+				<!-- BOTON DE CONFIRMACION -->
 				<p:commandButton value="Entrar"
 					actionListener="#{loginBean.iniciarSesion}"
-					styleClass="btn btn-lg btn-primary btn-block"
-					update="msgs" />
-		
+					styleClass="btn btn-lg btn-primary btn-block" update="msgs" />
+
 			</h:form>
 
 		</div>
