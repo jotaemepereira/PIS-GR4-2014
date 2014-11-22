@@ -505,7 +505,7 @@ public class LoginBean implements Serializable {
 						.getCurrentInstance()
 						.getExternalContext()
 						.redirect(
-								"http://localhost:8080/DUSA/stock/busquedaArticulo.jsf");
+								"ventas/nuevaVenta.jsf");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
