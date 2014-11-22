@@ -26,6 +26,8 @@ public class Excepciones extends Exception {
 	// Mensajes para pedido automático
 	public static String MENSAJE_OK_PEDIDO						= "El pedido fue enviado con éxito.";
 	public static String MENSAJE_PEDIDO_VACIO					= "Primero debes seleccionar un pedido.";
+	public static String MENSAJE_PEDIDO_VACIO_HISTORICO			= "No hay artículos en el sistema con bajos niveles de stock.";
+	public static String MENSAJE_PEDIDO_VACIO_ATERIOR			= "No hay suficientes ventas en el sistema para realizar una sugerencia de pedido.";
 	
 	// Mensajes para Artículo
 	public static String MENSAJE_ART_DUPLICADO					= "Ya existe un artículo en el sistema con esa descripción.";
@@ -41,7 +43,7 @@ public class Excepciones extends Exception {
 	
 	//Mensajes de facturacion
 	public static String MENSAJE_FACTURADA_OK					= "Se facturó la venta correctamente.";
-	public static String MENSAJE_CANCELADA_OK					= "Se venta ha sido cancelada correctamente.";
+	public static String MENSAJE_CANCELADA_OK					= "La venta ha sido cancelada correctamente.";
 	public static String MENSAJE_NO_CORROBORADO_OK				= "Debe corroborar todos los items de la venta.";
 	public static String MENSAJE_ERROR_IMPRESION_FACTURA		= "Ha ocurrido un error durante la impresión de la factura.";
 	public static String MENSAJE_FACTURA_FACTURADA				= "La venta fue facturada con anterioridad.";

@@ -126,7 +126,7 @@ public class FacturacionControlador implements IFacturacion {
 			passEmisor = prop.getProperty("passEmisor");
 			receptores = prop.getProperty("mailReceptores");
 			in.close();
-		
+			
 		if (mailEmisor==null)
 			mailEmisor = "dusapis";
 		if (passEmisor ==null)
@@ -144,8 +144,8 @@ public class FacturacionControlador implements IFacturacion {
 		prop.setProperty("passEmisor",passEmisor);
 		prop.setProperty("mailReceptores",receptores);
 		prop.store(output, null);
-
-
+		
+		
 		if (pv.size()>0){
 			m = new Mail();
 			m.setAsunto("alerta por pocas ventas");   

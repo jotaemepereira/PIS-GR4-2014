@@ -15,6 +15,7 @@ public class DTLineaPedido {
 	private BigDecimal subtotal;
 	private BigDecimal promedioVendidoAnosAnt;
 	private BigDecimal prediccionVentasAnt;
+	private String nombreLaboratorio;
 	
 	public DTLineaPedido() {
 		
@@ -26,6 +27,7 @@ public class DTLineaPedido {
 		this.precioPonderado = new BigDecimal(0);
 		this.stockMinimo = new Long(0);
 		this.subtotal = new BigDecimal(0);
+		this.nombreLaboratorio = "";
 	}
 
 	public Long getIdArticulo() {
@@ -125,6 +127,12 @@ public class DTLineaPedido {
 		this.prediccionVentasAnt = prediccionVentasAnt;
 	}
 	
-
+	public String getNombreLaboratorio() {
+		return nombreLaboratorio;
+	}
+	
+	public void setNombreLaboratorio(String nombreLaboratorio) {
+		this.nombreLaboratorio = nombreLaboratorio;
+	}
 }
 
