@@ -3,48 +3,31 @@ package beans;
 import interfaces.ISistema;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.math.*;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ViewHandler;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 
 import controladores.Excepciones;
-import controladores.FabricaLogica;
-import controladores.FabricaSistema;
 import model.AccionTer;
 import model.Articulo;
 import model.Droga;
 import model.Enumerados;
-import model.Enumerados.casoDeUso;
-import model.Enumerados.tipoMovimientoDeStock;
 import model.TipoIva;
-import model.Usuario;
-import model.Enumerados.TipoFormaDePago;
-import model.LineaPedido;
-import model.Pedido;
-import model.Presentacion;
-import datatypes.DTBusquedaArticuloSolr;
 import datatypes.DTBusquedaArticulo;
 import datatypes.DTDescuentoReceta;
 import datatypes.DTFormasVenta;
-import datatypes.DTLineaPedido;
 import datatypes.DTModificacionArticulo;
 import datatypes.DTProveedor;
 import datatypes.DTTipoArticulo;
@@ -707,31 +690,27 @@ public class StockBean implements Serializable {
 
 	/* Fin Operaciones para Modificación de Artículo */
 
-	/* Modificar precio de articulos */
-
-	public void buscarProveedores() {
-		FacesContext context = FacesContext.getCurrentInstance();
-
-		if (busquedaProveedor.equals("")) {
-			return;
-		}
-
-		articulosDelProveedor = new ArrayList<Articulo>();
-		long idProveedor = Long.parseLong(busquedaProveedor);
-
-		try {
-			articulosDelProveedor = this.instanciaSistema
-					.obtenerArticulosDelProveedor(idProveedor);
-		} catch (Excepciones e) {
-			context.addMessage(null, new FacesMessage(
-					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
-		}
-	}
-
-	/*
-	 * Operaciones de la tabla de proveedores tanto para el Alta como la
-	 * Modificación
-	 */
+	/** ESTE CODIGO NO VA QUEDÓ VIEJO **/
+//	/* Modificar precio de articulos */
+//
+//	public void buscarProveedores() {
+//		FacesContext context = FacesContext.getCurrentInstance();
+//
+//		if (busquedaProveedor.equals("")) {
+//			return;
+//		}
+//
+//		articulosDelProveedor = new ArrayList<Articulo>();
+//		long idProveedor = Long.parseLong(busquedaProveedor);
+//
+//		try {
+//			articulosDelProveedor = this.instanciaSistema
+//					.obtenerArticulosDelProveedor(idProveedor);
+//		} catch (Excepciones e) {
+//			context.addMessage(null, new FacesMessage(
+//					FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+//		}
+//	}
 
 	/*
 	 * Operaciones de la tabla de proveedores tanto para el Alta como la
@@ -804,9 +783,9 @@ public class StockBean implements Serializable {
 		return ret;
 	}
 
-	/* Fin Operaciones de la tabla de proveedores */
+	/** Fin Operaciones de la tabla de proveedores **/
 
-	/* Reseteo de formulario */
+	/** Reseteo de formulario **/
 
 	public void refresh() {
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -818,55 +797,7 @@ public class StockBean implements Serializable {
 		context.renderResponse(); // Optional
 	}
 
-	/* Loaders */
-
-	public void cargarMarcas() throws Excepciones {
-		if (listaMarcas.isEmpty()) {
-
-			this.listaMarcas = this.instanciaSistema.obtenerMarcas();
-		}
-	}
-
-	public void cargarProveedores() throws Excepciones {
-		if (listaProveedores.isEmpty()) {
-
-			this.proveedores = this.instanciaSistema.obtenerProveedores();
-			this.listaProveedores = new ArrayList<DTProveedor>(
-					this.proveedores.values());
-		}
-	}
-
-	public void cargarDrogas() throws Excepciones {
-		if (listaDrogas.isEmpty()) {
-
-			this.listaDrogas = this.instanciaSistema.obtenerDrogas();
-		}
-	}
-
-	public void cargarAccionesTerapeuticas() throws Excepciones {
-		if (listaAccionesTer.isEmpty()) {
-
-			this.listaAccionesTer = this.instanciaSistema
-					.obtenerAccionesTerapeuticas();
-		}
-	}
-
-	public void cargarTiposArticulo() {
-		if (tiposArticulo.isEmpty()) {
-			DTTipoArticulo ta = new DTTipoArticulo();
-			ta.setTipoArticulo(model.Enumerados.tipoArticulo.MEDICAMENTO);
-			ta.setDescripcion("Medicamento");
-			tiposArticulo.add(ta);
-			ta = new DTTipoArticulo();
-			ta.setTipoArticulo(model.Enumerados.tipoArticulo.PERFUMERIA);
-			ta.setDescripcion("Perfumería");
-			tiposArticulo.add(ta);
-			ta = new DTTipoArticulo();
-			ta.setTipoArticulo(model.Enumerados.tipoArticulo.OTROS);
-			ta.setDescripcion("Otros");
-			tiposArticulo.add(ta);
-		}
-	}
+	/** CHANGE EVENTS **/
 
 	public void tipoArticuloChange() {
 		if (articulo.getTipoArticulo() == model.Enumerados.tipoArticulo.MEDICAMENTO) {
@@ -945,7 +876,77 @@ public class StockBean implements Serializable {
 			this.articulo.setPrecioConReceta(null);
 		}
 	}
+	
+	public void precioVentaChange() {
+		if (this.articulo.getPrecioUnitario() != null) {
+			if (this.articulo.getPrecioUnitario().compareTo(BigDecimal.ZERO) != 0)
+				this.articulo.setPorcentajePrecioVenta(this.articulo
+						.getPrecioVenta().divide(
+								this.articulo.getPrecioUnitario(), 5,
+								RoundingMode.DOWN));
+		}
+	}
 
+	public void porcentajeChange() {
+		if (this.articulo.getPrecioUnitario() != null) {
+			if (this.articulo.getPrecioUnitario().compareTo(BigDecimal.ZERO) != 0)
+				this.articulo.setPrecioVenta(this.articulo.getPrecioUnitario()
+						.multiply(this.articulo.getPorcentajePrecioVenta()));
+		}
+	}
+	
+	/** FIN CHANGE EVENTS **/
+	
+	/** LOADERS **/
+
+	public void cargarMarcas() throws Excepciones {
+		if (listaMarcas.isEmpty()) {
+
+			this.listaMarcas = this.instanciaSistema.obtenerMarcas();
+		}
+	}
+
+	public void cargarProveedores() throws Excepciones {
+		if (listaProveedores.isEmpty()) {
+
+			this.proveedores = this.instanciaSistema.obtenerProveedores();
+			this.listaProveedores = new ArrayList<DTProveedor>(
+					this.proveedores.values());
+		}
+	}
+
+	public void cargarDrogas() throws Excepciones {
+		if (listaDrogas.isEmpty()) {
+
+			this.listaDrogas = this.instanciaSistema.obtenerDrogas();
+		}
+	}
+
+	public void cargarAccionesTerapeuticas() throws Excepciones {
+		if (listaAccionesTer.isEmpty()) {
+
+			this.listaAccionesTer = this.instanciaSistema
+					.obtenerAccionesTerapeuticas();
+		}
+	}
+
+	public void cargarTiposArticulo() {
+		if (tiposArticulo.isEmpty()) {
+			DTTipoArticulo ta = new DTTipoArticulo();
+			ta.setTipoArticulo(model.Enumerados.tipoArticulo.MEDICAMENTO);
+			ta.setDescripcion("Medicamento");
+			tiposArticulo.add(ta);
+			ta = new DTTipoArticulo();
+			ta.setTipoArticulo(model.Enumerados.tipoArticulo.PERFUMERIA);
+			ta.setDescripcion("Perfumería");
+			tiposArticulo.add(ta);
+			ta = new DTTipoArticulo();
+			ta.setTipoArticulo(model.Enumerados.tipoArticulo.OTROS);
+			ta.setDescripcion("Otros");
+			tiposArticulo.add(ta);
+		}
+	}
+	
 	public void cargarFormasVenta() {
 		if (formasVenta.isEmpty()) {
 			DTFormasVenta fv = new DTFormasVenta();
@@ -1001,7 +1002,7 @@ public class StockBean implements Serializable {
 		}
 	}
 
-	/* Fin Loaders */
+	/** FIN LOADERS **/
 
 	public void setISistema(ISistema s) {
 		this.instanciaSistema = s;
@@ -1053,24 +1054,8 @@ public class StockBean implements Serializable {
 		this.noPrecioFijo = true;
 	}
 
-	public void precioVentaChange() {
-		if (this.articulo.getPrecioUnitario() != null) {
-			if (this.articulo.getPrecioUnitario().compareTo(BigDecimal.ZERO) != 0)
-				this.articulo.setPorcentajePrecioVenta(this.articulo
-						.getPrecioVenta().divide(
-								this.articulo.getPrecioUnitario(), 5,
-								RoundingMode.DOWN));
-		}
-	}
-
-	public void porcentajeChange() {
-		if (this.articulo.getPrecioUnitario() != null) {
-			if (this.articulo.getPrecioUnitario().compareTo(BigDecimal.ZERO) != 0)
-				this.articulo.setPrecioVenta(this.articulo.getPrecioUnitario()
-						.multiply(this.articulo.getPorcentajePrecioVenta()));
-		}
-	}
-
+	/** GETTERS Y SETTERS **/
+	
 	public DTBusquedaArticulo getArticuloSeleccionado() {
 		return articuloSeleccionado;
 	}

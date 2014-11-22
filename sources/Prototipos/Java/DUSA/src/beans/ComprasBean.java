@@ -8,6 +8,7 @@ import interfaces.ISistema;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -571,7 +572,7 @@ public class ComprasBean implements Serializable {
 				.divide(new BigDecimal(100));
 		BigDecimal cantidad = new BigDecimal(detalle.getCantidad());
 
-		BigDecimal total = precio.multiply(cantidad).multiply(descuento);
+		BigDecimal total = precio.multiply(cantidad).multiply(descuento).setScale(2, RoundingMode.CEILING);
 		detalle.setTotal(total);
 
 		// Agrego el precio calculado al total
@@ -607,7 +608,7 @@ public class ComprasBean implements Serializable {
 			case 2: // IVA minimo
 				tributo = detalleF.getTotal().multiply(
 						detalleF.getTipoIVA().getValorTributo()
-								.divide(new BigDecimal(100)));
+								.divide(new BigDecimal(100))).setScale(2, RoundingMode.CEILING);
 				factura.setMontoTributoIvaMinimo(factura
 						.getMontoTributoIvaMinimo().add(tributo));
 
@@ -616,7 +617,7 @@ public class ComprasBean implements Serializable {
 						.getMontoNetoGravadoIvaMinimo().add(neto));
 
 				iva = neto.multiply(detalleF.getTipoIVA().getValorIVA()
-						.divide(new BigDecimal(100)));
+						.divide(new BigDecimal(100)).setScale(2, RoundingMode.CEILING));
 				factura.setTotalIvaMinimo(factura.getTotalIvaMinimo().add(iva));
 
 				retenidoIVA = iva.multiply(detalleF.getTipoIVA()
@@ -631,24 +632,24 @@ public class ComprasBean implements Serializable {
 			case 3: // IVA basico
 				tributo = detalleF.getTotal().multiply(
 						detalleF.getTipoIVA().getValorTributo()
-								.divide(new BigDecimal(100)));
+								.divide(new BigDecimal(100))).setScale(2, RoundingMode.CEILING);
 				factura.setMontoTributoIvaBasico(factura
 						.getMontoTributoIvaBasico().add(tributo));
 
-				neto = detalleF.getTotal().add(tributo);
+				neto = detalleF.getTotal().add(tributo).setScale(2, RoundingMode.CEILING);
 				factura.setMontoNetoGravadoIvaBasico(factura
 						.getMontoNetoGravadoIvaBasico().add(neto));
 
 				iva = neto.multiply(detalleF.getTipoIVA().getValorIVA()
-						.divide(new BigDecimal(100)));
+						.divide(new BigDecimal(100))).setScale(2, RoundingMode.CEILING);
 				factura.setTotalIvaBasico(factura.getTotalIvaBasico().add(iva));
 
 				retenidoIVA = iva.multiply(detalleF.getTipoIVA()
-						.getResguardoIVA().divide(new BigDecimal(100)));
+						.getResguardoIVA().divide(new BigDecimal(100))).setScale(2, RoundingMode.CEILING);
 				factura.setMontoRetenidoIVA(factura.getMontoRetenidoIVA().add(retenidoIVA));
 
 				retenidoIRAE = neto.multiply(detalleF.getTipoIVA()
-						.getResguardoIRAE().divide(new BigDecimal(100)));
+						.getResguardoIRAE().divide(new BigDecimal(100))).setScale(2, RoundingMode.CEILING);
 				factura.setMontoRetenidoIRAE(factura.getMontoRetenidoIRAE().add(retenidoIRAE));
 				break;
 			default:
