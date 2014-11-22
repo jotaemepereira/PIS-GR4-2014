@@ -165,6 +165,8 @@ public class StockControlador implements IStock {
 				.obtenerAccionesTerapeuticas();
 	}
 
+	/* Se llama solo una vez para traer los tipos de IVA del WS */
+	/* Está comentado en la función de arriba */
 	private void grabarTiposIVA() {
 		try {
 			List<TipoIva> lista = FabricaServicios.getIServicios()
