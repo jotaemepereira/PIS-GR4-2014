@@ -41,7 +41,7 @@
 												value="#{facturacionBean.ventas}">
 
 												<p:column headerText="ID" style="text-align: center;">
-													<h:outputText value="#{venta.ventaId}" />
+													<h:outputText value="#{venta.ventaId % 100}" />
 												</p:column>
 												<p:column headerText="Tiempo" style="text-align: center;">
 													<h:outputText
