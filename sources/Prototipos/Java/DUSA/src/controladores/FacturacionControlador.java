@@ -45,9 +45,7 @@ public class FacturacionControlador implements IFacturacion {
 		Venta venta = ifp.facturarVenta(ventaId);
 
 		if (venta == null) {
-			throw new Excepciones(Excepciones.MENSAJE_ERROR_SISTEMA,
-					Excepciones.ERROR_SISTEMA);
-			//return false;
+			return false;
 		}
 		// Creo factura
 		try {
