@@ -60,6 +60,7 @@ public class FacturacionControlador implements IFacturacion {
 	}
 	
 	@Override
+	@Deprecated /*Version que quedo del prototipo creado, actualmente no esta en uso este metodo.*/
 	public void facturarVenta(Venta v) throws Excepciones {
 		IFacturacionPersistencia ifp = FabricaPersistencia
 				.getInstanciaFacturacionPersistencia();

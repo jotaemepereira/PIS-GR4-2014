@@ -26,7 +26,14 @@ public interface IFacturacion {
 	 */
 	public void articulosConPocasVentasEnLosUltimosMeses(int mesesAtras) throws Exception;
 	
-	
+	/**
+	 * factura en el sistema la venta con id venta
+	 * @param venta id de la venta a facturar 
+	 * 			
+	 * 
+	 * @throws Excepciones
+	 * @author Ignacio Rodriguez
+	 */
 	public boolean facturarVenta(long venta) throws Excepciones;
 	
 	public void cancelarVenta(long venta) throws Excepciones;
@@ -49,6 +56,8 @@ public interface IFacturacion {
 	 * 
 	 * @throws Excepciones
 	 * @author Ignacio Rodriguez
+	 * @deprecated Version que quedo del prototipo creado, actualmente no esta en uso este metodo.
 	 */
+	@Deprecated
 	void facturarVenta(Venta v) throws Excepciones;
 	}
