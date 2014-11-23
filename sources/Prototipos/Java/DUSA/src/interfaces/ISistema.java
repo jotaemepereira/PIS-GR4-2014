@@ -83,12 +83,6 @@ public interface ISistema {
 	 */
 	public List<AccionTer> obtenerAccionesTerapeuticas() throws Excepciones;
 
-	/**
-	 * realiza la indexación de todos los articulos
-	 * 
-	 * @throws Excepciones
-	 * @author Victoria Díaz
-	 */
 
 	/**
 	 * Genera un pedido de artículos de D.U.S.A. La cantidad de cada artículo es
@@ -134,10 +128,15 @@ public interface ISistema {
 	/**
 	 * @author santiago
 	 * @throws Excepciones
+	 * @param nombreUsuario nombre de usuario obtenido en la interfaz web
+	 * @param contrasenia contraseña del usuario la cual en el bean se 
+	 * transforma a MD5 por lo tanto esta operación recibe el hash y no el texto plano
 	 */
 	public void iniciarSesion(String nombreUsuario, String contrasenia)
 			throws Excepciones;
 
+	
+	
 	public void cerrarSesion(String nombreUsuario, String contrasenia);
 
 	/**
@@ -249,6 +248,10 @@ public interface ISistema {
 	 */
 	public List<TipoIva> obtenerTiposIva() throws Excepciones;
 
+	/**
+	 * Obtiene el usuario asociado a la instancia sistema
+	 * @return Usuario retorna el usuario que tiene la sesión iniciada 
+	 */
 	public Usuario obtenerUsuarioLogueado();
 
 	/**
@@ -310,7 +313,6 @@ public interface ISistema {
 	 */
 	public Articulo obtenerArticulo(int idArticulo) throws Excepciones;
 
-	// public void actualizarStock(Date fecha) throws Exception;
 	/**
 	 * Se obtiene una lista de ventas pendientes de facturacion
 	 * 

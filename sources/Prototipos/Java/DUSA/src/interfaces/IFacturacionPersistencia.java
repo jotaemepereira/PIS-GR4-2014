@@ -39,8 +39,7 @@ public interface IFacturacionPersistencia {
 	 */
 	public int cantidadVendidaEnPeriodo(Long idArticulo, Date desde, Date hasta) throws Excepciones;
 	
-	public long persistirVenta(Venta v)
-			throws Excepciones;
+	public long persistirVenta(Venta v) throws Excepciones;
 	/**
 	 * Registra en el sistema la venta v
 	 * @param v 

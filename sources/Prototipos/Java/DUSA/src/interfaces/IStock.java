@@ -109,7 +109,7 @@ public interface IStock {
 	 */
 	
 	
-
+	
 	public List<DTProducto> buscarArticulosVenta(String busqueda)
 			throws Excepciones;
 
@@ -156,7 +156,9 @@ public interface IStock {
 	 * @param idsArticulo
 	 * @param nuevosValores
 	 * @throws Excepciones
+	 * @Deprecated No esta en uso, y posiblemente sin mantenimiento a cambios realizados en la base de datos.
 	 */
+	@Deprecated
 	public void modificarStock(long[] idsArticulo, long[] nuevosValores) throws Exception;
 
 	/**
@@ -169,7 +171,9 @@ public interface IStock {
 	 * @param nuevoValorDestino
 	 * @param nuevoValor stock nuevo para el articulo. 
 	 * @throws Excepciones
+	 * @Deprecated No esta en uso, y posiblemente sin mantenimiento a cambios realizados en la base de datos.
 	 */
+	@Deprecated
 	public void modificarStock(long idArticulo, long idDestino, long nuevoValorArticulo, long nuevoValorDestino) throws Excepciones;
 	
 	/**

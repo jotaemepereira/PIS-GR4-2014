@@ -1,3 +1,7 @@
+/**
+ * Implementacion de IPredictor para generar un pedido, calcula tomando en cuenta ventas de años anteriores y estimando cantidad 'diasAPredecir' por 
+ * minimos cuadrados.
+ */
 package controladores;
 
 import interfaces.IFacturacionPersistencia;

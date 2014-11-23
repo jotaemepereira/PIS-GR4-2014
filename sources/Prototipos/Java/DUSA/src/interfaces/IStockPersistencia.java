@@ -150,6 +150,7 @@ public interface IStockPersistencia {
 	 */
 	public Articulo obtenerArticuloConId(long idArticulo) throws Excepciones;
 
+	
 	public List<DTProducto> getDatosArticuloVenta(List<DTBusquedaArticuloSolr> articulos) throws Excepciones;
 
 	public DTProducto getDatosArticuloVentaPorCodigo(String codigo) throws Excepciones;
@@ -221,8 +222,27 @@ public interface IStockPersistencia {
 	 */
 	public void movimientoStock(String usuario, long aticuloID, long cantidad, char tipoMovimiento, String motivo) throws Excepciones;
 
+	
+	/**
+	 * Con los artículos que fueron modificados en un periodo dado
+	 * se obtienen los cambios contrastando diferencias con la base de datos
+	 * estos cambios son bajas en el precio o cambios en su estado de disponibilidad
+	 * @param arts lista con artículos modificados o dados de alta desde una fecha 
+	 * pasada por parámetro hasta el diá de hoy 
+	 * @return List <Cambio> lista con los artículos que sufriron cambios
+ 	 * @throws Excepciones
+	 * @author Santiago
+	 * 
+	 */
 	public List <Cambio> obtenerCambios(List <Articulo> arts) throws Excepciones;
 
+	/**
+	 * chequea la existencia de un artículo buscando su descripción 
+	 * @author Santiago
+	 * @param descripcion
+	 * @return true si el artículo existe en la base de datos local false en caso conbtrario
+	 * @throws Excepciones
+	 */
 	boolean existeArticulo(String descripcion) throws Excepciones;
 
 	/**

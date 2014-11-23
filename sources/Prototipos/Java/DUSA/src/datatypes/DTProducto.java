@@ -3,7 +3,6 @@ package datatypes;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import model.Articulo;
 
 public class DTProducto implements Serializable {
 	private int productId;

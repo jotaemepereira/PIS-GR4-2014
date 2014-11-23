@@ -31,15 +31,16 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 	 */
 	@Override
 	public Usuario getUsuario(String nombre, String contrasenia) throws Excepciones{
-		Usuario usr = new Usuario();
-		PreparedStatement stmt = null;
 		/**
 		 * obtengo el usuario de la base de datos 
-		 * 
+		 * La variable usr será donde se carguen los datos del usurio 
+		 * y finalmente se devuelve 
 		 * 
 		 */
-
-
+		Usuario usr = new Usuario();
+		PreparedStatement stmt = null;
+		
+		
 		String query = "SELECT u.user_id, u.username " + 
 				"FROM USERS u " +
 				"WHERE status <> FALSE AND username=" + "'" + nombre +"'" + ";";
@@ -203,10 +204,11 @@ public class PUsuarioControlador implements IUsuarioPersistencia{
 	/*
 	 * Se leen los correos electronicos de los administradores.
 	 * Para enviarle un mail en la operacion actualizarStock()
+	 * Esta operaciíon no se usó ya que los mails no se almacenan en la base de datos
+	 * sino en archivos .properties ya que se considera más sencillo para el usuario
+	 * modificar los mails receptores desde un archivo de texto que modificando la base de datos
+	 * 
 	 */
-	
-	
-	
 	@Override
 	public List<String> getAdminisMails()throws Excepciones{
 		
