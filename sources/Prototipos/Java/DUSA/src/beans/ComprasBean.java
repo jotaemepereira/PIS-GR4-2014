@@ -617,15 +617,15 @@ public class ComprasBean implements Serializable {
 						.getMontoNetoGravadoIvaMinimo().add(neto));
 
 				iva = neto.multiply(detalleF.getTipoIVA().getValorIVA()
-						.divide(new BigDecimal(100)).setScale(2, RoundingMode.CEILING));
+						.divide(new BigDecimal(100))).setScale(2, RoundingMode.CEILING);
 				factura.setTotalIvaMinimo(factura.getTotalIvaMinimo().add(iva));
 
 				retenidoIVA = iva.multiply(detalleF.getTipoIVA()
-						.getResguardoIVA().divide(new BigDecimal(100)));
+						.getResguardoIVA().divide(new BigDecimal(100))).setScale(2, RoundingMode.CEILING);
 				factura.setMontoRetenidoIVA(factura.getMontoRetenidoIVA().add(retenidoIVA));
 
 				retenidoIRAE = neto.multiply(detalleF.getTipoIVA()
-						.getResguardoIRAE().divide(new BigDecimal(100)));
+						.getResguardoIRAE().divide(new BigDecimal(100))).setScale(2, RoundingMode.CEILING);
 				factura.setMontoRetenidoIRAE(factura.getMontoRetenidoIRAE().add(retenidoIRAE));
 
 				break;
